@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_voltar">Voltar</string>
+    <string name="label_logout">Logout</string>
+    <string name="description_icon_hide_password">Esconder senha</string>
+    <string name="description_icon_show_password">Mostrar senha</string>
+    <string name="error_dialog_title">Erro</string>
+    <string name="warning_dialog_title">Aviso</string>
+    <string name="label_ok">OK</string>
+    <string name="label_confirm">Confirmar</string>
+    <string name="label_cancel">Cancelar</string>
+    <string name="rounded_button_google_content_description">Botão Google</string>
+    <string name="rounded_button_facebook_content_description">Botão Facebook</string>
+</resources>
