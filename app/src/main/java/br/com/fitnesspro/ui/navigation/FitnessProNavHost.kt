@@ -16,6 +16,10 @@ fun FitnessProNavHost(
         modifier = modifier
     ) {
 
-        loginScreen()
+        loginScreen(
+            onBottomSheetRegisterUserItemClick = navController::navigateToRegisterUserScreen,
+        )
+
+        registerUserScreen()
     }
 }

@@ -11,4 +11,7 @@
     <string name="label_cancel">Cancelar</string>
     <string name="rounded_button_google_content_description">Botão Google</string>
     <string name="rounded_button_facebook_content_description">Botão Facebook</string>
+    <string name="label_add">Adicionar</string>
+    <string name="label_save">Salvar</string>
+    <string name="label_calendar">Calendário</string>
 </resources>

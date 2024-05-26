@@ -23,3 +23,5 @@ rootProject.name = "FitnessPro"
 include(":app")
 include(":fitnesspro-compose-components")
 include(":fitnesspro-core")
+include(":fitnesspro-model")
+include(":fitnesspro-local-data-access")

@@ -15,15 +15,16 @@ private val DarkColorScheme = darkColorScheme(
     primary = GREY_900,
     primaryContainer = GREY_900,
     secondary = GREY_800,
-    onBackground = GREY_700
+    onBackground = GREY_700,
+    background = GREY_200
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = GREY_900,
     primaryContainer = GREY_900,
     secondary = GREY_800,
-    onBackground = GREY_700
-
+    onBackground = GREY_700,
+    background = GREY_200
 )
 
 @Composable

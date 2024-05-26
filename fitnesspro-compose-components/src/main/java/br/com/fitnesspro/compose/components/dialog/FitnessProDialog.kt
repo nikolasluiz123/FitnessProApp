@@ -13,8 +13,21 @@ import androidx.compose.ui.res.stringResource
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.core.enums.EnumDialogType
 
+/**
+ * Dialog genérica para exibir qualquer mensagem necessária de acordo com as regras da tela
+ * que estiver sendo implementada.
+ *
+ * @param type Tipo da Dialog, baseado nesse tipo são feitas configurações específicas.
+ * @param show Indica se a Dialog deve ser exibida.
+ * @param onDismissRequest Callback para fechar a Dialog.
+ * @param message Mensagem a ser exibida na Dialog.
+ * @param onConfirm Callback para confirmar a Dialog.
+ * @param onCancel Callback para cancelar a Dialog.
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 @Composable
-fun MarketDialog(
+fun FitnessProDialog(
     type: EnumDialogType,
     show: Boolean,
     onDismissRequest: () -> Unit,

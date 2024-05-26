@@ -52,6 +52,15 @@ android {
 dependencies {
     implementation(project(":fitnesspro-core"))
     implementation(project(":fitnesspro-compose-components"))
+    implementation(project(":fitnesspro-model"))
+    implementation(project(":fitnesspro-local-data-access"))
+
+    implementation(libs.room.paging3)
+
+    implementation(libs.google.gson)
+    implementation(libs.google.credentials)
+    implementation(libs.google.credentials.play.services)
+    implementation(libs.google.id)
 
     implementation(libs.constraint.layout.compose)
 

@@ -1,56 +1,62 @@
-package br.com.fitnesspro.ui.screen
+package br.com.fitnesspro.ui.screen.login
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.R
+import br.com.fitnesspro.compose.components.buttons.FitnessProButton
+import br.com.fitnesspro.compose.components.buttons.FitnessProOutlinedButton
 import br.com.fitnesspro.compose.components.buttons.RoundedFacebookButton
 import br.com.fitnesspro.compose.components.buttons.RoundedGoogleButton
-import br.com.fitnesspro.compose.components.dialog.MarketDialog
+import br.com.fitnesspro.compose.components.dialog.FitnessProDialog
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
+import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
+import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.Typography
-import br.com.fitnesspro.core.theme.buttonTextStyle
-import br.com.fitnesspro.core.theme.inputTextStyle
+import br.com.fitnesspro.ui.bottomsheet.BottomSheetRegisterUser
+import br.com.fitnesspro.ui.screen.login.callback.OnBottomSheetRegisterUserItemClick
 import br.com.fitnesspro.ui.state.LoginUIState
 import br.com.fitnesspro.ui.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel) {
+fun LoginScreen(
+    viewModel: LoginViewModel,
+    onBottomSheetRegisterUserItemClick: OnBottomSheetRegisterUserItemClick
+) {
     val state by viewModel.uiState.collectAsState()
 
-    LoginScreen(state = state)
+    LoginScreen(
+        state = state,
+        onBottomSheetRegisterUserItemClick = onBottomSheetRegisterUserItemClick
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(state: LoginUIState = LoginUIState()) {
+fun LoginScreen(
+    state: LoginUIState = LoginUIState(),
+    onBottomSheetRegisterUserItemClick: OnBottomSheetRegisterUserItemClick? = null
+) {
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
@@ -84,7 +90,9 @@ fun LoginScreen(state: LoginUIState = LoginUIState()) {
                     val (emailRef, passwordRef, loginButtonRef, registerButtonRef,
                         googleButtonRef, facebookButtonRef) = createRefs()
 
-                    MarketDialog(
+                    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+
+                    FitnessProDialog(
                         type = state.dialogType,
                         show = state.showDialog,
                         onDismissRequest = { state.onHideDialog() },
@@ -100,13 +108,8 @@ fun LoginScreen(state: LoginUIState = LoginUIState()) {
                             width = Dimension.fillToConstraints
                         },
                         field = state.email,
-                        label = {
-                            Text(text = stringResource(R.string.login_screen_label_email), style = inputTextStyle)
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                            imeAction = ImeAction.Next
-                        )
+                        label = stringResource(R.string.login_screen_label_email),
+                        keyboardOptions = EmailKeyboardOptions
                     )
 
                     OutlinedTextFieldPasswordValidation(
@@ -118,20 +121,14 @@ fun LoginScreen(state: LoginUIState = LoginUIState()) {
                             width = Dimension.fillToConstraints
                         },
                         field = state.password,
-                        label = {
-                            Text(text = stringResource(R.string.login_screen_label_password), style = inputTextStyle)
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Done
-                        )
+                        label = stringResource(R.string.login_screen_label_password),
+                        keyboardOptions = LastPasswordKeyboardOptions
                     )
 
                     createHorizontalChain(registerButtonRef, loginButtonRef)
 
-                    Button(
-                        modifier = Modifier
-                            .constrainAs(loginButtonRef) {
+                    FitnessProButton(
+                        modifier = Modifier.constrainAs(loginButtonRef) {
                                 start.linkTo(parent.start)
                                 top.linkTo(passwordRef.bottom, margin = 8.dp)
 
@@ -140,19 +137,12 @@ fun LoginScreen(state: LoginUIState = LoginUIState()) {
                                 width = Dimension.fillToConstraints
                             }
                             .padding(start = 8.dp),
-                        onClick = {
-
-                        },
+                        label = stringResource(R.string.login_screen_label_button_login),
                         enabled = !state.showLoading,
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.login_screen_label_button_login),
-                            style = buttonTextStyle
-                        )
-                    }
+                        onClickListener = { }
+                    )
 
-                    OutlinedButton(
+                    FitnessProOutlinedButton(
                         modifier = Modifier.constrainAs(registerButtonRef) {
                             end.linkTo(parent.end)
                             top.linkTo(passwordRef.bottom, margin = 8.dp)
@@ -161,16 +151,9 @@ fun LoginScreen(state: LoginUIState = LoginUIState()) {
 
                             width = Dimension.fillToConstraints
                         },
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer),
-                        onClick = { },
-                        enabled = !state.showLoading,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.login_screen_label_button_register),
-                            color = MaterialTheme.colorScheme.primary,
-                            style = buttonTextStyle
-                        )
-                    }
+                        label = stringResource(R.string.login_screen_label_button_register),
+                        onClickListener = { openBottomSheet = true }
+                    )
 
                     createHorizontalChain(
                         googleButtonRef,
@@ -196,6 +179,13 @@ fun LoginScreen(state: LoginUIState = LoginUIState()) {
                             .padding(start = 8.dp, top = 8.dp)
                     )
 
+
+                    if (openBottomSheet) {
+                        BottomSheetRegisterUser(
+                            onDismissRequest = { openBottomSheet = false },
+                            onItemClickListener = onBottomSheetRegisterUserItemClick
+                        )
+                    }
                 }
 
             }

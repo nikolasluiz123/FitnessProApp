@@ -7,6 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import br.com.fitnesspro.core.theme.TopAppBarSubtitleTextStyle
+import br.com.fitnesspro.core.theme.TopAppBarTitleTextStyle
 
 /**
  * Top App Bar com uma passagem facilitada de título e
@@ -48,10 +50,10 @@ fun SimpleFitnessProTopAppBar(
     FitnessProTopAppBar(
         title = {
             Column {
-                Text(text = title, style = MaterialTheme.typography.titleSmall)
+                Text(text = title, style = TopAppBarTitleTextStyle)
 
                 if (subtitle != null) {
-                    Text(text = subtitle, style = MaterialTheme.typography.bodySmall)
+                    Text(text = subtitle, style = TopAppBarSubtitleTextStyle)
                 }
             }
         },

@@ -17,6 +17,14 @@ import br.com.fitnesspro.compose.components.R.*
 import br.com.fitnesspro.core.R
 import br.com.fitnesspro.core.theme.FitnessProTheme
 
+/**
+ * Botão arredondado com o ícone da Google
+ *
+ * @param modifier o modificador do botão
+ * @param onClick o evento de clique do botão
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 @Composable
 fun RoundedGoogleButton(
     modifier: Modifier = Modifier,
@@ -35,6 +43,14 @@ fun RoundedGoogleButton(
     }
 }
 
+/**
+ * Botão arredondado com o ícone do Facebook
+ *
+ * @param modifier o modificador do botão
+ * @param onClick o evento de clique do botão
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 @Composable
 fun RoundedFacebookButton(
     modifier: Modifier = Modifier,

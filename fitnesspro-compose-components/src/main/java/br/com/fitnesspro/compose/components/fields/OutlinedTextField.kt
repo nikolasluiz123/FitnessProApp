@@ -22,10 +22,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -33,8 +31,68 @@ import androidx.compose.ui.tooling.preview.Preview
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.compose.components.state.Field
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.inputTextStyle
+import br.com.fitnesspro.core.theme.InputTextStyle
 import kotlin.properties.Delegates
+
+@Composable
+fun OutlinedTextFieldValidation(
+    field: Field,
+    label: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    textStyle: TextStyle = LocalTextStyle.current,
+    placeholder: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    isError: Boolean = field.errorMessage.isNotEmpty(),
+    trailingIcon: @Composable (() -> Unit)? = {
+        if (field.errorMessage.isNotEmpty())
+            Icon(
+                Icons.Default.Warning,
+                "error",
+                tint = MaterialTheme.colorScheme.error
+            )
+    },
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    singleLine: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    shape: Shape = MaterialTheme.shapes.small,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
+        cursorColor = MaterialTheme.colorScheme.outline,
+        focusedBorderColor = MaterialTheme.colorScheme.outline,
+        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+        unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
+        focusedLabelColor = MaterialTheme.colorScheme.onBackground,
+        focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+        unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary
+    )
+) {
+    OutlinedTextFieldValidation(
+        value = field.value,
+        onValueChange = field.onChange,
+        modifier = modifier,
+        enabled = enabled,
+        readOnly = readOnly,
+        textStyle = textStyle,
+        label = { Text(text = label, style = InputTextStyle) },
+        placeholder = placeholder,
+        leadingIcon = leadingIcon,
+        error = field.errorMessage,
+        isError = isError,
+        trailingIcon = trailingIcon,
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        interactionSource = interactionSource,
+        shape = shape,
+        colors = colors
+    )
+}
 
 @Composable
 fun OutlinedTextFieldValidation(
@@ -129,7 +187,7 @@ fun OutlinedTextFieldValidation(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
-    textStyle: TextStyle = inputTextStyle,
+    textStyle: TextStyle = InputTextStyle,
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -189,6 +247,23 @@ fun OutlinedTextFieldValidation(
         interactionSource = interactionSource,
         shape = shape,
         colors = colors
+    )
+}
+
+@Composable
+fun OutlinedTextFieldPasswordValidation(
+    field: Field,
+    label: String,
+    modifier: Modifier = Modifier,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+) {
+    OutlinedTextFieldPasswordValidation(
+        value = field.value,
+        onValueChange = field.onChange,
+        error = field.errorMessage,
+        modifier = modifier,
+        label = { Text(text = label, style = InputTextStyle) },
+        keyboardOptions = keyboardOptions
     )
 }
 

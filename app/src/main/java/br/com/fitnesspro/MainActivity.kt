@@ -14,9 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.ui.navigation.FitnessProNavHost
-import br.com.fitnesspro.ui.screen.LoginScreen
+import br.com.fitnesspro.ui.screen.login.LoginScreen
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.internal.GeneratedComponent
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
