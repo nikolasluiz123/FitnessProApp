@@ -2,6 +2,7 @@ package br.com.fitnesspro.core.keyboard
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 
 val EmailKeyboardOptions = KeyboardOptions(
@@ -32,6 +33,18 @@ val NormalTextKeyboardOptions = KeyboardOptions(
 val LastNormalTextKeyboardOptions = KeyboardOptions(
     keyboardType = KeyboardType.Text,
     imeAction = ImeAction.Done
+)
+
+val PersonNameKeyboardOptions = KeyboardOptions(
+    keyboardType = KeyboardType.Text,
+    imeAction = ImeAction.Next,
+    capitalization = KeyboardCapitalization.Words
+)
+
+val LastPersonNameTextKeyboardOptions = KeyboardOptions(
+    keyboardType = KeyboardType.Text,
+    imeAction = ImeAction.Done,
+    capitalization = KeyboardCapitalization.Words
 )
 
 

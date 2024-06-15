@@ -53,9 +53,7 @@ dependencies {
     implementation(project(":fitnesspro-core"))
     implementation(project(":fitnesspro-compose-components"))
     implementation(project(":fitnesspro-model"))
-    implementation(project(":fitnesspro-local-data-access"))
-
-    implementation(libs.room.paging3)
+    implementation(project(":fitnesspro-service-data-access"))
 
     implementation(libs.google.gson)
     implementation(libs.google.credentials)

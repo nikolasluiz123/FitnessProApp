@@ -1,5 +1,6 @@
 [versions]
-room = "2.6.1"
+retrofit = "2.11.0"
+serviceLogs = "4.12.0"
 
 gson = "2.11.0"
 
@@ -25,10 +26,9 @@ appcompat = "1.6.1"
 material = "1.12.0"
 
 [libraries]
-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
-room-paging3 = { group = "androidx.room", name = "room-paging", version.ref = "room" }
-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-json = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+service-logs = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "serviceLogs" }
 
 google-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 

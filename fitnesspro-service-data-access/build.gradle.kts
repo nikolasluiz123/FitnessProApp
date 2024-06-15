@@ -1,10 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlinAndroidKsp)
+    alias(libs.plugins.hiltAndroid)
 }
 
 android {
-    namespace = "br.com.fitnesspro_model"
+    namespace = "br.com.fitnesspro.service.data.access"
     compileSdk = 34
 
     defaultConfig {
@@ -30,6 +32,16 @@ android {
 }
 
 dependencies {
+    implementation(project(":fitnesspro-model"))
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.json)
+    implementation(libs.service.logs)
+    implementation(libs.google.gson)
+
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

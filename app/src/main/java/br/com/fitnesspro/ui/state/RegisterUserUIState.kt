@@ -11,9 +11,9 @@ data class RegisterUserUIState(
     val context: EnumOptionsBottomSheetRegisterUser? = null,
     val user: User? = null,
     val tabs: MutableList<Tab> = mutableListOf(),
-    val name: Field = Field(),
+    val firstName: Field = Field(),
+    val lastName: Field = Field(),
+    val username: Field = Field(),
     val email: Field = Field(),
-    val password: Field = Field(),
-    val birthDate: Field = Field(),
-    val phone: Field = Field(),
+    val password: Field = Field()
 )

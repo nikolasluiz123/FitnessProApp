@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -14,14 +12,11 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -30,25 +25,18 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.R
-import br.com.fitnesspro.compose.components.buttons.FitnessProTextButton
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
-import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCalendar
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.transformation.DateVisualTransformation
 import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
 import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.toLocalDateFormattedOnlyNumbers
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
-import br.com.fitnesspro.core.keyboard.LastPhoneKeyboardOptions
 import br.com.fitnesspro.core.keyboard.NormalTextKeyboardOptions
-import br.com.fitnesspro.core.keyboard.NumberKeyboardOptions
 import br.com.fitnesspro.core.keyboard.PasswordKeyboardOptions
+import br.com.fitnesspro.core.keyboard.PersonNameKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
-import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import br.com.fitnesspro.ui.viewmodel.RegisterUserViewModel
 import br.com.market.market.compose.components.button.fab.FloatingActionButtonSave
@@ -165,7 +153,6 @@ fun RegisterUserScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterUserTabGeneral(state: RegisterUserUIState) {
     ConstraintLayout(
@@ -173,17 +160,40 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState) {
             .padding(12.dp)
             .fillMaxSize()
     ) {
-        val (nameRef, emailRef, passwordRef, birthDateRef, phoneRef) = createRefs()
-
-        var openDatePickerDialog by remember { mutableStateOf(false) }
-        val datePickerState = rememberDatePickerState()
+        val (firstNameRef, lastNameRef, usernameRef, emailRef, passwordRef) = createRefs()
 
         OutlinedTextFieldValidation(
-            field = state.name,
-            label = stringResource(R.string.register_user_screen_label_name),
-            modifier = Modifier.constrainAs(nameRef) {
+            field = state.firstName,
+            label = stringResource(R.string.register_user_screen_label_first_name),
+            modifier = Modifier.constrainAs(firstNameRef) {
                 start.linkTo(parent.start)
                 top.linkTo(parent.top)
+                end.linkTo(parent.end)
+
+                width = Dimension.fillToConstraints
+            },
+            keyboardOptions = PersonNameKeyboardOptions
+        )
+
+        OutlinedTextFieldValidation(
+            field = state.lastName,
+            label = stringResource(R.string.register_user_screen_label_last_name),
+            modifier = Modifier.constrainAs(lastNameRef) {
+                start.linkTo(parent.start)
+                top.linkTo(firstNameRef.bottom)
+                end.linkTo(parent.end)
+
+                width = Dimension.fillToConstraints
+            },
+            keyboardOptions = PersonNameKeyboardOptions
+        )
+
+        OutlinedTextFieldValidation(
+            field = state.username,
+            label = stringResource(R.string.register_user_screen_label_username),
+            modifier = Modifier.constrainAs(usernameRef) {
+                start.linkTo(parent.start)
+                top.linkTo(lastNameRef.bottom)
                 end.linkTo(parent.end)
 
                 width = Dimension.fillToConstraints
@@ -196,7 +206,7 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState) {
             label = stringResource(R.string.register_user_screen_label_email),
             modifier = Modifier.constrainAs(emailRef) {
                 start.linkTo(parent.start)
-                top.linkTo(nameRef.bottom)
+                top.linkTo(usernameRef.bottom)
                 end.linkTo(parent.end)
 
                 width = Dimension.fillToConstraints
@@ -216,69 +226,6 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState) {
             },
             keyboardOptions = PasswordKeyboardOptions
         )
-
-        OutlinedTextFieldValidation(
-            field = state.birthDate,
-            label = stringResource(R.string.register_user_screen_label_birth_date),
-            modifier = Modifier.constrainAs(birthDateRef) {
-                start.linkTo(parent.start)
-                top.linkTo(passwordRef.bottom)
-                end.linkTo(parent.end)
-
-                width = Dimension.fillToConstraints
-            },
-            keyboardOptions = NumberKeyboardOptions,
-            trailingIcon = {
-                IconButtonCalendar(
-                    onClick = { openDatePickerDialog = true }
-                )
-            },
-            visualTransformation = DateVisualTransformation()
-        )
-
-        if (state.context == EnumOptionsBottomSheetRegisterUser.TRAINER ||
-            state.context == EnumOptionsBottomSheetRegisterUser.NUTRITIONIST
-        ) {
-
-            OutlinedTextFieldValidation(
-                field = state.phone,
-                label = stringResource(R.string.register_user_screen_label_phone),
-                modifier = Modifier.constrainAs(phoneRef) {
-                    start.linkTo(parent.start)
-                    top.linkTo(birthDateRef.bottom)
-                    end.linkTo(parent.end)
-
-                    width = Dimension.fillToConstraints
-                },
-                keyboardOptions = LastPhoneKeyboardOptions
-            )
-        }
-
-        if (openDatePickerDialog) {
-            DatePickerDialog(
-                onDismissRequest = { openDatePickerDialog = false },
-                confirmButton = {
-                    FitnessProTextButton(
-                        label = stringResource(id = R.string.register_user_screen_button_confirm),
-                        onClickListener = {
-                            datePickerState.selectedDateMillis?.let {
-                                state.birthDate.onChange(it.toLocalDateFormattedOnlyNumbers(EnumDateTimePatterns.DATE))
-                            }
-
-                            openDatePickerDialog = false
-                        }
-                    )
-                },
-                dismissButton = {
-                    FitnessProTextButton(
-                        label = stringResource(id = R.string.register_user_screen_button_cancel),
-                        onClickListener = { openDatePickerDialog = false }
-                    )
-                }
-            ) {
-                DatePicker(state = datePickerState)
-            }
-        }
     }
 }
 

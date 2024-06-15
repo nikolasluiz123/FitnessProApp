@@ -1,38 +1,32 @@
 package br.com.fitnesspro.ui.viewmodel
 
 import android.content.Context
-import android.util.Patterns
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.state.Field
 import br.com.fitnesspro.compose.components.tabs.Tab
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
-import br.com.fitnesspro.core.extensions.parseToLocalDate
-import br.com.fitnesspro.core.validation.ValidationResult
-import br.com.fitnesspro.model.EnumUserValidatedFields
 import br.com.fitnesspro.model.User
+import br.com.fitnesspro.model.enums.EnumUserProfile
 import br.com.fitnesspro.repository.UserRepository
+import br.com.fitnesspro.service.data.access.dto.user.UserDTOValidationFields
+import br.com.fitnesspro.service.data.access.webclients.validation.ValidationResult
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.ui.navigation.registerUserArguments
 import br.com.fitnesspro.ui.state.RegisterUserUIState
-import br.com.fitnesspro.usecase.RegisterUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterUserViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userRepository: UserRepository,
-    private val registerUserUseCase: RegisterUserUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -63,25 +57,21 @@ class RegisterUserViewModel @Inject constructor(
                     subtitle = getSubtitle(),
                     context = args.context,
                     tabs = tabs,
-                    name = Field(onChange = {
-                        _uiState.value = _uiState.value.copy(name = _uiState.value.name.copy(value = it, errorMessage = ""))
+                    firstName = Field(onChange = {
+                        _uiState.value = _uiState.value.copy(firstName = _uiState.value.firstName.copy(value = it, errorMessage = ""))
+                    }),
+                    lastName = Field(onChange = {
+                        _uiState.value = _uiState.value.copy(lastName = _uiState.value.lastName.copy(value = it, errorMessage = ""))
+                    }),
+                    username = Field(onChange = {
+                        _uiState.value = _uiState.value.copy(username = _uiState.value.username.copy(value = it, errorMessage = ""))
                     }),
                     email = Field(onChange = {
-                        _uiState.value =
-                            _uiState.value.copy(email = _uiState.value.email.copy(value = it, errorMessage = ""))
+                        _uiState.value = _uiState.value.copy(email = _uiState.value.email.copy(value = it, errorMessage = ""))
                     }),
                     password = Field(onChange = {
-                        _uiState.value =
-                            _uiState.value.copy(password = _uiState.value.password.copy(value = it, errorMessage = ""))
+                        _uiState.value = _uiState.value.copy(password = _uiState.value.password.copy(value = it, errorMessage = ""))
                     }),
-                    birthDate = Field(onChange = {
-                        _uiState.value =
-                            _uiState.value.copy(birthDate = _uiState.value.birthDate.copy(value = it, errorMessage = ""))
-                    }),
-                    phone = Field(onChange = {
-                        _uiState.value =
-                            _uiState.value.copy(phone = _uiState.value.phone.copy(value = it, errorMessage = ""))
-                    })
                 )
             }
         }
@@ -117,56 +107,62 @@ class RegisterUserViewModel @Inject constructor(
     }
 
     private fun getSubtitle(): String? {
-        return _uiState.value.user?.name
+        return _uiState.value.user?.firstName
     }
 
     suspend fun saveUser(): Boolean {
-        val user = User().apply {
-            name = _uiState.value.name.value
-            email = _uiState.value.email.value
-            password = _uiState.value.password.value
-            birthDate = _uiState.value.birthDate.value.parseToLocalDate(EnumDateTimePatterns.DATE_ONLY_NUMBERS)
-            phone = _uiState.value.phone.value
-        }
+        val user = User(
+            firstName = _uiState.value.firstName.value,
+            lastName = _uiState.value.lastName.value,
+            username = _uiState.value.username.value,
+            email = _uiState.value.email.value,
+            password = _uiState.value.password.value,
+            profile = getUserProfile()!!
+        )
 
-        val result = registerUserUseCase.saveUser(user)
+        val result = userRepository.register(user)
 
         when (result) {
             is ValidationResult.Success -> {
                 _uiState.value = _uiState.value.copy(
                     user = user,
-                    name = _uiState.value.name.copy(errorMessage = ""),
+                    firstName = _uiState.value.firstName.copy(errorMessage = ""),
+                    lastName = _uiState.value.lastName.copy(errorMessage = ""),
                     email = _uiState.value.email.copy(errorMessage = ""),
                     password = _uiState.value.password.copy(errorMessage = ""),
-                    birthDate = _uiState.value.birthDate.copy(errorMessage = ""),
-                    phone = _uiState.value.phone.copy(errorMessage = "")
                 )
             }
 
             is ValidationResult.Error<*> -> {
-                result.fieldErrors.forEach { (field, messageResId) ->
+                result.fieldErrors.forEach { (field, message) ->
                     when (field) {
-                        EnumUserValidatedFields.NAME -> {
+                        UserDTOValidationFields.FIRST_NAME -> {
                             _uiState.value = _uiState.value.copy(
-                                name = _uiState.value.name.copy(errorMessage = context.getString(messageResId))
+                                firstName = _uiState.value.firstName.copy(errorMessage = message)
                             )
                         }
 
-                        EnumUserValidatedFields.EMAIL -> {
+                        UserDTOValidationFields.LAST_NAME -> {
                             _uiState.value = _uiState.value.copy(
-                                email = _uiState.value.email.copy(errorMessage = context.getString(messageResId))
+                                email = _uiState.value.email.copy(errorMessage = message)
                             )
                         }
 
-                        EnumUserValidatedFields.PASSWORD -> {
+                        UserDTOValidationFields.USERNAME -> {
                             _uiState.value = _uiState.value.copy(
-                                password = _uiState.value.password.copy(errorMessage = context.getString(messageResId))
+                                username = _uiState.value.username.copy(errorMessage = message)
                             )
                         }
 
-                        EnumUserValidatedFields.BIRTH_DATE -> {
+                        UserDTOValidationFields.EMAIL -> {
                             _uiState.value = _uiState.value.copy(
-                                birthDate = _uiState.value.birthDate.copy(errorMessage = context.getString(messageResId))
+                                password = _uiState.value.password.copy(errorMessage = message)
+                            )
+                        }
+
+                        UserDTOValidationFields.PASSWORD -> {
+                            _uiState.value = _uiState.value.copy(
+                                password = _uiState.value.password.copy(errorMessage = message)
                             )
                         }
                     }
@@ -175,5 +171,14 @@ class RegisterUserViewModel @Inject constructor(
         }
 
         return result is ValidationResult.Success
+    }
+
+    private fun getUserProfile(): EnumUserProfile? {
+        return when(_uiState.value.context) {
+            EnumOptionsBottomSheetRegisterUser.STUDENT -> EnumUserProfile.STUDENT
+            EnumOptionsBottomSheetRegisterUser.TRAINER -> EnumUserProfile.TRAINER
+            EnumOptionsBottomSheetRegisterUser.NUTRITIONIST -> EnumUserProfile.NUTRITIONIST
+            else -> null
+        }
     }
 }

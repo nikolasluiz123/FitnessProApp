@@ -1,19 +1,15 @@
 package br.com.fitnesspro.repository
 
-import br.com.fitnesspro.local.access.UserDao
 import br.com.fitnesspro.model.User
+import br.com.fitnesspro.service.data.access.webclients.UserWebClient
+import br.com.fitnesspro.service.data.access.webclients.validation.ValidationResult
 
-class UserRepository(private val userDao: UserDao) {
+class UserRepository(
+    private val webClient: UserWebClient
+) {
 
-    suspend fun saveUser(user: User) {
-        userDao.saveUser(user)
+    suspend fun register(user: User): ValidationResult {
+        return webClient.register(user)
     }
 
-    suspend fun isEmailUnique(email: String): Boolean {
-        return userDao.isEmailUnique(email)
-    }
-
-    suspend fun getUserById(id: String): User {
-        return userDao.findUserById(id)
-    }
 }
