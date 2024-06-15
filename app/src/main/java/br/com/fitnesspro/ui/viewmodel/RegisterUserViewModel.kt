@@ -10,7 +10,7 @@ import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.model.User
 import br.com.fitnesspro.model.enums.EnumUserProfile
 import br.com.fitnesspro.repository.UserRepository
-import br.com.fitnesspro.service.data.access.dto.user.UserDTOValidationFields
+import br.com.fitnesspro.service.data.access.dto.user.EnumUserDTOValidationFields
 import br.com.fitnesspro.service.data.access.webclients.validation.ValidationResult
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
@@ -78,6 +78,9 @@ class RegisterUserViewModel @Inject constructor(
 
     }
 
+    /**
+     * Função utilizada para recuperar o titulo que deve ser exibido na barra superior.
+     */
     private fun getTitle(args: RegisterUserScreenArgs): String {
         return when (args.context) {
             EnumOptionsBottomSheetRegisterUser.STUDENT -> {
@@ -106,10 +109,16 @@ class RegisterUserViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Função utilizada para recuperar o subtitulo que deve ser exibido na barra superior.
+     */
     private fun getSubtitle(): String? {
         return _uiState.value.user?.firstName
     }
 
+    /**
+     * Função utilizada para salvar o usuário.
+     */
     suspend fun saveUser(): Boolean {
         val user = User(
             firstName = _uiState.value.firstName.value,
@@ -136,31 +145,31 @@ class RegisterUserViewModel @Inject constructor(
             is ValidationResult.Error<*> -> {
                 result.fieldErrors.forEach { (field, message) ->
                     when (field) {
-                        UserDTOValidationFields.FIRST_NAME -> {
+                        EnumUserDTOValidationFields.FIRST_NAME -> {
                             _uiState.value = _uiState.value.copy(
                                 firstName = _uiState.value.firstName.copy(errorMessage = message)
                             )
                         }
 
-                        UserDTOValidationFields.LAST_NAME -> {
+                        EnumUserDTOValidationFields.LAST_NAME -> {
                             _uiState.value = _uiState.value.copy(
-                                email = _uiState.value.email.copy(errorMessage = message)
+                                lastName = _uiState.value.lastName.copy(errorMessage = message)
                             )
                         }
 
-                        UserDTOValidationFields.USERNAME -> {
+                        EnumUserDTOValidationFields.USERNAME -> {
                             _uiState.value = _uiState.value.copy(
                                 username = _uiState.value.username.copy(errorMessage = message)
                             )
                         }
 
-                        UserDTOValidationFields.EMAIL -> {
+                        EnumUserDTOValidationFields.EMAIL -> {
                             _uiState.value = _uiState.value.copy(
-                                password = _uiState.value.password.copy(errorMessage = message)
+                                email = _uiState.value.email.copy(errorMessage = message)
                             )
                         }
 
-                        UserDTOValidationFields.PASSWORD -> {
+                        EnumUserDTOValidationFields.PASSWORD -> {
                             _uiState.value = _uiState.value.copy(
                                 password = _uiState.value.password.copy(errorMessage = message)
                             )
@@ -173,6 +182,10 @@ class RegisterUserViewModel @Inject constructor(
         return result is ValidationResult.Success
     }
 
+    /**
+     * Função para recuperar o [EnumUserProfile] baseado no [EnumOptionsBottomSheetRegisterUser] que é definido ao clicar
+     * no bottom sheet.
+     */
     private fun getUserProfile(): EnumUserProfile? {
         return when(_uiState.value.context) {
             EnumOptionsBottomSheetRegisterUser.STUDENT -> EnumUserProfile.STUDENT

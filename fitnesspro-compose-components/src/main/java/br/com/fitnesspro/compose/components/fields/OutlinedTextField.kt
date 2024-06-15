@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.compose.components.state.Field
+import br.com.fitnesspro.core.theme.FieldErrorTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.InputTextStyle
 import kotlin.properties.Delegates
@@ -68,7 +69,8 @@ fun OutlinedTextFieldValidation(
         focusedLabelColor = MaterialTheme.colorScheme.onBackground,
         focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
         unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary
-    )
+    ),
+    maxLength: Int? = null
 ) {
     OutlinedTextFieldValidation(
         value = field.value,
@@ -90,7 +92,8 @@ fun OutlinedTextFieldValidation(
         maxLines = maxLines,
         interactionSource = interactionSource,
         shape = shape,
-        colors = colors
+        colors = colors,
+        maxLength = maxLength
     )
 }
 
@@ -216,14 +219,19 @@ fun OutlinedTextFieldValidation(
         focusedLabelColor = MaterialTheme.colorScheme.onBackground,
         focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
         unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary
-    )
+    ),
+    maxLength: Int? = null
 ) {
     OutlinedTextField(
         enabled = enabled,
         readOnly = readOnly,
         modifier = modifier,
         value = value ?: "",
-        onValueChange = onValueChange,
+        onValueChange = {
+            if(maxLength == null || it.length <= maxLength) {
+                onValueChange(it)
+            }
+        },
         singleLine = singleLine,
         textStyle = textStyle,
         label = label,
@@ -236,7 +244,7 @@ fun OutlinedTextFieldValidation(
                 Text(
                     text = error,
                     color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.labelSmall
+                    style = FieldErrorTextStyle
                 )
             }
         },

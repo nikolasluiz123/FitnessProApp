@@ -8,6 +8,9 @@ class UserRepository(
     private val webClient: UserWebClient
 ) {
 
+    /**
+     * @see UserWebClient.register
+     */
     suspend fun register(user: User): ValidationResult {
         return webClient.register(user)
     }

@@ -37,6 +37,7 @@ import br.com.fitnesspro.core.keyboard.PasswordKeyboardOptions
 import br.com.fitnesspro.core.keyboard.PersonNameKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
+import br.com.fitnesspro.service.data.access.dto.user.EnumUserDTOValidationFields
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import br.com.fitnesspro.ui.viewmodel.RegisterUserViewModel
 import br.com.market.market.compose.components.button.fab.FloatingActionButtonSave
@@ -172,7 +173,8 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState) {
 
                 width = Dimension.fillToConstraints
             },
-            keyboardOptions = PersonNameKeyboardOptions
+            keyboardOptions = PersonNameKeyboardOptions,
+            maxLength = EnumUserDTOValidationFields.FIRST_NAME.maxLength
         )
 
         OutlinedTextFieldValidation(
@@ -185,7 +187,8 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState) {
 
                 width = Dimension.fillToConstraints
             },
-            keyboardOptions = PersonNameKeyboardOptions
+            keyboardOptions = PersonNameKeyboardOptions,
+            maxLength = EnumUserDTOValidationFields.LAST_NAME.maxLength
         )
 
         OutlinedTextFieldValidation(
@@ -198,7 +201,8 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState) {
 
                 width = Dimension.fillToConstraints
             },
-            keyboardOptions = NormalTextKeyboardOptions
+            keyboardOptions = NormalTextKeyboardOptions,
+            maxLength = EnumUserDTOValidationFields.USERNAME.maxLength
         )
 
         OutlinedTextFieldValidation(
@@ -211,7 +215,8 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState) {
 
                 width = Dimension.fillToConstraints
             },
-            keyboardOptions = EmailKeyboardOptions
+            keyboardOptions = EmailKeyboardOptions,
+            maxLength = EnumUserDTOValidationFields.EMAIL.maxLength
         )
 
         OutlinedTextFieldValidation(
@@ -224,7 +229,8 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState) {
 
                 width = Dimension.fillToConstraints
             },
-            keyboardOptions = PasswordKeyboardOptions
+            keyboardOptions = PasswordKeyboardOptions,
+            maxLength = EnumUserDTOValidationFields.PASSWORD.maxLength
         )
     }
 }
@@ -233,10 +239,8 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState) {
 fun RegisterUserTabGym(
     state: RegisterUserUIState
 ) {
-    Scaffold { padding ->
-        ConstraintLayout(Modifier.padding(padding)) {
+    ConstraintLayout() {
 
-        }
     }
 }
 
