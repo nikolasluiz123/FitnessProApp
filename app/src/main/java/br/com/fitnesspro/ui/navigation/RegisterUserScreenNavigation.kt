@@ -13,11 +13,16 @@ import com.google.gson.Gson
 internal const val registerUserScreenRoute = "registerUser"
 internal const val registerUserArguments = "registerUserArguments"
 
-fun NavGraphBuilder.registerUserScreen() {
+fun NavGraphBuilder.registerUserScreen(
+    onBackClick: () -> Unit
+) {
     composable(route = "$registerUserScreenRoute?$registerUserArguments={$registerUserArguments}") {
         val registerUserViewModel = hiltViewModel<RegisterUserViewModel>()
 
-        RegisterUserScreen(viewModel = registerUserViewModel)
+        RegisterUserScreen(
+            viewModel = registerUserViewModel,
+            onBackClick = onBackClick
+        )
     }
 }
 

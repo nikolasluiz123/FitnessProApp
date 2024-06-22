@@ -50,11 +50,15 @@ import br.com.market.market.compose.components.button.fab.FloatingActionButtonSa
 import kotlinx.coroutines.launch
 
 @Composable
-fun RegisterUserScreen(viewModel: RegisterUserViewModel) {
+fun RegisterUserScreen(
+    viewModel: RegisterUserViewModel,
+    onBackClick: () -> Unit,
+) {
     val state by viewModel.uiState.collectAsState()
 
     RegisterUserScreen(
         state = state,
+        onBackClick = onBackClick,
         onFABSaveClick = { onServerError ->
             viewModel.saveUser(onServerError)
         }
@@ -66,7 +70,8 @@ fun RegisterUserScreen(viewModel: RegisterUserViewModel) {
 @Composable
 fun RegisterUserScreen(
     state: RegisterUserUIState = RegisterUserUIState(),
-    onFABSaveClick: suspend (OnServerError) -> Boolean = { false }
+    onFABSaveClick: suspend (OnServerError) -> Boolean = { false },
+    onBackClick: () -> Unit = { },
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -77,7 +82,8 @@ fun RegisterUserScreen(
             SimpleFitnessProTopAppBar(
                 title = state.title!!,
                 subtitle = state.subtitle,
-                showMenuWithLogout = false
+                showMenuWithLogout = false,
+                onBackClick = onBackClick
             )
         },
         snackbarHost = {

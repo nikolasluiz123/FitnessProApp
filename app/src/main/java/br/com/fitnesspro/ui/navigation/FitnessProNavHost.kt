@@ -20,6 +20,8 @@ fun FitnessProNavHost(
             onBottomSheetRegisterUserItemClick = navController::navigateToRegisterUserScreen,
         )
 
-        registerUserScreen()
+        registerUserScreen(
+            onBackClick = navController::popBackStack
+        )
     }
 }
