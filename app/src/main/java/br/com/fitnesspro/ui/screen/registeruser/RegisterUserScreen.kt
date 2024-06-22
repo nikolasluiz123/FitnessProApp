@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -186,10 +188,13 @@ fun RegisterUserScreen(
 
 @Composable
 fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
+    val scrollState = rememberScrollState()
+
     ConstraintLayout(
         Modifier
             .padding(12.dp)
             .fillMaxSize()
+            .verticalScroll(scrollState)
     ) {
         val (firstNameRef, lastNameRef, usernameRef, emailRef, passwordRef) = createRefs()
 
