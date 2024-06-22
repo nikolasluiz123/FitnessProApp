@@ -17,6 +17,5 @@ data class LoginUIState(
     override val onHideDialog: () -> Unit = { },
     override val onShowDialog: IShowDialogCallback? = null,
     override val onConfirm: () -> Unit = { },
-    override val onCancel: () -> Unit = { },
-    override var internalErrorMessage: String = ""
+    override val onCancel: () -> Unit = { }
 ) : ILoadingUIState, IDialogUIState

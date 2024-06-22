@@ -11,5 +11,4 @@ interface IDialogUIState {
     val onHideDialog: () -> Unit
     val onConfirm: () -> Unit
     val onCancel: () -> Unit
-    var internalErrorMessage: String
 }

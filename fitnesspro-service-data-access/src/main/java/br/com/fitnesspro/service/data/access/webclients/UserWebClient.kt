@@ -1,16 +1,14 @@
 package br.com.fitnesspro.service.data.access.webclients
 
 import br.com.fitnesspro.model.User
-import br.com.fitnesspro.service.data.access.dto.user.UserDTO
 import br.com.fitnesspro.service.data.access.dto.user.EnumUserDTOValidationFields
+import br.com.fitnesspro.service.data.access.dto.user.UserDTO
 import br.com.fitnesspro.service.data.access.services.IUserService
 import br.com.fitnesspro.service.data.access.webclients.extensions.toValidationResult
 import br.com.fitnesspro.service.data.access.webclients.validation.ValidationResult
 import java.time.LocalDateTime
 
-class UserWebClient(
-    private val service: IUserService
-) {
+class UserWebClient(private val service: IUserService) {
 
     /**
      * Função para realizar o cadastro do usuário.

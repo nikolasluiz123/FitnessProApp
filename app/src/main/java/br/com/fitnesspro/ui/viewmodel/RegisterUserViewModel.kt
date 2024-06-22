@@ -15,6 +15,7 @@ import br.com.fitnesspro.service.data.access.webclients.validation.ValidationRes
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.ui.navigation.registerUserArguments
+import br.com.fitnesspro.ui.screen.registeruser.callback.OnServerError
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -72,6 +73,16 @@ class RegisterUserViewModel @Inject constructor(
                     password = Field(onChange = {
                         _uiState.value = _uiState.value.copy(password = _uiState.value.password.copy(value = it, errorMessage = ""))
                     }),
+                    onShowDialog = { type, message, onConfirm, onCancel ->
+                        _uiState.value = _uiState.value.copy(
+                            dialogType = type,
+                            showDialog = true,
+                            dialogMessage = message,
+                            onConfirm = onConfirm,
+                            onCancel = onCancel
+                        )
+                    },
+                    onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
                 )
             }
         }
@@ -119,7 +130,7 @@ class RegisterUserViewModel @Inject constructor(
     /**
      * Função utilizada para salvar o usuário.
      */
-    suspend fun saveUser(): Boolean {
+    suspend fun saveUser(onServerError: OnServerError): Boolean {
         val user = User(
             firstName = _uiState.value.firstName.value,
             lastName = _uiState.value.lastName.value,
@@ -143,36 +154,40 @@ class RegisterUserViewModel @Inject constructor(
             }
 
             is ValidationResult.Error<*> -> {
-                result.fieldErrors.forEach { (field, message) ->
-                    when (field) {
-                        EnumUserDTOValidationFields.FIRST_NAME -> {
-                            _uiState.value = _uiState.value.copy(
-                                firstName = _uiState.value.firstName.copy(errorMessage = message)
-                            )
-                        }
+                if (result.fieldErrors.isEmpty()) {
+                    onServerError.onError((result.message!!))
+                } else {
+                    result.fieldErrors.forEach { (field, message) ->
+                        when (field) {
+                            EnumUserDTOValidationFields.FIRST_NAME -> {
+                                _uiState.value = _uiState.value.copy(
+                                    firstName = _uiState.value.firstName.copy(errorMessage = message)
+                                )
+                            }
 
-                        EnumUserDTOValidationFields.LAST_NAME -> {
-                            _uiState.value = _uiState.value.copy(
-                                lastName = _uiState.value.lastName.copy(errorMessage = message)
-                            )
-                        }
+                            EnumUserDTOValidationFields.LAST_NAME -> {
+                                _uiState.value = _uiState.value.copy(
+                                    lastName = _uiState.value.lastName.copy(errorMessage = message)
+                                )
+                            }
 
-                        EnumUserDTOValidationFields.USERNAME -> {
-                            _uiState.value = _uiState.value.copy(
-                                username = _uiState.value.username.copy(errorMessage = message)
-                            )
-                        }
+                            EnumUserDTOValidationFields.USERNAME -> {
+                                _uiState.value = _uiState.value.copy(
+                                    username = _uiState.value.username.copy(errorMessage = message)
+                                )
+                            }
 
-                        EnumUserDTOValidationFields.EMAIL -> {
-                            _uiState.value = _uiState.value.copy(
-                                email = _uiState.value.email.copy(errorMessage = message)
-                            )
-                        }
+                            EnumUserDTOValidationFields.EMAIL -> {
+                                _uiState.value = _uiState.value.copy(
+                                    email = _uiState.value.email.copy(errorMessage = message)
+                                )
+                            }
 
-                        EnumUserDTOValidationFields.PASSWORD -> {
-                            _uiState.value = _uiState.value.copy(
-                                password = _uiState.value.password.copy(errorMessage = message)
-                            )
+                            EnumUserDTOValidationFields.PASSWORD -> {
+                                _uiState.value = _uiState.value.copy(
+                                    password = _uiState.value.password.copy(errorMessage = message)
+                                )
+                            }
                         }
                     }
                 }

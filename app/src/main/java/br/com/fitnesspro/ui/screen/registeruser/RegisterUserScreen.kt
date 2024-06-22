@@ -26,11 +26,13 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
+import br.com.fitnesspro.compose.components.dialog.FitnessProDialog
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
 import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
+import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.NormalTextKeyboardOptions
 import br.com.fitnesspro.core.keyboard.PasswordKeyboardOptions
@@ -38,6 +40,7 @@ import br.com.fitnesspro.core.keyboard.PersonNameKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.service.data.access.dto.user.EnumUserDTOValidationFields
+import br.com.fitnesspro.ui.screen.registeruser.callback.OnServerError
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import br.com.fitnesspro.ui.viewmodel.RegisterUserViewModel
 import br.com.market.market.compose.components.button.fab.FloatingActionButtonSave
@@ -49,7 +52,9 @@ fun RegisterUserScreen(viewModel: RegisterUserViewModel) {
 
     RegisterUserScreen(
         state = state,
-        onFABSaveClick = viewModel::saveUser
+        onFABSaveClick = { onServerError ->
+            viewModel.saveUser(onServerError)
+        }
     )
 
 }
@@ -58,7 +63,7 @@ fun RegisterUserScreen(viewModel: RegisterUserViewModel) {
 @Composable
 fun RegisterUserScreen(
     state: RegisterUserUIState = RegisterUserUIState(),
-    onFABSaveClick: suspend () -> Boolean = { false }
+    onFABSaveClick: suspend (OnServerError) -> Boolean = { false }
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -85,7 +90,14 @@ fun RegisterUserScreen(
                     FloatingActionButtonSave(
                         onClick = {
                             coroutineScope.launch {
-                                val success = onFABSaveClick()
+                                val success = onFABSaveClick { message ->
+                                    state.onShowDialog?.onShow(
+                                        type = EnumDialogType.ERROR,
+                                        message = message,
+                                        onConfirm = { },
+                                        onCancel = { }
+                                    )
+                                }
 
                                 if (success) {
                                     snackbarHostState.showSnackbar(context.getString(R.string.register_user_screen_success_message))
@@ -112,6 +124,13 @@ fun RegisterUserScreen(
                 .padding(padding)
         ) {
             val (tabRowRef, horizontalPagerRef) = createRefs()
+
+            FitnessProDialog(
+                type = state.dialogType,
+                show = state.showDialog,
+                onDismissRequest = { state.onHideDialog() },
+                message = state.dialogMessage
+            )
 
             val pagerState = rememberPagerState(pageCount = state.tabs::size)
 
