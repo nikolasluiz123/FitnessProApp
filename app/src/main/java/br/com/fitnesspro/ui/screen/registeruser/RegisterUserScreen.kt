@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -93,12 +94,7 @@ fun RegisterUserScreen(
                         onClick = {
                             coroutineScope.launch {
                                 val success = onFABSaveClick { message ->
-                                    state.onShowDialog?.onShow(
-                                        type = EnumDialogType.ERROR,
-                                        message = message,
-                                        onConfirm = { },
-                                        onCancel = { }
-                                    )
+                                    showErrorDialog(state, message)
                                 }
 
                                 if (success) {
@@ -163,6 +159,13 @@ fun RegisterUserScreen(
                     0 -> {
                         RegisterUserTabGeneral(
                             state = state,
+                            onDone = {
+                                coroutineScope.launch {
+                                    onFABSaveClick { message ->
+                                        showErrorDialog(state, message)
+                                    }
+                                }
+                            }
                         )
                     }
 
@@ -176,7 +179,7 @@ fun RegisterUserScreen(
 }
 
 @Composable
-fun RegisterUserTabGeneral(state: RegisterUserUIState) {
+fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
     ConstraintLayout(
         Modifier
             .padding(12.dp)
@@ -251,7 +254,10 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState) {
                 width = Dimension.fillToConstraints
             },
             maxLength = EnumUserDTOValidationFields.PASSWORD.maxLength,
-            keyboardOptions = LastPasswordKeyboardOptions
+            keyboardOptions = LastPasswordKeyboardOptions,
+            keyboardActions = KeyboardActions(
+                onDone = { onDone() }
+            )
         )
     }
 }
@@ -268,6 +274,15 @@ fun RegisterUserTabGym(
 enum class EnumTabsRegisterUserScreen(val index: Int) {
     GENERAL(0),
     GYM(1)
+}
+
+private fun showErrorDialog(state: RegisterUserUIState, message: String) {
+    state.onShowDialog?.onShow(
+        type = EnumDialogType.ERROR,
+        message = message,
+        onConfirm = { },
+        onCancel = { }
+    )
 }
 
 @Preview

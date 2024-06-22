@@ -266,7 +266,8 @@ fun OutlinedTextFieldPasswordValidation(
     label: String,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions,
-    maxLength: Int? = null
+    maxLength: Int? = null,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     OutlinedTextFieldPasswordValidation(
         value = field.value,
@@ -275,7 +276,8 @@ fun OutlinedTextFieldPasswordValidation(
         modifier = modifier,
         label = { Text(text = label, style = InputTextStyle) },
         keyboardOptions = keyboardOptions,
-        maxLength = maxLength
+        maxLength = maxLength,
+        keyboardActions = keyboardActions
     )
 }
 
@@ -285,7 +287,8 @@ fun OutlinedTextFieldPasswordValidation(
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions,
     label: @Composable (() -> Unit)? = null,
-    maxLength: Int? = null
+    maxLength: Int? = null,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     OutlinedTextFieldPasswordValidation(
         value = field.value,
@@ -294,7 +297,8 @@ fun OutlinedTextFieldPasswordValidation(
         modifier = modifier,
         label = label,
         keyboardOptions = keyboardOptions,
-        maxLength = maxLength
+        maxLength = maxLength,
+        keyboardActions = keyboardActions
     )
 }
 
@@ -318,7 +322,8 @@ fun OutlinedTextFieldPasswordValidation(
     label: @Composable (() -> Unit)? = null,
     error: String = "",
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    maxLength: Int? = null
+    maxLength: Int? = null,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
@@ -346,7 +351,8 @@ fun OutlinedTextFieldPasswordValidation(
                 Icon(painter = painterResource(resource), description, tint = MaterialTheme.colorScheme.onBackground)
             }
         },
-        maxLength = maxLength
+        maxLength = maxLength,
+        keyboardActions = keyboardActions
     )
 }
 
