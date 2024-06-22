@@ -27,6 +27,7 @@ import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.dialog.FitnessProDialog
+import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
 import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
@@ -34,6 +35,7 @@ import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
+import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.keyboard.NormalTextKeyboardOptions
 import br.com.fitnesspro.core.keyboard.PasswordKeyboardOptions
 import br.com.fitnesspro.core.keyboard.PersonNameKeyboardOptions
@@ -238,7 +240,7 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState) {
             maxLength = EnumUserDTOValidationFields.EMAIL.maxLength
         )
 
-        OutlinedTextFieldValidation(
+        OutlinedTextFieldPasswordValidation(
             field = state.password,
             label = stringResource(R.string.register_user_screen_label_password),
             modifier = Modifier.constrainAs(passwordRef) {
@@ -248,8 +250,8 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState) {
 
                 width = Dimension.fillToConstraints
             },
-            keyboardOptions = PasswordKeyboardOptions,
-            maxLength = EnumUserDTOValidationFields.PASSWORD.maxLength
+            maxLength = EnumUserDTOValidationFields.PASSWORD.maxLength,
+            keyboardOptions = LastPasswordKeyboardOptions
         )
     }
 }

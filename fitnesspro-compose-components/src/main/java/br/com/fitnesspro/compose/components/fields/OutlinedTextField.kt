@@ -30,9 +30,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.compose.components.state.Field
+import br.com.fitnesspro.core.keyboard.PasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FieldErrorTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.InputTextStyle
+import kotlin.math.max
 import kotlin.properties.Delegates
 
 @Composable
@@ -263,7 +265,8 @@ fun OutlinedTextFieldPasswordValidation(
     field: Field,
     label: String,
     modifier: Modifier = Modifier,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    keyboardOptions: KeyboardOptions,
+    maxLength: Int? = null
 ) {
     OutlinedTextFieldPasswordValidation(
         value = field.value,
@@ -271,7 +274,8 @@ fun OutlinedTextFieldPasswordValidation(
         error = field.errorMessage,
         modifier = modifier,
         label = { Text(text = label, style = InputTextStyle) },
-        keyboardOptions = keyboardOptions
+        keyboardOptions = keyboardOptions,
+        maxLength = maxLength
     )
 }
 
@@ -279,8 +283,9 @@ fun OutlinedTextFieldPasswordValidation(
 fun OutlinedTextFieldPasswordValidation(
     field: Field,
     modifier: Modifier = Modifier,
+    keyboardOptions: KeyboardOptions,
     label: @Composable (() -> Unit)? = null,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    maxLength: Int? = null
 ) {
     OutlinedTextFieldPasswordValidation(
         value = field.value,
@@ -288,7 +293,8 @@ fun OutlinedTextFieldPasswordValidation(
         error = field.errorMessage,
         modifier = modifier,
         label = label,
-        keyboardOptions = keyboardOptions
+        keyboardOptions = keyboardOptions,
+        maxLength = maxLength
     )
 }
 
@@ -311,7 +317,8 @@ fun OutlinedTextFieldPasswordValidation(
     modifier: Modifier = Modifier,
     label: @Composable (() -> Unit)? = null,
     error: String = "",
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    maxLength: Int? = null
 ) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
@@ -338,7 +345,8 @@ fun OutlinedTextFieldPasswordValidation(
             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                 Icon(painter = painterResource(resource), description, tint = MaterialTheme.colorScheme.onBackground)
             }
-        }
+        },
+        maxLength = maxLength
     )
 }
 
