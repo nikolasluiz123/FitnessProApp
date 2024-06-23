@@ -40,7 +40,6 @@ import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.keyboard.NormalTextKeyboardOptions
-import br.com.fitnesspro.core.keyboard.PasswordKeyboardOptions
 import br.com.fitnesspro.core.keyboard.PersonNameKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
