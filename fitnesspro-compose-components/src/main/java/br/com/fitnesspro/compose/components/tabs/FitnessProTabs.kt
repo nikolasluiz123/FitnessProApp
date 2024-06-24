@@ -40,7 +40,7 @@ fun FitnessProTabRow(
 ) {
     TabRow(
         modifier = modifier,
-        selectedTabIndex = tabs.first(Tab::selected).index,
+        selectedTabIndex = tabs.first(Tab::selected).enum.index,
         containerColor = MaterialTheme.colorScheme.secondary,
         contentColor = MaterialTheme.colorScheme.onSecondary,
         divider = {
@@ -54,12 +54,12 @@ fun FitnessProTabRow(
                     coroutineScope.launch {
                         tabs.forEach { it.selected = false }
                         tabToCreate.selected = true
-                        pagerState.animateScrollToPage(tabToCreate.index)
+                        pagerState.animateScrollToPage(tabToCreate.enum.index)
                     }
                 },
                 text = {
                     Text(
-                        text = stringResource(id = tabToCreate.labelResId),
+                        text = stringResource(id = tabToCreate.enum.labelResId),
                         style = TabTitleTextStyle,
                         color = if (tabToCreate.enabled) Color.White else GREY_500
                     )

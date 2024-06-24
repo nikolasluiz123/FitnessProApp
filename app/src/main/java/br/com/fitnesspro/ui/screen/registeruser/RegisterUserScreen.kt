@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.R
+import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.dialog.FitnessProDialog
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
@@ -46,6 +47,7 @@ import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.service.data.access.dto.user.EnumUserDTOValidationFields
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnServerError
+import br.com.fitnesspro.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import br.com.fitnesspro.ui.viewmodel.RegisterUserViewModel
 import br.com.market.market.compose.components.button.fab.FloatingActionButtonSave
@@ -78,6 +80,7 @@ fun RegisterUserScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val selectedTab = state.tabs.first(Tab::selected)
 
     Scaffold(
         topBar = {
@@ -96,30 +99,33 @@ fun RegisterUserScreen(
             }
         },
         floatingActionButton = {
-            when (state.tabs.first(Tab::selected).index) {
-                0 -> {
-                    FloatingActionButtonSave(
-                        onClick = {
-                            coroutineScope.launch {
-                                val success = onFABSaveClick { message ->
-                                    showErrorDialog(state, message)
-                                }
+            if (selectedTab.enum.index == EnumTabsRegisterUserScreen.GENERAL.index) {
+                FloatingActionButtonSave(
+                    onClick = {
+                        coroutineScope.launch {
+                            val success = onFABSaveClick { message ->
+                                showErrorDialog(state, message)
+                            }
 
-                                if (success) {
-                                    snackbarHostState.showSnackbar(context.getString(R.string.register_user_screen_success_message))
-                                }
+                            if (success) {
+                                snackbarHostState.showSnackbar(context.getString(R.string.register_user_screen_success_message))
                             }
                         }
-                    )
-                }
+                    }
+                )
+            }
+        },
+        bottomBar = {
+            if (selectedTab.enum.index == EnumTabsRegisterUserScreen.GYM.index) {
+                FitnessProBottomAppBar(
+                    floatingActionButton = {
+                        FloatingActionButtonAdd(
+                            onClick = {
 
-                1 -> {
-                    FloatingActionButtonAdd(
-                        onClick = {
-
-                        }
-                    )
-                }
+                            }
+                        )
+                    }
+                )
             }
         },
         contentWindowInsets = WindowInsets(0.dp)
@@ -163,7 +169,7 @@ fun RegisterUserScreen(
                 pagerState = pagerState,
                 tabs = state.tabs
             ) {
-                when (state.tabs.first(Tab::selected).index) {
+                when (selectedTab.enum.index) {
                     0 -> {
                         RegisterUserTabGeneral(
                             state = state,
@@ -307,14 +313,12 @@ private fun RegisterUserScreenTabGeneralPreview() {
                     context = EnumOptionsBottomSheetRegisterUser.STUDENT,
                     tabs = mutableListOf(
                         Tab(
-                            index = 0,
-                            labelResId = R.string.register_user_screen_label_tab_general,
+                            enum = EnumTabsRegisterUserScreen.GENERAL,
                             selected = true,
                             enabled = true
                         ),
                         Tab(
-                            index = 1,
-                            labelResId = R.string.register_user_screen_label_tab_gym,
+                            enum = EnumTabsRegisterUserScreen.GYM,
                             selected = false,
                             enabled = false
                         )
@@ -337,14 +341,12 @@ private fun RegisterUserScreenTabAcademiesPreview() {
                     context = EnumOptionsBottomSheetRegisterUser.STUDENT,
                     tabs = mutableListOf(
                         Tab(
-                            index = 0,
-                            labelResId = R.string.register_user_screen_label_tab_general,
+                            enum = EnumTabsRegisterUserScreen.GENERAL,
                             selected = false,
                             enabled = true
                         ),
                         Tab(
-                            index = 1,
-                            labelResId = R.string.register_user_screen_label_tab_gym,
+                            enum = EnumTabsRegisterUserScreen.GYM,
                             selected = true,
                             enabled = true
                         )

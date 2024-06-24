@@ -16,6 +16,7 @@ import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.ui.navigation.registerUserArguments
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnServerError
+import br.com.fitnesspro.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -40,14 +41,12 @@ class RegisterUserViewModel @Inject constructor(
         jsonArgs?.fromJsonNavParamToArgs(RegisterUserScreenArgs::class.java)?.let { args ->
             val tabs = mutableListOf(
                 Tab(
-                    index = 0,
-                    labelResId = R.string.register_user_screen_label_tab_general,
+                    enum = EnumTabsRegisterUserScreen.GENERAL,
                     selected = true,
                     enabled = true
                 ),
                 Tab(
-                    index = 1,
-                    labelResId = R.string.register_user_screen_label_tab_gym,
+                    enum = EnumTabsRegisterUserScreen.GYM,
                     selected = false,
                     enabled = false
                 )
