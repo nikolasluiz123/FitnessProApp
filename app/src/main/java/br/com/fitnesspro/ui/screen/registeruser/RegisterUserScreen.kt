@@ -44,6 +44,7 @@ import br.com.fitnesspro.core.keyboard.PersonNameKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.service.data.access.dto.user.EnumUserDTOValidationFields
+import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnServerError
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import br.com.fitnesspro.ui.viewmodel.RegisterUserViewModel
@@ -276,14 +277,13 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
 fun RegisterUserTabGym(
     state: RegisterUserUIState
 ) {
-    ConstraintLayout() {
+    ConstraintLayout(
+        modifier = Modifier
+            .padding(12.dp)
+            .fillMaxSize()
+    ) {
 
     }
-}
-
-enum class EnumTabsRegisterUserScreen(val index: Int) {
-    GENERAL(0),
-    GYM(1)
 }
 
 private fun showErrorDialog(state: RegisterUserUIState, message: String) {
@@ -297,10 +297,60 @@ private fun showErrorDialog(state: RegisterUserUIState, message: String) {
 
 @Preview
 @Composable
-private fun RegisterUserScreenPreview() {
+private fun RegisterUserScreenTabGeneralPreview() {
     FitnessProTheme {
         Surface {
-            RegisterUserScreen()
+            RegisterUserScreen(
+                state = RegisterUserUIState(
+                    title = "Título",
+                    subtitle = "Subtítulo",
+                    context = EnumOptionsBottomSheetRegisterUser.STUDENT,
+                    tabs = mutableListOf(
+                        Tab(
+                            index = 0,
+                            labelResId = R.string.register_user_screen_label_tab_general,
+                            selected = true,
+                            enabled = true
+                        ),
+                        Tab(
+                            index = 1,
+                            labelResId = R.string.register_user_screen_label_tab_gym,
+                            selected = false,
+                            enabled = false
+                        )
+                    )
+                )
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun RegisterUserScreenTabAcademiesPreview() {
+    FitnessProTheme {
+        Surface {
+            RegisterUserScreen(
+                state = RegisterUserUIState(
+                    title = "Título",
+                    subtitle = "Subtítulo",
+                    context = EnumOptionsBottomSheetRegisterUser.STUDENT,
+                    tabs = mutableListOf(
+                        Tab(
+                            index = 0,
+                            labelResId = R.string.register_user_screen_label_tab_general,
+                            selected = false,
+                            enabled = true
+                        ),
+                        Tab(
+                            index = 1,
+                            labelResId = R.string.register_user_screen_label_tab_gym,
+                            selected = true,
+                            enabled = true
+                        )
+                    )
+                )
+            )
         }
     }
 }
