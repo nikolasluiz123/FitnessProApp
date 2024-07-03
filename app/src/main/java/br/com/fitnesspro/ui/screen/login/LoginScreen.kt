@@ -29,26 +29,39 @@ import br.com.fitnesspro.compose.components.buttons.RoundedGoogleButton
 import br.com.fitnesspro.compose.components.dialog.FitnessProDialog
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
+import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
+import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.service.data.access.dto.user.EnumUserDTOValidationFields
+import br.com.fitnesspro.service.data.access.dto.user.enums.EnumAuthenticationDTOValidationFields
 import br.com.fitnesspro.ui.bottomsheet.BottomSheetRegisterUser
 import br.com.fitnesspro.ui.screen.login.callback.OnBottomSheetRegisterUserItemClick
+import br.com.fitnesspro.ui.screen.login.callback.OnLoginClick
 import br.com.fitnesspro.ui.state.LoginUIState
 import br.com.fitnesspro.ui.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    onBottomSheetRegisterUserItemClick: OnBottomSheetRegisterUserItemClick
+    onBottomSheetRegisterUserItemClick: OnBottomSheetRegisterUserItemClick,
+    onNavigateToHome: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
     LoginScreen(
         state = state,
-        onBottomSheetRegisterUserItemClick = onBottomSheetRegisterUserItemClick
+        onBottomSheetRegisterUserItemClick = onBottomSheetRegisterUserItemClick,
+        onLoginClick = { onSuccess, onError ->
+            viewModel.login(
+                onError = onError,
+                onSuccess = {
+                    onSuccess()
+                    onNavigateToHome()
+                }
+            )
+        }
     )
 }
 
@@ -56,7 +69,8 @@ fun LoginScreen(
 @Composable
 fun LoginScreen(
     state: LoginUIState = LoginUIState(),
-    onBottomSheetRegisterUserItemClick: OnBottomSheetRegisterUserItemClick? = null
+    onBottomSheetRegisterUserItemClick: OnBottomSheetRegisterUserItemClick? = null,
+    onLoginClick: OnLoginClick? = null
 ) {
     Scaffold(
         topBar = {
@@ -73,6 +87,22 @@ fun LoginScreen(
                 .padding(padding)
         ) {
             val (loadingRef, containerRef) = createRefs()
+
+            ConstraintLayout(
+                Modifier.fillMaxWidth()
+            ) {
+                val (loadingRef) = createRefs()
+
+                FitnessProLinearProgressIndicator(
+                    state.showLoading,
+                    Modifier
+                        .constrainAs(loadingRef) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            end.linkTo(parent.end)
+                        }
+                )
+            }
 
             Column(
                 modifier = Modifier
@@ -108,10 +138,10 @@ fun LoginScreen(
 
                             width = Dimension.fillToConstraints
                         },
-                        field = state.email,
-                        label = stringResource(R.string.login_screen_label_email),
+                        field = state.username,
+                        label = stringResource(R.string.login_screen_label_user),
                         keyboardOptions = EmailKeyboardOptions,
-                        maxLength = EnumUserDTOValidationFields.EMAIL.maxLength
+                        maxLength = EnumAuthenticationDTOValidationFields.USERNAME.maxLength
                     )
 
                     OutlinedTextFieldPasswordValidation(
@@ -125,7 +155,7 @@ fun LoginScreen(
                         field = state.password,
                         label = stringResource(R.string.login_screen_label_password),
                         keyboardOptions = LastPasswordKeyboardOptions,
-                        maxLength = EnumUserDTOValidationFields.PASSWORD.maxLength
+                        maxLength = EnumAuthenticationDTOValidationFields.PASSWORD.maxLength
                     )
 
                     createHorizontalChain(registerButtonRef, loginButtonRef)
@@ -142,7 +172,22 @@ fun LoginScreen(
                             .padding(start = 8.dp),
                         label = stringResource(R.string.login_screen_label_button_login),
                         enabled = !state.showLoading,
-                        onClickListener = { }
+                        onClickListener = {
+                            state.onToggleLoading()
+
+                            onLoginClick?.onExecute(
+                                onSuccess = {
+                                    state.onToggleLoading()
+                                },
+                                onError = { errorMessage ->
+                                    state.onToggleLoading()
+
+                                    if (errorMessage.isNotEmpty()) {
+                                        state.onShowDialog?.showErrorDialog(errorMessage)
+                                    }
+                                }
+                            )
+                        }
                     )
 
                     FitnessProOutlinedButton(

@@ -15,3 +15,12 @@ fun interface IShowDialogCallback {
      */
     fun onShow(type: EnumDialogType, message: String, onConfirm: () -> Unit, onCancel: () -> Unit)
 }
+
+fun IShowDialogCallback.showErrorDialog(message: String) {
+    this.onShow(
+        type = EnumDialogType.ERROR,
+        message = message,
+        onConfirm = { },
+        onCancel = { }
+    )
+}

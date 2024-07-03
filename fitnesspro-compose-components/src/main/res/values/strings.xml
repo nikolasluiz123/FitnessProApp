@@ -14,4 +14,6 @@
     <string name="label_add">Adicionar</string>
     <string name="label_save">Salvar</string>
     <string name="label_calendar">Calendário</string>
+    <string name="label_hour">Hora</string>
+    <string name="label_delete">Deletar</string>
 </resources>

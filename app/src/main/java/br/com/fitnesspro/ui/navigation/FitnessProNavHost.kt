@@ -18,10 +18,21 @@ fun FitnessProNavHost(
 
         loginScreen(
             onBottomSheetRegisterUserItemClick = navController::navigateToRegisterUserScreen,
+            onNavigateToHome = navController::navigateToHomeScreen
         )
 
         registerUserScreen(
-            onBackClick = navController::popBackStack
+            onBackClick = navController::popBackStack,
+            onAddAcademyClick = navController::navigateToRegisterAcademyScreen
         )
+
+        registerAcademyScreen(
+            onBackClick = navController::popBackStack,
+        )
+
+        homeScreen(
+            onMyInformationsClick = navController::navigateToRegisterUserScreen,
+        )
+
     }
 }

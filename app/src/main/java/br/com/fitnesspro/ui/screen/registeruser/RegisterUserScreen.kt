@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -17,12 +14,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -31,21 +29,15 @@ import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.dialog.FitnessProDialog
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
 import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDialogType
-import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
-import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
-import br.com.fitnesspro.core.keyboard.NormalTextKeyboardOptions
-import br.com.fitnesspro.core.keyboard.PersonNameKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
-import br.com.fitnesspro.service.data.access.dto.user.EnumUserDTOValidationFields
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
+import br.com.fitnesspro.ui.screen.registeruser.callback.OnAddAcademy
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnServerError
 import br.com.fitnesspro.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
 import br.com.fitnesspro.ui.state.RegisterUserUIState
@@ -57,6 +49,7 @@ import kotlinx.coroutines.launch
 fun RegisterUserScreen(
     viewModel: RegisterUserViewModel,
     onBackClick: () -> Unit,
+    onAddAcademyClick: OnAddAcademy
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -65,7 +58,8 @@ fun RegisterUserScreen(
         onBackClick = onBackClick,
         onFABSaveClick = { onServerError ->
             viewModel.saveUser(onServerError)
-        }
+        },
+        onAddAcademyClick = onAddAcademyClick
     )
 
 }
@@ -76,11 +70,13 @@ fun RegisterUserScreen(
     state: RegisterUserUIState = RegisterUserUIState(),
     onFABSaveClick: suspend (OnServerError) -> Boolean = { false },
     onBackClick: () -> Unit = { },
+    onAddAcademyClick: OnAddAcademy? = null
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val selectedTab = state.tabs.first(Tab::selected)
+    val tabs by remember { derivedStateOf { state.tabs } }
+    val selectedTab = tabs.first { it.selected.value }
 
     Scaffold(
         topBar = {
@@ -98,35 +94,32 @@ fun RegisterUserScreen(
                 }
             }
         },
-        floatingActionButton = {
-            if (selectedTab.enum.index == EnumTabsRegisterUserScreen.GENERAL.index) {
-                FloatingActionButtonSave(
-                    onClick = {
-                        coroutineScope.launch {
-                            val success = onFABSaveClick { message ->
-                                showErrorDialog(state, message)
-                            }
-
-                            if (success) {
-                                snackbarHostState.showSnackbar(context.getString(R.string.register_user_screen_success_message))
-                            }
-                        }
-                    }
-                )
-            }
-        },
         bottomBar = {
-            if (selectedTab.enum.index == EnumTabsRegisterUserScreen.GYM.index) {
-                FitnessProBottomAppBar(
-                    floatingActionButton = {
+            FitnessProBottomAppBar(
+                floatingActionButton = {
+                    if (selectedTab.enum == EnumTabsRegisterUserScreen.GENERAL) {
+                        FloatingActionButtonSave(
+                            onClick = {
+                                coroutineScope.launch {
+                                    val success = onFABSaveClick { message ->
+                                        showErrorDialog(state, message)
+                                    }
+
+                                    if (success) {
+                                        snackbarHostState.showSnackbar(context.getString(R.string.register_user_screen_success_message))
+                                    }
+                                }
+                            }
+                        )
+                    } else {
                         FloatingActionButtonAdd(
                             onClick = {
-
+                                onAddAcademyClick?.onExecute()
                             }
                         )
                     }
-                )
-            }
+                }
+            )
         },
         contentWindowInsets = WindowInsets(0.dp)
     ) { padding ->
@@ -152,7 +145,7 @@ fun RegisterUserScreen(
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
                 },
-                tabs = state.tabs,
+                tabs = tabs,
                 coroutineScope = coroutineScope,
                 pagerState = pagerState
             )
@@ -167,10 +160,10 @@ fun RegisterUserScreen(
                     height = Dimension.fillToConstraints
                 },
                 pagerState = pagerState,
-                tabs = state.tabs
-            ) {
-                when (selectedTab.enum.index) {
-                    0 -> {
+                tabs = tabs
+            ) { index ->
+                when (index) {
+                    EnumTabsRegisterUserScreen.GENERAL.index -> {
                         RegisterUserTabGeneral(
                             state = state,
                             onDone = {
@@ -183,112 +176,12 @@ fun RegisterUserScreen(
                         )
                     }
 
-                    1 -> {
+                    EnumTabsRegisterUserScreen.ACADEMY.index -> {
                         RegisterUserTabGym(state = state)
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
-    val scrollState = rememberScrollState()
-
-    ConstraintLayout(
-        Modifier
-            .padding(12.dp)
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-    ) {
-        val (firstNameRef, lastNameRef, usernameRef, emailRef, passwordRef) = createRefs()
-
-        OutlinedTextFieldValidation(
-            field = state.firstName,
-            label = stringResource(R.string.register_user_screen_label_first_name),
-            modifier = Modifier.constrainAs(firstNameRef) {
-                start.linkTo(parent.start)
-                top.linkTo(parent.top)
-                end.linkTo(parent.end)
-
-                width = Dimension.fillToConstraints
-            },
-            keyboardOptions = PersonNameKeyboardOptions,
-            maxLength = EnumUserDTOValidationFields.FIRST_NAME.maxLength
-        )
-
-        OutlinedTextFieldValidation(
-            field = state.lastName,
-            label = stringResource(R.string.register_user_screen_label_last_name),
-            modifier = Modifier.constrainAs(lastNameRef) {
-                start.linkTo(parent.start)
-                top.linkTo(firstNameRef.bottom)
-                end.linkTo(parent.end)
-
-                width = Dimension.fillToConstraints
-            },
-            keyboardOptions = PersonNameKeyboardOptions,
-            maxLength = EnumUserDTOValidationFields.LAST_NAME.maxLength
-        )
-
-        OutlinedTextFieldValidation(
-            field = state.username,
-            label = stringResource(R.string.register_user_screen_label_username),
-            modifier = Modifier.constrainAs(usernameRef) {
-                start.linkTo(parent.start)
-                top.linkTo(lastNameRef.bottom)
-                end.linkTo(parent.end)
-
-                width = Dimension.fillToConstraints
-            },
-            keyboardOptions = NormalTextKeyboardOptions,
-            maxLength = EnumUserDTOValidationFields.USERNAME.maxLength
-        )
-
-        OutlinedTextFieldValidation(
-            field = state.email,
-            label = stringResource(R.string.register_user_screen_label_email),
-            modifier = Modifier.constrainAs(emailRef) {
-                start.linkTo(parent.start)
-                top.linkTo(usernameRef.bottom)
-                end.linkTo(parent.end)
-
-                width = Dimension.fillToConstraints
-            },
-            keyboardOptions = EmailKeyboardOptions,
-            maxLength = EnumUserDTOValidationFields.EMAIL.maxLength
-        )
-
-        OutlinedTextFieldPasswordValidation(
-            field = state.password,
-            label = stringResource(R.string.register_user_screen_label_password),
-            modifier = Modifier.constrainAs(passwordRef) {
-                start.linkTo(parent.start)
-                top.linkTo(emailRef.bottom)
-                end.linkTo(parent.end)
-
-                width = Dimension.fillToConstraints
-            },
-            maxLength = EnumUserDTOValidationFields.PASSWORD.maxLength,
-            keyboardOptions = LastPasswordKeyboardOptions,
-            keyboardActions = KeyboardActions(
-                onDone = { onDone() }
-            )
-        )
-    }
-}
-
-@Composable
-fun RegisterUserTabGym(
-    state: RegisterUserUIState
-) {
-    ConstraintLayout(
-        modifier = Modifier
-            .padding(12.dp)
-            .fillMaxSize()
-    ) {
-
     }
 }
 
@@ -304,6 +197,9 @@ private fun showErrorDialog(state: RegisterUserUIState, message: String) {
 @Preview
 @Composable
 private fun RegisterUserScreenTabGeneralPreview() {
+    val tab1Selected = remember { mutableStateOf(true) }
+    val tab2Selected = remember { mutableStateOf(false) }
+
     FitnessProTheme {
         Surface {
             RegisterUserScreen(
@@ -314,13 +210,13 @@ private fun RegisterUserScreenTabGeneralPreview() {
                     tabs = mutableListOf(
                         Tab(
                             enum = EnumTabsRegisterUserScreen.GENERAL,
-                            selected = true,
-                            enabled = true
+                            selected = tab1Selected,
+                            isEnabled = { true }
                         ),
                         Tab(
-                            enum = EnumTabsRegisterUserScreen.GYM,
-                            selected = false,
-                            enabled = false
+                            enum = EnumTabsRegisterUserScreen.ACADEMY,
+                            selected = tab2Selected,
+                            isEnabled = { false }
                         )
                     )
                 )
@@ -332,6 +228,9 @@ private fun RegisterUserScreenTabGeneralPreview() {
 @Preview
 @Composable
 private fun RegisterUserScreenTabAcademiesPreview() {
+    val tab1Selected = remember { mutableStateOf(false) }
+    val tab2Selected = remember { mutableStateOf(true) }
+
     FitnessProTheme {
         Surface {
             RegisterUserScreen(
@@ -342,13 +241,13 @@ private fun RegisterUserScreenTabAcademiesPreview() {
                     tabs = mutableListOf(
                         Tab(
                             enum = EnumTabsRegisterUserScreen.GENERAL,
-                            selected = false,
-                            enabled = true
+                            selected = tab1Selected,
+                            isEnabled = { true }
                         ),
                         Tab(
-                            enum = EnumTabsRegisterUserScreen.GYM,
-                            selected = true,
-                            enabled = true
+                            enum = EnumTabsRegisterUserScreen.ACADEMY,
+                            selected = tab2Selected,
+                            isEnabled = { true }
                         )
                     )
                 )

@@ -40,7 +40,7 @@ fun FitnessProTabRow(
 ) {
     TabRow(
         modifier = modifier,
-        selectedTabIndex = tabs.first(Tab::selected).enum.index,
+        selectedTabIndex = tabs.first { it.selected.value }.enum.index,
         containerColor = MaterialTheme.colorScheme.secondary,
         contentColor = MaterialTheme.colorScheme.onSecondary,
         divider = {
@@ -49,11 +49,12 @@ fun FitnessProTabRow(
     ) {
         tabs.forEach { tabToCreate ->
             Tab(
-                selected = tabToCreate.selected,
+                selected = tabToCreate.selected.value,
                 onClick = {
+                    tabs.forEach { it.selected.value = false }
+                    tabToCreate.selected.value = true
+
                     coroutineScope.launch {
-                        tabs.forEach { it.selected = false }
-                        tabToCreate.selected = true
                         pagerState.animateScrollToPage(tabToCreate.enum.index)
                     }
                 },
@@ -61,10 +62,10 @@ fun FitnessProTabRow(
                     Text(
                         text = stringResource(id = tabToCreate.enum.labelResId),
                         style = TabTitleTextStyle,
-                        color = if (tabToCreate.enabled) Color.White else GREY_500
+                        color = if (tabToCreate.isEnabled()) Color.White else GREY_500
                     )
                 },
-                enabled = tabToCreate.enabled
+                enabled = tabToCreate.isEnabled()
             )
         }
     }
@@ -103,6 +104,9 @@ fun FitnessProHorizontalPager(
             orientation = Orientation.Horizontal
         )
     ) { index ->
+        tabs.forEach { it.selected.value = false }
+        tabs.getOrNull(index)?.selected?.value = true
+
         content(index)
     }
 }
@@ -113,9 +117,9 @@ fun FitnessProHorizontalPager(
  * Basicamente ele deve ser habilitado se a próxima tab ou a tab anterior estiver habilitada.
  */
 private fun getUserScrollEnabled(tabs: List<Tab>): Boolean {
-    val tabSelected = tabs.first { it.selected }
+    val tabSelected = tabs.first { it.selected.value }
     val nextTab = tabs.getOrNull(tabs.indexOf(tabSelected) + 1)
     val previousTab = tabs.getOrNull(tabs.indexOf(tabSelected) - 1)
 
-    return nextTab?.enabled == true || previousTab?.enabled == true
+    return nextTab?.isEnabled?.invoke() == true || previousTab?.isEnabled?.invoke() == true
 }

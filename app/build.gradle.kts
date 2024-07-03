@@ -55,6 +55,10 @@ dependencies {
     implementation(project(":fitnesspro-model"))
     implementation(project(":fitnesspro-service-data-access"))
 
+    implementation(libs.splash)
+
+    implementation(libs.data.store)
+
     implementation(libs.google.gson)
     implementation(libs.google.credentials)
     implementation(libs.google.credentials.play.services)

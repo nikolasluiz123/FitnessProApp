@@ -8,5 +8,5 @@ enum class EnumTabsRegisterUserScreen(
     override val labelResId: Int
 ): IEnumTab {
     GENERAL(index = 0, labelResId = R.string.register_user_screen_label_tab_general),
-    GYM(index = 1, labelResId = R.string.register_user_screen_label_tab_gym)
+    ACADEMY(index = 1, labelResId = R.string.register_user_screen_label_tab_gym)
 }

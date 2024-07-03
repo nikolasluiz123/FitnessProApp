@@ -12,5 +12,9 @@ data class User(
     var username: String,
     var email: String,
     var password: String,
-    var profile: EnumUserProfile
-)
+    var profile: EnumUserProfile,
+    var credentials: String? = null
+) {
+
+    val fullName = "$firstName $lastName"
+}

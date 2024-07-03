@@ -39,6 +39,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.data.store)
+
     implementation(libs.google.gson)
 
     implementation(libs.constraint.layout.compose)

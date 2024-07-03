@@ -1,4 +1,4 @@
-package br.com.fitnesspro.service.data.access.dto.user
+package br.com.fitnesspro.service.data.access.dto.user.enums
 
 import br.com.fitnesspro.service.data.access.dto.interfaces.IEnumDTOValidationFields
 

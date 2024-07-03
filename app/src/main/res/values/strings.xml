@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">FitnessPro</string>
-    <string name="login_screen_label_email">E-mail</string>
+    <string name="login_screen_label_user">Usuário</string>
     <string name="login_screen_label_password">Senha</string>
     <string name="login_screen_label_button_login">Login</string>
     <string name="login_screen_label_button_register">Registrar-se</string>
@@ -36,4 +36,15 @@
     <string name="register_user_screen_button_cancel">Cancelar</string>
     <string name="register_user_screen_label_username">Nome de Usuário *</string>
     <string name="register_user_screen_label_first_name">Nome *</string>
+    <string name="register_user_screen_label_gym">Academia *</string>
+    <string name="register_user_screen_label_day_week">Dia da Semana *</string>
+    <string name="register_user_screen_label_start">Início *</string>
+    <string name="register_user_screen_label_end">Fim *</string>
+    <string name="register_user_screen_day_week_monday">Segunda</string>
+    <string name="register_user_screen_day_week_tuesday">Terça</string>
+    <string name="register_user_screen_day_week_wednesday">Quarta</string>
+    <string name="register_user_screen_day_week_thursday">Quinta</string>
+    <string name="register_user_screen_day_week_friday">Sexta</string>
+    <string name="register_user_screen_day_week_saturday">Sábado</string>
+    <string name="register_user_screen_day_week_sunday">Domingo</string>
 </resources>

@@ -1,14 +1,29 @@
 package br.com.fitnesspro.service.data.access.webclients
 
+import android.content.Context
+import android.util.Log
 import br.com.fitnesspro.model.User
-import br.com.fitnesspro.service.data.access.dto.user.EnumUserDTOValidationFields
+import br.com.fitnesspro.model.enums.EnumUserProfile
+import br.com.fitnesspro.service.data.access.dto.user.AcademyDTO
+import br.com.fitnesspro.service.data.access.dto.user.AuthenticationDTO
 import br.com.fitnesspro.service.data.access.dto.user.UserDTO
+import br.com.fitnesspro.service.data.access.dto.user.enums.EnumAuthenticationDTOValidationFields
+import br.com.fitnesspro.service.data.access.dto.user.enums.EnumUserDTOValidationFields
+import br.com.fitnesspro.service.data.access.enums.EnumUserGroups
 import br.com.fitnesspro.service.data.access.services.IUserService
+import br.com.fitnesspro.service.data.access.webclients.extensions.toResultList
+import br.com.fitnesspro.service.data.access.webclients.extensions.toSingleResult
 import br.com.fitnesspro.service.data.access.webclients.extensions.toValidationResult
-import br.com.fitnesspro.service.data.access.webclients.validation.ValidationResult
+import br.com.fitnesspro.service.data.access.webclients.result.ResultList
+import br.com.fitnesspro.service.data.access.webclients.result.SingleResult
+import br.com.fitnesspro.service.data.access.webclients.result.ValidationResult
+import okhttp3.Credentials
 import java.time.LocalDateTime
 
-class UserWebClient(private val service: IUserService) {
+class UserWebClient(
+    context: Context,
+    private val service: IUserService
+) : BaseWebClient(context) {
 
     /**
      * Função para realizar o cadastro do usuário.
@@ -29,6 +44,66 @@ class UserWebClient(private val service: IUserService) {
             profile = user.profile
         )
 
-        return service.register(dto).toValidationResult(enumEntries = EnumUserDTOValidationFields.entries)
+        return executeValidatedProcessErrorHandlerBlock<EnumUserDTOValidationFields>(
+            codeBlock = {
+                service.register(dto)
+                    .toValidationResult(enumEntries = EnumUserDTOValidationFields.entries)
+            }
+        )
+    }
+
+    suspend fun getAcademies(): ResultList<AcademyDTO> {
+        return executeResultListProcessErrorHandlerBlock(
+            codeBlock = {
+                service.getAcademies().toResultList()
+            }
+        )
+    }
+
+    suspend fun authenticate(username: String, password: String): SingleResult<User> {
+        val authenticationDTO = AuthenticationDTO(username, password)
+
+        return executeSingleResultProcessErrorHandlerBlock<User, EnumAuthenticationDTOValidationFields>(
+            codeBlock = {
+                val singleResult = service.authenticate(authenticationDTO).toSingleResult(
+                    UserDTO::class.java,
+                    EnumAuthenticationDTOValidationFields.entries
+                )
+
+                if (singleResult.validationResult is ValidationResult.Success) {
+                    SingleResult(
+                        data = User(
+                            id = singleResult.data!!.id,
+                            firstName = singleResult.data.firstName,
+                            lastName = singleResult.data.lastName,
+                            username = singleResult.data.username,
+                            email = singleResult.data.email,
+                            password = singleResult.data.password,
+                            profile = getUserProfileOfGroups(singleResult.data.groupNames),
+                            credentials = Credentials.basic(
+                                singleResult.data.username,
+                                singleResult.data.password
+                            )
+                        ),
+                        validationResult = ValidationResult.Success
+                    )
+                } else {
+                    SingleResult(
+                        data = null,
+                        validationResult = singleResult.validationResult
+                    )
+                }
+            }
+        )
+    }
+
+    private fun getUserProfileOfGroups(groups: List<String>): EnumUserProfile {
+        Log.i("Teste", "getUserProfileOfGroups: ${groups}")
+        return when {
+            groups.contains(EnumUserGroups.STUDENT_PERMISSIONS.name) -> EnumUserProfile.STUDENT
+            groups.contains(EnumUserGroups.TRAINER_PERMISSIONS.name) -> EnumUserProfile.TRAINER
+            groups.contains(EnumUserGroups.NUTRITIONIST_PERMISSIONS.name) -> EnumUserProfile.NUTRITIONIST
+            else -> throw IllegalArgumentException("Não foi possível identificar o perfil do usuário.")
+        }
     }
 }

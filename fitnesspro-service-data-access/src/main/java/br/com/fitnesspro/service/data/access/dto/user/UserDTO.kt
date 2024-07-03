@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
 
 data class UserDTO(
+    var id: Long? = null,
     var password: String,
     @SerializedName("last_login")
     var lastLogin: LocalDateTime? = null,
@@ -17,7 +18,7 @@ data class UserDTO(
     var lastName: String,
     var email: String,
     @SerializedName("user_profile")
-    var profile: EnumUserProfile,
+    var profile: EnumUserProfile?,
     @SerializedName("is_staff")
     var isStaff: Boolean = false,
     @SerializedName("is_active")
@@ -26,7 +27,9 @@ data class UserDTO(
     var dateJoined: LocalDateTime = LocalDateTime.now(),
     var groups: List<String> = emptyList(),
     @SerializedName("user_permissions")
-    var userPermissions: List<String> = emptyList()
+    var userPermissions: List<String> = emptyList(),
+    @SerializedName("group_names")
+    var groupNames: List<String> = emptyList()
 )
 
 

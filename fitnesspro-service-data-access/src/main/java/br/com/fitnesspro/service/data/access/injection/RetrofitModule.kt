@@ -1,20 +1,19 @@
 package br.com.fitnesspro.service.data.access.injection
 
-import br.com.fitnesspro.service.data.access.adapters.LocalDateTimeTypeAdapter
-import br.com.fitnesspro.service.data.access.adapters.LocalDateTypeAdapter
+import android.content.Context
+import br.com.fitnesspro.service.data.access.extensions.defaultGSon
 import br.com.fitnesspro.service.data.access.services.IUserService
 import br.com.fitnesspro.service.data.access.webclients.UserWebClient
-import com.google.gson.*
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -36,10 +35,7 @@ class RetrofitModule {
     @Provides
     @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
-        val gson = GsonBuilder()
-            .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeTypeAdapter())
-            .registerTypeAdapter(LocalDate::class.java, LocalDateTypeAdapter())
-            .create()
+        val gson = GsonBuilder().defaultGSon()
 
         return Retrofit
             .Builder()
@@ -57,8 +53,11 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideUserWebClient(userService: IUserService): UserWebClient {
-        return UserWebClient(userService)
+    fun provideUserWebClient(
+        @ApplicationContext context: Context,
+        userService: IUserService
+    ): UserWebClient {
+        return UserWebClient(context = context, service = userService)
     }
 
     @Provides
@@ -71,13 +70,13 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(interceptor: HttpLoggingInterceptor): OkHttpClient {
+    fun provideHttpClient(logInterceptor: HttpLoggingInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(interceptor)
-            .callTimeout(5, TimeUnit.MINUTES)
-            .connectTimeout(5, TimeUnit.MINUTES)
-            .readTimeout(5, TimeUnit.MINUTES)
-            .writeTimeout(5, TimeUnit.MINUTES)
+            .addInterceptor(logInterceptor)
+            .callTimeout(1, TimeUnit.MINUTES)
+            .connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(1, TimeUnit.MINUTES)
             .build()
     }
 
