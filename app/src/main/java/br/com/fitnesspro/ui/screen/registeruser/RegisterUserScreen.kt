@@ -33,7 +33,7 @@ import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
 import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.enums.EnumDialogType
+import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
@@ -56,9 +56,7 @@ fun RegisterUserScreen(
     RegisterUserScreen(
         state = state,
         onBackClick = onBackClick,
-        onFABSaveClick = { onServerError ->
-            viewModel.saveUser(onServerError)
-        },
+        onFABSaveClick = viewModel::saveUser,
         onAddAcademyClick = onAddAcademyClick
     )
 
@@ -102,7 +100,7 @@ fun RegisterUserScreen(
                             onClick = {
                                 coroutineScope.launch {
                                     val success = onFABSaveClick { message ->
-                                        showErrorDialog(state, message)
+                                        state.onShowDialog?.showErrorDialog(message)
                                     }
 
                                     if (success) {
@@ -169,7 +167,7 @@ fun RegisterUserScreen(
                             onDone = {
                                 coroutineScope.launch {
                                     onFABSaveClick { message ->
-                                        showErrorDialog(state, message)
+                                        state.onShowDialog?.showErrorDialog(message)
                                     }
                                 }
                             }
@@ -183,15 +181,6 @@ fun RegisterUserScreen(
             }
         }
     }
-}
-
-private fun showErrorDialog(state: RegisterUserUIState, message: String) {
-    state.onShowDialog?.onShow(
-        type = EnumDialogType.ERROR,
-        message = message,
-        onConfirm = { },
-        onCancel = { }
-    )
 }
 
 @Preview

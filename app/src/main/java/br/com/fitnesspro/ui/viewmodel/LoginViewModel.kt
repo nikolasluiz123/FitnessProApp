@@ -72,6 +72,7 @@ class LoginViewModel @Inject constructor(
             _uiState.update { currentState ->
                 currentState.copy(
                     username = _uiState.value.username.copy(value = user.username),
+                    password = _uiState.value.password.copy(value = user.password)
                 )
             }
         }

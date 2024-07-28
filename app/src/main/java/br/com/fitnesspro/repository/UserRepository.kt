@@ -2,7 +2,9 @@ package br.com.fitnesspro.repository
 
 import android.content.Context
 import br.com.fitnesspro.extensions.dataStore
+import br.com.fitnesspro.extensions.getUserSession
 import br.com.fitnesspro.extensions.saveSessionUser
+import br.com.fitnesspro.model.Frequency
 import br.com.fitnesspro.model.User
 import br.com.fitnesspro.service.data.access.dto.user.AcademyDTO
 import br.com.fitnesspro.service.data.access.webclients.UserWebClient
@@ -16,10 +18,10 @@ class UserRepository(
 ) {
 
     /**
-     * @see UserWebClient.register
+     * @see UserWebClient.saveUser
      */
-    suspend fun register(user: User): ValidationResult {
-        return webClient.register(user)
+    suspend fun saveUser(user: User): ValidationResult {
+        return webClient.saveUser(user)
     }
 
     suspend fun getAcademies(): ResultList<AcademyDTO> {
@@ -30,10 +32,20 @@ class UserRepository(
         val singleResult = webClient.authenticate(username, password)
 
         if(singleResult.validationResult is ValidationResult.Success) {
-            context.dataStore.saveSessionUser(singleResult.data!!)
+            val user = singleResult.data!!
+            user.password = password
+
+            context.dataStore.saveSessionUser(user)
         }
 
         return singleResult
+    }
+
+    suspend fun saveAcademyFrequency(frequency: Frequency): ValidationResult {
+        val user = context.dataStore.getUserSession()!!
+        frequency.username = user.username
+
+        return webClient.saveAcademyFrequency(user.username, user.password, frequency)
     }
 
 }

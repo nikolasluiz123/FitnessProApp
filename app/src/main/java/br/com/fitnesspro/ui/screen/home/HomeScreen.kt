@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
+import br.com.fitnesspro.compose.components.buttons.icons.IconButtonLogout
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
@@ -22,13 +23,18 @@ import br.com.fitnesspro.ui.viewmodel.HomeViewModel
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
-    onMyInformationsClick: OnMyInformationsClick
+    onMyInformationsClick: OnMyInformationsClick,
+    onLogoutClick: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
     HomeScreen(
         state = state,
-        onMyInformationsClick = onMyInformationsClick
+        onMyInformationsClick = onMyInformationsClick,
+        onLogoutClick = {
+            viewModel.logout()
+            onLogoutClick()
+        }
     )
 }
 
@@ -36,7 +42,8 @@ fun HomeScreen(
 @Composable
 fun HomeScreen(
     state: HomeUIState = HomeUIState(),
-    onMyInformationsClick: OnMyInformationsClick? = null
+    onMyInformationsClick: OnMyInformationsClick? = null,
+    onLogoutClick: () -> Unit = { }
 ) {
     Scaffold(
         topBar = {
@@ -45,6 +52,11 @@ fun HomeScreen(
                 showNavigationIcon = false,
                 showMenuWithLogout = false,
                 showMenu = true,
+                actions = {
+                    IconButtonLogout(
+                        onClick = onLogoutClick
+                    )
+                },
                 menuItems = {
                     DropdownMenuItem(
                         text = { Text(text = "Minhas Informações") },

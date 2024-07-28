@@ -3,6 +3,7 @@ package br.com.fitnesspro.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 
 @Composable
@@ -18,7 +19,13 @@ fun FitnessProNavHost(
 
         loginScreen(
             onBottomSheetRegisterUserItemClick = navController::navigateToRegisterUserScreen,
-            onNavigateToHome = navController::navigateToHomeScreen
+            onNavigateToHome = {
+                navController.navigateToHomeScreen(
+                    navOptions = NavOptions.Builder()
+                        .setPopUpTo(loginScreenRoute, inclusive = true)
+                        .build()
+                )
+            }
         )
 
         registerUserScreen(
@@ -32,6 +39,13 @@ fun FitnessProNavHost(
 
         homeScreen(
             onMyInformationsClick = navController::navigateToRegisterUserScreen,
+            onLogoutClick = {
+                navController.navigateToLoginScreen(
+                    navOptions = NavOptions.Builder()
+                        .setPopUpTo(homeScreenRoute, inclusive = true)
+                        .build()
+                )
+            }
         )
 
     }

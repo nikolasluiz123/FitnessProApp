@@ -24,13 +24,24 @@ fun <ENUM> Response<ResponseBody>.toValidationResult(enumEntries: EnumEntries<EN
         ValidationResult.Success
     } else {
         val errorDetails = this.errorBody()!!.getErrorDetails()
-        val fieldErrors = getFieldErrors(errorDetails, enumEntries)
 
-        ValidationResult.Error(
-            fieldErrors = fieldErrors,
-            message = errorDetails.message,
-            details = errorDetails.details
-        )
+        val nonFieldError = errorDetails.errors?.entries?.firstOrNull { it.key == "non_field_errors" }
+
+        if (nonFieldError != null) {
+            ValidationResult.Error(
+                fieldErrors = emptyList(),
+                message = nonFieldError.value.first(),
+                details = errorDetails.details
+            )
+        } else {
+            val fieldErrors = getFieldErrors(errorDetails, enumEntries)
+
+            ValidationResult.Error(
+                fieldErrors = fieldErrors,
+                message = errorDetails.message,
+                details = errorDetails.details
+            )
+        }
     }
 }
 

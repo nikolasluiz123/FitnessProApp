@@ -1,13 +1,15 @@
 package br.com.fitnesspro.service.data.access.webclients
 
 import android.content.Context
-import android.util.Log
+import br.com.fitnesspro.model.Frequency
 import br.com.fitnesspro.model.User
 import br.com.fitnesspro.model.enums.EnumUserProfile
 import br.com.fitnesspro.service.data.access.dto.user.AcademyDTO
 import br.com.fitnesspro.service.data.access.dto.user.AuthenticationDTO
+import br.com.fitnesspro.service.data.access.dto.user.FrequencyDTO
 import br.com.fitnesspro.service.data.access.dto.user.UserDTO
 import br.com.fitnesspro.service.data.access.dto.user.enums.EnumAuthenticationDTOValidationFields
+import br.com.fitnesspro.service.data.access.dto.user.enums.EnumFrequencyDTOValidationFields
 import br.com.fitnesspro.service.data.access.dto.user.enums.EnumUserDTOValidationFields
 import br.com.fitnesspro.service.data.access.enums.EnumUserGroups
 import br.com.fitnesspro.service.data.access.services.IUserService
@@ -30,8 +32,9 @@ class UserWebClient(
      *
      * @param user Objeto contendo as informações informadas pelo usuário.
      */
-    suspend fun register(user: User): ValidationResult {
+    suspend fun saveUser(user: User): ValidationResult {
         val dto = UserDTO(
+            id = user.id,
             firstName = user.firstName,
             lastName = user.lastName,
             username = user.username,
@@ -46,8 +49,11 @@ class UserWebClient(
 
         return executeValidatedProcessErrorHandlerBlock<EnumUserDTOValidationFields>(
             codeBlock = {
-                service.register(dto)
-                    .toValidationResult(enumEntries = EnumUserDTOValidationFields.entries)
+                if (dto.id == null) {
+                    service.register(dto).toValidationResult(enumEntries = EnumUserDTOValidationFields.entries)
+                } else {
+                    service.update(dto, dto.id!!).toValidationResult(enumEntries = EnumUserDTOValidationFields.entries)
+                }
             }
         )
     }
@@ -98,12 +104,31 @@ class UserWebClient(
     }
 
     private fun getUserProfileOfGroups(groups: List<String>): EnumUserProfile {
-        Log.i("Teste", "getUserProfileOfGroups: ${groups}")
         return when {
             groups.contains(EnumUserGroups.STUDENT_PERMISSIONS.name) -> EnumUserProfile.STUDENT
             groups.contains(EnumUserGroups.TRAINER_PERMISSIONS.name) -> EnumUserProfile.TRAINER
             groups.contains(EnumUserGroups.NUTRITIONIST_PERMISSIONS.name) -> EnumUserProfile.NUTRITIONIST
             else -> throw IllegalArgumentException("Não foi possível identificar o perfil do usuário.")
         }
+    }
+
+    suspend fun saveAcademyFrequency(username: String, password: String, frequency: Frequency): ValidationResult {
+        val dto = FrequencyDTO(
+            id = frequency.id,
+            dayWeek = frequency.dayWeek!!,
+            start = frequency.start,
+            end = frequency.end,
+            username = frequency.username!!,
+            academy = frequency.academy!!
+        )
+
+        return executeValidatedProcessErrorHandlerBlock<EnumFrequencyDTOValidationFields>(
+            codeBlock = {
+                service.saveAcademyFrequency(
+                    credentials = Credentials.basic(username, password),
+                    frequencyDTO = dto
+                ).toValidationResult(enumEntries = EnumFrequencyDTOValidationFields.entries)
+            }
+        )
     }
 }

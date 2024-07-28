@@ -31,6 +31,8 @@ enum class EnumDateTimePatterns(val pattern: String) {
      */
     TIME("HH:mm"),
 
+    TIME_ONLY_NUMBERS("HHmm"),
+
     /**
      * Padrão de formato para datas e horas no formato "dd/MM/yyyy HH:mm".
      */

@@ -12,14 +12,16 @@ import br.com.fitnesspro.ui.viewmodel.HomeViewModel
 internal const val homeScreenRoute = "home"
 
 fun NavGraphBuilder.homeScreen(
-    onMyInformationsClick: OnMyInformationsClick
+    onMyInformationsClick: OnMyInformationsClick,
+    onLogoutClick: () -> Unit
 ) {
     composable(route = homeScreenRoute) {
         val viewModel = hiltViewModel<HomeViewModel>()
 
         HomeScreen(
             viewModel = viewModel,
-            onMyInformationsClick = onMyInformationsClick
+            onMyInformationsClick = onMyInformationsClick,
+            onLogoutClick = onLogoutClick
         )
     }
 }

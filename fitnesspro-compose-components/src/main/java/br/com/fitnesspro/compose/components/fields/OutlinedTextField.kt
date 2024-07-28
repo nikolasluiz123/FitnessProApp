@@ -30,11 +30,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.compose.components.state.Field
-import br.com.fitnesspro.core.keyboard.PasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FieldErrorTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.InputTextStyle
-import kotlin.math.max
 import kotlin.properties.Delegates
 
 @Composable
@@ -72,7 +70,7 @@ fun OutlinedTextFieldValidation(
         focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
         unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary
     ),
-    maxLength: Int? = null
+    maxLength: Int? = null,
 ) {
     OutlinedTextFieldValidation(
         value = field.value,
@@ -95,7 +93,7 @@ fun OutlinedTextFieldValidation(
         interactionSource = interactionSource,
         shape = shape,
         colors = colors,
-        maxLength = maxLength
+        maxLength = maxLength,
     )
 }
 
@@ -222,7 +220,8 @@ fun OutlinedTextFieldValidation(
         focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
         unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary
     ),
-    maxLength: Int? = null
+    maxLength: Int? = null,
+    writeCondition: Boolean = true
 ) {
     OutlinedTextField(
         enabled = enabled,

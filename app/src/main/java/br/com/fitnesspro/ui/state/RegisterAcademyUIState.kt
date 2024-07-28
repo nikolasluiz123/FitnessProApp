@@ -5,6 +5,7 @@ import br.com.fitnesspro.compose.components.state.Field
 import br.com.fitnesspro.core.callback.IShowDialogCallback
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.state.IDialogUIState
+import br.com.fitnesspro.model.Frequency
 
 data class RegisterAcademyUIState(
     var title: String = "",
@@ -14,8 +15,8 @@ data class RegisterAcademyUIState(
     val start: Field = Field(),
     val end: Field = Field(),
     val academies: List<MenuItem<Long>> = listOf(),
-    var filteredAcademies: List<MenuItem<Long>> = listOf(),
     val dayWeeks: List<MenuItem<String>> = listOf(),
+    val frequency: Frequency = Frequency(),
     override val dialogMessage: String = "",
     override val showDialog: Boolean = false,
     override val dialogType: EnumDialogType = EnumDialogType.ERROR,

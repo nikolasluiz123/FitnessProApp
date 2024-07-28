@@ -63,6 +63,7 @@ class RegisterUserViewModel @Inject constructor(
                     firstName = _uiState.value.firstName.copy(value = user.firstName),
                     lastName = _uiState.value.lastName.copy(value = user.lastName),
                     username = _uiState.value.username.copy(value = user.username),
+                    password = _uiState.value.password.copy(value = user.password),
                     email = _uiState.value.email.copy(value = user.email),
                     title = getTitle(user = user),
                     subtitle = user.fullName,
@@ -170,7 +171,7 @@ class RegisterUserViewModel @Inject constructor(
      * Função utilizada para salvar o usuário.
      */
     suspend fun saveUser(onServerError: OnServerError): Boolean {
-        val user = User(
+        val user = _uiState.value.user ?: User(
             firstName = _uiState.value.firstName.value,
             lastName = _uiState.value.lastName.value,
             username = _uiState.value.username.value,
@@ -179,7 +180,7 @@ class RegisterUserViewModel @Inject constructor(
             profile = getUserProfile()!!
         )
 
-        val result = userRepository.register(user)
+        val result = userRepository.saveUser(user)
 
         when (result) {
             is ValidationResult.Success -> {
