@@ -1,7 +1,7 @@
 package br.com.fitnesspro.service.data.access.injection
 
 import android.content.Context
-import br.com.fitnesspro.service.data.access.extensions.defaultGSon
+import br.com.fitnesspro.core.extensions.defaultGSonService
 import br.com.fitnesspro.service.data.access.services.IUserService
 import br.com.fitnesspro.service.data.access.webclients.UserWebClient
 import com.google.gson.GsonBuilder
@@ -35,7 +35,7 @@ class RetrofitModule {
     @Provides
     @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
-        val gson = GsonBuilder().defaultGSon()
+        val gson = GsonBuilder().defaultGSonService()
 
         return Retrofit
             .Builder()

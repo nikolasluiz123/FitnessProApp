@@ -1,7 +1,7 @@
 package br.com.fitnesspro.service.data.access.webclients.extensions
 
 import br.com.fitnesspro.service.data.access.dto.interfaces.IEnumDTOValidationFields
-import br.com.fitnesspro.service.data.access.extensions.defaultGSon
+import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
 import br.com.fitnesspro.service.data.access.response.ErrorDetails
 import br.com.fitnesspro.service.data.access.webclients.result.ResultList
 import br.com.fitnesspro.service.data.access.webclients.result.SingleResult
@@ -46,7 +46,7 @@ fun <ENUM> Response<ResponseBody>.toValidationResult(enumEntries: EnumEntries<EN
 }
 
 private fun ResponseBody.getErrorDetails(): ErrorDetails {
-    val gson = GsonBuilder().defaultGSon()
+    val gson = GsonBuilder().defaultGSonComposeNavigation()
     val jsonElement = JsonParser.parseReader(this.charStream())
 
     return if (jsonElement.isJsonArray) {
@@ -70,7 +70,7 @@ private fun <ENUM> getFieldErrors(
 } ?: emptyList()
 
 fun <T> Response<List<T>>.toResultList(): ResultList<T> {
-    val gson = GsonBuilder().defaultGSon()
+    val gson = GsonBuilder().defaultGSonComposeNavigation()
 
     return if (this.isSuccessful) {
         val list = this.body()!!
@@ -85,7 +85,7 @@ fun <T, ENUM> Response<ResponseBody>.toSingleResult(
     resultClass: Class<T>,
     enumEntries: EnumEntries<ENUM>
 ): SingleResult<T> where ENUM : Enum<ENUM>, ENUM : IEnumDTOValidationFields {
-    val gson = GsonBuilder().defaultGSon()
+    val gson = GsonBuilder().defaultGSonComposeNavigation()
     val validationResult = this.toValidationResult(enumEntries)
 
     return if (this.isSuccessful) {

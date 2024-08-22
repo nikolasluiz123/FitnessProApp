@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.state.Field
 import br.com.fitnesspro.compose.components.tabs.Tab
+import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.extensions.dataStore
 import br.com.fitnesspro.extensions.getUserSession
@@ -17,6 +18,7 @@ import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.service.data.access.dto.user.enums.EnumUserDTOValidationFields
 import br.com.fitnesspro.service.data.access.webclients.result.ValidationResult
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
+import br.com.fitnesspro.ui.decorator.AcademyFrequencyGroupDecorator
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.ui.navigation.registerUserArguments
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnServerError
@@ -51,6 +53,38 @@ class RegisterUserViewModel @Inject constructor(
                 viewModelScope.launch {
                     loadUIStateWithUserInfos()
                 }
+            }
+
+            loadFrequencies()
+        }
+    }
+
+    private fun loadFrequencies() {
+        viewModelScope.launch {
+            val result = userRepository.getAcademyFrequencies()
+
+            if (result.data.isNotEmpty()) {
+                val groups = mutableListOf<AcademyFrequencyGroupDecorator>()
+
+                result.data.groupBy { it.academy!! }.forEach { (_, frequencies) ->
+                    val group = AcademyFrequencyGroupDecorator(
+                        label = R.string.register_academy_label_academy,
+                        value = frequencies.first().academyName!!,
+                        isExpanded = false,
+                        items = frequencies
+                    )
+
+                    groups.add(group)
+                }
+
+                _uiState.value = _uiState.value.copy(frequencies = groups)
+            } else {
+                _uiState.value.onShowDialog?.onShow(
+                    type = EnumDialogType.ERROR,
+                    message = result.error?.message!!,
+                    onConfirm = { },
+                    onCancel = { }
+                )
             }
         }
     }

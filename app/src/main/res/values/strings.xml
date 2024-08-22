@@ -49,4 +49,10 @@
     <string name="register_user_screen_day_week_sunday">Domingo</string>
     <string name="register_academy_label_start">Horário Inicial</string>
     <string name="register_academy_label_end">Horário Final</string>
+    <string name="register_academy_label_academy">Academia</string>
+    <string name="register_user_tab_academies_label_day_week">Dia da Semana</string>
+    <string name="register_user_tab_academies_label_time">Horário</string>
+    <string name="register_user_tab_academies_value_time">%s às %s</string>
+    <string name="register_academy_title_new_student">Novo Horário de Treino</string>
+    <string name="register_academy_title_new_professional">Novo Horário de Trabalho</string>
 </resources>

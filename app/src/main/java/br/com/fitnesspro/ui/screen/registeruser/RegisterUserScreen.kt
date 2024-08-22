@@ -37,6 +37,7 @@ import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
+import br.com.fitnesspro.ui.screen.registeruser.callback.OnAcademyItemClick
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnAddAcademy
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnServerError
 import br.com.fitnesspro.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
@@ -49,7 +50,8 @@ import kotlinx.coroutines.launch
 fun RegisterUserScreen(
     viewModel: RegisterUserViewModel,
     onBackClick: () -> Unit,
-    onAddAcademyClick: OnAddAcademy
+    onAddAcademyClick: OnAddAcademy,
+    onAcademyItemClick: OnAcademyItemClick
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -57,7 +59,8 @@ fun RegisterUserScreen(
         state = state,
         onBackClick = onBackClick,
         onFABSaveClick = viewModel::saveUser,
-        onAddAcademyClick = onAddAcademyClick
+        onAddAcademyClick = onAddAcademyClick,
+        onAcademyItemClick = onAcademyItemClick
     )
 
 }
@@ -68,7 +71,8 @@ fun RegisterUserScreen(
     state: RegisterUserUIState = RegisterUserUIState(),
     onFABSaveClick: suspend (OnServerError) -> Boolean = { false },
     onBackClick: () -> Unit = { },
-    onAddAcademyClick: OnAddAcademy? = null
+    onAddAcademyClick: OnAddAcademy? = null,
+    onAcademyItemClick: OnAcademyItemClick? = null
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -175,7 +179,10 @@ fun RegisterUserScreen(
                     }
 
                     EnumTabsRegisterUserScreen.ACADEMY.index -> {
-                        RegisterUserTabGym(state = state)
+                        RegisterUserTabAcademies(
+                            state = state,
+                            onAcademyItemClick = onAcademyItemClick
+                        )
                     }
                 }
             }

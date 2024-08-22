@@ -131,4 +131,28 @@ class UserWebClient(
             }
         )
     }
+
+    suspend fun getAcademyFrequencies(username: String, password: String): ResultList<Frequency> {
+        return executeResultListProcessErrorHandlerBlock(
+            codeBlock = {
+                val result = service.getAcademyFrequencies(Credentials.basic(username, password), username).toResultList()
+
+                ResultList(
+                    data = result.data.map {
+                        Frequency(
+                            id = it.id,
+                            dayWeek = it.dayWeek,
+                            start = it.start,
+                            end = it.end,
+                            academy = it.academy,
+                            username = it.username,
+                            academyName = it.academyName,
+                            dayWeekDisplay = it.dayWeekDisplay
+                        )
+                    },
+                    result.error
+                )
+            }
+        )
+    }
 }

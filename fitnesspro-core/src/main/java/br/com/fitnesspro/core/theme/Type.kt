@@ -80,3 +80,19 @@ val TopAppBarSubtitleTextStyle = TextStyle(
     lineHeight = 16.sp,
     letterSpacing = 0.2.sp
 )
+
+val LabelTextStyle = TextStyle(
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Normal,
+    fontSize = 14.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.2.sp
+)
+
+val ValueTextStyle = TextStyle(
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Normal,
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.2.sp
+)

@@ -12,6 +12,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * Interface para acesso dos end points de manutenção de usuários.
@@ -37,4 +38,8 @@ interface IUserService {
 
     @POST("academies/frequencies/")
     suspend fun saveAcademyFrequency(@Header("Authorization") credentials: String, @Body frequencyDTO: FrequencyDTO): Response<ResponseBody>
+
+    @GET("academies/frequencies/")
+    suspend fun getAcademyFrequencies(@Header("Authorization") credentials: String, @Query("search") username: String): Response<List<FrequencyDTO>>
+
 }

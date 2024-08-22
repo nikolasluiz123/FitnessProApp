@@ -9,7 +9,6 @@ import br.com.fitnesspro.model.Frequency
 
 data class RegisterAcademyUIState(
     var title: String = "",
-    var subtitle: String = "",
     val academy: Field = Field(),
     val dayWeek: Field = Field(),
     val start: Field = Field(),

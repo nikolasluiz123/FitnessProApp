@@ -8,5 +8,7 @@ data class Frequency(
     var start: LocalTime? = null,
     var end: LocalTime? = null,
     var academy: Long? = null,
-    var username: String? = null
+    var username: String? = null,
+    var academyName: String? = null,
+    var dayWeekDisplay: String? = null
 )

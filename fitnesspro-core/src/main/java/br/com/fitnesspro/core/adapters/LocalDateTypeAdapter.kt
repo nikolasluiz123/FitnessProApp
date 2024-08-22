@@ -1,4 +1,4 @@
-package br.com.fitnesspro.service.data.access.adapters
+package br.com.fitnesspro.core.adapters
 
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
@@ -7,27 +7,26 @@ import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 import java.lang.reflect.Type
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class LocalDateTimeTypeAdapter : JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
+class LocalDateTypeAdapter : JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
 
-    private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+    private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 
     override fun serialize(
-        src: LocalDateTime?,
+        src: LocalDate?,
         typeOfSrc: Type?,
         context: JsonSerializationContext?
     ): JsonElement {
-        return JsonPrimitive(src?.atOffset(OffsetDateTime.now().offset)?.format(formatter))
+        return JsonPrimitive(formatter.format(src))
     }
 
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
         context: JsonDeserializationContext?
-    ): LocalDateTime {
-        return OffsetDateTime.parse(json?.asString, formatter).toLocalDateTime()
+    ): LocalDate {
+        return LocalDate.parse(json?.asString, formatter)
     }
 }

@@ -7,6 +7,7 @@ import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.state.IDialogUIState
 import br.com.fitnesspro.model.User
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
+import br.com.fitnesspro.ui.decorator.AcademyFrequencyGroupDecorator
 
 data class RegisterUserUIState(
     val title: String? = null,
@@ -19,6 +20,7 @@ data class RegisterUserUIState(
     val username: Field = Field(),
     val email: Field = Field(),
     val password: Field = Field(),
+    val frequencies: List<AcademyFrequencyGroupDecorator> = emptyList(),
     override val dialogMessage: String = "",
     override val showDialog: Boolean = false,
     override val dialogType: EnumDialogType = EnumDialogType.ERROR,

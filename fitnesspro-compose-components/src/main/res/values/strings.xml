@@ -16,4 +16,6 @@
     <string name="label_calendar">Calendário</string>
     <string name="label_hour">Hora</string>
     <string name="label_delete">Deletar</string>
+    <string name="test_group_1">Teste Grupo 1</string>
+    <string name="test_group_2">Teste Grupo 2</string>
 </resources>

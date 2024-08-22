@@ -1,6 +1,7 @@
 package br.com.fitnesspro.core.extensions
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import java.text.DecimalFormat
 import java.text.Normalizer
 
@@ -43,11 +44,10 @@ fun String.formatJsonNavParam() = this.substring(1, this.length - 1)
  * Converte uma string JSON em um objeto do tipo especificado.
  *
  * @param clazz A classe do tipo de objeto para conversão.
- * @param gson O objeto Gson a ser usado para a conversão.
  * @return O objeto do tipo especificado.
  * @receiver A string JSON a ser convertida.
  */
-fun <ARG> String.fromJsonNavParamToArgs(clazz: Class<ARG>, gson: Gson = Gson()): ARG {
+fun <ARG> String.fromJsonNavParamToArgs(clazz: Class<ARG>, gson: Gson = GsonBuilder().defaultGSonComposeNavigation()): ARG {
     return gson.getAdapter(clazz).fromJson(this.formatJsonNavParam())
 }
 

@@ -33,6 +33,7 @@ android {
 
 dependencies {
     implementation(project(":fitnesspro-model"))
+    implementation(project(":fitnesspro-core"))
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.json)

@@ -48,4 +48,10 @@ class UserRepository(
         return webClient.saveAcademyFrequency(user.username, user.password, frequency)
     }
 
+    suspend fun getAcademyFrequencies(): ResultList<Frequency> {
+        val user = context.dataStore.getUserSession()!!
+
+        return webClient.getAcademyFrequencies(user.username, user.password)
+    }
+
 }

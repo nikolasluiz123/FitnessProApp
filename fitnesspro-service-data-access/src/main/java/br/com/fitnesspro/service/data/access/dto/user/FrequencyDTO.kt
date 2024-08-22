@@ -10,5 +10,9 @@ data class FrequencyDTO(
     val start: LocalTime?,
     val end: LocalTime?,
     val username: String,
-    val academy: Long
+    val academy: Long,
+    @SerializedName("academy_name")
+    val academyName: String? = null,
+    @SerializedName("day_week_display")
+    val dayWeekDisplay: String? = null
 )

@@ -80,7 +80,6 @@ fun RegisterAcademyScreen(
         topBar = {
             SimpleFitnessProTopAppBar(
                 title = state.title,
-                subtitle = state.subtitle,
                 onBackClick = onBackClick,
                 showMenuWithLogout = false
             )

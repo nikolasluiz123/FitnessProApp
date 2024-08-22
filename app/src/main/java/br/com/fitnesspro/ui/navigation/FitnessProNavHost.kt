@@ -30,7 +30,8 @@ fun FitnessProNavHost(
 
         registerUserScreen(
             onBackClick = navController::popBackStack,
-            onAddAcademyClick = navController::navigateToRegisterAcademyScreen
+            onAddAcademyClick = navController::navigateToRegisterAcademyScreen,
+            onAcademyItemClick = navController::navigateToRegisterAcademyScreen
         )
 
         registerAcademyScreen(

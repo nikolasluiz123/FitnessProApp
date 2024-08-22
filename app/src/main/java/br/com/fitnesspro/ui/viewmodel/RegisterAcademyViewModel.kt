@@ -3,15 +3,26 @@ package br.com.fitnesspro.ui.viewmodel
 import android.content.Context
 import android.util.Log
 import androidx.core.text.isDigitsOnly
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.menu.MenuItem
 import br.com.fitnesspro.compose.components.state.Field
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.enums.EnumDialogType
+import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
+import br.com.fitnesspro.extensions.dataStore
+import br.com.fitnesspro.extensions.getUserSession
+import br.com.fitnesspro.model.Frequency
+import br.com.fitnesspro.model.User
+import br.com.fitnesspro.model.enums.EnumUserProfile
 import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.service.data.access.dto.user.enums.EnumFrequencyDTOValidationFields
 import br.com.fitnesspro.service.data.access.webclients.result.ValidationResult
+import br.com.fitnesspro.ui.navigation.RegisterAcademyScreenArgs
+import br.com.fitnesspro.ui.navigation.registerAcademyArguments
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnServerError
 import br.com.fitnesspro.ui.state.RegisterAcademyUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,33 +37,38 @@ import javax.inject.Inject
 class RegisterAcademyViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userRepository: UserRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<RegisterAcademyUIState> = MutableStateFlow(RegisterAcademyUIState())
     val uiState get() = _uiState.asStateFlow()
 
+    private val jsonArgs: String? = savedStateHandle[registerAcademyArguments]
+
     init {
-        initialLoadUIState()
-        loadAcademies()
+        jsonArgs?.fromJsonNavParamToArgs(RegisterAcademyScreenArgs::class.java)?.let { args ->
+            initialLoadUIState()
+            loadAcademies()
+
+            viewModelScope.launch {
+                loadTopBarInfos()
+            }
+
+            args.frequency?.let {
+                loadFrequencyInfos(it)
+            }
+        }
     }
 
-    private fun loadAcademies() {
-        viewModelScope.launch {
-            val result = userRepository.getAcademies()
-
-            if (result.data.isNotEmpty()) {
-                val items = result.data.map { MenuItem(label = it.name, value = it.id) }
-                _uiState.value = _uiState.value.copy(academies = items)
-            } else {
-                _uiState.value.onShowDialog?.onShow(
-                    type = EnumDialogType.ERROR,
-                    message = result.error?.message!!,
-                    onConfirm = { },
-                    onCancel = { }
-                )
-
-                Log.e(TAG, result.error?.details ?: "")
-            }
+    private fun loadFrequencyInfos(frequency: Frequency) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                frequency = frequency,
+                dayWeek = _uiState.value.dayWeek.copy(value = frequency.dayWeekDisplay!!),
+                start = _uiState.value.start.copy(value = frequency.start?.format(EnumDateTimePatterns.TIME)!!),
+                end = _uiState.value.end.copy(value = frequency.end?.format(EnumDateTimePatterns.TIME)!!),
+                academy = _uiState.value.academy.copy(value = frequency.academyName!!),
+            )
         }
     }
 
@@ -112,6 +128,36 @@ class RegisterAcademyViewModel @Inject constructor(
         }
     }
 
+    private fun loadAcademies() {
+        viewModelScope.launch {
+            val result = userRepository.getAcademies()
+
+            if (result.data.isNotEmpty()) {
+                val items = result.data.map { MenuItem(label = it.name, value = it.id) }
+                _uiState.value = _uiState.value.copy(academies = items)
+            } else {
+                _uiState.value.onShowDialog?.onShow(
+                    type = EnumDialogType.ERROR,
+                    message = result.error?.message!!,
+                    onConfirm = { },
+                    onCancel = { }
+                )
+
+                Log.e(TAG, result.error?.details ?: "")
+            }
+        }
+    }
+
+    private suspend fun loadTopBarInfos() {
+        val user = context.dataStore.getUserSession()!!
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                title = getTitle(user),
+            )
+        }
+    }
+
     private fun getDayWeeks(): MutableList<MenuItem<String>> {
         return mutableListOf(
             MenuItem(
@@ -143,6 +189,13 @@ class RegisterAcademyViewModel @Inject constructor(
                 value = "DOM"
             )
         )
+    }
+
+    private fun getTitle(user: User): String {
+        return when(user.profile) {
+            EnumUserProfile.STUDENT -> context.getString(R.string.register_academy_title_new_student)
+            EnumUserProfile.NUTRITIONIST, EnumUserProfile.TRAINER -> context.getString(R.string.register_academy_title_new_professional)
+        }
     }
 
     suspend fun saveFrequency(onServerError: OnServerError): Boolean {
