@@ -6,5 +6,5 @@ import br.com.fitnesspro.compose.components.bottomsheet.interfaces.IEnumOptionsB
  * Enum com as opções de seleção no [BottomSheetRegisterUser]
  */
 enum class EnumOptionsBottomSheetRegisterUser(override val index: Int): IEnumOptionsBottomSheet {
-    STUDENT(0), TRAINER(1), NUTRITIONIST(2);
+    ACADEMY_MEMBER(0), PERSONAL_TRAINER(1), NUTRITIONIST(2);
 }

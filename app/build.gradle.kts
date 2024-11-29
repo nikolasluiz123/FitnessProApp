@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "br.com.fitnesspro"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "br.com.fitnesspro"
@@ -53,7 +53,6 @@ dependencies {
     implementation(project(":fitnesspro-core"))
     implementation(project(":fitnesspro-compose-components"))
     implementation(project(":fitnesspro-model"))
-    implementation(project(":fitnesspro-service-data-access"))
 
     implementation(libs.splash)
 

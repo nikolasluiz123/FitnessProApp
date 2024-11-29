@@ -35,7 +35,6 @@ import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.service.data.access.dto.user.enums.EnumAuthenticationDTOValidationFields
 import br.com.fitnesspro.ui.bottomsheet.BottomSheetRegisterUser
 import br.com.fitnesspro.ui.screen.login.callback.OnBottomSheetRegisterUserItemClick
 import br.com.fitnesspro.ui.screen.login.callback.OnLoginClick
@@ -54,13 +53,7 @@ fun LoginScreen(
         state = state,
         onBottomSheetRegisterUserItemClick = onBottomSheetRegisterUserItemClick,
         onLoginClick = { onSuccess, onError ->
-            viewModel.login(
-                onError = onError,
-                onSuccess = {
-                    onSuccess()
-                    onNavigateToHome()
-                }
-            )
+
         }
     )
 }
@@ -141,7 +134,6 @@ fun LoginScreen(
                         field = state.username,
                         label = stringResource(R.string.login_screen_label_user),
                         keyboardOptions = EmailKeyboardOptions,
-                        maxLength = EnumAuthenticationDTOValidationFields.USERNAME.maxLength
                     )
 
                     OutlinedTextFieldPasswordValidation(
@@ -155,7 +147,6 @@ fun LoginScreen(
                         field = state.password,
                         label = stringResource(R.string.login_screen_label_password),
                         keyboardOptions = LastPasswordKeyboardOptions,
-                        maxLength = EnumAuthenticationDTOValidationFields.PASSWORD.maxLength
                     )
 
                     createHorizontalChain(registerButtonRef, loginButtonRef)

@@ -2,7 +2,6 @@ package br.com.fitnesspro.injection
 
 import android.content.Context
 import br.com.fitnesspro.repository.UserRepository
-import br.com.fitnesspro.service.data.access.webclients.UserWebClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,9 +15,8 @@ class ViewModelModule {
     @Provides
     fun provideUserRepository(
         @ApplicationContext context: Context,
-        webClient: UserWebClient
     ): UserRepository {
-        return UserRepository(context = context, webClient = webClient)
+        return UserRepository(context = context)
     }
 
 }

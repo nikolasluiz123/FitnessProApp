@@ -25,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.dialog.FitnessProDialog
@@ -33,13 +32,11 @@ import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
 import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnAcademyItemClick
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnAddAcademy
-import br.com.fitnesspro.ui.screen.registeruser.callback.OnServerError
 import br.com.fitnesspro.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import br.com.fitnesspro.ui.viewmodel.RegisterUserViewModel
@@ -58,7 +55,6 @@ fun RegisterUserScreen(
     RegisterUserScreen(
         state = state,
         onBackClick = onBackClick,
-        onFABSaveClick = viewModel::saveUser,
         onAddAcademyClick = onAddAcademyClick,
         onAcademyItemClick = onAcademyItemClick
     )
@@ -69,7 +65,6 @@ fun RegisterUserScreen(
 @Composable
 fun RegisterUserScreen(
     state: RegisterUserUIState = RegisterUserUIState(),
-    onFABSaveClick: suspend (OnServerError) -> Boolean = { false },
     onBackClick: () -> Unit = { },
     onAddAcademyClick: OnAddAcademy? = null,
     onAcademyItemClick: OnAcademyItemClick? = null
@@ -102,15 +97,7 @@ fun RegisterUserScreen(
                     if (selectedTab.enum == EnumTabsRegisterUserScreen.GENERAL) {
                         FloatingActionButtonSave(
                             onClick = {
-                                coroutineScope.launch {
-                                    val success = onFABSaveClick { message ->
-                                        state.onShowDialog?.showErrorDialog(message)
-                                    }
 
-                                    if (success) {
-                                        snackbarHostState.showSnackbar(context.getString(R.string.register_user_screen_success_message))
-                                    }
-                                }
                             }
                         )
                     } else {
@@ -170,9 +157,7 @@ fun RegisterUserScreen(
                             state = state,
                             onDone = {
                                 coroutineScope.launch {
-                                    onFABSaveClick { message ->
-                                        state.onShowDialog?.showErrorDialog(message)
-                                    }
+
                                 }
                             }
                         )
@@ -202,7 +187,7 @@ private fun RegisterUserScreenTabGeneralPreview() {
                 state = RegisterUserUIState(
                     title = "Título",
                     subtitle = "Subtítulo",
-                    context = EnumOptionsBottomSheetRegisterUser.STUDENT,
+                    context = EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER,
                     tabs = mutableListOf(
                         Tab(
                             enum = EnumTabsRegisterUserScreen.GENERAL,
@@ -233,7 +218,7 @@ private fun RegisterUserScreenTabAcademiesPreview() {
                 state = RegisterUserUIState(
                     title = "Título",
                     subtitle = "Subtítulo",
-                    context = EnumOptionsBottomSheetRegisterUser.STUDENT,
+                    context = EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER,
                     tabs = mutableListOf(
                         Tab(
                             enum = EnumTabsRegisterUserScreen.GENERAL,

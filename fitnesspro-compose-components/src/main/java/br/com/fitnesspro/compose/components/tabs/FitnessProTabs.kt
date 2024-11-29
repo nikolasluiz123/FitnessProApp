@@ -1,6 +1,5 @@
 package br.com.fitnesspro.compose.components.tabs
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.pager.HorizontalPager
@@ -30,7 +29,6 @@ import kotlinx.coroutines.launch
  * @param coroutineScope CoroutineScope para controle do [TabRow]
  * @param pagerState PagerState para controle do [TabRow]
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FitnessProTabRow(
     modifier: Modifier = Modifier,
@@ -80,7 +78,6 @@ fun FitnessProTabRow(
  * @param modifier Modifier para posicionamento e demais configurações que forem necessárias
  * @param content Composable que será renderizado para cada tab
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FitnessProHorizontalPager(
     pagerState: PagerState,
@@ -95,7 +92,6 @@ fun FitnessProHorizontalPager(
         userScrollEnabled = getUserScrollEnabled(tabs),
         reverseLayout = false,
         contentPadding = PaddingValues(0.dp),
-        beyondBoundsPageCount = 0,
         pageSize = PageSize.Fill,
         flingBehavior = PagerDefaults.flingBehavior(state = pagerState),
         key = null,
@@ -117,9 +113,11 @@ fun FitnessProHorizontalPager(
  * Basicamente ele deve ser habilitado se a próxima tab ou a tab anterior estiver habilitada.
  */
 private fun getUserScrollEnabled(tabs: List<Tab>): Boolean {
-    val tabSelected = tabs.first { it.selected.value }
-    val nextTab = tabs.getOrNull(tabs.indexOf(tabSelected) + 1)
-    val previousTab = tabs.getOrNull(tabs.indexOf(tabSelected) - 1)
+//    val tabSelected = tabs.first { it.selected.value }
+//    val nextTab = tabs.getOrNull(tabs.indexOf(tabSelected) + 1)
+//    val previousTab = tabs.getOrNull(tabs.indexOf(tabSelected) - 1)
+//
+//    return nextTab?.isEnabled?.invoke() == true || previousTab?.isEnabled?.invoke() == true
 
-    return nextTab?.isEnabled?.invoke() == true || previousTab?.isEnabled?.invoke() == true
+    return true
 }

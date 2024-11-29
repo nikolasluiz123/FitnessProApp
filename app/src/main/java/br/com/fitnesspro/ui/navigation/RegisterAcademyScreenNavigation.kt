@@ -5,7 +5,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import br.com.fitnesspro.model.Frequency
 import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
 import br.com.fitnesspro.ui.screen.registeruser.RegisterAcademyScreen
 import br.com.fitnesspro.ui.viewmodel.RegisterAcademyViewModel
@@ -37,6 +36,5 @@ fun NavController.navigateToRegisterAcademyScreen(
     navigate(route = "$registerAcademyScreenRoute?$registerAcademyArguments={$json}", navOptions = navOptions)
 }
 
-data class RegisterAcademyScreenArgs(
-    val frequency: Frequency? = null
+ class RegisterAcademyScreenArgs(
 )

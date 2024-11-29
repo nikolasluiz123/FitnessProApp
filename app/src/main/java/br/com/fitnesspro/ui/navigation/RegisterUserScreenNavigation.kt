@@ -39,6 +39,6 @@ fun NavController.navigateToRegisterUserScreen(args: RegisterUserScreenArgs, nav
     navigate(route = "$registerUserScreenRoute?$registerUserArguments={$json}", navOptions = navOptions)
 }
 
-data class RegisterUserScreenArgs(
+class RegisterUserScreenArgs(
     val context: EnumOptionsBottomSheetRegisterUser? = null,
 )

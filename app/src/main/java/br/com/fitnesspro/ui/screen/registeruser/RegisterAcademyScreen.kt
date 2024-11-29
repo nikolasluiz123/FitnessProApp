@@ -1,6 +1,5 @@
 package br.com.fitnesspro.ui.screen.registeruser
 
-import android.content.Context
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,18 +37,13 @@ import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.transformation.TimeVisualTransformation
 import br.com.fitnesspro.compose.components.menu.DefaultExposedDropdownMenu
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.parseToLocalTime
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
-import br.com.fitnesspro.ui.screen.registeruser.callback.OnServerError
 import br.com.fitnesspro.ui.state.RegisterAcademyUIState
 import br.com.fitnesspro.ui.viewmodel.RegisterAcademyViewModel
 import br.com.market.market.compose.components.button.fab.FloatingActionButtonSave
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterAcademyScreen(
@@ -61,7 +55,6 @@ fun RegisterAcademyScreen(
     RegisterAcademyScreen(
         state = state,
         onBackClick = onBackClick,
-        onFABSaveClick = viewModel::saveFrequency
     )
 }
 
@@ -70,7 +63,6 @@ fun RegisterAcademyScreen(
 fun RegisterAcademyScreen(
     state: RegisterAcademyUIState = RegisterAcademyUIState(),
     onBackClick: () -> Unit = { },
-    onFABSaveClick: suspend (OnServerError) -> Boolean = { false },
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -89,7 +81,7 @@ fun RegisterAcademyScreen(
                 floatingActionButton = {
                     FloatingActionButtonSave(
                         onClick = {
-                            save(coroutineScope, onFABSaveClick, state, snackbarHostState, context)
+
                         }
                     )
                 },
@@ -143,7 +135,6 @@ fun RegisterAcademyScreen(
                 onExpandedChange = { academiesOpen = !academiesOpen },
                 onMenuDismissRequest = { academiesOpen = false },
                 onItemClick = {
-                    state.frequency.academy = it.value
                     state.academy.onChange(it.label)
                     academiesOpen = false
                 },
@@ -164,7 +155,6 @@ fun RegisterAcademyScreen(
                 onExpandedChange = { dayWeeksOpen = !dayWeeksOpen },
                 onMenuDismissRequest = { dayWeeksOpen = false },
                 onItemClick = {
-                    state.frequency.dayWeek = it.value
                     state.dayWeek.onChange(it.label)
                     dayWeeksOpen = false
                 },
@@ -199,7 +189,6 @@ fun RegisterAcademyScreen(
                 TimePickerInput(
                     title = stringResource(R.string.register_academy_label_start),
                     onConfirm = {
-                        state.frequency.start = it
                         state.start.onChange(it.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS))
                     },
                     onDismiss = { timePickerStartOpen = false }
@@ -221,7 +210,7 @@ fun RegisterAcademyScreen(
                 },
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        save(coroutineScope, onFABSaveClick, state, snackbarHostState, context)
+
                     }
                 ),
                 keyboardOptions = KeyboardOptions(
@@ -235,7 +224,6 @@ fun RegisterAcademyScreen(
                 TimePickerInput(
                     title = stringResource(R.string.register_academy_label_end),
                     onConfirm = {
-                        state.frequency.end = it
                         state.end.onChange(it.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS))
                     },
                     onDismiss = { timePickerEndOpen = false }
@@ -245,32 +233,6 @@ fun RegisterAcademyScreen(
 
     }
 
-}
-
-private fun save(
-    coroutineScope: CoroutineScope,
-    onFABSaveClick: suspend (OnServerError) -> Boolean = { false },
-    state: RegisterAcademyUIState,
-    snackbarHostState: SnackbarHostState,
-    context: Context
-) {
-    if (state.frequency.start == null) {
-        state.frequency.start = state.start.value.parseToLocalTime(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
-    }
-
-    if (state.frequency.end == null) {
-        state.frequency.end = state.end.value.parseToLocalTime(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
-    }
-
-    coroutineScope.launch {
-        val success = onFABSaveClick { message ->
-            state.onShowDialog?.showErrorDialog(message)
-        }
-
-        if (success) {
-            snackbarHostState.showSnackbar(context.getString(R.string.register_user_screen_success_message))
-        }
-    }
 }
 
 @Preview

@@ -21,13 +21,13 @@ fun BottomSheetRegisterUser(
 ) {
     val items = listOf(
         BottomSheetRegisterUserItem(
-            option = EnumOptionsBottomSheetRegisterUser.STUDENT,
+            option = EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER,
             labelResId = R.string.label_student_bottom_sheet_register_user,
             iconResId = drawable.ic_student_24dp,
             iconDescriptionResId = R.string.label_icon_student_bottom_sheet_register_user_description
         ),
         BottomSheetRegisterUserItem(
-            option = EnumOptionsBottomSheetRegisterUser.TRAINER,
+            option = EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER,
             labelResId = R.string.label_trainer_bottom_sheet_register_user,
             iconResId = drawable.ic_instructor_24dp,
             iconDescriptionResId = R.string.label_icon_trainer_bottom_sheet_register_user_description
