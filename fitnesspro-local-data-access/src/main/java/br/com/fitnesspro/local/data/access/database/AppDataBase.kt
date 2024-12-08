@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import br.com.fitnesspro.local.data.access.converters.RoomTypeConverters
+import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.Person
@@ -45,5 +46,7 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDAO(): UserDAO
+
+    abstract fun personDAO(): PersonDAO
 
 }

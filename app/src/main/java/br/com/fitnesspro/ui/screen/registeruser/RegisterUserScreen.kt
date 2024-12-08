@@ -1,6 +1,6 @@
 package br.com.fitnesspro.ui.screen.registeruser
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.content.Context
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.dialog.FitnessProDialog
@@ -37,10 +38,12 @@ import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnAcademyItemClick
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnAddAcademy
+import br.com.fitnesspro.ui.screen.registeruser.callback.OnSaveUserClick
 import br.com.fitnesspro.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import br.com.fitnesspro.ui.viewmodel.RegisterUserViewModel
 import br.com.market.market.compose.components.button.fab.FloatingActionButtonSave
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -56,18 +59,20 @@ fun RegisterUserScreen(
         state = state,
         onBackClick = onBackClick,
         onAddAcademyClick = onAddAcademyClick,
-        onAcademyItemClick = onAcademyItemClick
+        onAcademyItemClick = onAcademyItemClick,
+        onSaveUserClick = viewModel::saveUser
     )
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterUserScreen(
     state: RegisterUserUIState = RegisterUserUIState(),
     onBackClick: () -> Unit = { },
     onAddAcademyClick: OnAddAcademy? = null,
-    onAcademyItemClick: OnAcademyItemClick? = null
+    onAcademyItemClick: OnAcademyItemClick? = null,
+    onSaveUserClick: OnSaveUserClick? = null
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -97,7 +102,11 @@ fun RegisterUserScreen(
                     if (selectedTab.enum == EnumTabsRegisterUserScreen.GENERAL) {
                         FloatingActionButtonSave(
                             onClick = {
-
+                                onSaveUserClick?.onExecute(
+                                    onSaved = {
+                                        showSuccessMessage(coroutineScope, snackbarHostState, context)
+                                    }
+                                )
                             }
                         )
                     } else {
@@ -156,8 +165,8 @@ fun RegisterUserScreen(
                         RegisterUserTabGeneral(
                             state = state,
                             onDone = {
-                                coroutineScope.launch {
-
+                                onSaveUserClick?.onExecute {
+                                    showSuccessMessage(coroutineScope, snackbarHostState, context)
                                 }
                             }
                         )
@@ -172,6 +181,18 @@ fun RegisterUserScreen(
                 }
             }
         }
+    }
+}
+
+private fun showSuccessMessage(
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+    context: Context
+) {
+    coroutineScope.launch {
+        snackbarHostState.showSnackbar(
+            message = context.getString(R.string.register_user_screen_success_message)
+        )
     }
 }
 

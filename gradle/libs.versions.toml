@@ -14,11 +14,11 @@ googleId = "1.1.1"
 constraintLayoutCompose = "1.1.0"
 
 hiltNavigationCompose = "1.2.0"
-hiltVersion = "2.51.1"
-kspVersion = "2.0.0-1.0.21"
+hiltVersion = "2.52"
+kspVersion = "2.1.0-1.0.29"
 
 agp = "8.7.2"
-kotlin = "2.0.0"
+kotlin = "2.1.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -30,6 +30,7 @@ appcompat = "1.7.0"
 material = "1.12.0"
 material3 = "1.3.1"
 room = "2.6.1"
+argon2Version = "1.6.0"
 
 [libraries]
 splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
@@ -72,6 +73,9 @@ material = { group = "com.google.android.material", name = "material", version.r
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+kotlin-reflection = { group = "org.jetbrains.kotlin", name="kotlin-reflect", version.ref = "kotlin" }
+argon2 = { group = "com.lambdapioneer.argon2kt", name = "argon2kt", version.ref = "argon2Version"}
 
 [plugins]
 kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }

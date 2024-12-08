@@ -54,4 +54,13 @@
     <string name="register_user_tab_academies_value_time">%s às %s</string>
     <string name="register_academy_title_new_student">Novo Horário de Treino</string>
     <string name="register_academy_title_new_professional">Novo Horário de Trabalho</string>
+    <string name="validation_msg_required_field">O campo %s é obrigatório.</string>
+    <string name="validation_msg_field_with_max_length">O campo %s pode conter até %d caracteres.</string>
+    <string name="validation_msg_invalid_field">O campo %s é inválido.</string>
+    <string name="validation_msg_email_in_use">O e-mail já está em uso.</string>
+    <string name="label_person_name">Nome</string>
+    <string name="label_person_email">E-mail</string>
+    <string name="label_person_password">Password</string>
+    <string name="label_person_birth_date">Data de Nascimento</string>
+    <string name="label_person_phone">Telefone</string>
 </resources>

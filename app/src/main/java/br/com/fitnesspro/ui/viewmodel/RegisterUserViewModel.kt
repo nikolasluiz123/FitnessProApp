@@ -4,29 +4,36 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.state.Field
 import br.com.fitnesspro.compose.components.tabs.Tab
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
+import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.User
-import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.ui.navigation.registerUserArguments
 import br.com.fitnesspro.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
+import br.com.fitnesspro.ui.screen.registeruser.to.TOPerson
+import br.com.fitnesspro.ui.screen.registeruser.to.TOUser
 import br.com.fitnesspro.ui.state.RegisterUserUIState
+import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields
+import br.com.fitnesspro.usecase.person.SavePersonUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterUserViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val userRepository: UserRepository,
+    private val savePersonUseCase: SavePersonUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -133,6 +140,73 @@ class RegisterUserViewModel @Inject constructor(
                 EnumOptionsBottomSheetRegisterUser.NUTRITIONIST -> this.context.getString(R.string.register_user_screen_title_new_nutritionist)
                 else -> ""
             }
+        }
+    }
+
+    fun saveUser(onSuccess: () -> Unit) {
+        val toPerson = TOPerson(
+            name = _uiState.value.name.value,
+            birthDate = _uiState.value.birthDate.value.parseToLocalDate(EnumDateTimePatterns.DATE),
+            phone = _uiState.value.phone.value,
+            toUser = TOUser(
+                email = _uiState.value.email.value,
+                password = _uiState.value.password.value,
+                type = getUserTypeFromContext(_uiState.value.context!!)
+            ),
+        )
+
+        viewModelScope.launch {
+            val validationResults = savePersonUseCase.execute(toPerson)
+
+            if (validationResults.isEmpty()) {
+                onSuccess()
+            } else {
+                showValidationMessages(validationResults)
+            }
+        }
+    }
+
+    private fun showValidationMessages(validationResults: List<Pair<EnumValidatedPersonFields, String>>) {
+        validationResults.forEach {
+            when (it.first) {
+                EnumValidatedPersonFields.NAME -> {
+                    _uiState.value = _uiState.value.copy(
+                        name = _uiState.value.name.copy(errorMessage = it.second)
+                    )
+                }
+
+                EnumValidatedPersonFields.EMAIL -> {
+                    _uiState.value = _uiState.value.copy(
+                        email = _uiState.value.email.copy(errorMessage = it.second)
+                    )
+                }
+
+                EnumValidatedPersonFields.PASSWORD -> {
+                    _uiState.value = _uiState.value.copy(
+                        password = _uiState.value.password.copy(errorMessage = it.second)
+                    )
+                }
+
+                EnumValidatedPersonFields.BIRTH_DATE -> {
+                    _uiState.value = _uiState.value.copy(
+                        birthDate = _uiState.value.birthDate.copy(errorMessage = it.second)
+                    )
+                }
+
+                EnumValidatedPersonFields.PHONE -> {
+                    _uiState.value = _uiState.value.copy(
+                        phone = _uiState.value.phone.copy(errorMessage = it.second)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getUserTypeFromContext(context: EnumOptionsBottomSheetRegisterUser): EnumUserType {
+        return when (context) {
+            EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER -> EnumUserType.ACADEMY_MEMBER
+            EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER -> EnumUserType.PERSONAL_TRAINER
+            EnumOptionsBottomSheetRegisterUser.NUTRITIONIST -> EnumUserType.NUTRITIONIST
         }
     }
 }

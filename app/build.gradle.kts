@@ -30,11 +30,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -53,6 +53,7 @@ dependencies {
     implementation(project(":fitnesspro-core"))
     implementation(project(":fitnesspro-compose-components"))
     implementation(project(":fitnesspro-model"))
+    implementation(project(":fitnesspro-local-data-access"))
 
     implementation(libs.splash)
 

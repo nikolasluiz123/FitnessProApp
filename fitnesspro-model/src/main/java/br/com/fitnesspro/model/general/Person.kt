@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import br.com.fitnesspro.model.base.BaseModel
 import java.time.LocalDate
 import java.util.UUID
 
@@ -20,7 +21,7 @@ import java.util.UUID
 )
 data class Person(
     @PrimaryKey
-    val id: String = UUID.randomUUID().toString(),
+    override val id: String = UUID.randomUUID().toString(),
     var name: String? = null,
     @ColumnInfo(name = "birth_date")
     var birthDate: LocalDate? = null,
@@ -28,4 +29,4 @@ data class Person(
     @ColumnInfo(name = "user_id")
     var userId: String? = null,
     var active: Boolean = true
-)
+): BaseModel()

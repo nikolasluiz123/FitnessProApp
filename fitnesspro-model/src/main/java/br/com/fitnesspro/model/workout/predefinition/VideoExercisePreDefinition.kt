@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.workout.Video
 import java.util.UUID
 
@@ -26,9 +27,9 @@ import java.util.UUID
 )
 data class VideoExercisePreDefinition(
     @PrimaryKey
-    val id: String = UUID.randomUUID().toString(),
+    override val id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "exercise_pre_definition_id")
     var exercisePreDefinitionId: String? = null,
     @ColumnInfo(name = "video_id")
     var videoId: String? = null
-)
+): BaseModel()

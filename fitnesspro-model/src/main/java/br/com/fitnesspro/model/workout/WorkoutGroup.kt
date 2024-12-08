@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import br.com.fitnesspro.model.base.BaseModel
 import java.time.DayOfWeek
 import java.util.UUID
 
@@ -20,11 +21,11 @@ import java.util.UUID
 )
 data class WorkoutGroup(
     @PrimaryKey
-    val id: String = UUID.randomUUID().toString(),
+    override val id: String = UUID.randomUUID().toString(),
     var name: String? = null,
     @ColumnInfo(name = "workout_id")
     var workoutId: String? = null,
     @ColumnInfo(name = "day_week")
     var dayWeek: DayOfWeek? = null,
     var active: Boolean = true
-)
+): BaseModel()
