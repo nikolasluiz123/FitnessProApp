@@ -12,7 +12,6 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.model.enums.EnumUserType
-import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.ui.navigation.registerUserArguments
@@ -53,7 +52,7 @@ class RegisterUserViewModel @Inject constructor(
 
         _uiState.update { currentState ->
             currentState.copy(
-                title = getTitle(context = args.context),
+                title = getTitle(context = args.context, toPerson = null),
                 context = args.context,
                 tabs = tabs,
                 onShowDialog = { type, message, onConfirm, onCancel ->
@@ -119,16 +118,16 @@ class RegisterUserViewModel @Inject constructor(
         Tab(
             enum = EnumTabsRegisterUserScreen.ACADEMY,
             selected = mutableStateOf(false),
-            isEnabled = { _uiState.value.user != null }
+            isEnabled = { _uiState.value.toPerson != null }
         )
     )
 
     /**
      * Função utilizada para recuperar o titulo que deve ser exibido na barra superior.
      */
-    private fun getTitle(context: EnumOptionsBottomSheetRegisterUser? = null, user: User? = null): String {
-        return if (user != null) {
-            when(user.type!!) {
+    private fun getTitle(context: EnumOptionsBottomSheetRegisterUser?, toPerson: TOPerson?): String {
+        return if (toPerson != null) {
+            when(toPerson.toUser?.type!!) {
                 EnumUserType.ACADEMY_MEMBER -> this.context.getString(R.string.register_user_screen_title_academy_member)
                 EnumUserType.PERSONAL_TRAINER -> this.context.getString(R.string.register_user_screen_title_personal_trainer)
                 EnumUserType.NUTRITIONIST -> this.context.getString(R.string.register_user_screen_title_nutritionist)
@@ -159,10 +158,21 @@ class RegisterUserViewModel @Inject constructor(
             val validationResults = savePersonUseCase.execute(toPerson)
 
             if (validationResults.isEmpty()) {
+                updateInfosBeforeSave(toPerson)
                 onSuccess()
             } else {
                 showValidationMessages(validationResults)
             }
+        }
+    }
+
+    private fun updateInfosBeforeSave(toPerson: TOPerson) {
+        _uiState.update {
+            it.copy(
+                title = getTitle(context = _uiState.value.context, toPerson = toPerson),
+                subtitle = toPerson.name!!,
+                toPerson = toPerson
+            )
         }
     }
 

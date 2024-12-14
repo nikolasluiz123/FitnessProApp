@@ -5,14 +5,14 @@ import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.core.callback.IShowDialogCallback
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.state.IDialogUIState
-import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
+import br.com.fitnesspro.ui.screen.registeruser.to.TOPerson
 
 data class RegisterUserUIState(
     val title: String? = null,
     val subtitle: String? = null,
     val context: EnumOptionsBottomSheetRegisterUser? = null,
-    val user: User? = null,
+    val toPerson: TOPerson? = null,
     val tabs: MutableList<Tab> = mutableListOf(),
     val name: Field = Field(),
     val email: Field = Field(),

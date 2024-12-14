@@ -113,11 +113,9 @@ fun FitnessProHorizontalPager(
  * Basicamente ele deve ser habilitado se a próxima tab ou a tab anterior estiver habilitada.
  */
 private fun getUserScrollEnabled(tabs: List<Tab>): Boolean {
-//    val tabSelected = tabs.first { it.selected.value }
-//    val nextTab = tabs.getOrNull(tabs.indexOf(tabSelected) + 1)
-//    val previousTab = tabs.getOrNull(tabs.indexOf(tabSelected) - 1)
-//
-//    return nextTab?.isEnabled?.invoke() == true || previousTab?.isEnabled?.invoke() == true
+    val tabSelected = tabs.first { it.selected.value }
+    val nextTab = tabs.getOrNull(tabs.indexOf(tabSelected) + 1)
+    val previousTab = tabs.getOrNull(tabs.indexOf(tabSelected) - 1)
 
-    return true
+    return nextTab?.isEnabled?.invoke() == true || previousTab?.isEnabled?.invoke() == true
 }
