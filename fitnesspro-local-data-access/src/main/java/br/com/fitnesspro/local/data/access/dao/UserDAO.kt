@@ -14,4 +14,7 @@ abstract class UserDAO {
 
     @Query("SELECT EXISTS(SELECT 1 FROM user WHERE email = :email)")
     abstract suspend fun hasUserWithEmail(email: String): Boolean
+
+    @Query("SELECT * FROM user WHERE id = :id")
+    abstract suspend fun findById(id: String): User
 }

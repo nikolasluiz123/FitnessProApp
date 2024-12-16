@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
+import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.screen.registeruser.RegisterAcademyScreen
 import br.com.fitnesspro.ui.viewmodel.RegisterAcademyViewModel
 import com.google.gson.GsonBuilder
@@ -28,7 +29,7 @@ fun NavGraphBuilder.registerAcademyScreen(
 }
 
 fun NavController.navigateToRegisterAcademyScreen(
-    args: RegisterAcademyScreenArgs = RegisterAcademyScreenArgs(),
+    args: RegisterAcademyScreenArgs,
     navOptions: NavOptions? = null
 ) {
     val json = GsonBuilder().defaultGSonComposeNavigation().toJson(args)
@@ -36,5 +37,7 @@ fun NavController.navigateToRegisterAcademyScreen(
     navigate(route = "$registerAcademyScreenRoute?$registerAcademyArguments={$json}", navOptions = navOptions)
 }
 
- class RegisterAcademyScreenArgs(
+class RegisterAcademyScreenArgs(
+    val personId: String,
+    val context: EnumOptionsBottomSheetRegisterUser
 )

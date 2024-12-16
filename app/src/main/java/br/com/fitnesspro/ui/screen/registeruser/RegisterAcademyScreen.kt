@@ -1,5 +1,6 @@
 package br.com.fitnesspro.ui.screen.registeruser
 
+import android.content.Context
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,9 +42,12 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
+import br.com.fitnesspro.ui.screen.registeruser.callback.OnSaveAcademyClick
 import br.com.fitnesspro.ui.state.RegisterAcademyUIState
 import br.com.fitnesspro.ui.viewmodel.RegisterAcademyViewModel
 import br.com.market.market.compose.components.button.fab.FloatingActionButtonSave
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterAcademyScreen(
@@ -55,6 +59,7 @@ fun RegisterAcademyScreen(
     RegisterAcademyScreen(
         state = state,
         onBackClick = onBackClick,
+        onSaveAcademyClick = viewModel::saveAcademy
     )
 }
 
@@ -63,6 +68,7 @@ fun RegisterAcademyScreen(
 fun RegisterAcademyScreen(
     state: RegisterAcademyUIState = RegisterAcademyUIState(),
     onBackClick: () -> Unit = { },
+    onSaveAcademyClick: OnSaveAcademyClick? = null
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -72,6 +78,7 @@ fun RegisterAcademyScreen(
         topBar = {
             SimpleFitnessProTopAppBar(
                 title = state.title,
+                subtitle = state.subtitle,
                 onBackClick = onBackClick,
                 showMenuWithLogout = false
             )
@@ -81,7 +88,11 @@ fun RegisterAcademyScreen(
                 floatingActionButton = {
                     FloatingActionButtonSave(
                         onClick = {
-
+                            onSaveAcademyClick?.onExecute(
+                                onSaved = {
+                                    showSuccessMessage(coroutineScope, snackbarHostState, context)
+                                }
+                            )
                         }
                     )
                 },
@@ -89,7 +100,8 @@ fun RegisterAcademyScreen(
                     IconButtonDelete(
                         onClick = {
 
-                        }
+                        },
+                        enabled = state.toPersonAcademyTime != null
                     )
                 }
             )
@@ -210,7 +222,11 @@ fun RegisterAcademyScreen(
                 },
                 keyboardActions = KeyboardActions(
                     onDone = {
-
+                        onSaveAcademyClick?.onExecute(
+                            onSaved = {
+                                showSuccessMessage(coroutineScope, snackbarHostState, context)
+                            }
+                        )
                     }
                 ),
                 keyboardOptions = KeyboardOptions(
@@ -233,6 +249,18 @@ fun RegisterAcademyScreen(
 
     }
 
+}
+
+private fun showSuccessMessage(
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+    context: Context
+) {
+    coroutineScope.launch {
+        snackbarHostState.showSnackbar(
+            message = context.getString(R.string.register_academy_screen_success_message)
+        )
+    }
 }
 
 @Preview

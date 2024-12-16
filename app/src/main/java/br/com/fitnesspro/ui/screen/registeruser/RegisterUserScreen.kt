@@ -36,6 +36,7 @@ import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
+import br.com.fitnesspro.ui.navigation.RegisterAcademyScreenArgs
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnAcademyItemClick
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnAddAcademy
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnSaveUserClick
@@ -112,7 +113,12 @@ fun RegisterUserScreen(
                     } else {
                         FloatingActionButtonAdd(
                             onClick = {
-                                onAddAcademyClick?.onExecute()
+                                onAddAcademyClick?.onExecute(
+                                    args = RegisterAcademyScreenArgs(
+                                        personId = state.toPerson?.id!!,
+                                        context = state.context!!
+                                    )
+                                )
                             }
                         )
                     }

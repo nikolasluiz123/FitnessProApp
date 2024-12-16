@@ -5,7 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.BaseModel
-import java.time.LocalDateTime
+import java.time.DayOfWeek
+import java.time.LocalTime
 import java.util.UUID
 
 @Entity(
@@ -32,9 +33,11 @@ data class PersonAcademyTime(
     var personId: String? = null,
     @ColumnInfo(name = "academy_id")
     var academyId: String? = null,
-    @ColumnInfo(name = "date_time_start")
-    var dateTimeStart: LocalDateTime? = null,
-    @ColumnInfo(name = "date_time_end")
-    var dateTimeEnd: LocalDateTime? = null,
+    @ColumnInfo(name = "time_start")
+    var timeStart: LocalTime? = null,
+    @ColumnInfo(name = "time_end")
+    var timeEnd: LocalTime? = null,
+    @ColumnInfo(name = "day_week")
+    var dayOfWeek: DayOfWeek? = null,
     var active: Boolean = true,
 ): BaseModel()

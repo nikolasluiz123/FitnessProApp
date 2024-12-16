@@ -158,7 +158,7 @@ class RegisterUserViewModel @Inject constructor(
             val validationResults = savePersonUseCase.execute(toPerson)
 
             if (validationResults.isEmpty()) {
-                updateInfosBeforeSave(toPerson)
+                updateInfosAfterSave(toPerson)
                 onSuccess()
             } else {
                 showValidationMessages(validationResults)
@@ -166,7 +166,7 @@ class RegisterUserViewModel @Inject constructor(
         }
     }
 
-    private fun updateInfosBeforeSave(toPerson: TOPerson) {
+    private fun updateInfosAfterSave(toPerson: TOPerson) {
         _uiState.update {
             it.copy(
                 title = getTitle(context = _uiState.value.context, toPerson = toPerson),

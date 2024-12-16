@@ -57,7 +57,12 @@ fun <T> DefaultExposedDropdownMenu(
             items.forEach { item ->
                 DropdownMenuItem(
                     text = { Text(text = item.label) },
-                    onClick = { onItemClick(item) }
+                    onClick = {
+                        items.forEach { it.selected = false }
+                        item.selected = true
+
+                        onItemClick(item)
+                    }
                 )
             }
         }

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.core.util.PatternsCompat.EMAIL_ADDRESS
 import br.com.fitnesspro.R
 import br.com.fitnesspro.core.security.HashHelper
-import br.com.fitnesspro.helper.TransferObjectHelper
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.repository.UserRepository
@@ -19,20 +18,30 @@ import java.time.LocalDate
 class SavePersonUseCase(
     private val context: Context,
     private val userRepository: UserRepository,
-    private val toHelper: TransferObjectHelper
 ) {
 
     suspend fun execute(toPerson: TOPerson): List<Pair<EnumValidatedPersonFields, String>> {
-        val user = toHelper.transferObjectToModel(toPerson.toUser!!, User::class)
+        val user = User(
+            email = toPerson.toUser?.email,
+            password = toPerson.toUser?.password,
+            type = toPerson.toUser?.type
+        )
 
-        val person = toHelper.transferObjectToModel(toPerson, Person::class)
-        person.userId = user.id
+        val person = Person(
+            name = toPerson.name,
+            birthDate = toPerson.birthDate,
+            phone = toPerson.phone,
+            userId = user.id
+        )
 
         val validationResults = mutableListOf<Pair<EnumValidatedPersonFields, String>>()
         validationResults.addAll(validateUser(user))
         validationResults.addAll(validatePerson(person))
 
         if (validationResults.isEmpty()) {
+            toPerson.toUser?.id = user.id
+            toPerson.id = person.id
+
             user.password = HashHelper.applyHash(user.password!!)
 
             userRepository.savePerson(user, person)

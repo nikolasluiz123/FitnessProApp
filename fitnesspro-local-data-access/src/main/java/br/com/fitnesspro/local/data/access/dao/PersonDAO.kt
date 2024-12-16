@@ -3,6 +3,7 @@ package br.com.fitnesspro.local.data.access.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import androidx.room.Transaction
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
@@ -21,4 +22,8 @@ abstract class PersonDAO{
         saveUser(user)
         savePerson(person)
     }
+
+    @Query("SELECT * FROM person WHERE id = :id")
+    abstract suspend fun findById(id: String): Person
+
 }

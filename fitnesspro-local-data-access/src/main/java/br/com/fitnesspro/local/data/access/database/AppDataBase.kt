@@ -1,9 +1,13 @@
 package br.com.fitnesspro.local.data.access.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.RenameColumn
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.AutoMigrationSpec
 import br.com.fitnesspro.local.data.access.converters.RoomTypeConverters
+import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.general.Academy
@@ -31,7 +35,7 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 
 @Database(
-    version = 1,
+    version = 3,
     entities = [
         User::class, Person::class, Academy::class, PersonAcademyTime::class, PhysicEvaluation::class,
         IngredientPreDefinition::class, MealOptionPreDefinition::class, Diet::class, DayWeekDiet::class, Meal::class,
@@ -40,7 +44,10 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
         Exercise::class, Video::class, VideoExercise::class, Workout::class, WorkoutGroup::class
     ],
     exportSchema = true,
-    autoMigrations = []
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2),
+        AutoMigration(from = 2, to = 3, spec = AutoMigrationSpec2To3::class)
+    ]
 )
 @TypeConverters(RoomTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -49,4 +56,10 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun personDAO(): PersonDAO
 
+    abstract fun academyDAO(): AcademyDAO
+
 }
+
+@RenameColumn(tableName = "person_academy_time", fromColumnName = "date_time_start", toColumnName = "time_start")
+@RenameColumn(tableName = "person_academy_time", fromColumnName = "date_time_end", toColumnName = "time_end")
+class AutoMigrationSpec2To3 : AutoMigrationSpec
