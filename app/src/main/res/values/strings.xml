@@ -72,4 +72,5 @@
     <string name="register_academy_screen_title_new_work_hour">Novo Horário de Trabalho</string>
     <string name="register_academy_screen_title_edit">%s %s às %s</string>
     <string name="register_academy_screen_success_message">Horário salvo com sucesso.</string>
+    <string name="validation_msg_invalid_credetials_login">E-mail ou Senha incorretos, por favor, redigite.</string>
 </resources>

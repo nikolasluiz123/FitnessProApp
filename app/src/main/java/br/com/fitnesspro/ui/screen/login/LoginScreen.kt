@@ -31,7 +31,6 @@ import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordVali
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -52,9 +51,8 @@ fun LoginScreen(
     LoginScreen(
         state = state,
         onBottomSheetRegisterUserItemClick = onBottomSheetRegisterUserItemClick,
-        onLoginClick = { onSuccess, onError ->
-
-        }
+        onLoginClick = viewModel::login,
+        onNavigateToHome = onNavigateToHome
     )
 }
 
@@ -63,7 +61,8 @@ fun LoginScreen(
 fun LoginScreen(
     state: LoginUIState = LoginUIState(),
     onBottomSheetRegisterUserItemClick: OnBottomSheetRegisterUserItemClick? = null,
-    onLoginClick: OnLoginClick? = null
+    onLoginClick: OnLoginClick? = null,
+    onNavigateToHome: () -> Unit = { }
 ) {
     Scaffold(
         topBar = {
@@ -84,8 +83,6 @@ fun LoginScreen(
             ConstraintLayout(
                 Modifier.fillMaxWidth()
             ) {
-                val (loadingRef) = createRefs()
-
                 FitnessProLinearProgressIndicator(
                     state.showLoading,
                     Modifier
@@ -131,7 +128,7 @@ fun LoginScreen(
 
                             width = Dimension.fillToConstraints
                         },
-                        field = state.username,
+                        field = state.email,
                         label = stringResource(R.string.login_screen_label_user),
                         keyboardOptions = EmailKeyboardOptions,
                     )
@@ -162,22 +159,8 @@ fun LoginScreen(
                             }
                             .padding(start = 8.dp),
                         label = stringResource(R.string.login_screen_label_button_login),
-                        enabled = !state.showLoading,
                         onClickListener = {
-                            state.onToggleLoading()
-
-                            onLoginClick?.onExecute(
-                                onSuccess = {
-                                    state.onToggleLoading()
-                                },
-                                onError = { errorMessage ->
-                                    state.onToggleLoading()
-
-                                    if (errorMessage.isNotEmpty()) {
-                                        state.onShowDialog?.showErrorDialog(errorMessage)
-                                    }
-                                }
-                            )
+                            onLoginClick?.onExecute(onNavigateToHome)
                         }
                     )
 

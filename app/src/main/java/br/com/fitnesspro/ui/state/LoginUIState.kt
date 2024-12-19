@@ -7,7 +7,7 @@ import br.com.fitnesspro.core.state.IDialogUIState
 import br.com.fitnesspro.core.state.ILoadingUIState
 
 data class LoginUIState(
-    val username: Field = Field(),
+    val email: Field = Field(),
     val password: Field = Field(),
     override val dialogMessage: String = "",
     override val showDialog: Boolean = false,

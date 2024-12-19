@@ -13,5 +13,6 @@ data class User(
     var email: String? = null,
     var password: String? = null,
     var type: EnumUserType? = null,
-    var active: Boolean = true
+    var active: Boolean = true,
+    var authenticated: Boolean = false,
 ): BaseModel()

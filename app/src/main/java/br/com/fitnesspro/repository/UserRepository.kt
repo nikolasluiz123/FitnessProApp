@@ -20,4 +20,11 @@ class UserRepository(
         userDAO.hasUserWithEmail(email)
     }
 
+    suspend fun hasUserWithCredentials(email: String, password: String): Boolean = withContext(IO) {
+        userDAO.hasUserWithCredentials(email, password)
+    }
+
+    suspend fun authenticate(email: String, password: String) = withContext(IO) {
+        userDAO.authenticate(email, password)
+    }
 }

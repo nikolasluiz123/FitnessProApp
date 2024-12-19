@@ -73,11 +73,11 @@ class SavePersonUseCase(
                 Pair(NAME, message)
             }
 
-            name.length > 512 -> {
+            name.length > NAME.maxLength -> {
                 val message = context.getString(
                     R.string.validation_msg_field_with_max_length,
                     context.getString(NAME.labelResId),
-                    512
+                    NAME.maxLength
                 )
 
                 Pair(NAME, message)
@@ -116,11 +116,11 @@ class SavePersonUseCase(
         val phone = person.phone?.trim() ?: return null
 
         val validationPair = when {
-            phone.length > 11 -> {
+            phone.length > PHONE.maxLength -> {
                 val message = context.getString(
                     R.string.validation_msg_field_with_max_length,
                     context.getString(PHONE.labelResId),
-                    11
+                    PHONE.maxLength
                 )
 
                 Pair(PHONE, message)
@@ -158,11 +158,11 @@ class SavePersonUseCase(
                 Pair(EMAIL, message)
             }
 
-            email.length > 512 -> {
+            email.length > EMAIL.maxLength -> {
                 val message = context.getString(
                     R.string.validation_msg_field_with_max_length,
                     context.getString(EMAIL.labelResId),
-                    512
+                    EMAIL.maxLength
                 )
 
                 Pair(EMAIL, message)
@@ -205,11 +205,11 @@ class SavePersonUseCase(
                 Pair(PASSWORD, message)
             }
 
-            user.password!!.length > 1024 -> {
+            user.password!!.length > PASSWORD.maxLength -> {
                 val message = context.getString(
                     R.string.validation_msg_field_with_max_length,
                     context.getString(PASSWORD.labelResId),
-                    1024
+                    PASSWORD.maxLength
                 )
 
                 Pair(PASSWORD, message)
