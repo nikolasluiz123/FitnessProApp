@@ -69,7 +69,8 @@ class LoginUseCase(
         }
 
         val invalidLength = emailTrimmed.length > EMAIL.maxLength || passwordTrimmed.length > PASSWORD.maxLength
-        val userNotExists = !userRepository.hasUserWithCredentials(emailTrimmed, passwordTrimmed)
+        val hashedPassword = HashHelper.applyHash(passwordTrimmed)
+        val userNotExists = !userRepository.hasUserWithCredentials(emailTrimmed, hashedPassword)
 
         return when {
             invalidLength || userNotExists -> {

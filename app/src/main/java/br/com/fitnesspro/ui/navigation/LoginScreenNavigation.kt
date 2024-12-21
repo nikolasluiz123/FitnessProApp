@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import br.com.fitnesspro.ui.screen.login.LoginScreen
-import br.com.fitnesspro.ui.screen.login.callback.OnBottomSheetRegisterUserItemClick
+import br.com.fitnesspro.ui.bottomsheet.registeruser.OnBottomSheetRegisterUserItemClick
 import br.com.fitnesspro.ui.viewmodel.LoginViewModel
 
 internal const val loginScreenRoute = "login"

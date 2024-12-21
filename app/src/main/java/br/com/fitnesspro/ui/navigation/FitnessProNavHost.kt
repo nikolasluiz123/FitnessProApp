@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navOptions
 
 @Composable
 fun FitnessProNavHost(
@@ -19,7 +20,11 @@ fun FitnessProNavHost(
         loginScreen(
             onBottomSheetRegisterUserItemClick = navController::navigateToRegisterUserScreen,
             onNavigateToHome = {
-
+                navController.navigateToHomeScreen(
+                    navOptions = navOptions {
+                        popUpTo(loginScreenRoute) { inclusive = true }
+                    }
+                )
             }
         )
 
@@ -33,5 +38,6 @@ fun FitnessProNavHost(
             onBackClick = navController::popBackStack,
         )
 
+        homeScreen()
     }
 }

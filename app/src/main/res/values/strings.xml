@@ -73,4 +73,24 @@
     <string name="register_academy_screen_title_edit">%s %s às %s</string>
     <string name="register_academy_screen_success_message">Horário salvo com sucesso.</string>
     <string name="validation_msg_invalid_credetials_login">E-mail ou Senha incorretos, por favor, redigite.</string>
+    <string name="home_screen_company_name">Fitness Pro Solutions</string>
+    <string name="home_screen_app_version">Versão 1.0.0</string>
+    <string name="home_screen_label_btn_scheduler">Agenda</string>
+    <string name="home_screen_label_btn_workout">Treinamento</string>
+    <string name="home_screen_label_btn_nutrition">Nutrição</string>
+    <string name="home_screen_label_btn_money">Financeiro</string>
+    <string name="home_screen_title_personal_trainer">Instrutor</string>
+    <string name="home_screen_title_nutritionist">Nutricionista</string>
+    <string name="home_screen_title_academy_member">Membro</string>
+    <string name="label_follow_up_evolution_bottom_sheet_workout">Acompanhamento de Evolução</string>
+    <string name="label_workout_setup_bottom_sheet_workout">Montagem dos Treinos</string>
+    <string name="label_predefinitions_bottom_sheet_workout">Minhas Predefinições</string>
+    <string name="label_evolution_bottom_sheet_workout">Minha Evolução</string>
+    <string name="label_workout_bottom_sheet_workout">Meu Treino Atual</string>
+    <string name="label_my_diet_bottom_sheet_nutrition">Minha Dieta</string>
+    <string name="label_my_physic_evaluation_bottom_sheet_nutrition">Minhas Avaliações Físicas</string>
+    <string name="label_shopping_list_bottom_sheet_nutrition">Lista de Compras</string>
+    <string name="label_diet_setup_bottom_sheet_nutrition">Montagem das Dietas</string>
+    <string name="label_physic_evaluation_bottom_sheet_nutrition">Realizar Avaliação Física</string>
+    <string name="label_predefinitions_bottom_sheet_nutrition">Minhas Predefinições</string>
 </resources>

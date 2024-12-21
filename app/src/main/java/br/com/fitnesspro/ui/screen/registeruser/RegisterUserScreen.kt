@@ -35,7 +35,7 @@ import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
-import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
+import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.navigation.RegisterAcademyScreenArgs
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnAcademyItemClick
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnAddAcademy

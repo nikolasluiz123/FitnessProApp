@@ -67,9 +67,9 @@ val TabTitleTextStyle = TextStyle(
 
 val TopAppBarTitleTextStyle = TextStyle(
     fontFamily = FontFamily.SansSerif,
-    fontWeight = FontWeight.Normal,
+    fontWeight = FontWeight.Medium,
     fontSize = 14.sp,
-    lineHeight = 20.sp,
+    lineHeight = 18.sp,
     letterSpacing = 0.2.sp
 )
 

@@ -7,6 +7,7 @@ import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.repository.AcademyRepository
 import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.usecase.academy.SavePersonAcademyTimeUseCase
+import br.com.fitnesspro.usecase.login.LoginUseCase
 import br.com.fitnesspro.usecase.person.SavePersonUseCase
 import dagger.Module
 import dagger.Provides
@@ -54,4 +55,16 @@ class SingletonModule {
             academyRepository = academyRepository,
         )
     }
+
+    @Provides
+    fun provideLoginUseCase(
+        @ApplicationContext context: Context,
+        userRepository: UserRepository,
+    ): LoginUseCase {
+        return LoginUseCase(
+            context = context,
+            userRepository = userRepository,
+        )
+    }
+
 }

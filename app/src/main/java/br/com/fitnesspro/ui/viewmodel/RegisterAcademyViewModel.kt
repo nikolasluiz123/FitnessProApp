@@ -15,10 +15,10 @@ import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.extensions.parseToLocalTime
 import br.com.fitnesspro.repository.AcademyRepository
-import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
-import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER
-import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser.NUTRITIONIST
-import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER
+import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
+import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER
+import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser.NUTRITIONIST
+import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER
 import br.com.fitnesspro.ui.navigation.RegisterAcademyScreenArgs
 import br.com.fitnesspro.ui.navigation.registerAcademyArguments
 import br.com.fitnesspro.ui.screen.registeruser.to.TOAcademy

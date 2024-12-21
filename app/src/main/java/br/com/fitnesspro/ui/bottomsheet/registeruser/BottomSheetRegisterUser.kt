@@ -1,11 +1,10 @@
-package br.com.fitnesspro.ui.bottomsheet
+package br.com.fitnesspro.ui.bottomsheet.registeruser
 
 import androidx.compose.runtime.Composable
 import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.bottomsheet.BottomSheet
-import br.com.fitnesspro.core.R.*
+import br.com.fitnesspro.core.R.drawable
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
-import br.com.fitnesspro.ui.screen.login.callback.OnBottomSheetRegisterUserItemClick
 
 /**
  * BottomSheet para registrar um usuário possibilitando a escolha
@@ -23,7 +22,7 @@ fun BottomSheetRegisterUser(
         BottomSheetRegisterUserItem(
             option = EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER,
             labelResId = R.string.label_student_bottom_sheet_register_user,
-            iconResId = drawable.ic_student_24dp,
+            iconResId = drawable.ic_gym_member_24dp,
             iconDescriptionResId = R.string.label_icon_student_bottom_sheet_register_user_description
         ),
         BottomSheetRegisterUserItem(

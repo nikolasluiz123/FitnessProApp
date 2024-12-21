@@ -1,4 +1,4 @@
-package br.com.fitnesspro.ui.screen.login.callback
+package br.com.fitnesspro.ui.bottomsheet.registeruser
 
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 

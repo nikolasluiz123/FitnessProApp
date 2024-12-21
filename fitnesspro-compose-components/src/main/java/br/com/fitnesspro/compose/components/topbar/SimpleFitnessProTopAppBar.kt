@@ -44,6 +44,7 @@ fun SimpleFitnessProTopAppBar(
         navigationIconContentColor = MaterialTheme.colorScheme.onSecondary
     ),
     showNavigationIcon: Boolean = true,
+    customNavigationIcon: (@Composable () -> Unit)? = null,
     showMenuWithLogout: Boolean = true,
     showMenu: Boolean = false
 ) {
@@ -61,6 +62,7 @@ fun SimpleFitnessProTopAppBar(
         actions = actions,
         menuItems = menuItems,
         showNavigationIcon = showNavigationIcon,
+        customNavigationIcon = customNavigationIcon,
         onBackClick = onBackClick,
         onLogoutClick = onLogoutClick,
         showMenuWithLogout = showMenuWithLogout,

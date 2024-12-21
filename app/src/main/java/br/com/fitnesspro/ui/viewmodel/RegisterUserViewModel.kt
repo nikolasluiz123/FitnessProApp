@@ -12,7 +12,7 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.model.enums.EnumUserType
-import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
+import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.ui.navigation.registerUserArguments
 import br.com.fitnesspro.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen

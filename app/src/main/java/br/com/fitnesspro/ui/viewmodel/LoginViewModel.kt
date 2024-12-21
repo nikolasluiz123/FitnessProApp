@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.compose.components.state.Field
 import br.com.fitnesspro.core.enums.EnumDialogType
+import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.ui.state.LoginUIState
 import br.com.fitnesspro.usecase.login.EnumValidatedLoginFields
 import br.com.fitnesspro.usecase.login.LoginUseCase
@@ -17,12 +18,28 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<LoginUIState> = MutableStateFlow(LoginUIState())
     val uiState get() = _uiState.asStateFlow()
 
     init {
+        initialUIStateLoad()
+        loadEmailAuthenticatedUser()
+    }
+
+    private fun loadEmailAuthenticatedUser() {
+        viewModelScope.launch {
+            userRepository.getAuthenticatedTOUser()?.apply {
+                _uiState.value = _uiState.value.copy(
+                    email = Field(value = email!!),
+                )
+            }
+        }
+    }
+
+    private fun initialUIStateLoad() {
         _uiState.update { currentState ->
             currentState.copy(
                 email = Field(onChange = {
@@ -51,7 +68,9 @@ class LoginViewModel @Inject constructor(
                     )
                 },
                 onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
-                onToggleLoading = { _uiState.value = _uiState.value.copy(showLoading = !_uiState.value.showLoading) },
+                onToggleLoading = {
+                    _uiState.value = _uiState.value.copy(showLoading = !_uiState.value.showLoading)
+                },
             )
         }
     }

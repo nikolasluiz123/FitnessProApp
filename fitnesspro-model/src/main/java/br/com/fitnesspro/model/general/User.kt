@@ -1,5 +1,6 @@
 package br.com.fitnesspro.model.general
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.BaseModel
@@ -14,5 +15,6 @@ data class User(
     var password: String? = null,
     var type: EnumUserType? = null,
     var active: Boolean = true,
+    @ColumnInfo(defaultValue = "0")
     var authenticated: Boolean = false,
 ): BaseModel()

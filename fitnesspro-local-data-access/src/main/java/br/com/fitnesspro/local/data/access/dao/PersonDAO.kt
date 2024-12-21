@@ -26,4 +26,7 @@ abstract class PersonDAO{
     @Query("SELECT * FROM person WHERE id = :id")
     abstract suspend fun findById(id: String): Person
 
+    @Query("SELECT * FROM person WHERE user_id = :userId")
+    abstract suspend fun findByUserId(userId: String): Person
+
 }

@@ -34,8 +34,8 @@ import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.ui.bottomsheet.BottomSheetRegisterUser
-import br.com.fitnesspro.ui.screen.login.callback.OnBottomSheetRegisterUserItemClick
+import br.com.fitnesspro.ui.bottomsheet.registeruser.BottomSheetRegisterUser
+import br.com.fitnesspro.ui.bottomsheet.registeruser.OnBottomSheetRegisterUserItemClick
 import br.com.fitnesspro.ui.screen.login.callback.OnLoginClick
 import br.com.fitnesspro.ui.state.LoginUIState
 import br.com.fitnesspro.ui.viewmodel.LoginViewModel

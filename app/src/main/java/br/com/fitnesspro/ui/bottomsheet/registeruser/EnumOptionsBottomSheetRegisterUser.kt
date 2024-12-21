@@ -1,4 +1,4 @@
-package br.com.fitnesspro.ui.bottomsheet
+package br.com.fitnesspro.ui.bottomsheet.registeruser
 
 import br.com.fitnesspro.compose.components.bottomsheet.interfaces.IEnumOptionsBottomSheet
 

@@ -45,6 +45,7 @@ fun FitnessProTopAppBar(
         navigationIconContentColor = MaterialTheme.colorScheme.onSecondary
     ),
     showNavigationIcon: Boolean = true,
+    customNavigationIcon: (@Composable () -> Unit)? = null,
     showMenuWithLogout: Boolean = true,
     showMenu: Boolean = false,
     windowInsets: WindowInsets = WindowInsets(0.dp),
@@ -55,7 +56,11 @@ fun FitnessProTopAppBar(
         windowInsets = windowInsets,
         navigationIcon = {
             if (showNavigationIcon) {
-                IconButtonArrowBack(onClick = onBackClick)
+                if (customNavigationIcon != null) {
+                    customNavigationIcon()
+                } else {
+                    IconButtonArrowBack(onClick = onBackClick)
+                }
             }
         },
         actions = {
@@ -91,7 +96,7 @@ fun FitnessProTopAppBarPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun MarketTopAppBarWithSubtitlePreview() {
+fun FitnessProTopAppBarWithSubtitlePreview() {
     FitnessProTheme {
         Surface {
             SimpleFitnessProTopAppBar(

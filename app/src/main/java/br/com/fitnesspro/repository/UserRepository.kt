@@ -4,6 +4,8 @@ import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
+import br.com.fitnesspro.ui.screen.registeruser.to.TOPerson
+import br.com.fitnesspro.ui.screen.registeruser.to.TOUser
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
@@ -27,4 +29,40 @@ class UserRepository(
     suspend fun authenticate(email: String, password: String) = withContext(IO) {
         userDAO.authenticate(email, password)
     }
+
+    suspend fun getAuthenticatedTOPerson(): TOPerson = withContext(IO) {
+        val toUser = userDAO.getAuthenticatedUser()!!.run {
+            TOUser(
+                id = id,
+                email = email,
+                password = password,
+                type = type,
+                active = active
+            )
+        }
+
+        personDAO.findByUserId(toUser.id!!).run {
+            TOPerson(
+                id = id,
+                name = name,
+                birthDate = birthDate,
+                phone = phone,
+                toUser = toUser,
+                active = active
+            )
+        }
+    }
+
+    suspend fun getAuthenticatedTOUser(): TOUser? = withContext(IO) {
+        userDAO.getAuthenticatedUser()?.run {
+            TOUser(
+                id = id,
+                email = email,
+                password = password,
+                type = type,
+                active = active
+            )
+        }
+    }
+
 }

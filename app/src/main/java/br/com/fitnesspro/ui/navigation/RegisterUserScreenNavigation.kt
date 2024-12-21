@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
-import br.com.fitnesspro.ui.bottomsheet.EnumOptionsBottomSheetRegisterUser
+import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.screen.registeruser.RegisterUserScreen
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnAcademyItemClick
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnAddAcademy

@@ -34,5 +34,7 @@ abstract class UserDAO {
         authenticateWithCredentials(email, hashedPassword)
     }
 
+    @Query("SELECT * FROM user WHERE authenticated = 1")
+    abstract suspend fun getAuthenticatedUser(): User?
 
 }

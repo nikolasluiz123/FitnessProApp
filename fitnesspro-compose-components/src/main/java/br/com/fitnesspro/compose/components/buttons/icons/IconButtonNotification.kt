@@ -8,10 +8,11 @@ import androidx.compose.ui.res.stringResource
 import br.com.fitnesspro.compose.components.R
 
 @Composable
-fun IconButtonLogout(onClick: () -> Unit = { }) {
+fun IconButtonNotification(onClick: () -> Unit = { }) {
     IconButton(onClick = onClick) {
         Icon(
-            painter = painterResource(id = br.com.fitnesspro.core.R.drawable.ic_logout_48dp), contentDescription = stringResource(R.string.label_logout)
+            painter = painterResource(id = br.com.fitnesspro.core.R.drawable.ic_notification_48dp),
+            contentDescription = stringResource(R.string.label_notification),
         )
     }
 }
