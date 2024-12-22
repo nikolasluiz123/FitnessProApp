@@ -58,6 +58,7 @@ class RegisterUserViewModel @Inject constructor(
                     title = getTitle(context = null, toPerson = toPerson),
                     subtitle = toPerson.name!!,
                     toPerson = toPerson,
+                    isVisibleFieldPhone = isVisibleFieldPhone(context = null, toPerson = toPerson),
                     name = _uiState.value.name.copy(value = toPerson.name!!),
                     email = _uiState.value.email.copy(value = toPerson.toUser?.email!!),
                     birthDate = _uiState.value.birthDate.copy(
@@ -77,6 +78,7 @@ class RegisterUserViewModel @Inject constructor(
                 title = getTitle(context = args.context, toPerson = null),
                 context = args.context,
                 tabs = tabs,
+                isVisibleFieldPhone = isVisibleFieldPhone(context = args.context, toPerson = null),
                 onShowDialog = { type, message, onConfirm, onCancel ->
                     _uiState.value = _uiState.value.copy(
                         dialogType = type,
@@ -129,6 +131,21 @@ class RegisterUserViewModel @Inject constructor(
                 })
             )
         }
+    }
+
+    private fun isVisibleFieldPhone(
+        context: EnumOptionsBottomSheetRegisterUser?,
+        toPerson: TOPerson?
+    ): Boolean {
+        return (context?.let {
+            it in listOf(
+                EnumOptionsBottomSheetRegisterUser.NUTRITIONIST,
+                EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER
+            )
+        } ?: toPerson?.toUser?.type) in listOf(
+            EnumUserType.NUTRITIONIST,
+            EnumUserType.PERSONAL_TRAINER
+        )
     }
 
     private fun getTabsWithDefaultState() = mutableListOf(

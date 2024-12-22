@@ -19,6 +19,7 @@ data class RegisterUserUIState(
     val password: Field = Field(),
     val birthDate: Field = Field(),
     val phone: Field = Field(),
+    val isVisibleFieldPhone: Boolean = false,
     override val dialogMessage: String = "",
     override val showDialog: Boolean = false,
     override val dialogType: EnumDialogType = EnumDialogType.ERROR,

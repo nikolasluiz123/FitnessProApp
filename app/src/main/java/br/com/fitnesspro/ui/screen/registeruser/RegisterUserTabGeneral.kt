@@ -144,24 +144,26 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
             }
         }
 
-        OutlinedTextFieldValidation(
-            field = state.phone,
-            label = stringResource(R.string.register_user_screen_label_phone),
-            modifier = Modifier.constrainAs(phoneRef) {
-                start.linkTo(parent.start)
-                top.linkTo(birthDayDatePickerRef.bottom)
-                end.linkTo(parent.end)
+        if (state.isVisibleFieldPhone) {
+            OutlinedTextFieldValidation(
+                field = state.phone,
+                label = stringResource(R.string.register_user_screen_label_phone),
+                modifier = Modifier.constrainAs(phoneRef) {
+                    start.linkTo(parent.start)
+                    top.linkTo(birthDayDatePickerRef.bottom)
+                    end.linkTo(parent.end)
 
-                width = Dimension.fillToConstraints
-            },
-            keyboardOptions = LastPhoneKeyboardOptions,
-            visualTransformation = PhoneVisualTransformation(),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    onDone()
-                }
+                    width = Dimension.fillToConstraints
+                },
+                keyboardOptions = LastPhoneKeyboardOptions,
+                visualTransformation = PhoneVisualTransformation(),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        onDone()
+                    }
+                )
             )
-        )
+        }
     }
 }
 
@@ -172,6 +174,21 @@ private fun RegisterUserTabGeneralPreview() {
         Surface {
             RegisterUserTabGeneral(
                 state = RegisterUserUIState(),
+                onDone = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun RegisterUserTabGeneralProfessionalPreview() {
+    FitnessProTheme {
+        Surface {
+            RegisterUserTabGeneral(
+                state = RegisterUserUIState(
+                    isVisibleFieldPhone = true
+                ),
                 onDone = {}
             )
         }
