@@ -3,7 +3,7 @@ package br.com.fitnesspro.ui.state
 import br.com.fitnesspro.core.callback.IShowDialogCallback
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.state.IDialogUIState
-import br.com.fitnesspro.ui.screen.registeruser.to.TOPerson
+import br.com.fitnesspro.to.TOPerson
 
 data class HomeUIState(
     val title: String = "",

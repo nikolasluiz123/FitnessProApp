@@ -21,8 +21,8 @@ import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegis
 import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER
 import br.com.fitnesspro.ui.navigation.RegisterAcademyScreenArgs
 import br.com.fitnesspro.ui.navigation.registerAcademyArguments
-import br.com.fitnesspro.ui.screen.registeruser.to.TOAcademy
-import br.com.fitnesspro.ui.screen.registeruser.to.TOPersonAcademyTime
+import br.com.fitnesspro.to.TOAcademy
+import br.com.fitnesspro.to.TOPersonAcademyTime
 import br.com.fitnesspro.ui.state.RegisterAcademyUIState
 import br.com.fitnesspro.usecase.academy.EnumValidatedAcademyFields
 import br.com.fitnesspro.usecase.academy.SavePersonAcademyTimeUseCase

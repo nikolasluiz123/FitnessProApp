@@ -18,8 +18,8 @@ import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegis
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.ui.navigation.registerUserArguments
 import br.com.fitnesspro.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
-import br.com.fitnesspro.ui.screen.registeruser.to.TOPerson
-import br.com.fitnesspro.ui.screen.registeruser.to.TOUser
+import br.com.fitnesspro.to.TOPerson
+import br.com.fitnesspro.to.TOUser
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields
 import br.com.fitnesspro.usecase.person.SavePersonUseCase

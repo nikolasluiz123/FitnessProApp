@@ -1,6 +1,5 @@
-package br.com.fitnesspro.ui.screen.registeruser.to
+package br.com.fitnesspro.to
 
-import br.com.fitnesspro.to.BaseTO
 import java.time.DayOfWeek
 import java.time.LocalTime
 

@@ -6,7 +6,7 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.repository.AcademyRepository
-import br.com.fitnesspro.ui.screen.registeruser.to.TOPersonAcademyTime
+import br.com.fitnesspro.to.TOPersonAcademyTime
 
 class SavePersonAcademyTimeUseCase(
     private val context: Context,

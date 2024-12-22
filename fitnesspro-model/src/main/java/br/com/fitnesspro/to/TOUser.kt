@@ -1,7 +1,6 @@
-package br.com.fitnesspro.ui.screen.registeruser.to
+package br.com.fitnesspro.to
 
 import br.com.fitnesspro.model.enums.EnumUserType
-import br.com.fitnesspro.to.BaseTO
 
 data class TOUser(
     override var id: String? = null,

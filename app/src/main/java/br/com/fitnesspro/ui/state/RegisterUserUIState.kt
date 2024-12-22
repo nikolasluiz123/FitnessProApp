@@ -6,7 +6,7 @@ import br.com.fitnesspro.core.callback.IShowDialogCallback
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.state.IDialogUIState
 import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
-import br.com.fitnesspro.ui.screen.registeruser.to.TOPerson
+import br.com.fitnesspro.to.TOPerson
 
 data class RegisterUserUIState(
     val title: String? = null,

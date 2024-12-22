@@ -7,7 +7,7 @@ import br.com.fitnesspro.core.security.HashHelper
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.repository.UserRepository
-import br.com.fitnesspro.ui.screen.registeruser.to.TOPerson
+import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields.BIRTH_DATE
 import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields.EMAIL
 import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields.NAME

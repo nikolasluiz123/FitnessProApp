@@ -4,8 +4,8 @@ import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
-import br.com.fitnesspro.ui.screen.registeruser.to.TOPerson
-import br.com.fitnesspro.ui.screen.registeruser.to.TOUser
+import br.com.fitnesspro.to.TOPerson
+import br.com.fitnesspro.to.TOUser
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 

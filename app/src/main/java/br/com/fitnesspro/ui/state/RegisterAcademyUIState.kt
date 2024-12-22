@@ -5,7 +5,7 @@ import br.com.fitnesspro.compose.components.state.Field
 import br.com.fitnesspro.core.callback.IShowDialogCallback
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.state.IDialogUIState
-import br.com.fitnesspro.ui.screen.registeruser.to.TOPersonAcademyTime
+import br.com.fitnesspro.to.TOPersonAcademyTime
 import java.time.DayOfWeek
 
 data class RegisterAcademyUIState(

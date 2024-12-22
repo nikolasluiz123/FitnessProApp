@@ -1,6 +1,4 @@
-package br.com.fitnesspro.ui.screen.registeruser.to
-
-import br.com.fitnesspro.to.BaseTO
+package br.com.fitnesspro.to
 
 data class TOAcademy(
     override var id: String? = null,
