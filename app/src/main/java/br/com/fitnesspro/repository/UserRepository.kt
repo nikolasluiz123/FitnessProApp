@@ -30,8 +30,8 @@ class UserRepository(
         userDAO.authenticate(email, password)
     }
 
-    suspend fun getAuthenticatedTOPerson(): TOPerson = withContext(IO) {
-        val toUser = userDAO.getAuthenticatedUser()!!.run {
+    suspend fun getAuthenticatedTOPerson(): TOPerson? = withContext(IO) {
+        val toUser = userDAO.getAuthenticatedUser()?.run {
             TOUser(
                 id = id,
                 email = email,
@@ -40,6 +40,8 @@ class UserRepository(
                 active = active
             )
         }
+
+        if (toUser == null) return@withContext null
 
         personDAO.findByUserId(toUser.id!!).run {
             TOPerson(

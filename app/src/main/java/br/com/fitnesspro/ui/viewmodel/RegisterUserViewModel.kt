@@ -8,10 +8,12 @@ import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.state.Field
 import br.com.fitnesspro.compose.components.tabs.Tab
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
+import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.model.enums.EnumUserType
+import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.ui.navigation.registerUserArguments
@@ -33,6 +35,7 @@ import javax.inject.Inject
 class RegisterUserViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val savePersonUseCase: SavePersonUseCase,
+    private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -44,6 +47,25 @@ class RegisterUserViewModel @Inject constructor(
     init {
         jsonArgs?.fromJsonNavParamToArgs(RegisterUserScreenArgs::class.java)?.let { args ->
             initialLoadUIState(args)
+            loadUIStateWithAuthenticatedPerson()
+        }
+    }
+
+    private fun loadUIStateWithAuthenticatedPerson() = viewModelScope.launch {
+        userRepository.getAuthenticatedTOPerson()?.let { toPerson ->
+            _uiState.update {
+                it.copy(
+                    title = getTitle(context = null, toPerson = toPerson),
+                    subtitle = toPerson.name!!,
+                    toPerson = toPerson,
+                    name = _uiState.value.name.copy(value = toPerson.name!!),
+                    email = _uiState.value.email.copy(value = toPerson.toUser?.email!!),
+                    birthDate = _uiState.value.birthDate.copy(
+                        value = toPerson.birthDate?.format(DATE) ?: ""
+                    ),
+                    phone = _uiState.value.phone.copy(value = toPerson.phone ?: "")
+                )
+            }
         }
     }
 
@@ -145,7 +167,7 @@ class RegisterUserViewModel @Inject constructor(
     fun saveUser(onSuccess: () -> Unit) {
         val toPerson = TOPerson(
             name = _uiState.value.name.value,
-            birthDate = _uiState.value.birthDate.value.parseToLocalDate(EnumDateTimePatterns.DATE),
+            birthDate = _uiState.value.birthDate.value.parseToLocalDate(DATE),
             phone = _uiState.value.phone.value,
             toUser = TOUser(
                 email = _uiState.value.email.value,

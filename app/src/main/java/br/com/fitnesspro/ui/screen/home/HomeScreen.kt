@@ -32,19 +32,29 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_600
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.ui.bottomsheet.workout.BottomSheetWorkout
+import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.ui.state.HomeUIState
 import br.com.fitnesspro.ui.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
+fun HomeScreen(
+    viewModel: HomeViewModel,
+    onNavigateToAccountInformation: OnNavigateToAccountInformation
+) {
     val state by viewModel.uiState.collectAsState()
 
-    HomeScreen(state)
+    HomeScreen(
+        state = state,
+        onNavigateToAccountInformation = onNavigateToAccountInformation
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(state: HomeUIState) {
+fun HomeScreen(
+    state: HomeUIState,
+    onNavigateToAccountInformation: OnNavigateToAccountInformation? = null
+) {
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
@@ -57,7 +67,11 @@ fun HomeScreen(state: HomeUIState) {
                 },
                 showNavigationIcon = true,
                 customNavigationIcon = {
-                    IconButtonAccount()
+                    IconButtonAccount(
+                        onClick = {
+                            onNavigateToAccountInformation?.onNavigate(RegisterUserScreenArgs())
+                        }
+                    )
                 },
                 showMenuWithLogout = false,
             )

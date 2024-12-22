@@ -31,7 +31,7 @@ class HomeViewModel @Inject constructor(
 
     private fun initialUIStateLoad() {
         viewModelScope.launch {
-            val toPerson = userRepository.getAuthenticatedTOPerson()
+            val toPerson = userRepository.getAuthenticatedTOPerson()!!
 
             _uiState.update { currentState ->
                 currentState.copy(

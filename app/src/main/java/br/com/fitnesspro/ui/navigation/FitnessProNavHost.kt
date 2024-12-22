@@ -38,6 +38,8 @@ fun FitnessProNavHost(
             onBackClick = navController::popBackStack,
         )
 
-        homeScreen()
+        homeScreen(
+            onNavigateToAccountInformation = navController::navigateToRegisterUserScreen
+        )
     }
 }
