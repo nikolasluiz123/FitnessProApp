@@ -17,6 +17,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
@@ -28,6 +31,7 @@ import br.com.fitnesspro.compose.components.LabeledText
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.core.R.drawable
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import java.util.UUID
 
 @Composable
 fun <T, GROUP : IBasicExpandableGroup<T>> LazyExpandableVerticalList(
@@ -35,21 +39,47 @@ fun <T, GROUP : IBasicExpandableGroup<T>> LazyExpandableVerticalList(
     itemLayout: @Composable (T) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val expandedStates = rememberSaveable(
+        saver = Saver(
+            save = { states -> states.mapValues { it.value } },
+            restore = { saved ->
+                mutableStateMapOf<GROUP, Boolean>().apply {
+                    groups.forEach { group ->
+                        this[group] = saved[group] ?: false
+                    }
+                }
+            }
+        )
+    ) {
+        mutableStateMapOf<GROUP, Boolean>().apply {
+            groups.forEach { group ->
+                this[group] = group.isExpanded
+            }
+        }
+    }
+
     LazyColumn(
         modifier = modifier,
         content = {
-            groups.onEach { group ->
+            groups.forEach { group ->
                 item {
                     BasicExpandableSection(
                         label = stringResource(id = group.label),
                         value = group.value,
-                        isExpanded = group.isExpanded,
-                        onClick = { group.isExpanded = !group.isExpanded }
+                        isExpanded = expandedStates[group] ?: false,
+                        onClick = {
+                            val isCurrentlyExpanded = expandedStates[group] ?: false
+                            expandedStates[group] = !isCurrentlyExpanded
+                        }
                     )
                 }
 
                 items(group.items.size) { index ->
-                    AnimatedVisibility(visible = group.isExpanded, enter = expandVertically(), exit = shrinkVertically()) {
+                    AnimatedVisibility(
+                        visible = expandedStates[group] == true,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
+                    ) {
                         itemLayout(group.items[index])
                     }
                 }
@@ -57,7 +87,6 @@ fun <T, GROUP : IBasicExpandableGroup<T>> LazyExpandableVerticalList(
         }
     )
 }
-
 @Composable
 fun BasicExpandableSection(
     label: String,
@@ -114,7 +143,8 @@ private class TestGroup(
     override val label: Int,
     override val value: String,
     override var isExpanded: Boolean,
-    override val items: List<String>
+    override val items: List<String>,
+    override val id: String = UUID.randomUUID().toString()
 ) : IBasicExpandableGroup<String>
 
 private val groups = mutableListOf(

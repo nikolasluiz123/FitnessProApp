@@ -10,7 +10,7 @@ import java.time.DayOfWeek
 import java.time.LocalTime
 
 @Dao
-abstract class AcademyDAO {
+abstract class AcademyDAO: IBaseDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun saveAcademyTime(personAcademyTime: PersonAcademyTime)
@@ -25,7 +25,6 @@ abstract class AcademyDAO {
         select *
         from person_academy_time pat
         where pat.active
-        and pat.academy_id = :academyId
         and pat.person_id = :personId
         and pat.day_week = :dayOfWeek
         and (
@@ -34,7 +33,6 @@ abstract class AcademyDAO {
         )
     """)
     abstract suspend fun getConflictPersonAcademyTime(
-        academyId: String,
         personId: String,
         dayOfWeek: DayOfWeek,
         start: LocalTime,

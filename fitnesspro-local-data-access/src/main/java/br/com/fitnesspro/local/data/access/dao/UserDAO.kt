@@ -8,24 +8,24 @@ import androidx.room.Transaction
 import br.com.fitnesspro.model.general.User
 
 @Dao
-abstract class UserDAO {
+abstract class UserDAO: IBaseDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun save(user: User)
 
-    @Query("SELECT EXISTS(SELECT 1 FROM user WHERE email = :email)")
+    @Query("select exists(select 1 from user where email = :email)")
     abstract suspend fun hasUserWithEmail(email: String): Boolean
 
-    @Query("SELECT EXISTS (SELECT 1 FROM user WHERE email = :email and password = :hashedPassword)")
+    @Query("select exists (select 1 from user where email = :email and password = :hashedPassword)")
     abstract suspend fun hasUserWithCredentials(email: String, hashedPassword: String): Boolean
 
-    @Query("SELECT * FROM user WHERE id = :id")
+    @Query("select * from user where id = :id")
     abstract suspend fun findById(id: String): User
 
-    @Query("UPDATE user SET authenticated = 0 WHERE authenticated = 1")
+    @Query("update user set authenticated = 0 where authenticated = 1")
     abstract suspend fun logoutAll()
 
-    @Query("UPDATE user SET authenticated = 1 WHERE email = :email and password = :hashedPassword")
+    @Query("update user set authenticated = 1 where email = :email and password = :hashedPassword")
     abstract suspend fun authenticateWithCredentials(email: String, hashedPassword: String)
 
     @Transaction
@@ -34,7 +34,7 @@ abstract class UserDAO {
         authenticateWithCredentials(email, hashedPassword)
     }
 
-    @Query("SELECT * FROM user WHERE authenticated = 1")
+    @Query("select * from user where authenticated = 1")
     abstract suspend fun getAuthenticatedUser(): User?
 
 }

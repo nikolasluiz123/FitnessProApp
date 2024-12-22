@@ -116,7 +116,7 @@ fun RegisterUserScreen(
                                 onAddAcademyClick?.onExecute(
                                     args = RegisterAcademyScreenArgs(
                                         personId = state.toPerson?.id!!,
-                                        context = state.context!!
+                                        context = state.context
                                     )
                                 )
                             }

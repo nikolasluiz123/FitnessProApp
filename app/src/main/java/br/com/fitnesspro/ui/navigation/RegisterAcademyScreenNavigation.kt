@@ -39,5 +39,5 @@ fun NavController.navigateToRegisterAcademyScreen(
 
 class RegisterAcademyScreenArgs(
     val personId: String,
-    val context: EnumOptionsBottomSheetRegisterUser
+    val context: EnumOptionsBottomSheetRegisterUser? = null
 )

@@ -1,11 +1,15 @@
 package br.com.fitnesspro.repository
 
+import br.com.fitnesspro.R
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
+import br.com.fitnesspro.to.TOAcademy
 import br.com.fitnesspro.to.TOPerson
+import br.com.fitnesspro.to.TOPersonAcademyTime
 import br.com.fitnesspro.to.TOUser
+import br.com.fitnesspro.ui.screen.registeruser.decorator.AcademyGroupDecorator
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
@@ -65,6 +69,41 @@ class UserRepository(
                 active = active
             )
         }
+    }
+
+    suspend fun getAcademies(personId: String): List<AcademyGroupDecorator> = withContext(IO) {
+        val academies = personDAO.getAcademies(personId = personId)
+        val personAcademyTimes = academies.flatMap { academy ->
+            personDAO.getAcademyTimes(personId = personId, academyId = academy.id)
+        }
+
+        val groups = academies.map { academy ->
+            val academyTimes = personAcademyTimes.filter { it.academyId == academy.id }
+            val items = academyTimes.map {
+                TOPersonAcademyTime(
+                    id = it.id,
+                    personId = it.personId,
+                    toAcademy = TOAcademy(
+                        id = it.academyId,
+                        name = academy.name,
+                        address = academy.address,
+                        phone = academy.phone,
+                    ),
+                    timeStart = it.timeStart,
+                    timeEnd = it.timeEnd,
+                    dayOfWeek = it.dayOfWeek,
+                )
+            }
+
+            AcademyGroupDecorator(
+                label = R.string.label_academy_group,
+                value = academy.name!!,
+                isExpanded = false,
+                items = items
+            )
+        }
+
+        groups
     }
 
 }

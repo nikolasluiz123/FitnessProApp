@@ -14,12 +14,13 @@ import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.repository.UserRepository
+import br.com.fitnesspro.to.TOPerson
+import br.com.fitnesspro.to.TOUser
 import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.ui.navigation.registerUserArguments
+import br.com.fitnesspro.ui.screen.registeruser.decorator.AcademyGroupDecorator
 import br.com.fitnesspro.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
-import br.com.fitnesspro.to.TOPerson
-import br.com.fitnesspro.to.TOUser
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields
 import br.com.fitnesspro.usecase.person.SavePersonUseCase
@@ -58,6 +59,7 @@ class RegisterUserViewModel @Inject constructor(
                     title = getTitle(context = null, toPerson = toPerson),
                     subtitle = toPerson.name!!,
                     toPerson = toPerson,
+                    academies = getAcademiesFromAuthenticatedPerson(toPerson),
                     isVisibleFieldPhone = isVisibleFieldPhone(context = null, toPerson = toPerson),
                     name = _uiState.value.name.copy(value = toPerson.name!!),
                     email = _uiState.value.email.copy(value = toPerson.toUser?.email!!),
@@ -68,6 +70,10 @@ class RegisterUserViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private suspend fun getAcademiesFromAuthenticatedPerson(toPerson: TOPerson): List<AcademyGroupDecorator> {
+        return userRepository.getAcademies(toPerson.id!!)
     }
 
     private fun initialLoadUIState(args: RegisterUserScreenArgs) {

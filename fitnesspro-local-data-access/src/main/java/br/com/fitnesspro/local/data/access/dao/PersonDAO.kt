@@ -5,11 +5,13 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.Person
+import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.model.general.User
 
 @Dao
-abstract class PersonDAO{
+abstract class PersonDAO: IBaseDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun savePerson(person: Person)
@@ -23,10 +25,32 @@ abstract class PersonDAO{
         savePerson(person)
     }
 
-    @Query("SELECT * FROM person WHERE id = :id")
+    @Query("select * from person where id = :id")
     abstract suspend fun findById(id: String): Person
 
-    @Query("SELECT * FROM person WHERE user_id = :userId")
+    @Query("select * from person where user_id = :userId")
     abstract suspend fun findByUserId(userId: String): Person
+
+    @Query("""
+        select academy.* 
+        from academy
+        where academy.active = 1
+        and exists (
+            select 1
+            from person_academy_time pat
+            where pat.person_id = :personId
+            and pat.academy_id = academy.id
+        )
+    """)
+    abstract suspend fun getAcademies(personId: String): List<Academy>
+
+    @Query("""
+        select pat.*
+        from person_academy_time pat
+        where pat.active = 1
+        and pat.person_id = :personId
+        and pat.academy_id = :academyId
+    """)
+    abstract suspend fun getAcademyTimes(personId: String, academyId: String): List<PersonAcademyTime>
 
 }

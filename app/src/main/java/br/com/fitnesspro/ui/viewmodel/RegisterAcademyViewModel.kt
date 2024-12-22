@@ -14,15 +14,15 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.extensions.parseToLocalTime
+import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.repository.AcademyRepository
+import br.com.fitnesspro.repository.UserRepository
+import br.com.fitnesspro.to.TOAcademy
+import br.com.fitnesspro.to.TOPerson
+import br.com.fitnesspro.to.TOPersonAcademyTime
 import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
-import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER
-import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser.NUTRITIONIST
-import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER
 import br.com.fitnesspro.ui.navigation.RegisterAcademyScreenArgs
 import br.com.fitnesspro.ui.navigation.registerAcademyArguments
-import br.com.fitnesspro.to.TOAcademy
-import br.com.fitnesspro.to.TOPersonAcademyTime
 import br.com.fitnesspro.ui.state.RegisterAcademyUIState
 import br.com.fitnesspro.usecase.academy.EnumValidatedAcademyFields
 import br.com.fitnesspro.usecase.academy.SavePersonAcademyTimeUseCase
@@ -38,6 +38,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterAcademyViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val userRepository: UserRepository,
     private val academyRepository: AcademyRepository,
     private val savePersonAcademyTimeUseCase: SavePersonAcademyTimeUseCase,
     savedStateHandle: SavedStateHandle
@@ -56,57 +57,59 @@ class RegisterAcademyViewModel @Inject constructor(
 
     private fun initialLoadUIState() {
         jsonArgs?.fromJsonNavParamToArgs(RegisterAcademyScreenArgs::class.java)?.let { args ->
-            _uiState.update { currentState ->
-                currentState.copy(
-                    title = getTitle(args.context, null),
-                    subtitle = getSubtitle(null),
-                    onShowDialog = { type, message, onConfirm, onCancel ->
-                        _uiState.value = _uiState.value.copy(
-                            dialogType = type,
-                            showDialog = true,
-                            dialogMessage = message,
-                            onConfirm = onConfirm,
-                            onCancel = onCancel
-                        )
-                    },
-                    onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
-                    academy = Field(onChange = { text ->
-                        _uiState.value = _uiState.value.copy(
-                            academy = _uiState.value.academy.copy(
-                                value = text,
-                                errorMessage = ""
-                            )
-                        )
-                    }),
-                    dayWeek = Field(onChange = {
-                        _uiState.value = _uiState.value.copy(
-                            dayWeek = _uiState.value.dayWeek.copy(
-                                value = it,
-                                errorMessage = ""
-                            )
-                        )
-                    }),
-                    start = Field(onChange = {
-                        if (it.isDigitsOnly()) {
+            viewModelScope.launch {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        title = getTitle(args.context, null),
+                        subtitle = getSubtitle(null),
+                        onShowDialog = { type, message, onConfirm, onCancel ->
                             _uiState.value = _uiState.value.copy(
-                                start = _uiState.value.start.copy(
+                                dialogType = type,
+                                showDialog = true,
+                                dialogMessage = message,
+                                onConfirm = onConfirm,
+                                onCancel = onCancel
+                            )
+                        },
+                        onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
+                        academy = Field(onChange = { text ->
+                            _uiState.value = _uiState.value.copy(
+                                academy = _uiState.value.academy.copy(
+                                    value = text,
+                                    errorMessage = ""
+                                )
+                            )
+                        }),
+                        dayWeek = Field(onChange = {
+                            _uiState.value = _uiState.value.copy(
+                                dayWeek = _uiState.value.dayWeek.copy(
                                     value = it,
                                     errorMessage = ""
                                 )
                             )
-                        }
-                    }),
-                    end = Field(onChange = {
-                        if (it.isDigitsOnly()) {
-                            _uiState.value = _uiState.value.copy(
-                                end = _uiState.value.end.copy(
-                                    value = it,
-                                    errorMessage = ""
+                        }),
+                        start = Field(onChange = {
+                            if (it.isDigitsOnly()) {
+                                _uiState.value = _uiState.value.copy(
+                                    start = _uiState.value.start.copy(
+                                        value = it,
+                                        errorMessage = ""
+                                    )
                                 )
-                            )
-                        }
-                    })
-                )
+                            }
+                        }),
+                        end = Field(onChange = {
+                            if (it.isDigitsOnly()) {
+                                _uiState.value = _uiState.value.copy(
+                                    end = _uiState.value.end.copy(
+                                        value = it,
+                                        errorMessage = ""
+                                    )
+                                )
+                            }
+                        })
+                    )
+                }
             }
         }
     }
@@ -115,8 +118,8 @@ class RegisterAcademyViewModel @Inject constructor(
         return toPersonAcademyTime?.toAcademy?.name ?: ""
     }
 
-    private fun getTitle(
-        option: EnumOptionsBottomSheetRegisterUser,
+    private suspend fun getTitle(
+        option: EnumOptionsBottomSheetRegisterUser?,
         toPersonAcademyTime: TOPersonAcademyTime?
     ): String {
         return toPersonAcademyTime?.let(::getTitleFromEdition) ?: getTitleFromInclusion(option)
@@ -135,13 +138,30 @@ class RegisterAcademyViewModel @Inject constructor(
         )
     }
 
-    private fun getTitleFromInclusion(option: EnumOptionsBottomSheetRegisterUser): String {
-        return when (option) {
-            ACADEMY_MEMBER -> {
+    private suspend fun getTitleFromInclusion(option: EnumOptionsBottomSheetRegisterUser?): String {
+        return userRepository.getAuthenticatedTOPerson()?.let(::getTitleFromPerson) ?: getTitleFromBottomSheetOption(option)
+    }
+
+    private fun getTitleFromBottomSheetOption(option: EnumOptionsBottomSheetRegisterUser?): String {
+        return when (option!!) {
+            EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER -> {
                 context.getString(R.string.register_academy_screen_title_new_academy_member)
             }
 
-            PERSONAL_TRAINER, NUTRITIONIST -> {
+            EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER,
+            EnumOptionsBottomSheetRegisterUser.NUTRITIONIST -> {
+                context.getString(R.string.register_academy_screen_title_new_work_hour)
+            }
+        }
+    }
+
+    private fun getTitleFromPerson(toPerson: TOPerson): String {
+        return when (toPerson.toUser?.type!!) {
+            EnumUserType.ACADEMY_MEMBER -> {
+                context.getString(R.string.register_academy_screen_title_new_academy_member)
+            }
+
+            EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST -> {
                 context.getString(R.string.register_academy_screen_title_new_work_hour)
             }
         }
@@ -201,7 +221,7 @@ class RegisterAcademyViewModel @Inject constructor(
 
     }
 
-    private fun updateInfosAfterSave(
+    private suspend fun updateInfosAfterSave(
         toPersonAcademyTime: TOPersonAcademyTime,
         args: RegisterAcademyScreenArgs
     ) {
