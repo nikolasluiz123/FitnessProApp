@@ -7,15 +7,25 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.repository.AcademyRepository
+import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.to.TOPersonAcademyTime
 
 class SavePersonAcademyTimeUseCase(
     private val context: Context,
     private val academyRepository: AcademyRepository,
+    private val userRepository: UserRepository
 ) {
 
     suspend fun execute(toPersonAcademyTime: TOPersonAcademyTime): List<Pair<EnumValidatedAcademyFields?, String>> {
-        val personAcademyTime = PersonAcademyTime(
+        val personAcademyTime = toPersonAcademyTime.id?.let {
+            userRepository.findPersonAcademyTimeById(it).apply {
+                personId = toPersonAcademyTime.personId!!
+                academyId = toPersonAcademyTime.toAcademy?.id!!
+                timeStart = toPersonAcademyTime.timeStart
+                timeEnd = toPersonAcademyTime.timeEnd
+                dayOfWeek = toPersonAcademyTime.dayOfWeek
+            }
+        } ?: PersonAcademyTime(
             personId = toPersonAcademyTime.personId!!,
             academyId = toPersonAcademyTime.toAcademy?.id!!,
             timeStart = toPersonAcademyTime.timeStart,

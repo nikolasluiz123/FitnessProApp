@@ -26,10 +26,13 @@ abstract class PersonDAO: IBaseDAO {
     }
 
     @Query("select * from person where id = :id")
-    abstract suspend fun findById(id: String): Person
+    abstract suspend fun findPersonById(id: String): Person
 
     @Query("select * from person where user_id = :userId")
-    abstract suspend fun findByUserId(userId: String): Person
+    abstract suspend fun findPersonByUserId(userId: String): Person
+
+    @Query("select * from person_academy_time where id = :id")
+    abstract suspend fun findPersonAcademyTimeById(id: String): PersonAcademyTime
 
     @Query("""
         select academy.* 

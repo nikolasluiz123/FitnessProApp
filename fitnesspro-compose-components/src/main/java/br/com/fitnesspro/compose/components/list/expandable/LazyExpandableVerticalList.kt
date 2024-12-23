@@ -8,7 +8,9 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
@@ -20,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
@@ -31,12 +34,15 @@ import br.com.fitnesspro.compose.components.LabeledText
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.core.R.drawable
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.core.theme.GREY_600
+import br.com.fitnesspro.core.theme.LabelTextStyle
 import java.util.UUID
 
 @Composable
 fun <T, GROUP : IBasicExpandableGroup<T>> LazyExpandableVerticalList(
     groups: List<GROUP>,
     itemLayout: @Composable (T) -> Unit,
+    emptyMessageResId: Int,
     modifier: Modifier = Modifier
 ) {
     val expandedStates = rememberSaveable(
@@ -58,34 +64,47 @@ fun <T, GROUP : IBasicExpandableGroup<T>> LazyExpandableVerticalList(
         }
     }
 
-    LazyColumn(
-        modifier = modifier,
-        content = {
-            groups.forEach { group ->
-                item {
-                    BasicExpandableSection(
-                        label = stringResource(id = group.label),
-                        value = group.value,
-                        isExpanded = expandedStates[group] ?: false,
-                        onClick = {
-                            val isCurrentlyExpanded = expandedStates[group] ?: false
-                            expandedStates[group] = !isCurrentlyExpanded
-                        }
-                    )
-                }
+    if (groups.isNotEmpty()) {
+        LazyColumn(
+            modifier = modifier,
+            content = {
+                groups.forEach { group ->
+                    item {
+                        BasicExpandableSection(
+                            label = stringResource(id = group.label),
+                            value = group.value,
+                            isExpanded = expandedStates[group] ?: false,
+                            onClick = {
+                                val isCurrentlyExpanded = expandedStates[group] ?: false
+                                expandedStates[group] = !isCurrentlyExpanded
+                            }
+                        )
+                    }
 
-                items(group.items.size) { index ->
-                    AnimatedVisibility(
-                        visible = expandedStates[group] == true,
-                        enter = expandVertically(),
-                        exit = shrinkVertically()
-                    ) {
-                        itemLayout(group.items[index])
+                    items(group.items.size) { index ->
+                        AnimatedVisibility(
+                            visible = expandedStates[group] == true,
+                            enter = expandVertically(),
+                            exit = shrinkVertically()
+                        ) {
+                            itemLayout(group.items[index])
+                        }
                     }
                 }
             }
+        )
+    } else {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(id = emptyMessageResId),
+                style = LabelTextStyle,
+                color = GREY_600
+            )
         }
-    )
+    }
 }
 @Composable
 fun BasicExpandableSection(
@@ -184,6 +203,7 @@ private fun ExpandableListExpandedPreview() {
         Surface {
             LazyExpandableVerticalList(
                 groups = groupsExpanded,
+                emptyMessageResId = R.string.test_empty_message,
                 itemLayout = {
                     Column(Modifier.padding(8.dp)) {
                         Text(text = it)
@@ -201,6 +221,25 @@ private fun ExpandableListPreview() {
         Surface {
             LazyExpandableVerticalList(
                 groups = groups,
+                emptyMessageResId = R.string.test_empty_message,
+                itemLayout = {
+                    Column(Modifier.padding(8.dp)) {
+                        Text(text = it)
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ExpandableListEmptyPreview() {
+    FitnessProTheme {
+        Surface {
+            LazyExpandableVerticalList(
+                groups = emptyList<TestGroup>(),
+                emptyMessageResId = R.string.test_empty_message,
                 itemLayout = {
                     Column(Modifier.padding(8.dp)) {
                         Text(text = it)

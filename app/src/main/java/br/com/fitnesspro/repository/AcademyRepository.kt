@@ -19,11 +19,12 @@ class AcademyRepository(
     }
 
     suspend fun getAcademyById(id: String): Academy = withContext(IO) {
-        academyDAO.getAcademyById(id)
+        academyDAO.findAcademyById(id)
     }
 
     suspend fun getConflictPersonAcademyTime(personAcademyTime: PersonAcademyTime): PersonAcademyTime? = withContext(IO) {
         academyDAO.getConflictPersonAcademyTime(
+            personAcademyTimeId = personAcademyTime.id,
             personId = personAcademyTime.personId!!,
             dayOfWeek = personAcademyTime.dayOfWeek!!,
             start = personAcademyTime.timeStart!!,

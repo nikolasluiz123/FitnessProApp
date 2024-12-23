@@ -22,9 +22,14 @@ class SingletonModule {
     @Provides
     fun provideUserRepository(
         personDAO: PersonDAO,
-        userDAO: UserDAO
+        userDAO: UserDAO,
+        academyDAO: AcademyDAO
     ): UserRepository {
-        return UserRepository(personDAO = personDAO, userDAO = userDAO)
+        return UserRepository(
+            personDAO = personDAO,
+            userDAO = userDAO,
+            academyDAO = academyDAO
+        )
     }
 
     @Provides
@@ -49,10 +54,12 @@ class SingletonModule {
     fun provideSavePersonAcademyTimeUseCase(
         @ApplicationContext context: Context,
         academyRepository: AcademyRepository,
+        userRepository: UserRepository,
     ): SavePersonAcademyTimeUseCase {
         return SavePersonAcademyTimeUseCase(
             context = context,
             academyRepository = academyRepository,
+            userRepository = userRepository,
         )
     }
 

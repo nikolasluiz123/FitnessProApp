@@ -61,7 +61,8 @@ fun RegisterUserScreen(
         onBackClick = onBackClick,
         onAddAcademyClick = onAddAcademyClick,
         onAcademyItemClick = onAcademyItemClick,
-        onSaveUserClick = viewModel::saveUser
+        onSaveUserClick = viewModel::saveUser,
+        onUpdateAcademies = viewModel::updateAcademies
     )
 
 }
@@ -73,7 +74,8 @@ fun RegisterUserScreen(
     onBackClick: () -> Unit = { },
     onAddAcademyClick: OnAddAcademy? = null,
     onAcademyItemClick: OnAcademyItemClick? = null,
-    onSaveUserClick: OnSaveUserClick? = null
+    onSaveUserClick: OnSaveUserClick? = null,
+    onUpdateAcademies: () -> Unit = { }
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -116,7 +118,6 @@ fun RegisterUserScreen(
                                 onAddAcademyClick?.onExecute(
                                     args = RegisterAcademyScreenArgs(
                                         personId = state.toPerson?.id!!,
-                                        context = state.context
                                     )
                                 )
                             }
@@ -181,7 +182,8 @@ fun RegisterUserScreen(
                     EnumTabsRegisterUserScreen.ACADEMY.index -> {
                         RegisterUserTabAcademies(
                             state = state,
-                            onAcademyItemClick = onAcademyItemClick
+                            onAcademyItemClick = onAcademyItemClick,
+                            onUpdateAcademies = onUpdateAcademies
                         )
                     }
                 }

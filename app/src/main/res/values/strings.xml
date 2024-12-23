@@ -95,4 +95,5 @@
     <string name="label_predefinitions_bottom_sheet_nutrition">Minhas Predefinições</string>
     <string name="label_preview_academy">Academia</string>
     <string name="label_academy_group">Academia</string>
+    <string name="register_user_tab_academies_empty_message">Não existem horários cadastrados</string>
 </resources>

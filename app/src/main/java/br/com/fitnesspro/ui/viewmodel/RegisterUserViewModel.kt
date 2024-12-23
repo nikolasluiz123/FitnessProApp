@@ -76,6 +76,14 @@ class RegisterUserViewModel @Inject constructor(
         return userRepository.getAcademies(toPerson.id!!)
     }
 
+    fun updateAcademies() {
+        viewModelScope.launch {
+            _uiState.value.toPerson?.let {
+                _uiState.value = _uiState.value.copy(academies = getAcademiesFromAuthenticatedPerson(it))
+            }
+        }
+    }
+
     private fun initialLoadUIState(args: RegisterUserScreenArgs) {
         val tabs = getTabsWithDefaultState()
 

@@ -19,7 +19,7 @@ abstract class AcademyDAO: IBaseDAO {
     abstract suspend fun getAcademies(): List<Academy>
 
     @Query("select * from academy where id = :id")
-    abstract suspend fun getAcademyById(id: String): Academy
+    abstract suspend fun findAcademyById(id: String): Academy
 
     @Query("""
         select *
@@ -31,8 +31,10 @@ abstract class AcademyDAO: IBaseDAO {
             pat.time_start between :start and :end
             or pat.time_end between :start and :end
         )
+        and pat.id != :personAcademyTimeId
     """)
     abstract suspend fun getConflictPersonAcademyTime(
+        personAcademyTimeId: String,
         personId: String,
         dayOfWeek: DayOfWeek,
         start: LocalTime,

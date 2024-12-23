@@ -20,4 +20,5 @@
     <string name="test_group_2">Teste Grupo 2</string>
     <string name="label_notification">Notificação</string>
     <string name="label_count">Sua Conta</string>
+    <string name="test_empty_message">A lista está vazia</string>
 </resources>

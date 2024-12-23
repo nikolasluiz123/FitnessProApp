@@ -22,6 +22,9 @@ abstract class UserDAO: IBaseDAO {
     @Query("select * from user where id = :id")
     abstract suspend fun findById(id: String): User
 
+    @Query("select * from user where exists (select 1 from person where id = :personId)")
+    abstract suspend fun findByPersonId(personId: String): User
+
     @Query("update user set authenticated = 0 where authenticated = 1")
     abstract suspend fun logoutAll()
 

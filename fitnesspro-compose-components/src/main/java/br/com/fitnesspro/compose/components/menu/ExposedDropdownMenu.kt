@@ -58,13 +58,16 @@ fun <T> DefaultExposedDropdownMenu(
                 DropdownMenuItem(
                     text = { Text(text = item.label) },
                     onClick = {
-                        items.forEach { it.selected = false }
-                        item.selected = true
-
+                        items.selectValue(item.value)
                         onItemClick(item)
                     }
                 )
             }
         }
     }
+}
+
+fun <T> List<MenuItem<T>>.selectValue(value: T) {
+    forEach { it.selected = false }
+    first { it.value == value }.selected = true
 }

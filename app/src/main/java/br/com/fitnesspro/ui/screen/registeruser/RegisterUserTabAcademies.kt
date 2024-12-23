@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +31,8 @@ import java.time.LocalTime
 @Composable
 fun RegisterUserTabAcademies(
     state: RegisterUserUIState = RegisterUserUIState(),
-    onAcademyItemClick: OnAcademyItemClick? = null
+    onAcademyItemClick: OnAcademyItemClick? = null,
+    onUpdateAcademies: () -> Unit = { }
 ) {
     ConstraintLayout(
         Modifier
@@ -38,6 +40,10 @@ fun RegisterUserTabAcademies(
             .fillMaxSize()
     ) {
         val (listRef) = createRefs()
+
+        LaunchedEffect(Unit) {
+            onUpdateAcademies()
+        }
 
         LazyExpandableVerticalList(
             modifier = Modifier.constrainAs(listRef) {
@@ -50,6 +56,7 @@ fun RegisterUserTabAcademies(
                 height = Dimension.fillToConstraints
             },
             groups = state.academies,
+            emptyMessageResId = R.string.register_user_tab_academies_empty_message,
             itemLayout =  { to ->
                 AcademyTimeItem(
                     item = to,
@@ -57,7 +64,7 @@ fun RegisterUserTabAcademies(
                         onAcademyItemClick?.onExecute(
                             args = RegisterAcademyScreenArgs(
                                 personId = to.personId!!,
-                                context = null
+                                personAcademyTimeId = to.id!!,
                             )
                         )
                     }
@@ -120,34 +127,55 @@ private fun RegisterUserTabAcademiesPreview() {
     val state = RegisterUserUIState(
         academies = mutableListOf(
             AcademyGroupDecorator(
+                id = "1",
                 label = R.string.label_preview_academy,
                 value = "Smart Fit",
                 isExpanded = true,
                 items = listOf(
                     TOPersonAcademyTime(
+                        id = "1",
                         dayOfWeek = DayOfWeek.MONDAY,
                         timeStart = LocalTime.of(10, 0),
-                        timeEnd = LocalTime.of(12, 0)
+                        timeEnd = LocalTime.of(12, 0),
+                        active = true
                     ),
                     TOPersonAcademyTime(
+                        id = "2",
                         dayOfWeek = DayOfWeek.TUESDAY,
                         timeStart = LocalTime.of(10, 0),
-                        timeEnd = LocalTime.of(12, 0)
+                        timeEnd = LocalTime.of(12, 0),
+                        active = true
                     ),
                     TOPersonAcademyTime(
+                        id = "3",
                         dayOfWeek = DayOfWeek.WEDNESDAY,
                         timeStart = LocalTime.of(10, 0),
-                        timeEnd = LocalTime.of(12, 0)
+                        timeEnd = LocalTime.of(12, 0),
+                        active = true
                     ),
                     TOPersonAcademyTime(
+                        id = "4",
                         dayOfWeek = DayOfWeek.THURSDAY,
                         timeStart = LocalTime.of(10, 0),
-                        timeEnd = LocalTime.of(12, 0)
+                        timeEnd = LocalTime.of(12, 0),
+                        active = true
                     )
                 )
             )
         )
     )
+
+    FitnessProTheme {
+        Surface {
+            RegisterUserTabAcademies(state)
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun RegisterUserTabAcademiesEmptyPreview() {
+    val state = RegisterUserUIState(academies = mutableListOf())
 
     FitnessProTheme {
         Surface {
