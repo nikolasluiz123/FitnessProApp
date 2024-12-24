@@ -1,13 +1,20 @@
 package br.com.fitnesspro.compose.components.list
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import br.com.fitnesspro.core.theme.GREY_600
+import br.com.fitnesspro.core.theme.LabelTextStyle
 
 /**
  * Componente de listagem vertical.
@@ -23,19 +30,33 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun <T> LazyVerticalList(
-    modifier: Modifier = Modifier,
     items: List<T>,
+    emptyMessageResId: Int,
+    modifier: Modifier = Modifier,
     verticalArrangementSpace: Dp = 0.dp,
     contentPadding: Dp = 0.dp,
     itemList: @Composable (T) -> Unit
 ) {
-    LazyColumn(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(verticalArrangementSpace),
-        contentPadding = PaddingValues(contentPadding)
-    ) {
-        items(items = items) { item ->
-            itemList(item)
+    if (items.isNotEmpty()) {
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(verticalArrangementSpace),
+            contentPadding = PaddingValues(contentPadding)
+        ) {
+            items(items = items) { item ->
+                itemList(item)
+            }
+        }
+    } else {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(id = emptyMessageResId),
+                style = LabelTextStyle,
+                color = GREY_600
+            )
         }
     }
 }

@@ -96,4 +96,7 @@
     <string name="label_preview_academy">Academia</string>
     <string name="label_academy_group">Academia</string>
     <string name="register_user_tab_academies_empty_message">Não existem horários cadastrados</string>
+    <string name="current_workout_item_label_day_week">Dia da Semana</string>
+    <string name="current_workout_item_label_workout_groups">Grupo Muscular</string>
+    <string name="current_workout_empty_message">Não há nenhum treino cadastrado</string>
 </resources>
