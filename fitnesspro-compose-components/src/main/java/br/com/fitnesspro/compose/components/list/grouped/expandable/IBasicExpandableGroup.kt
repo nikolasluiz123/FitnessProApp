@@ -1,4 +1,4 @@
-package br.com.fitnesspro.compose.components.list.expandable
+package br.com.fitnesspro.compose.components.list.grouped.expandable
 
 interface IBasicExpandableGroup<T> {
     val id: String

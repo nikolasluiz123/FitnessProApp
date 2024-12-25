@@ -15,7 +15,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.LabeledText
-import br.com.fitnesspro.compose.components.list.expandable.LazyExpandableVerticalList
+import br.com.fitnesspro.compose.components.list.grouped.expandable.LazyExpandableVerticalList
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName

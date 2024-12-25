@@ -99,4 +99,12 @@
     <string name="current_workout_item_label_day_week">Dia da Semana</string>
     <string name="current_workout_item_label_workout_groups">Grupo Muscular</string>
     <string name="current_workout_empty_message">Não há nenhum treino cadastrado</string>
+    <string name="day_week_workout_empty_message">Não existem exercícios cadastrados para esse dia</string>
+    <string name="day_week_workout_screen_exercise">Exercício</string>
+    <string name="day_week_workout_screen_duration">Duração</string>
+    <string name="day_week_workout_screen_sets_and_repetitions">Séries e Repetições</string>
+    <string name="day_week_workout_screen_sets_and_repetitions_value">%dx%d</string>
+    <string name="day_week_workout_screen_rest">Descanso entre Séries</string>
+    <string name="day_week_workout_screen_no_rest">Sem Descanso</string>
+    <string name="day_week_workout_screen_observation">Observação</string>
 </resources>

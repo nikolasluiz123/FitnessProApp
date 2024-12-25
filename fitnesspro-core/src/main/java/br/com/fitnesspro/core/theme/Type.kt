@@ -96,3 +96,11 @@ val ValueTextStyle = TextStyle(
     lineHeight = 16.sp,
     letterSpacing = 0.2.sp
 )
+
+val LabelGroupTextStyle = TextStyle(
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Medium,
+    fontSize = 12.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.2.sp
+)
