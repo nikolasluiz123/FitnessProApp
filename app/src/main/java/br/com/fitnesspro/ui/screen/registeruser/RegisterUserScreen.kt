@@ -43,7 +43,7 @@ import br.com.fitnesspro.ui.screen.registeruser.callback.OnSaveUserClick
 import br.com.fitnesspro.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import br.com.fitnesspro.ui.viewmodel.RegisterUserViewModel
-import br.com.market.market.compose.components.button.fab.FloatingActionButtonSave
+import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

@@ -32,6 +32,8 @@ import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.compose.components.state.Field
 import br.com.fitnesspro.core.theme.FieldErrorTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.core.theme.GREY_700
+import br.com.fitnesspro.core.theme.GREY_800
 import br.com.fitnesspro.core.theme.InputTextStyle
 import kotlin.properties.Delegates
 
@@ -61,15 +63,7 @@ fun OutlinedTextFieldValidation(
     maxLines: Int = Int.MAX_VALUE,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = MaterialTheme.shapes.small,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
-        cursorColor = MaterialTheme.colorScheme.outline,
-        focusedBorderColor = MaterialTheme.colorScheme.outline,
-        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-        unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
-        focusedLabelColor = MaterialTheme.colorScheme.onBackground,
-        focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
-        unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary
-    ),
+    colors: TextFieldColors = getDefaultOutlinedTextFieldColors(),
     maxLength: Int? = null,
 ) {
     OutlinedTextFieldValidation(
@@ -123,15 +117,7 @@ fun OutlinedTextFieldValidation(
     maxLines: Int = Int.MAX_VALUE,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = MaterialTheme.shapes.small,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
-        cursorColor = MaterialTheme.colorScheme.outline,
-        focusedBorderColor = MaterialTheme.colorScheme.outline,
-        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-        unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
-        focusedLabelColor = MaterialTheme.colorScheme.onBackground,
-        focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
-        unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary
-    )
+    colors: TextFieldColors = getDefaultOutlinedTextFieldColors(),
 ) {
     OutlinedTextFieldValidation(
         value = field.value,
@@ -211,15 +197,7 @@ fun OutlinedTextFieldValidation(
     maxLines: Int = Int.MAX_VALUE,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = MaterialTheme.shapes.small,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
-        cursorColor = MaterialTheme.colorScheme.outline,
-        focusedBorderColor = MaterialTheme.colorScheme.outline,
-        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-        unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
-        focusedLabelColor = MaterialTheme.colorScheme.onBackground,
-        focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
-        unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary
-    ),
+    colors: TextFieldColors = getDefaultOutlinedTextFieldColors(),
     maxLength: Int? = null,
     writeCondition: Boolean = true
 ) {
@@ -258,6 +236,19 @@ fun OutlinedTextFieldValidation(
         colors = colors
     )
 }
+
+@Composable
+private fun getDefaultOutlinedTextFieldColors() = OutlinedTextFieldDefaults.colors(
+    cursorColor = GREY_800,
+    focusedBorderColor = GREY_700,
+    unfocusedBorderColor = GREY_700,
+    unfocusedLabelColor = GREY_700,
+    focusedLabelColor = GREY_700,
+    focusedTrailingIconColor = GREY_700,
+    unfocusedTrailingIconColor = GREY_700,
+    unfocusedTextColor = GREY_700,
+    focusedTextColor = GREY_700,
+)
 
 @Composable
 fun OutlinedTextFieldPasswordValidation(

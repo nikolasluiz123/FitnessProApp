@@ -4,6 +4,7 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
 /**
@@ -85,5 +86,9 @@ fun LocalTime.format(enumDateTimePatterns: EnumDateTimePatterns): String {
  * @author Nikolas Luiz Schmitt
  */
 fun LocalDateTime.format(enumDateTimePatterns: EnumDateTimePatterns): String {
+    return this.format(DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
+}
+
+fun YearMonth.format(enumDateTimePatterns: EnumDateTimePatterns): String {
     return this.format(DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
 }

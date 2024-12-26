@@ -104,3 +104,19 @@ val LabelGroupTextStyle = TextStyle(
     lineHeight = 20.sp,
     letterSpacing = 0.2.sp
 )
+
+val LabelCalendarDayTextStyle = TextStyle(
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Medium,
+    fontSize = 16.sp,
+    lineHeight = 18.sp,
+    letterSpacing = 0.sp
+)
+
+val LabelCalendarWeekTextStyle = TextStyle(
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Light,
+    fontSize = 12.sp,
+    lineHeight = 12.sp,
+    letterSpacing = 2.sp
+)

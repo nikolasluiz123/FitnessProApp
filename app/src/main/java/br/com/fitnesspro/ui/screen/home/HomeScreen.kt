@@ -39,13 +39,15 @@ import br.com.fitnesspro.ui.viewmodel.HomeViewModel
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
-    onNavigateToAccountInformation: OnNavigateToAccountInformation
+    onNavigateToAccountInformation: OnNavigateToAccountInformation,
+    onNavigateToSchedule: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
     HomeScreen(
         state = state,
-        onNavigateToAccountInformation = onNavigateToAccountInformation
+        onNavigateToAccountInformation = onNavigateToAccountInformation,
+        onNavigateToSchedule = onNavigateToSchedule
     )
 }
 
@@ -53,7 +55,8 @@ fun HomeScreen(
 @Composable
 fun HomeScreen(
     state: HomeUIState,
-    onNavigateToAccountInformation: OnNavigateToAccountInformation? = null
+    onNavigateToAccountInformation: OnNavigateToAccountInformation? = null,
+    onNavigateToSchedule: () -> Unit = { }
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
@@ -123,7 +126,8 @@ fun HomeScreen(
                         },
                     iconResId = br.com.fitnesspro.core.R.drawable.ic_calendar_32dp,
                     label = stringResource(R.string.home_screen_label_btn_scheduler),
-                    enabled = state.isEnabledSchedulerButton
+                    enabled = state.isEnabledSchedulerButton,
+                    onClick = onNavigateToSchedule
                 )
 
                 SquaredButton(

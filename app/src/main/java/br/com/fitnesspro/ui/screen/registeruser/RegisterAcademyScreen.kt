@@ -45,7 +45,7 @@ import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.ui.screen.registeruser.callback.OnSaveAcademyClick
 import br.com.fitnesspro.ui.state.RegisterAcademyUIState
 import br.com.fitnesspro.ui.viewmodel.RegisterAcademyViewModel
-import br.com.market.market.compose.components.button.fab.FloatingActionButtonSave
+import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

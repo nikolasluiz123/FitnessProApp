@@ -38,7 +38,7 @@ class HomeViewModel @Inject constructor(
                     title = getTitle(toPerson),
                     subtitle = getSubtitle(toPerson),
                     toPerson = toPerson,
-                    isEnabledSchedulerButton = false,
+                    isEnabledSchedulerButton = true,
                     isEnabledWorkoutButton = true,
                     isEnabledNutritionButton = false,
                     isEnabledMoneyButton = false,

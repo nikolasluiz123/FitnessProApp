@@ -38,5 +38,7 @@ enum class EnumDateTimePatterns(val pattern: String) {
      */
     DATE_TIME("dd/MM/yyyy HH:mm"),
 
-    DATE_TIME_FILE_NAME("dd_MM_yyyy_HHmmss")
+    DATE_TIME_FILE_NAME("dd_MM_yyyy_HHmmss"),
+
+    MONTH_YEAR("MMMM 'de' yyyy"),
 }

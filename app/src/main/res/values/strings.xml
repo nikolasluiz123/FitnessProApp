@@ -107,4 +107,7 @@
     <string name="day_week_workout_screen_rest">Descanso entre Séries</string>
     <string name="day_week_workout_screen_no_rest">Sem Descanso</string>
     <string name="day_week_workout_screen_observation">Observação</string>
+    <string name="schedule_screen_title">Agenda</string>
+    <string name="schedule_screen_navigate_back_description">Navegar para o mês anterior</string>
+    <string name="schedule_screen_navigate_forward_description">Navegar para o próximo mês</string>
 </resources>

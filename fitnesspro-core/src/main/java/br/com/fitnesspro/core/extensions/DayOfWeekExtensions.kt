@@ -10,3 +10,7 @@ fun DayOfWeek.getFirstPartFullDisplayName(): String {
 
     return firstPart.replaceFirstChar(Char::uppercase)
 }
+
+fun DayOfWeek.getShortDisplayNameAllCaps(): String {
+    return getDisplayName(TextStyle.SHORT, Locale.getDefault()).uppercase().replace(".", "")
+}
