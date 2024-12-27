@@ -17,6 +17,8 @@ enum class EnumDateTimePatterns(val pattern: String) {
      */
     DATE("dd/MM/yyyy"),
 
+    DATE_SQLITE("yyyy-MM-dd"),
+
     /**
      * Padrão de formato para datas no formato "ddMMyyyy".
      *
@@ -37,6 +39,8 @@ enum class EnumDateTimePatterns(val pattern: String) {
      * Padrão de formato para datas e horas no formato "dd/MM/yyyy HH:mm".
      */
     DATE_TIME("dd/MM/yyyy HH:mm"),
+
+    DATE_TIME_SQLITE("yyyy-MM-dd HH:mm"),
 
     DATE_TIME_FILE_NAME("dd_MM_yyyy_HHmmss"),
 

@@ -3,8 +3,10 @@ package br.com.fitnesspro.injection
 import android.content.Context
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
+import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.repository.AcademyRepository
+import br.com.fitnesspro.repository.SchedulerRepository
 import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.usecase.academy.SavePersonAcademyTimeUseCase
 import br.com.fitnesspro.usecase.login.LoginUseCase
@@ -71,6 +73,17 @@ class SingletonModule {
         return LoginUseCase(
             context = context,
             userRepository = userRepository,
+        )
+    }
+
+    @Provides
+    fun provideSchedulerRepository(
+        schedulerDAO: SchedulerDAO,
+        userRepository: UserRepository
+    ): SchedulerRepository {
+        return SchedulerRepository(
+            schedulerDAO = schedulerDAO,
+            userRepository = userRepository
         )
     }
 

@@ -27,9 +27,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,6 +49,7 @@ import br.com.fitnesspro.core.theme.GREY_800
 import br.com.fitnesspro.core.theme.LabelCalendarDayTextStyle
 import br.com.fitnesspro.core.theme.LabelCalendarWeekTextStyle
 import br.com.fitnesspro.core.theme.LabelTextStyle
+import br.com.fitnesspro.core.theme.RED_200
 import br.com.fitnesspro.core.theme.RED_400
 import br.com.fitnesspro.ui.state.ScheduleUIState
 import br.com.fitnesspro.ui.viewmodel.ScheduleViewModel
@@ -100,12 +98,11 @@ fun ScheduleScreen(
                 .fillMaxSize()
         ) {
             val (headerRef, daysGridRef) = createRefs()
-            var selectedYearMonth by remember { mutableStateOf(YearMonth.now()) }
 
             SchedulerHeader(
-                selectedYearMonth = selectedYearMonth,
-                onBackClick = { selectedYearMonth = it },
-                onForwardClick = { selectedYearMonth = it },
+                selectedYearMonth = state.selectedYearMonth,
+                onBackClick =  state.onSelectYearMonth,
+                onForwardClick = state.onSelectYearMonth,
                 modifier = Modifier
                     .padding(8.dp)
                     .constrainAs(headerRef) {
@@ -124,7 +121,7 @@ fun ScheduleScreen(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-                yearMonth = selectedYearMonth
+                state = state
             )
         }
 
@@ -189,12 +186,12 @@ private fun SchedulerHeader(
 
 @Composable
 private fun DaysGrid(
-    yearMonth: YearMonth,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    state: ScheduleUIState = ScheduleUIState()
 ) {
     AnimatedContent(
         modifier = modifier,
-        targetState = yearMonth,
+        targetState = state.selectedYearMonth,
         transitionSpec = {
             slideInHorizontally(
                 initialOffsetX = { fullWidth -> if (targetState > initialState) fullWidth else -fullWidth }
@@ -234,17 +231,32 @@ private fun DaysGrid(
                         } else {
                             DayCell(
                                 day = day,
-                                style = DayStyle(
-                                    backgroundColor = RED_400,
-                                    textStyle = LabelCalendarDayTextStyle,
-                                    textColor = Color.White
-                                )
+                                style = getDayStyle(day, state)
                             )
                         }
                     }
                 }
             }
         }
+    }
+}
+
+private fun getDayStyle(day: LocalDate, state: ScheduleUIState): DayStyle {
+    val scheduleForDay = state.schedules.firstOrNull { it.date == day }
+
+    return if (scheduleForDay != null) {
+        // TODO - Se o usuário for Instrutor ou Nutricionista precisa verificar a configuração de cor
+        DayStyle(
+            backgroundColor = RED_200,
+            textStyle = LabelCalendarDayTextStyle,
+            textColor = Color.White
+        )
+    } else {
+        DayStyle(
+            backgroundColor = Color.Transparent,
+            textStyle = LabelCalendarDayTextStyle,
+            textColor = GREY_800
+        )
     }
 }
 
@@ -317,7 +329,7 @@ private fun DayCellPreview() {
 private fun DaysGridPreview() {
     FitnessProTheme {
         Surface {
-            DaysGrid(yearMonth = YearMonth.now())
+            DaysGrid()
         }
     }
 }

@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":fitnesspro-core"))
     implementation(project(":fitnesspro-model"))
 
     implementation(libs.hilt.navigation.compose)

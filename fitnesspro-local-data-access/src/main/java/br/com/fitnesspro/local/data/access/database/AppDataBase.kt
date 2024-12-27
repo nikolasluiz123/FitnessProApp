@@ -9,6 +9,7 @@ import androidx.room.migration.AutoMigrationSpec
 import br.com.fitnesspro.local.data.access.converters.RoomTypeConverters
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
+import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.Person
@@ -58,6 +59,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun personDAO(): PersonDAO
 
     abstract fun academyDAO(): AcademyDAO
+
+    abstract fun schedulerDAO(): SchedulerDAO
 
 }
 
