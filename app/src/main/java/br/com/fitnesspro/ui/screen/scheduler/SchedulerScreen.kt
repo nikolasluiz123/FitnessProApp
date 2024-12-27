@@ -1,4 +1,4 @@
-package br.com.fitnesspro.ui.screen.schedule
+package br.com.fitnesspro.ui.screen.scheduler
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
@@ -51,6 +51,9 @@ import br.com.fitnesspro.core.theme.LabelCalendarWeekTextStyle
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.core.theme.RED_200
 import br.com.fitnesspro.core.theme.RED_400
+import br.com.fitnesspro.core.theme.RED_600
+import br.com.fitnesspro.core.theme.RED_800
+import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.ui.state.ScheduleUIState
 import br.com.fitnesspro.ui.viewmodel.ScheduleViewModel
 import java.time.DayOfWeek
@@ -58,13 +61,13 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun ScheduleScreen(
+fun SchedulerScreen(
     viewModel: ScheduleViewModel,
     onBackClick: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    ScheduleScreen(
+    SchedulerScreen(
         state = state,
         onBackClick = onBackClick
     )
@@ -72,7 +75,7 @@ fun ScheduleScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScheduleScreen(
+fun SchedulerScreen(
     state: ScheduleUIState,
     onBackClick: () -> Unit = { },
 ) {
@@ -245,12 +248,32 @@ private fun getDayStyle(day: LocalDate, state: ScheduleUIState): DayStyle {
     val scheduleForDay = state.schedules.firstOrNull { it.date == day }
 
     return if (scheduleForDay != null) {
-        // TODO - Se o usuário for Instrutor ou Nutricionista precisa verificar a configuração de cor
-        DayStyle(
-            backgroundColor = RED_200,
-            textStyle = LabelCalendarDayTextStyle,
-            textColor = Color.White
-        )
+        when (state.userType!!) {
+            EnumUserType.PERSONAL_TRAINER,
+            EnumUserType.NUTRITIONIST -> {
+                val count = scheduleForDay.count
+                val min = state.toSchedulerConfig!!.minScheduleDensity
+                val max = state.toSchedulerConfig.maxScheduleDensity
+                val colors = listOf(RED_200, RED_400, RED_600, RED_800)
+                val thresholds = getThresholds(max, min, colors)
+                val backgroundColor = getDayBackgroundColor(count, thresholds, colors)
+
+                DayStyle(
+                    backgroundColor = backgroundColor,
+                    textStyle = LabelCalendarDayTextStyle,
+                    textColor = Color.White
+                )
+            }
+
+            EnumUserType.ACADEMY_MEMBER -> {
+                DayStyle(
+                    backgroundColor = RED_200,
+                    textStyle = LabelCalendarDayTextStyle,
+                    textColor = Color.White
+                )
+            }
+        }
+
     } else {
         DayStyle(
             backgroundColor = Color.Transparent,
@@ -258,6 +281,41 @@ private fun getDayStyle(day: LocalDate, state: ScheduleUIState): DayStyle {
             textColor = GREY_800
         )
     }
+}
+
+private fun getDayBackgroundColor(
+    count: Int,
+    thresholds: MutableList<Int>,
+    colors: List<Color>
+): Color {
+    return when {
+        count <= thresholds[0] -> colors[0]
+        count <= thresholds[1] -> colors[1]
+        count <= thresholds[2] -> colors[2]
+        else -> colors[3]
+    }
+}
+
+private fun getThresholds(
+    max: Int,
+    min: Int,
+    colors: List<Color>
+): MutableList<Int> {
+    // Calcular o tamanho do intervalo e o tamanho de cada grupo
+    val rangeSize = max - min + 1
+    val groupSize = rangeSize / colors.size
+    val remainder = rangeSize % colors.size
+
+    // Criar os limites dos grupos
+    val thresholds = mutableListOf<Int>()
+    var currentMin = min
+    for (i in colors.indices) {
+        val size = if (i < remainder) groupSize + 1 else groupSize
+        thresholds.add(currentMin + size - 1)
+        currentMin += size
+    }
+
+    return thresholds
 }
 
 @Composable
@@ -339,7 +397,7 @@ private fun DaysGridPreview() {
 fun ScheduleScreenPreview() {
     FitnessProTheme {
         Surface {
-            ScheduleScreen(
+            SchedulerScreen(
                 state = ScheduleUIState(
                     title = "Agenda"
                 )

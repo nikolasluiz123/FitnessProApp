@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity(tableName = "scheduler")
-class Scheduler(
+data class Scheduler(
     @PrimaryKey
     override val id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "academy_member_person_id")

@@ -13,26 +13,43 @@ import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields.EMAIL
 import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields.NAME
 import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields.PASSWORD
 import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields.PHONE
+import br.com.fitnesspro.usecase.scheduler.SaveSchedulerUseCase
 import java.time.LocalDate
 
 class SavePersonUseCase(
     private val context: Context,
     private val userRepository: UserRepository,
+    private val saveSchedulerUseCase: SaveSchedulerUseCase
 ) {
 
     suspend fun execute(toPerson: TOPerson): List<Pair<EnumValidatedPersonFields, String>> {
-        val user = User(
-            email = toPerson.toUser?.email,
-            password = toPerson.toUser?.password,
-            type = toPerson.toUser?.type
-        )
+        val user = if (toPerson.toUser?.id != null) {
+            userRepository.findUserById(toPerson.toUser?.id!!).copy(
+                email = toPerson.toUser?.email,
+                password = toPerson.toUser?.password
+            )
+        } else {
+            User(
+                email = toPerson.toUser?.email,
+                password = toPerson.toUser?.password,
+                type = toPerson.toUser?.type
+            )
+        }
 
-        val person = Person(
-            name = toPerson.name,
-            birthDate = toPerson.birthDate,
-            phone = toPerson.phone,
-            userId = user.id
-        )
+        val person = if (toPerson.id != null) {
+            userRepository.findPersonById(toPerson.id!!).copy(
+                name = toPerson.name,
+                birthDate = toPerson.birthDate,
+                phone = toPerson.phone
+            )
+        } else {
+            Person(
+                name = toPerson.name,
+                birthDate = toPerson.birthDate,
+                phone = toPerson.phone,
+                userId = user.id
+            )
+        }
 
         val validationResults = mutableListOf<Pair<EnumValidatedPersonFields, String>>()
         validationResults.addAll(validateUser(user))
@@ -45,6 +62,7 @@ class SavePersonUseCase(
             user.password = HashHelper.applyHash(user.password!!)
 
             userRepository.savePerson(user, person)
+            saveSchedulerUseCase.saveConfig(person.id)
         }
 
         return validationResults
@@ -177,7 +195,7 @@ class SavePersonUseCase(
                 Pair(EMAIL, message)
             }
 
-            userRepository.hasUserWithEmail(email) -> {
+            userRepository.hasUserWithEmail(email, user.id) -> {
                 val message = context.getString(R.string.validation_msg_email_in_use)
                 Pair(EMAIL, message)
             }

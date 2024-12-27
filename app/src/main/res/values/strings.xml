@@ -60,7 +60,7 @@
     <string name="validation_msg_email_in_use">O e-mail já está em uso.</string>
     <string name="label_person_name">Nome</string>
     <string name="label_person_email">E-mail</string>
-    <string name="label_person_password">Password</string>
+    <string name="label_person_password">Senha</string>
     <string name="label_person_birth_date">Data de Nascimento</string>
     <string name="label_person_phone">Telefone</string>
     <string name="enum_validated_academy_fields_academy">Academia</string>

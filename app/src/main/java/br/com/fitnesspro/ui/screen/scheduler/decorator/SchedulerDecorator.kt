@@ -1,4 +1,4 @@
-package br.com.fitnesspro.ui.screen.schedule.decorator
+package br.com.fitnesspro.ui.screen.scheduler.decorator
 
 import java.time.LocalDate
 

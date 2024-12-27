@@ -1,6 +1,9 @@
 package br.com.fitnesspro.local.data.access.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -9,12 +12,22 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.IBaseDAO.Companion.QR_NL
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
+import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.to.TOScheduler
 import java.time.YearMonth
 import java.util.StringJoiner
 
 @Dao
 abstract class SchedulerDAO: IBaseDAO {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun saveConfig(schedulerConfig: SchedulerConfig)
+
+    @Query("select * from scheduler_config where id = :id")
+    abstract suspend fun findById(id: String): SchedulerConfig
+
+    @Query("select * from scheduler_config where person_id = :personId")
+    abstract suspend fun findByPersonId(personId: String): SchedulerConfig?
 
     suspend fun getSchedulerList(
         personId: String,

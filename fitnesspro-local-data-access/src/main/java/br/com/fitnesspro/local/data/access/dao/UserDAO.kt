@@ -13,8 +13,8 @@ abstract class UserDAO: IBaseDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun save(user: User)
 
-    @Query("select exists(select 1 from user where email = :email)")
-    abstract suspend fun hasUserWithEmail(email: String): Boolean
+    @Query("select exists(select 1 from user where email = :email and id != :userId)")
+    abstract suspend fun hasUserWithEmail(email: String, userId: String): Boolean
 
     @Query("select exists (select 1 from user where email = :email and password = :hashedPassword)")
     abstract suspend fun hasUserWithCredentials(email: String, hashedPassword: String): Boolean

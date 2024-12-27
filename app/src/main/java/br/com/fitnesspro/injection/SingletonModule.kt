@@ -11,6 +11,7 @@ import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.usecase.academy.SavePersonAcademyTimeUseCase
 import br.com.fitnesspro.usecase.login.LoginUseCase
 import br.com.fitnesspro.usecase.person.SavePersonUseCase
+import br.com.fitnesspro.usecase.scheduler.SaveSchedulerUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,10 +39,12 @@ class SingletonModule {
     fun provideSavePersonUseCase(
         @ApplicationContext context: Context,
         userRepository: UserRepository,
+        saveSchedulerUseCase: SaveSchedulerUseCase
     ): SavePersonUseCase {
         return SavePersonUseCase(
             context = context,
             userRepository = userRepository,
+            saveSchedulerUseCase = saveSchedulerUseCase
         )
     }
 
@@ -86,5 +89,15 @@ class SingletonModule {
             userRepository = userRepository
         )
     }
+
+    @Provides
+    fun provideSaveSchedulerUseCase(
+        schedulerRepository: SchedulerRepository
+    ): SaveSchedulerUseCase {
+        return SaveSchedulerUseCase(
+            schedulerRepository = schedulerRepository
+        )
+    }
+
 
 }

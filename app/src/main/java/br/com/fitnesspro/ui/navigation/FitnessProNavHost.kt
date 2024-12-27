@@ -43,7 +43,7 @@ fun FitnessProNavHost(
             onNavigateToSchedule = navController::navigateToScheduleScreen
         )
 
-        scheduleScreen(
+        schedulerScreen(
             onBackClick = navController::popBackStack
         )
     }

@@ -196,16 +196,28 @@ class RegisterUserViewModel @Inject constructor(
     }
 
     fun saveUser(onSuccess: () -> Unit) {
-        val toPerson = TOPerson(
-            name = _uiState.value.name.value,
-            birthDate = _uiState.value.birthDate.value.parseToLocalDate(DATE),
-            phone = _uiState.value.phone.value,
-            toUser = TOUser(
-                email = _uiState.value.email.value,
-                password = _uiState.value.password.value,
-                type = getUserTypeFromContext(_uiState.value.context!!)
-            ),
-        )
+        val toPerson = if (_uiState.value.toPerson != null) {
+            _uiState.value.toPerson!!.copy(
+                name = _uiState.value.name.value,
+                birthDate = _uiState.value.birthDate.value.parseToLocalDate(DATE),
+                phone = _uiState.value.phone.value,
+                toUser = _uiState.value.toPerson!!.toUser!!.copy(
+                    email = _uiState.value.email.value,
+                    password = _uiState.value.password.value
+                )
+            )
+        } else {
+            TOPerson(
+                name = _uiState.value.name.value,
+                birthDate = _uiState.value.birthDate.value.parseToLocalDate(DATE),
+                phone = _uiState.value.phone.value,
+                toUser = TOUser(
+                    email = _uiState.value.email.value,
+                    password = _uiState.value.password.value,
+                    type = getUserTypeFromContext(_uiState.value.context!!)
+                ),
+            )
+        }
 
         viewModelScope.launch {
             val validationResults = savePersonUseCase.execute(toPerson)

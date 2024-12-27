@@ -26,8 +26,8 @@ class UserRepository(
         personDAO.save(user, person)
     }
 
-    suspend fun hasUserWithEmail(email: String): Boolean = withContext(IO) {
-        userDAO.hasUserWithEmail(email)
+    suspend fun hasUserWithEmail(email: String, userId: String): Boolean = withContext(IO) {
+        userDAO.hasUserWithEmail(email, userId)
     }
 
     suspend fun hasUserWithCredentials(email: String, password: String): Boolean = withContext(IO) {
@@ -84,6 +84,14 @@ class UserRepository(
         }
 
         groups
+    }
+
+    suspend fun findUserById(userId: String): User = withContext(IO) {
+        userDAO.findById(userId)
+    }
+
+    suspend fun findPersonById(personId: String): Person = withContext(IO) {
+        personDAO.findPersonById(personId)
     }
 
     private fun Person?.getTOPerson(toUser: TOUser): TOPerson? {
