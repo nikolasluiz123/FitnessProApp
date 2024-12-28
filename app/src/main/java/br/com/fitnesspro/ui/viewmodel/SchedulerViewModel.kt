@@ -7,7 +7,7 @@ import br.com.fitnesspro.R
 import br.com.fitnesspro.repository.SchedulerRepository
 import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.ui.screen.scheduler.decorator.SchedulerDecorator
-import br.com.fitnesspro.ui.state.ScheduleUIState
+import br.com.fitnesspro.ui.state.SchedulerUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,13 +17,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ScheduleViewModel @Inject constructor(
+class SchedulerViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val schedulerRepository: SchedulerRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<ScheduleUIState> = MutableStateFlow(ScheduleUIState())
+    private val _uiState: MutableStateFlow<SchedulerUIState> = MutableStateFlow(SchedulerUIState())
     val uiState get() = _uiState.asStateFlow()
 
     init {
@@ -61,7 +61,7 @@ class ScheduleViewModel @Inject constructor(
         viewModelScope.launch {
             val groupedTOSchedulers = schedulerRepository.getSchedulerList(
                 yearMonth = _uiState.value.selectedYearMonth
-            ).groupBy { it.scheduledDate?.toLocalDate()!! }
+            ).groupBy { it.scheduledDate!! }
 
             val decorators = groupedTOSchedulers.map { (date, schedules) ->
                 SchedulerDecorator(

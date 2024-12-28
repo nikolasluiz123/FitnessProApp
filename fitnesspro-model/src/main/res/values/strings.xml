@@ -1,4 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="user_field_email">E-mail</string>
+    <string name="enum_compromise_type_first">Primeiro Encontro</string>
+    <string name="enum_compromise_type_recurrent">Compromisso Recorrente</string>
+    <string name="enum_scheduler_situation_scheduled">Agendado</string>
+    <string name="enum_scheduler_situation_cancelled">Cancelado</string>
+    <string name="enum_scheduler_situation_confirmed">Confirmado</string>
+    <string name="enum_scheduler_situation_completed">Realizado</string>
+    <string name="enum_unity_percentage">Porcentagem</string>
+    <string name="enum_user_type_personal_trainer">Instrutor</string>
+    <string name="enum_user_type_nutritionist">Nutricionista</string>
+    <string name="enum_user_type_academy_member">Membro</string>
+
+    <plurals name="enum_unity_grams">
+        <item quantity="one">Grama</item>
+        <item quantity="other">Gramas</item>
+    </plurals>
+
+    <plurals name="enum_unity_kilograms">
+        <item quantity="one">Quilograma</item>
+        <item quantity="other">Quilogramas</item>
+    </plurals>
+
+    <plurals name="enum_unity_mililiters">
+        <item quantity="one">Mililitro</item>
+        <item quantity="other">Mililitros</item>
+    </plurals>
+
+    <plurals name="enum_unity_liters">
+        <item quantity="one">Litro</item>
+        <item quantity="other">Litros</item>
+    </plurals>
+
+    <plurals name="enum_unity_cups">
+        <item quantity="one">Xícara</item>
+        <item quantity="other">Xícaras</item>
+    </plurals>
+
+    <plurals name="enum_unity_tablespoons">
+        <item quantity="one">Colher de Sopa</item>
+        <item quantity="other">Colheres de Sopa</item>
+    </plurals>
+
+    <plurals name="enum_unity_teaspoons">
+        <item quantity="one">Colher de Chá</item>
+        <item quantity="other">Colheres de Chá</item>
+    </plurals>
+
+    <plurals name="enum_unity_pieces">
+        <item quantity="one">Peça</item>
+        <item quantity="other">Peças</item>
+    </plurals>
+
+    <plurals name="enum_unity_servings">
+        <item quantity="one">Porção</item>
+        <item quantity="other">Porções</item>
+    </plurals>
+
+    <plurals name="enum_unity_calories">
+        <item quantity="one">Caloria</item>
+        <item quantity="other">Calorias</item>
+    </plurals>
+
 </resources>

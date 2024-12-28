@@ -5,7 +5,7 @@ import br.com.fitnesspro.to.TOSchedulerConfig
 import br.com.fitnesspro.ui.screen.scheduler.decorator.SchedulerDecorator
 import java.time.YearMonth
 
-data class ScheduleUIState(
+data class SchedulerUIState(
     val title: String = "",
     val userType: EnumUserType? = null,
     val toSchedulerConfig: TOSchedulerConfig? = null,

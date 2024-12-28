@@ -6,7 +6,9 @@ import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.UUID
 
 @Entity(tableName = "scheduler")
@@ -18,7 +20,9 @@ data class Scheduler(
     @ColumnInfo(name = "professional_person_id")
     var professionalPersonId: String? = null,
     @ColumnInfo(name = "scheduled_date")
-    var scheduledDate: LocalDateTime? = null,
+    var scheduledDate: LocalDate? = null,
+    var start: LocalTime? = null,
+    var end: LocalTime? = null,
     @ColumnInfo(name = "canceled_date")
     var canceledDate: LocalDateTime? = null,
     var situation: EnumSchedulerSituation? = null,

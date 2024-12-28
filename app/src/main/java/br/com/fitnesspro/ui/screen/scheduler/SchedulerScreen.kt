@@ -6,6 +6,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,30 +55,35 @@ import br.com.fitnesspro.core.theme.RED_400
 import br.com.fitnesspro.core.theme.RED_600
 import br.com.fitnesspro.core.theme.RED_800
 import br.com.fitnesspro.model.enums.EnumUserType
-import br.com.fitnesspro.ui.state.ScheduleUIState
-import br.com.fitnesspro.ui.viewmodel.ScheduleViewModel
+import br.com.fitnesspro.ui.navigation.SchedulerDetailsScreenArgs
+import br.com.fitnesspro.ui.screen.scheduler.callback.OnDayClick
+import br.com.fitnesspro.ui.state.SchedulerUIState
+import br.com.fitnesspro.ui.viewmodel.SchedulerViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
 fun SchedulerScreen(
-    viewModel: ScheduleViewModel,
-    onBackClick: () -> Unit
+    viewModel: SchedulerViewModel,
+    onBackClick: () -> Unit,
+    onDayClick: OnDayClick
 ) {
     val state by viewModel.uiState.collectAsState()
 
     SchedulerScreen(
         state = state,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onDayClick = onDayClick
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SchedulerScreen(
-    state: ScheduleUIState,
+    state: SchedulerUIState,
     onBackClick: () -> Unit = { },
+    onDayClick: OnDayClick? = null
 ) {
     Scaffold(
         topBar = {
@@ -124,7 +130,8 @@ fun SchedulerScreen(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-                state = state
+                state = state,
+                onDayClick = onDayClick
             )
         }
 
@@ -190,7 +197,8 @@ private fun SchedulerHeader(
 @Composable
 private fun DaysGrid(
     modifier: Modifier = Modifier,
-    state: ScheduleUIState = ScheduleUIState()
+    state: SchedulerUIState = SchedulerUIState(),
+    onDayClick: OnDayClick? = null
 ) {
     AnimatedContent(
         modifier = modifier,
@@ -234,7 +242,8 @@ private fun DaysGrid(
                         } else {
                             DayCell(
                                 day = day,
-                                style = getDayStyle(day, state)
+                                style = getDayStyle(day, state),
+                                onDayClick = onDayClick
                             )
                         }
                     }
@@ -244,7 +253,7 @@ private fun DaysGrid(
     }
 }
 
-private fun getDayStyle(day: LocalDate, state: ScheduleUIState): DayStyle {
+private fun getDayStyle(day: LocalDate, state: SchedulerUIState): DayStyle {
     val scheduleForDay = state.schedules.firstOrNull { it.date == day }
 
     return if (scheduleForDay != null) {
@@ -343,11 +352,20 @@ private fun DaysOfWeekHeader() {
 }
 
 @Composable
-private fun DayCell(day: LocalDate, style: DayStyle) {
+private fun DayCell(
+    day: LocalDate,
+    style: DayStyle,
+    onDayClick: OnDayClick? = null
+) {
     Box(
         Modifier
             .padding(4.dp)
             .size(40.dp)
+            .clickable {
+                onDayClick?.onExecute(
+                    args = SchedulerDetailsScreenArgs(scheduledDate = day)
+                )
+            }
             .background(color = style.backgroundColor, shape = CircleShape),
         contentAlignment = Alignment.Center
     ) {
@@ -398,7 +416,7 @@ fun ScheduleScreenPreview() {
     FitnessProTheme {
         Surface {
             SchedulerScreen(
-                state = ScheduleUIState(
+                state = SchedulerUIState(
                     title = "Agenda"
                 )
             )

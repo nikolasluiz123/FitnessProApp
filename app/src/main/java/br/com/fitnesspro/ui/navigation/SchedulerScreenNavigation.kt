@@ -6,19 +6,22 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import br.com.fitnesspro.ui.screen.scheduler.SchedulerScreen
-import br.com.fitnesspro.ui.viewmodel.ScheduleViewModel
+import br.com.fitnesspro.ui.screen.scheduler.callback.OnDayClick
+import br.com.fitnesspro.ui.viewmodel.SchedulerViewModel
 
 internal const val schedulerScreenRoute = "scheduler"
 
 fun NavGraphBuilder.schedulerScreen(
     onBackClick: () -> Unit,
+    onDayClick: OnDayClick
 ) {
     composable(route = schedulerScreenRoute) {
-        val registerUserViewModel = hiltViewModel<ScheduleViewModel>()
+        val viewModel = hiltViewModel<SchedulerViewModel>()
 
         SchedulerScreen(
-            viewModel = registerUserViewModel,
-            onBackClick = onBackClick
+            viewModel = viewModel,
+            onBackClick = onBackClick,
+            onDayClick = onDayClick
         )
     }
 }

@@ -110,4 +110,12 @@
     <string name="schedule_screen_title">Agenda</string>
     <string name="schedule_screen_navigate_back_description">Navegar para o mês anterior</string>
     <string name="schedule_screen_navigate_forward_description">Navegar para o próximo mês</string>
+    <string name="scheduler_details_empty_message">Não existem compromissos para esta data</string>
+    <string name="scheduler_details_name_label">Nome</string>
+    <string name="scheduler_details_hour_label">Horário</string>
+    <string name="scheduler_details_hour_value">%s às %s</string>
+    <string name="scheduler_details_compromisse_type_label">Tipo de Compromisso</string>
+    <string name="scheduler_details_situation_label">Situação</string>
+    <string name="scheduler_details_professional_label">Profissional</string>
+    <string name="scheduler_details_screen_title">Detalhes dos Compromissos</string>
 </resources>

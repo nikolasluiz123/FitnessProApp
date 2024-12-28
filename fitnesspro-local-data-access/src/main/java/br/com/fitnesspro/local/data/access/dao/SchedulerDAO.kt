@@ -14,6 +14,7 @@ import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.to.TOScheduler
+import java.time.LocalDate
 import java.time.YearMonth
 import java.util.StringJoiner
 
@@ -32,7 +33,8 @@ abstract class SchedulerDAO: IBaseDAO {
     suspend fun getSchedulerList(
         personId: String,
         userType: EnumUserType,
-        yearMonth: YearMonth
+        yearMonth: YearMonth? = null,
+        scheduledDate: LocalDate? = null
     ): List<TOScheduler> {
         val params = mutableListOf<Any>()
 
@@ -43,6 +45,8 @@ abstract class SchedulerDAO: IBaseDAO {
             add("        schedule.professional_person_id as professionalPersonId, ")
             add("        personProfessional.name as professionalName, ")
             add("        schedule.scheduled_date as scheduledDate, ")
+            add("        schedule.start as start, ")
+            add("        schedule.end as end, ")
             add("        schedule.canceled_date as canceledDate, ")
             add("        schedule.situation as situation, ")
             add("        schedule.compromise_type as compromiseType, ")
@@ -60,9 +64,6 @@ abstract class SchedulerDAO: IBaseDAO {
             add(" where schedule.active = 1 ")
             add(" and personMember.active = 1 ")
             add(" and personProfessional.active = 1 ")
-            add(" and schedule.scheduled_date between ? and ? ")
-            params.add(yearMonth.atDay(1).atStartOfDay().format(EnumDateTimePatterns.DATE_TIME_SQLITE))
-            params.add(yearMonth.atEndOfMonth().atTime(23, 59).format(EnumDateTimePatterns.DATE_TIME_SQLITE))
 
             when (userType) {
                 EnumUserType.PERSONAL_TRAINER,
@@ -75,6 +76,20 @@ abstract class SchedulerDAO: IBaseDAO {
                     add(" and schedule.academy_member_person_id = ? ")
                     params.add(personId)
                 }
+            }
+
+            yearMonth?.let {
+                val firstDatOfMonth = it.atDay(1).atStartOfDay().format(EnumDateTimePatterns.DATE_SQLITE)
+                val lastDayOfMonth = it.atEndOfMonth().atTime(23, 59).format(EnumDateTimePatterns.DATE_SQLITE)
+
+                add(" and schedule.scheduled_date between ? and ? ")
+                params.add(firstDatOfMonth)
+                params.add(lastDayOfMonth)
+            }
+
+            scheduledDate?.let {
+                add(" and schedule.scheduled_date = ? ")
+                params.add(it.format(EnumDateTimePatterns.DATE_SQLITE))
             }
         }
 
