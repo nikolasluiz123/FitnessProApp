@@ -13,6 +13,9 @@ abstract class UserDAO: BaseDAO() {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun save(user: User)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun saveBatch(users: List<User>)
+
     @Query("select exists(select 1 from user where email = :email and id != :userId)")
     abstract suspend fun hasUserWithEmail(email: String, userId: String): Boolean
 

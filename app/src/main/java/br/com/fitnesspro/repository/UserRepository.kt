@@ -2,6 +2,7 @@ package br.com.fitnesspro.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.room.Transaction
 import br.com.fitnesspro.R
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
@@ -26,12 +27,16 @@ class UserRepository(
     private val academyDAO: AcademyDAO
 ) {
 
+    @Transaction
     suspend fun savePerson(user: User, person: Person) = withContext(IO) {
-        personDAO.save(user, person)
+        userDAO.save(user)
+        personDAO.save(person)
     }
 
+    @Transaction
     suspend fun savePersonBatch(users: List<User>, persons: List<Person>) = withContext(IO) {
-        personDAO.saveBatch(users, persons)
+        userDAO.saveBatch(users)
+        personDAO.saveBatch(persons)
     }
 
     suspend fun hasUserWithEmail(email: String, userId: String): Boolean = withContext(IO) {
@@ -51,11 +56,11 @@ class UserRepository(
     }
 
     suspend fun getTOPersonAcademyTimeById(personAcademyTimeId: String): TOPersonAcademyTime = withContext(IO) {
-        personDAO.findPersonAcademyTimeById(personAcademyTimeId).getTOPersonAcademyTime()!!
+        academyDAO.findPersonAcademyTimeById(personAcademyTimeId).getTOPersonAcademyTime()!!
     }
 
     suspend fun findPersonAcademyTimeById(personAcademyTimeId: String): PersonAcademyTime = withContext(IO) {
-        personDAO.findPersonAcademyTimeById(personAcademyTimeId)
+        academyDAO.findPersonAcademyTimeById(personAcademyTimeId)
     }
 
     suspend fun getAuthenticatedTOPerson(): TOPerson? = withContext(IO) {
@@ -68,10 +73,10 @@ class UserRepository(
     }
 
     suspend fun getAcademies(personId: String): List<AcademyGroupDecorator> = withContext(IO) {
-        val toAcademyList = personDAO.getAcademies(personId = personId).map { it.getTOAcademy()!! }
+        val toAcademyList = academyDAO.getAcademies(personId = personId).map { it.getTOAcademy()!! }
 
         val personAcademyTimes = toAcademyList.flatMap { academy ->
-            personDAO.getAcademyTimes(personId = personId, academyId = academy.id!!)
+            academyDAO.getAcademyTimes(personId = personId, academyId = academy.id!!)
         }
 
         val groups = toAcademyList.map { toAcademy ->

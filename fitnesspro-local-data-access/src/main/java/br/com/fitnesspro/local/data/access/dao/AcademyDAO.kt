@@ -41,4 +41,28 @@ abstract class AcademyDAO: BaseDAO() {
         end: LocalTime
     ): PersonAcademyTime?
 
+    @Query("""
+        select academy.* 
+        from academy
+        where academy.active = 1
+        and exists (
+            select 1
+            from person_academy_time pat
+            where pat.person_id = :personId
+            and pat.academy_id = academy.id
+        )
+    """)
+    abstract suspend fun getAcademies(personId: String): List<Academy>
+
+    @Query("""
+        select pat.*
+        from person_academy_time pat
+        where pat.active = 1
+        and pat.person_id = :personId
+        and pat.academy_id = :academyId
+    """)
+    abstract suspend fun getAcademyTimes(personId: String, academyId: String): List<PersonAcademyTime>
+
+    @Query("select * from person_academy_time where id = :id")
+    abstract suspend fun findPersonAcademyTimeById(id: String): PersonAcademyTime
 }
