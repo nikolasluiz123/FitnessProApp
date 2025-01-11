@@ -2,7 +2,7 @@ package br.com.fitnesspro.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.fitnesspro.compose.components.state.Field
+import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.ui.state.LoginUIState
@@ -33,7 +33,9 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             userRepository.getAuthenticatedTOUser()?.apply {
                 _uiState.value = _uiState.value.copy(
-                    email = Field(value = email!!),
+                    email = _uiState.value.email.copy(
+                        value = email!!
+                    )
                 )
             }
         }
@@ -42,7 +44,7 @@ class LoginViewModel @Inject constructor(
     private fun initialUIStateLoad() {
         _uiState.update { currentState ->
             currentState.copy(
-                email = Field(onChange = {
+                email = TextField(onChange = {
                     _uiState.value = _uiState.value.copy(
                         email = _uiState.value.email.copy(
                             value = it,
@@ -50,7 +52,7 @@ class LoginViewModel @Inject constructor(
                         )
                     )
                 }),
-                password = Field(onChange = {
+                password = TextField(onChange = {
                     _uiState.value = _uiState.value.copy(
                         password = _uiState.value.password.copy(
                             value = it,

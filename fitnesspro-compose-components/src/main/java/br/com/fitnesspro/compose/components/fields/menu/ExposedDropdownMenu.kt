@@ -1,4 +1,4 @@
-package br.com.fitnesspro.compose.components.menu
+package br.com.fitnesspro.compose.components.fields.menu
 
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,12 +13,31 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonArrowDown
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.state.Field
+import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
+import br.com.fitnesspro.compose.components.fields.state.ITextField
+
+@Composable
+fun <T> DefaultExposedDropdownMenu(
+    field: DropDownTextField<T>,
+    labelResId: Int,
+    modifier: Modifier = Modifier
+) {
+    DefaultExposedDropdownMenu(
+        field = field,
+        labelResId = labelResId,
+        expanded = field.expanded,
+        onExpandedChange = field.onDropDownExpandedChange,
+        onMenuDismissRequest = field.onDropDownDismissRequest,
+        onItemClick = field.onDataListItemClick,
+        items = field.dataListFiltered,
+        modifier = modifier
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> DefaultExposedDropdownMenu(
-    field: Field,
+    field: ITextField,
     labelResId: Int,
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,

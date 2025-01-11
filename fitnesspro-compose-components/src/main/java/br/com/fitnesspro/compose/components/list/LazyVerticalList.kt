@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.core.theme.GREY_600
@@ -55,7 +56,8 @@ fun <T> LazyVerticalList(
             Text(
                 text = stringResource(id = emptyMessageResId),
                 style = LabelTextStyle,
-                color = GREY_600
+                color = GREY_600,
+                textAlign = TextAlign.Center
             )
         }
     }

@@ -1,4 +1,4 @@
-package br.com.fitnesspro.compose.components.state
+package br.com.fitnesspro.compose.components.fields.state
 
 /**
  * Classe que representa um campo de formulário, contendo os atributos que sempre serão necessários e
@@ -11,14 +11,8 @@ package br.com.fitnesspro.compose.components.state
  *
  * @author Nikolas Luiz Schmitt
  */
-data class Field(
-    val value: String = "",
-    val onChange: (String) -> Unit = { },
-    val errorMessage: String = ""
-) {
-
-    /**
-     * Retorna se o atributo [value] está vazio.
-     */
-    fun valueIsEmpty() = value.isEmpty()
-}
+data class TextField(
+    override val value: String = "",
+    override val onChange: (String) -> Unit = { },
+    override val errorMessage: String = ""
+): ITextField

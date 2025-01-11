@@ -13,13 +13,13 @@ import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields.EMAIL
 import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields.NAME
 import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields.PASSWORD
 import br.com.fitnesspro.usecase.person.EnumValidatedPersonFields.PHONE
-import br.com.fitnesspro.usecase.scheduler.SaveSchedulerUseCase
+import br.com.fitnesspro.usecase.scheduler.SaveSchedulerConfigUseCase
 import java.time.LocalDate
 
-class SavePersonUseCase(
+open class SavePersonUseCase(
     private val context: Context,
-    private val userRepository: UserRepository,
-    private val saveSchedulerUseCase: SaveSchedulerUseCase
+    protected val userRepository: UserRepository,
+    protected val saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase
 ) {
 
     suspend fun execute(toPerson: TOPerson): List<Pair<EnumValidatedPersonFields, String>> {
@@ -62,13 +62,13 @@ class SavePersonUseCase(
             user.password = HashHelper.applyHash(user.password!!)
 
             userRepository.savePerson(user, person)
-            saveSchedulerUseCase.saveConfig(person.id)
+            saveSchedulerConfigUseCase.saveConfig(person.id)
         }
 
         return validationResults
     }
 
-    private fun validatePerson(person: Person): MutableList<Pair<EnumValidatedPersonFields, String>> {
+    protected fun validatePerson(person: Person): MutableList<Pair<EnumValidatedPersonFields, String>> {
         val validationResults = mutableListOf(
             validatePersonName(person),
             validatePersonBirthDate(person),
@@ -154,7 +154,7 @@ class SavePersonUseCase(
         return validationPair
     }
 
-    private suspend fun validateUser(user: User): MutableList<Pair<EnumValidatedPersonFields, String>> {
+    protected suspend fun validateUser(user: User): MutableList<Pair<EnumValidatedPersonFields, String>> {
         val validationResults = mutableListOf(
             validateUserEmail(user),
             validateUserPassword(user)

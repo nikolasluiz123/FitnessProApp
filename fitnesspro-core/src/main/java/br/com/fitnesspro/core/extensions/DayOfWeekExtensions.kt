@@ -14,3 +14,9 @@ fun DayOfWeek.getFirstPartFullDisplayName(): String {
 fun DayOfWeek.getShortDisplayNameAllCaps(): String {
     return getDisplayName(TextStyle.SHORT, Locale.getDefault()).uppercase().replace(".", "")
 }
+
+fun DayOfWeek.getShortDisplayName(): String {
+    val displayName = getDisplayName(TextStyle.SHORT, Locale.getDefault()).replace(".", "")
+
+    return displayName.replaceFirstChar(Char::uppercase)
+}

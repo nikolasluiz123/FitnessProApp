@@ -1,16 +1,13 @@
 package br.com.fitnesspro.compose.components.buttons.icons
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.core.theme.GREY_800
 
 /**
  * Botão com ícone de voltar.
@@ -21,16 +18,20 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
  */
 @Composable
 fun IconButtonArrowBack(
-    color: Color = Color.White,
+    modifier: Modifier = Modifier,
+    iconColor: Color = Color.White,
+    enabled: Boolean = true,
+    contentDescriptionResId: Int? = R.string.label_voltar,
     onClick: () -> Unit = { }
 ) {
-    IconButton(onClick = onClick) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = stringResource(R.string.label_voltar),
-            tint = color
-        )
-    }
+    FitnessProIconButton(
+        modifier = modifier,
+        resId = br.com.fitnesspro.core.R.drawable.ic_arrow_back_24dp,
+        iconColor = iconColor,
+        enabled = enabled,
+        contentDescriptionResId = contentDescriptionResId,
+        onClick = onClick
+    )
 }
 
 
@@ -39,7 +40,9 @@ fun IconButtonArrowBack(
 fun IconButtonArrowBackPreview() {
     FitnessProTheme {
         Surface {
-            IconButtonArrowBack()
+            IconButtonArrowBack(
+                iconColor = GREY_800
+            )
         }
     }
 }

@@ -55,6 +55,8 @@ dependencies {
     implementation(project(":fitnesspro-model"))
     implementation(project(":fitnesspro-local-data-access"))
 
+    implementation(libs.java.faker)
+
     implementation(libs.splash)
 
     implementation(libs.data.store)
@@ -69,6 +71,8 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    implementation(libs.room.paging)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

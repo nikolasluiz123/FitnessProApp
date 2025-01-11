@@ -32,11 +32,11 @@ import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonTime
-import br.com.fitnesspro.compose.components.dialog.FitnessProDialog
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.dialog.TimePickerInput
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.transformation.TimeVisualTransformation
-import br.com.fitnesspro.compose.components.menu.DefaultExposedDropdownMenu
+import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
@@ -126,7 +126,7 @@ fun RegisterAcademyScreen(
             var timePickerStartOpen by remember { mutableStateOf(false) }
             var timePickerEndOpen by remember { mutableStateOf(false) }
 
-            FitnessProDialog(
+            FitnessProMessageDialog(
                 type = state.dialogType,
                 show = state.showDialog,
                 onDismissRequest = { state.onHideDialog() },

@@ -22,4 +22,10 @@
     <string name="label_count">Sua Conta</string>
     <string name="test_empty_message">A lista está vazia</string>
     <string name="label_config">Cofigurações</string>
+    <string name="label_message">Mensagens</string>
+    <string name="label_confirm_event">Confirmar Evento</string>
+    <string name="label_search">Pesquisar</string>
+    <string name="label_placeholder_example">Buscar por Campo1 ou Campo2</string>
+    <string name="paged_list_dialog_erros_load_new_items">Falha ao carregar os novos dados. Por favor, tente novamente.</string>
+    <string name="paged_list_dialog_erros_load_items">Falha ao carregar os dados. Por favor, tente novamente.</string>
 </resources>

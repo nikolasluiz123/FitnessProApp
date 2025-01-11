@@ -6,9 +6,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
-import br.com.fitnesspro.compose.components.menu.MenuItem
-import br.com.fitnesspro.compose.components.menu.selectValue
-import br.com.fitnesspro.compose.components.state.Field
+import br.com.fitnesspro.compose.components.fields.menu.MenuItem
+import br.com.fitnesspro.compose.components.fields.menu.selectValue
+import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.extensions.format
@@ -69,7 +69,7 @@ class RegisterAcademyViewModel @Inject constructor(
                     )
                 },
                 onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
-                academy = Field(onChange = { text ->
+                academy = TextField(onChange = { text ->
                     _uiState.value = _uiState.value.copy(
                         academy = _uiState.value.academy.copy(
                             value = text,
@@ -77,7 +77,7 @@ class RegisterAcademyViewModel @Inject constructor(
                         )
                     )
                 }),
-                dayWeek = Field(onChange = {
+                dayWeek = TextField(onChange = {
                     _uiState.value = _uiState.value.copy(
                         dayWeek = _uiState.value.dayWeek.copy(
                             value = it,
@@ -85,7 +85,7 @@ class RegisterAcademyViewModel @Inject constructor(
                         )
                     )
                 }),
-                start = Field(onChange = {
+                start = TextField(onChange = {
                     if (it.isDigitsOnly()) {
                         _uiState.value = _uiState.value.copy(
                             start = _uiState.value.start.copy(
@@ -95,7 +95,7 @@ class RegisterAcademyViewModel @Inject constructor(
                         )
                     }
                 }),
-                end = Field(onChange = {
+                end = TextField(onChange = {
                     if (it.isDigitsOnly()) {
                         _uiState.value = _uiState.value.copy(
                             end = _uiState.value.end.copy(

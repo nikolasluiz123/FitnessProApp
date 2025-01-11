@@ -25,7 +25,8 @@ fun FitnessProNavHost(
                         popUpTo(loginScreenRoute) { inclusive = true }
                     }
                 )
-            }
+            },
+            onNavigateToMockScreen = navController::navigateToMockScreen
         )
 
         registerUserScreen(
@@ -45,12 +46,24 @@ fun FitnessProNavHost(
 
         schedulerScreen(
             onBackClick = navController::popBackStack,
-            onDayClick = navController::navigateToSchedulerDetailsScreen
+            onDayClick = navController::navigateToSchedulerDetailsScreen,
+            onNavigateToCompromise = navController::navigateToCompromiseScreen,
+            onNavigateToConfig = navController::navigateToSchedulerConfigScreen
         )
 
         schedulerDetailsScreen(
+            onBackClick = navController::popBackStack,
+            onNavigateToCompromise = navController::navigateToCompromiseScreen
+        )
+
+        compromiseScreen(
             onBackClick = navController::popBackStack
         )
 
+        mockScreen()
+
+        schedulerConfigScreen(
+            onBackClick = navController::popBackStack
+        )
     }
 }

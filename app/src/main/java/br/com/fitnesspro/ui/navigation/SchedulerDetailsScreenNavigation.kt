@@ -7,6 +7,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
 import br.com.fitnesspro.ui.screen.scheduler.SchedulerDetailsScreen
+import br.com.fitnesspro.ui.screen.scheduler.callback.OnNavigateToCompromise
 import br.com.fitnesspro.ui.viewmodel.SchedulerDetailsViewModel
 import com.google.gson.GsonBuilder
 import java.time.LocalDate
@@ -17,13 +18,15 @@ internal const val schedulerDetailsArguments = "schedulerDetailsArguments"
 
 fun NavGraphBuilder.schedulerDetailsScreen(
     onBackClick: () -> Unit,
+    onNavigateToCompromise: OnNavigateToCompromise
 ) {
     composable(route = "$schedulerDetailsScreenRoute?$schedulerDetailsArguments={$schedulerDetailsArguments}") {
         val registerUserViewModel = hiltViewModel<SchedulerDetailsViewModel>()
 
         SchedulerDetailsScreen(
             viewModel = registerUserViewModel,
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            onNavigateToCompromise = onNavigateToCompromise
         )
     }
 }

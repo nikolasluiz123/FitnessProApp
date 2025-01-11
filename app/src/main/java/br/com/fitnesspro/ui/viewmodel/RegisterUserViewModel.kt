@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
-import br.com.fitnesspro.compose.components.state.Field
+import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
 import br.com.fitnesspro.core.extensions.format
@@ -48,26 +48,28 @@ class RegisterUserViewModel @Inject constructor(
     init {
         jsonArgs?.fromJsonNavParamToArgs(RegisterUserScreenArgs::class.java)?.let { args ->
             initialLoadUIState(args)
-            loadUIStateWithAuthenticatedPerson()
+            loadUIStateWithAuthenticatedPerson(args)
         }
     }
 
-    private fun loadUIStateWithAuthenticatedPerson() = viewModelScope.launch {
-        userRepository.getAuthenticatedTOPerson()?.let { toPerson ->
-            _uiState.update {
-                it.copy(
-                    title = getTitle(context = null, toPerson = toPerson),
-                    subtitle = toPerson.name!!,
-                    toPerson = toPerson,
-                    academies = getAcademiesFromAuthenticatedPerson(toPerson),
-                    isVisibleFieldPhone = isVisibleFieldPhone(context = null, toPerson = toPerson),
-                    name = _uiState.value.name.copy(value = toPerson.name!!),
-                    email = _uiState.value.email.copy(value = toPerson.toUser?.email!!),
-                    birthDate = _uiState.value.birthDate.copy(
-                        value = toPerson.birthDate?.format(DATE) ?: ""
-                    ),
-                    phone = _uiState.value.phone.copy(value = toPerson.phone ?: "")
-                )
+    private fun loadUIStateWithAuthenticatedPerson(args: RegisterUserScreenArgs) = viewModelScope.launch {
+        if (args.context == null) {
+            userRepository.getAuthenticatedTOPerson()?.let { toPerson ->
+                _uiState.update {
+                    it.copy(
+                        title = getTitle(context = null, toPerson = toPerson),
+                        subtitle = toPerson.name!!,
+                        toPerson = toPerson,
+                        academies = getAcademiesFromAuthenticatedPerson(toPerson),
+                        isVisibleFieldPhone = isVisibleFieldPhone(context = null, toPerson = toPerson),
+                        name = it.name.copy(value = toPerson.name!!),
+                        email = it.email.copy(value = toPerson.toUser?.email!!),
+                        birthDate = it.birthDate.copy(
+                            value = toPerson.birthDate?.format(DATE) ?: ""
+                        ),
+                        phone = it.phone.copy(value = toPerson.phone ?: "")
+                    )
+                }
             }
         }
     }
@@ -103,7 +105,7 @@ class RegisterUserViewModel @Inject constructor(
                     )
                 },
                 onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
-                name = Field(onChange = {
+                name = TextField(onChange = {
                     _uiState.value = _uiState.value.copy(
                         name = _uiState.value.name.copy(
                             value = it,
@@ -111,7 +113,7 @@ class RegisterUserViewModel @Inject constructor(
                         )
                     )
                 }),
-                email = Field(onChange = {
+                email = TextField(onChange = {
                     _uiState.value = _uiState.value.copy(
                         email = _uiState.value.email.copy(
                             value = it,
@@ -119,7 +121,7 @@ class RegisterUserViewModel @Inject constructor(
                         )
                     )
                 }),
-                password = Field(onChange = {
+                password = TextField(onChange = {
                     _uiState.value = _uiState.value.copy(
                         password = _uiState.value.password.copy(
                             value = it,
@@ -127,7 +129,7 @@ class RegisterUserViewModel @Inject constructor(
                         )
                     )
                 }),
-                birthDate = Field(onChange = {
+                birthDate = TextField(onChange = {
                     _uiState.value = _uiState.value.copy(
                         birthDate = _uiState.value.birthDate.copy(
                             value = it,
@@ -135,7 +137,7 @@ class RegisterUserViewModel @Inject constructor(
                         )
                     )
                 }),
-                phone = Field(onChange = {
+                phone = TextField(onChange = {
                     _uiState.value = _uiState.value.copy(
                         phone = _uiState.value.phone.copy(
                             value = it,

@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.YearMonth
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,7 +46,9 @@ class SchedulerDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
-                    schedules = schedulerRepository.getSchedulerList(YearMonth.from(args.scheduledDate))
+                    schedules = schedulerRepository.getSchedulerList(
+                        scheduledDate = args.scheduledDate
+                    )
                 )
             }
         }
@@ -71,6 +73,7 @@ class SchedulerDetailsViewModel @Inject constructor(
             it.copy(
                 title = context.getString(R.string.scheduler_details_screen_title),
                 subtitle = args.scheduledDate.format(EnumDateTimePatterns.DATE),
+                isVisibleFabAdd = args.scheduledDate >= LocalDate.now()
             )
         }
     }

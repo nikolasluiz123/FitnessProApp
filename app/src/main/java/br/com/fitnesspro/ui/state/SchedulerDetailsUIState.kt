@@ -7,5 +7,6 @@ data class SchedulerDetailsUIState(
     val title: String = "",
     val subtitle: String = "",
     val userType: EnumUserType? = null,
-    val schedules: List<TOScheduler> = emptyList()
+    val schedules: List<TOScheduler> = emptyList(),
+    val isVisibleFabAdd: Boolean = true
 )

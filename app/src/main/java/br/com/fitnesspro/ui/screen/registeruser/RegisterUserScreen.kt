@@ -28,7 +28,8 @@ import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.R
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
-import br.com.fitnesspro.compose.components.dialog.FitnessProDialog
+import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
 import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
 import br.com.fitnesspro.compose.components.tabs.Tab
@@ -43,7 +44,6 @@ import br.com.fitnesspro.ui.screen.registeruser.callback.OnSaveUserClick
 import br.com.fitnesspro.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
 import br.com.fitnesspro.ui.state.RegisterUserUIState
 import br.com.fitnesspro.ui.viewmodel.RegisterUserViewModel
-import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -135,7 +135,7 @@ fun RegisterUserScreen(
         ) {
             val (tabRowRef, horizontalPagerRef) = createRefs()
 
-            FitnessProDialog(
+            FitnessProMessageDialog(
                 type = state.dialogType,
                 show = state.showDialog,
                 onDismissRequest = { state.onHideDialog() },

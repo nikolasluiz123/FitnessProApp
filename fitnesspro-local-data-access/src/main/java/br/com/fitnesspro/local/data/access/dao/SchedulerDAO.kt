@@ -9,26 +9,108 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.local.data.access.dao.IBaseDAO.Companion.QR_NL
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.to.TOScheduler
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.YearMonth
 import java.util.StringJoiner
 
 @Dao
-abstract class SchedulerDAO: IBaseDAO {
+abstract class SchedulerDAO: BaseDAO() {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun saveConfig(schedulerConfig: SchedulerConfig)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun saveConfigBatch(schedulerConfigs: List<SchedulerConfig>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun save(scheduler: Scheduler)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun saveBatch(schedulers: List<Scheduler>)
+
     @Query("select * from scheduler_config where id = :id")
-    abstract suspend fun findById(id: String): SchedulerConfig
+    abstract suspend fun findSchedulerConfigById(id: String): SchedulerConfig
 
     @Query("select * from scheduler_config where person_id = :personId")
-    abstract suspend fun findByPersonId(personId: String): SchedulerConfig?
+    abstract suspend fun findSchedulerConfigByPersonId(personId: String): SchedulerConfig?
+
+    @Query("select * from scheduler where id = :id")
+    abstract suspend fun findSchedulerById(id: String): Scheduler
+
+    suspend fun getHasSchedulerConflict(
+        schedulerId: String?,
+        personId: String,
+        userType: EnumUserType,
+        scheduledDate: LocalDate,
+        start: LocalTime,
+        end: LocalTime
+    ): Boolean {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select 1 ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from scheduler schedule ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where schedule.active = 1 ")
+            add(" and ( ")
+            add("       start between ? and ? ")
+            add("       or `end` between ? and ? ")
+            add("     ) ")
+            add(" and schedule.scheduled_date = ? ")
+
+
+            val startFormated = start.format(EnumDateTimePatterns.TIME)
+            val endFormated = end.format(EnumDateTimePatterns.TIME)
+            val dateFormated = scheduledDate.format(EnumDateTimePatterns.DATE_SQLITE)
+
+            params.add(startFormated)
+            params.add(endFormated)
+            params.add(startFormated)
+            params.add(endFormated)
+            params.add(dateFormated)
+
+            schedulerId?.let {
+                add(" and schedule.id != ? ")
+                params.add(it)
+            }
+
+            when (userType) {
+                EnumUserType.PERSONAL_TRAINER,
+                EnumUserType.NUTRITIONIST -> {
+                    add(" and schedule.professional_person_id = ? ")
+                    params.add(personId)
+                }
+
+                EnumUserType.ACADEMY_MEMBER -> {
+                    add(" and schedule.academy_member_person_id = ? ")
+                    params.add(personId)
+                }
+            }
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(" select exists ( ")
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(" ) ")
+        }
+
+        return executeQueryHasSchedulerConflict(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery(observedEntities = [Scheduler::class])
+    abstract suspend fun executeQueryHasSchedulerConflict(query: SupportSQLiteQuery): Boolean
 
     suspend fun getSchedulerList(
         personId: String,

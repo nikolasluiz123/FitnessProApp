@@ -8,7 +8,7 @@ import androidx.room.Transaction
 import br.com.fitnesspro.model.general.User
 
 @Dao
-abstract class UserDAO: IBaseDAO {
+abstract class UserDAO: BaseDAO() {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun save(user: User)
@@ -22,7 +22,12 @@ abstract class UserDAO: IBaseDAO {
     @Query("select * from user where id = :id")
     abstract suspend fun findById(id: String): User
 
-    @Query("select * from user where exists (select 1 from person where id = :personId)")
+    @Query("""
+              select user.* 
+              from user
+              inner join person on person.user_id = user.id
+              where person.id = :personId
+    """)
     abstract suspend fun findByPersonId(personId: String): User
 
     @Query("update user set authenticated = 0 where authenticated = 1")

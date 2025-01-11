@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.general.Person
+import java.time.LocalTime
 import java.util.UUID
 
 
@@ -30,5 +31,13 @@ data class SchedulerConfig(
     @ColumnInfo(name = "max_schedule_density")
     var maxScheduleDensity: Int = 2,
     @ColumnInfo(name = "person_id")
-    var personId: String? = null
+    var personId: String? = null,
+    @ColumnInfo(name = "start_work_time", defaultValue = "08:00")
+    var startWorkTime: LocalTime = LocalTime.of(8, 0),
+    @ColumnInfo(name = "end_work_time", defaultValue = "17:30")
+    var endWorkTime: LocalTime = LocalTime.of(17, 30),
+    @ColumnInfo(name = "start_break_time", defaultValue = "12:00")
+    var startBreakTime: LocalTime = LocalTime.of(12, 0),
+    @ColumnInfo(name = "end_break_time", defaultValue = "13:00")
+    var endBreakTime: LocalTime = LocalTime.of(13, 0),
 ): BaseModel()

@@ -1,6 +1,7 @@
 package br.com.fitnesspro.core.extensions
 
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import java.time.DateTimeException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -18,7 +19,11 @@ import java.time.format.DateTimeFormatter
 fun String.parseToLocalDate(enumDateTimePatterns: EnumDateTimePatterns): LocalDate? {
     if (this.isEmpty()) return null
 
-    return LocalDate.parse(this, DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
+    return try {
+        LocalDate.parse(this, DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
+    } catch (ex: DateTimeException) {
+        null
+    }
 }
 
 /**
@@ -32,7 +37,11 @@ fun String.parseToLocalDate(enumDateTimePatterns: EnumDateTimePatterns): LocalDa
 fun String.parseToLocalTime(enumDateTimePatterns: EnumDateTimePatterns): LocalTime? {
     if (this.isEmpty()) return null
 
-    return LocalTime.parse(this, DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
+    return try {
+        LocalTime.parse(this, DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
+    } catch (ex: DateTimeException) {
+        null
+    }
 }
 
 /**
@@ -48,7 +57,11 @@ fun String.parseToLocalTime(enumDateTimePatterns: EnumDateTimePatterns): LocalTi
 fun String.parseToLocalDateTime(enumDateTimePatterns: EnumDateTimePatterns): LocalDateTime? {
     if (this.isEmpty()) return null
 
-    return LocalDateTime.parse(this, DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
+    return try {
+        LocalDateTime.parse(this, DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
+    } catch (ex: DateTimeException) {
+        null
+    }
 }
 
 fun String.formatFileDateToDateTime(): String? {

@@ -1,6 +1,6 @@
 package br.com.fitnesspro.ui.state
 
-import br.com.fitnesspro.compose.components.state.Field
+import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.core.callback.IShowDialogCallback
 import br.com.fitnesspro.core.enums.EnumDialogType
@@ -15,11 +15,11 @@ data class RegisterUserUIState(
     val context: EnumOptionsBottomSheetRegisterUser? = null,
     val toPerson: TOPerson? = null,
     val tabs: MutableList<Tab> = mutableListOf(),
-    val name: Field = Field(),
-    val email: Field = Field(),
-    val password: Field = Field(),
-    val birthDate: Field = Field(),
-    val phone: Field = Field(),
+    val name: TextField = TextField(),
+    val email: TextField = TextField(),
+    val password: TextField = TextField(),
+    val birthDate: TextField = TextField(),
+    val phone: TextField = TextField(),
     val isVisibleFieldPhone: Boolean = false,
     val academies: List<AcademyGroupDecorator> = mutableListOf(),
     override val dialogMessage: String = "",

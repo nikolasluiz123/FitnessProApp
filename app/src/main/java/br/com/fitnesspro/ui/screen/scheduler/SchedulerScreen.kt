@@ -7,11 +7,13 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,9 +27,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.R
+import br.com.fitnesspro.compose.components.buttons.fab.FitnessProFloatingActionButton
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonConfig
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
@@ -55,8 +61,10 @@ import br.com.fitnesspro.core.theme.RED_400
 import br.com.fitnesspro.core.theme.RED_600
 import br.com.fitnesspro.core.theme.RED_800
 import br.com.fitnesspro.model.enums.EnumUserType
+import br.com.fitnesspro.ui.navigation.CompromiseScreenArgs
 import br.com.fitnesspro.ui.navigation.SchedulerDetailsScreenArgs
 import br.com.fitnesspro.ui.screen.scheduler.callback.OnDayClick
+import br.com.fitnesspro.ui.screen.scheduler.callback.OnNavigateToCompromise
 import br.com.fitnesspro.ui.state.SchedulerUIState
 import br.com.fitnesspro.ui.viewmodel.SchedulerViewModel
 import java.time.DayOfWeek
@@ -67,14 +75,19 @@ import java.time.YearMonth
 fun SchedulerScreen(
     viewModel: SchedulerViewModel,
     onBackClick: () -> Unit,
-    onDayClick: OnDayClick
+    onDayClick: OnDayClick,
+    onNavigateToCompromise: OnNavigateToCompromise,
+    onNavigateToConfig: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
     SchedulerScreen(
         state = state,
         onBackClick = onBackClick,
-        onDayClick = onDayClick
+        onDayClick = onDayClick,
+        onNavigateToCompromise = onNavigateToCompromise,
+        onNavigateToConfig = onNavigateToConfig,
+        onUpdateSchedules = viewModel::updateSchedules
     )
 }
 
@@ -83,7 +96,10 @@ fun SchedulerScreen(
 fun SchedulerScreen(
     state: SchedulerUIState,
     onBackClick: () -> Unit = { },
-    onDayClick: OnDayClick? = null
+    onDayClick: OnDayClick? = null,
+    onNavigateToCompromise: OnNavigateToCompromise? = null,
+    onNavigateToConfig: () -> Unit = { },
+    onUpdateSchedules: () -> Unit = { }
 ) {
     Scaffold(
         topBar = {
@@ -92,15 +108,34 @@ fun SchedulerScreen(
                 showMenuWithLogout = false,
                 onBackClick = onBackClick,
                 actions = {
-                    IconButtonConfig(
-                        onClick = {
-                            // TODO - Navegar para tela de configurações
-                        }
-                    )
+                    IconButtonConfig(onClick = onNavigateToConfig)
                 }
             )
-        }
+        },
+        floatingActionButton = {
+            if (state.isVisibleFabRecurrentScheduler) {
+                FitnessProFloatingActionButton(
+                    content = {
+                        Icon(
+                            painter = painterResource(br.com.fitnesspro.core.R.drawable.ic_edit_calendar_24dp),
+                            contentDescription = stringResource(R.string.schedule_screen_fab_recurrent_description)
+                        )
+                    },
+                    onClick = {
+                        onNavigateToCompromise?.onExecute(
+                            args = CompromiseScreenArgs(recurrent = true)
+                        )
+                    }
+                )
+            }
+        },
+        contentWindowInsets = WindowInsets(0.dp)
     ) { padding ->
+
+        LaunchedEffect(Unit) {
+            onUpdateSchedules()
+        }
+
         ConstraintLayout(
             Modifier
                 .padding(padding)
@@ -240,11 +275,13 @@ private fun DaysGrid(
                                     .aspectRatio(1f)
                             )
                         } else {
-                            DayCell(
-                                day = day,
-                                style = getDayStyle(day, state),
-                                onDayClick = onDayClick
-                            )
+                            getDayStyle(day, state)?.let { style ->
+                                DayCell(
+                                    day = day,
+                                    style = style,
+                                    onDayClick = onDayClick
+                                )
+                            }
                         }
                     }
                 }
@@ -253,16 +290,16 @@ private fun DaysGrid(
     }
 }
 
-private fun getDayStyle(day: LocalDate, state: SchedulerUIState): DayStyle {
+private fun getDayStyle(day: LocalDate, state: SchedulerUIState): DayStyle? {
     val scheduleForDay = state.schedules.firstOrNull { it.date == day }
 
     return if (scheduleForDay != null) {
-        when (state.userType!!) {
+        when (state.userType) {
             EnumUserType.PERSONAL_TRAINER,
             EnumUserType.NUTRITIONIST -> {
                 val count = scheduleForDay.count
-                val min = state.toSchedulerConfig!!.minScheduleDensity
-                val max = state.toSchedulerConfig.maxScheduleDensity
+                val min = state.toSchedulerConfig?.minScheduleDensity!!
+                val max = state.toSchedulerConfig.maxScheduleDensity!!
                 val colors = listOf(RED_200, RED_400, RED_600, RED_800)
                 val thresholds = getThresholds(max, min, colors)
                 val backgroundColor = getDayBackgroundColor(count, thresholds, colors)
@@ -281,6 +318,8 @@ private fun getDayStyle(day: LocalDate, state: SchedulerUIState): DayStyle {
                     textColor = Color.White
                 )
             }
+
+            null -> null
         }
 
     } else {
@@ -357,16 +396,21 @@ private fun DayCell(
     style: DayStyle,
     onDayClick: OnDayClick? = null
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Box(
         Modifier
             .padding(4.dp)
             .size(40.dp)
-            .clickable {
+            .background(color = style.backgroundColor, shape = CircleShape)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = ripple(bounded = true, radius = 20.dp, color = Color.Gray)
+            ) {
                 onDayClick?.onExecute(
                     args = SchedulerDetailsScreenArgs(scheduledDate = day)
                 )
-            }
-            .background(color = style.backgroundColor, shape = CircleShape),
+            },
         contentAlignment = Alignment.Center
     ) {
         Text(

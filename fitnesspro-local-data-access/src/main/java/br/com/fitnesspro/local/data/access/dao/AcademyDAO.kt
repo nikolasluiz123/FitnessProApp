@@ -10,7 +10,7 @@ import java.time.DayOfWeek
 import java.time.LocalTime
 
 @Dao
-abstract class AcademyDAO: IBaseDAO {
+abstract class AcademyDAO: BaseDAO() {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun saveAcademyTime(personAcademyTime: PersonAcademyTime)

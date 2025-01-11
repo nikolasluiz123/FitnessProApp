@@ -11,6 +11,7 @@ import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.PersonAcademyTime
@@ -37,7 +38,7 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 
 @Database(
-    version = 6,
+    version = 7,
     entities = [
         User::class, Person::class, Academy::class, PersonAcademyTime::class, PhysicEvaluation::class,
         IngredientPreDefinition::class, MealOptionPreDefinition::class, Diet::class, DayWeekDiet::class, Meal::class,
@@ -52,7 +53,8 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
         AutoMigration(from = 2, to = 3, spec = AutoMigrationSpec2To3::class),
         AutoMigration(from = 3, to = 4),
         AutoMigration(from = 4, to = 5),
-        AutoMigration(from = 5, to = 6)
+        AutoMigration(from = 5, to = 6),
+        AutoMigration(from = 6, to = 7)
     ]
 )
 @TypeConverters(RoomTypeConverters::class)
@@ -65,6 +67,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun academyDAO(): AcademyDAO
 
     abstract fun schedulerDAO(): SchedulerDAO
+
+    abstract fun workoutDAO(): WorkoutDAO
 
 }
 

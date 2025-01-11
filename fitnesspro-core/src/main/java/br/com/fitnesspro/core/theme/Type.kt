@@ -89,6 +89,10 @@ val LabelTextStyle = TextStyle(
     letterSpacing = 0.2.sp
 )
 
+val LabelFontWeightMediumTextStyle = LabelTextStyle.copy(
+    fontWeight = FontWeight.Medium
+)
+
 val ValueTextStyle = TextStyle(
     fontFamily = FontFamily.SansSerif,
     fontWeight = FontWeight.Normal,
@@ -119,4 +123,12 @@ val LabelCalendarWeekTextStyle = TextStyle(
     fontSize = 12.sp,
     lineHeight = 12.sp,
     letterSpacing = 2.sp
+)
+
+val DialogTitleTextStyle = TextStyle(
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Normal,
+    fontSize = 18.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.2.sp
 )

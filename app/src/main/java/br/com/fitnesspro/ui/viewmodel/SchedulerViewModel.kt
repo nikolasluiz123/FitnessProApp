@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
+import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.repository.SchedulerRepository
 import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.ui.screen.scheduler.decorator.SchedulerDecorator
@@ -47,17 +48,19 @@ class SchedulerViewModel @Inject constructor(
     private fun loadUIStateWithDatabaseInfos() {
         viewModelScope.launch {
             val toPerson = userRepository.getAuthenticatedTOPerson()!!
+            val userType = toPerson.toUser?.type!!
 
             _uiState.update {
                 it.copy(
-                    userType = toPerson.toUser?.type!!,
-                    toSchedulerConfig = schedulerRepository.getTOSchedulerConfigByPersonId(toPerson.id!!)
+                    userType = userType,
+                    toSchedulerConfig = schedulerRepository.getTOSchedulerConfigByPersonId(toPerson.id!!),
+                    isVisibleFabRecurrentScheduler = userType == EnumUserType.PERSONAL_TRAINER
                 )
             }
         }
     }
 
-    private fun updateSchedules() {
+    fun updateSchedules() {
         viewModelScope.launch {
             val groupedTOSchedulers = schedulerRepository.getSchedulerList(
                 yearMonth = _uiState.value.selectedYearMonth

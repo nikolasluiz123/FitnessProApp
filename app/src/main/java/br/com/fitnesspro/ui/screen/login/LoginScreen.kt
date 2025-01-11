@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,7 +28,7 @@ import br.com.fitnesspro.compose.components.buttons.FitnessProButton
 import br.com.fitnesspro.compose.components.buttons.FitnessProOutlinedButton
 import br.com.fitnesspro.compose.components.buttons.RoundedFacebookButton
 import br.com.fitnesspro.compose.components.buttons.RoundedGoogleButton
-import br.com.fitnesspro.compose.components.dialog.FitnessProDialog
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
@@ -34,6 +36,8 @@ import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.core.theme.GREY_800
+import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.ui.bottomsheet.registeruser.BottomSheetRegisterUser
 import br.com.fitnesspro.ui.bottomsheet.registeruser.OnBottomSheetRegisterUserItemClick
 import br.com.fitnesspro.ui.screen.login.callback.OnLoginClick
@@ -44,7 +48,8 @@ import br.com.fitnesspro.ui.viewmodel.LoginViewModel
 fun LoginScreen(
     viewModel: LoginViewModel,
     onBottomSheetRegisterUserItemClick: OnBottomSheetRegisterUserItemClick,
-    onNavigateToHome: () -> Unit
+    onNavigateToHome: () -> Unit,
+    onNavigateToMockScreen: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -52,7 +57,8 @@ fun LoginScreen(
         state = state,
         onBottomSheetRegisterUserItemClick = onBottomSheetRegisterUserItemClick,
         onLoginClick = viewModel::login,
-        onNavigateToHome = onNavigateToHome
+        onNavigateToHome = onNavigateToHome,
+        onNavigateToMockScreen = onNavigateToMockScreen
     )
 }
 
@@ -62,14 +68,28 @@ fun LoginScreen(
     state: LoginUIState = LoginUIState(),
     onBottomSheetRegisterUserItemClick: OnBottomSheetRegisterUserItemClick? = null,
     onLoginClick: OnLoginClick? = null,
-    onNavigateToHome: () -> Unit = { }
+    onNavigateToHome: () -> Unit = { },
+    onNavigateToMockScreen: () -> Unit = { }
 ) {
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
                 title = stringResource(R.string.login_screen_title),
                 showNavigationIcon = false,
-                showMenuWithLogout = false
+                showMenuWithLogout = false,
+                showMenu = true,
+                menuItems = {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = stringResource(R.string.login_screen_menu_item_mocks),
+                                style = LabelTextStyle,
+                                color = GREY_800
+                            )
+                        },
+                        onClick = onNavigateToMockScreen
+                    )
+                }
             )
         }
     ) { padding ->
@@ -113,7 +133,7 @@ fun LoginScreen(
 
                     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
 
-                    FitnessProDialog(
+                    FitnessProMessageDialog(
                         type = state.dialogType,
                         show = state.showDialog,
                         onDismissRequest = { state.onHideDialog() },

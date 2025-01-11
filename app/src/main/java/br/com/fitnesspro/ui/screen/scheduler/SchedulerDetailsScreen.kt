@@ -1,5 +1,7 @@
 package br.com.fitnesspro.ui.screen.scheduler
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,11 +27,14 @@ import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOScheduler
+import br.com.fitnesspro.ui.navigation.CompromiseScreenArgs
+import br.com.fitnesspro.ui.screen.scheduler.callback.OnNavigateToCompromise
 import br.com.fitnesspro.ui.state.SchedulerDetailsUIState
 import br.com.fitnesspro.ui.viewmodel.SchedulerDetailsViewModel
 import java.time.LocalDate
@@ -39,14 +44,16 @@ import java.time.LocalTime
 @Composable
 fun SchedulerDetailsScreen(
     viewModel: SchedulerDetailsViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateToCompromise: OnNavigateToCompromise
 ) {
     val state by viewModel.uiState.collectAsState()
 
     SchedulerDetailsScreen(
         state = state,
         onBackClick = onBackClick,
-        onUpdateSchedules = viewModel::updateSchedules
+        onUpdateSchedules = viewModel::updateSchedules,
+        onNavigateToCompromise = onNavigateToCompromise
     )
 }
 
@@ -55,7 +62,8 @@ fun SchedulerDetailsScreen(
 fun SchedulerDetailsScreen(
     state: SchedulerDetailsUIState,
     onBackClick: () -> Unit = { },
-    onUpdateSchedules: () -> Unit = { }
+    onUpdateSchedules: () -> Unit = { },
+    onNavigateToCompromise: OnNavigateToCompromise? = null
 ) {
     Scaffold(
         topBar = {
@@ -67,13 +75,20 @@ fun SchedulerDetailsScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButtonAdd(
-                onClick = {
-                    // TODO - Navegar para tela de compromisso. Precisa passar que é um compromisso
-                    //  sem recorrencia
-                }
-            )
-        }
+            if (state.isVisibleFabAdd) {
+                FloatingActionButtonAdd(
+                    onClick = {
+                        onNavigateToCompromise?.onExecute(
+                            args = CompromiseScreenArgs(
+                                date = state.subtitle.parseToLocalDate(EnumDateTimePatterns.DATE)!!,
+                                recurrent = false,
+                            )
+                        )
+                    }
+                )
+            }
+        },
+        contentWindowInsets = WindowInsets(0.dp)
     ) { padding ->
 
         LaunchedEffect(Unit) {
@@ -97,21 +112,33 @@ fun SchedulerDetailsScreen(
                         bottom.linkTo(parent.bottom)
                     },
                 items = state.schedules,
-                emptyMessageResId = R.string.scheduler_details_empty_message,
+                emptyMessageResId = getEmptyMessage(state),
             ) { toScheduler ->
                 SchedulerDetailItem(
                     to = toScheduler,
-                    state = state
+                    state = state,
+                    onNavigateToCompromise = onNavigateToCompromise
                 )
             }
         }
     }
 }
 
+private fun getEmptyMessage(state: SchedulerDetailsUIState): Int {
+    val date = state.subtitle.parseToLocalDate(EnumDateTimePatterns.DATE)!!
+
+    return if (date < LocalDate.now()) {
+        R.string.scheduler_details_empty_message_past_date
+    } else {
+        R.string.scheduler_details_empty_message
+    }
+}
+
 @Composable
 fun SchedulerDetailItem(
     to: TOScheduler,
-    state: SchedulerDetailsUIState
+    state: SchedulerDetailsUIState,
+    onNavigateToCompromise: OnNavigateToCompromise? = null
 ) {
     val context = LocalContext.current
 
@@ -119,6 +146,15 @@ fun SchedulerDetailItem(
         Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
+            .clickable {
+                onNavigateToCompromise?.onExecute(
+                    args = CompromiseScreenArgs(
+                        date = state.subtitle.parseToLocalDate(EnumDateTimePatterns.DATE)!!,
+                        recurrent = false,
+                        schedulerId = to.id
+                    )
+                )
+            }
     ) {
         val (nameRef, hourRef, compromiseTypeRef, situationRef, professionalRef,
              dividerRef) = createRefs()

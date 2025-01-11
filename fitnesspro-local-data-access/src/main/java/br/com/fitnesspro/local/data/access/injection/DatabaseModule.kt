@@ -40,4 +40,8 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideSchedulerDao(appDatabase: AppDatabase) = appDatabase.schedulerDAO()
+
+    @Provides
+    @Singleton
+    fun provideWorkoutDao(appDatabase: AppDatabase) = appDatabase.workoutDAO()
 }

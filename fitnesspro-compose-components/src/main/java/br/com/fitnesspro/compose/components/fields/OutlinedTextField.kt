@@ -25,11 +25,26 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.paging.compose.collectAsLazyPagingItems
 import br.com.fitnesspro.compose.components.R
-import br.com.fitnesspro.compose.components.state.Field
+import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCalendar
+import br.com.fitnesspro.compose.components.buttons.icons.IconButtonSearch
+import br.com.fitnesspro.compose.components.buttons.icons.IconButtonTime
+import br.com.fitnesspro.compose.components.dialog.FitnessProDatePickerDialog
+import br.com.fitnesspro.compose.components.dialog.FitnessProPagedListDialog
+import br.com.fitnesspro.compose.components.dialog.TimePickerInput
+import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
+import br.com.fitnesspro.compose.components.fields.state.ITextField
+import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
+import br.com.fitnesspro.compose.components.fields.state.TextField
+import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
+import br.com.fitnesspro.compose.components.fields.transformation.DateVisualTransformation
+import br.com.fitnesspro.compose.components.fields.transformation.TimeVisualTransformation
+import br.com.fitnesspro.core.menu.ITupleListItem
 import br.com.fitnesspro.core.theme.FieldErrorTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_700
@@ -39,7 +54,7 @@ import kotlin.properties.Delegates
 
 @Composable
 fun OutlinedTextFieldValidation(
-    field: Field,
+    field: ITextField,
     label: String,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -93,7 +108,7 @@ fun OutlinedTextFieldValidation(
 
 @Composable
 fun OutlinedTextFieldValidation(
-    field: Field,
+    field: TextField,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -252,7 +267,7 @@ private fun getDefaultOutlinedTextFieldColors() = OutlinedTextFieldDefaults.colo
 
 @Composable
 fun OutlinedTextFieldPasswordValidation(
-    field: Field,
+    field: TextField,
     label: String,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions,
@@ -273,7 +288,7 @@ fun OutlinedTextFieldPasswordValidation(
 
 @Composable
 fun OutlinedTextFieldPasswordValidation(
-    field: Field,
+    field: TextField,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions,
     label: @Composable (() -> Unit)? = null,
@@ -344,6 +359,98 @@ fun OutlinedTextFieldPasswordValidation(
         maxLength = maxLength,
         keyboardActions = keyboardActions
     )
+}
+
+@Composable
+fun TimePickerOutlinedTextFieldValidation(
+    field: TimePickerTextField,
+    fieldLabel: String,
+    timePickerTitle: String,
+    modifier: Modifier = Modifier,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
+) {
+    OutlinedTextFieldValidation(
+        field = field,
+        label = fieldLabel,
+        modifier = modifier,
+        trailingIcon = {
+            IconButtonTime { field.onTimePickerOpenChange(true) }
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number
+        ),
+        keyboardActions = keyboardActions,
+        visualTransformation = TimeVisualTransformation(),
+        maxLength = 4
+    )
+
+    if (field.timePickerOpen) {
+        TimePickerInput(
+            title = timePickerTitle,
+            onConfirm = field.onTimeChange,
+            onDismiss = field.onTimeDismiss
+        )
+    }
+}
+
+@Composable
+fun DatePickerOutlinedTextFieldValidation(
+    field: DatePickerTextField,
+    fieldLabel: String,
+    modifier: Modifier = Modifier,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
+) {
+    OutlinedTextFieldValidation(
+        field = field,
+        label = fieldLabel,
+        modifier = modifier,
+        trailingIcon = {
+            IconButtonCalendar { field.onDatePickerOpenChange(true) }
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number
+        ),
+        keyboardActions = keyboardActions,
+        visualTransformation = DateVisualTransformation(),
+        maxLength = 8
+    )
+
+    if (field.datePickerOpen) {
+        FitnessProDatePickerDialog(
+            onDismissRequest = field.onDatePickerDismiss,
+            onConfirm = field.onDateChange,
+            onCancel = field.onDatePickerDismiss
+        )
+    }
+}
+
+@Composable
+fun <T: ITupleListItem> PagedListDialogOutlinedTextFieldValidation(
+    field: PagedDialogListTextField<T>,
+    fieldLabel: String,
+    simpleFilterPlaceholderResId: Int,
+    itemLayout: @Composable (T) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextFieldValidation(
+        field = field,
+        label = fieldLabel,
+        modifier = modifier,
+        trailingIcon = {
+            IconButtonSearch(onClick = field.onShow)
+        }
+    )
+
+    if (field.show) {
+        FitnessProPagedListDialog(
+            dialogTitle = field.dialogTitle,
+            pagingItems = field.dataList.collectAsLazyPagingItems(),
+            onDismissRequest = field.onHide,
+            onSimpleFilterChange = field.onSimpleFilterChange,
+            simpleFilterPlaceholderResId = simpleFilterPlaceholderResId,
+            itemLayout = itemLayout
+        )
+    }
 }
 
 @Preview

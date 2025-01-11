@@ -11,5 +11,6 @@ data class SchedulerUIState(
     val toSchedulerConfig: TOSchedulerConfig? = null,
     val schedules: List<SchedulerDecorator> = emptyList(),
     val selectedYearMonth: YearMonth = YearMonth.now(),
-    val onSelectYearMonth: (newYearMonth: YearMonth) -> Unit = { }
+    val onSelectYearMonth: (newYearMonth: YearMonth) -> Unit = { },
+    val isVisibleFabRecurrentScheduler: Boolean = false,
 )

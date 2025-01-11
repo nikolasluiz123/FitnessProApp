@@ -31,6 +31,8 @@ material = "1.12.0"
 material3 = "1.3.1"
 room = "2.6.1"
 argon2Version = "1.6.0"
+javafaker = "1.0.2"
+paging = "3.3.5"
 
 [libraries]
 splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
@@ -69,13 +71,17 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
 
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
 
 kotlin-reflection = { group = "org.jetbrains.kotlin", name="kotlin-reflect", version.ref = "kotlin" }
 argon2 = { group = "com.lambdapioneer.argon2kt", name = "argon2kt", version.ref = "argon2Version"}
+
+java-faker = { group = "com.github.javafaker", name = "javafaker", version.ref = "javafaker" }
 
 [plugins]
 kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
