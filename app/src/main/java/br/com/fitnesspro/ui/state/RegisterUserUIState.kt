@@ -1,5 +1,6 @@
 package br.com.fitnesspro.ui.state
 
+import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.core.callback.IShowDialogCallback
@@ -13,12 +14,12 @@ data class RegisterUserUIState(
     val title: String? = null,
     val subtitle: String? = null,
     val context: EnumOptionsBottomSheetRegisterUser? = null,
-    val toPerson: TOPerson? = null,
+    val toPerson: TOPerson = TOPerson(),
     val tabs: MutableList<Tab> = mutableListOf(),
     val name: TextField = TextField(),
     val email: TextField = TextField(),
     val password: TextField = TextField(),
-    val birthDate: TextField = TextField(),
+    val birthDate: DatePickerTextField = DatePickerTextField(),
     val phone: TextField = TextField(),
     val isVisibleFieldPhone: Boolean = false,
     val academies: List<AcademyGroupDecorator> = mutableListOf(),

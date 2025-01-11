@@ -2,20 +2,23 @@ package br.com.fitnesspro.ui.viewmodel
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
+import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.tabs.Tab
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.to.TOPerson
-import br.com.fitnesspro.to.TOUser
 import br.com.fitnesspro.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.ui.navigation.registerUserArguments
@@ -60,7 +63,7 @@ class RegisterUserViewModel @Inject constructor(
                         title = getTitle(context = null, toPerson = toPerson),
                         subtitle = toPerson.name!!,
                         toPerson = toPerson,
-                        academies = getAcademiesFromAuthenticatedPerson(toPerson),
+                        academies = getAcademiesFromAuthenticatedPerson(toPerson.id!!),
                         isVisibleFieldPhone = isVisibleFieldPhone(context = null, toPerson = toPerson),
                         name = it.name.copy(value = toPerson.name!!),
                         email = it.email.copy(value = toPerson.toUser?.email!!),
@@ -74,14 +77,16 @@ class RegisterUserViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAcademiesFromAuthenticatedPerson(toPerson: TOPerson): List<AcademyGroupDecorator> {
-        return userRepository.getAcademies(toPerson.id!!)
+    private suspend fun getAcademiesFromAuthenticatedPerson(personId: String): List<AcademyGroupDecorator> {
+        return userRepository.getAcademies(personId)
     }
 
     fun updateAcademies() {
         viewModelScope.launch {
-            _uiState.value.toPerson?.let {
-                _uiState.value = _uiState.value.copy(academies = getAcademiesFromAuthenticatedPerson(it))
+            _uiState.value.toPerson.id?.let { personId ->
+                _uiState.value = _uiState.value.copy(
+                    academies = getAcademiesFromAuthenticatedPerson(personId)
+                )
             }
         }
     }
@@ -95,6 +100,11 @@ class RegisterUserViewModel @Inject constructor(
                 context = args.context,
                 tabs = tabs,
                 isVisibleFieldPhone = isVisibleFieldPhone(context = args.context, toPerson = null),
+                name = initializeNameTextField(),
+                email = initializeEmailTextField(),
+                password = initializePasswordTextField(),
+                birthDate = initializeBirthDatePickerField(),
+                phone = initializePhoneTextField(),
                 onShowDialog = { type, message, onConfirm, onCancel ->
                     _uiState.value = _uiState.value.copy(
                         dialogType = type,
@@ -105,63 +115,115 @@ class RegisterUserViewModel @Inject constructor(
                     )
                 },
                 onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
-                name = TextField(onChange = {
-                    _uiState.value = _uiState.value.copy(
-                        name = _uiState.value.name.copy(
-                            value = it,
-                            errorMessage = ""
-                        )
-                    )
-                }),
-                email = TextField(onChange = {
-                    _uiState.value = _uiState.value.copy(
-                        email = _uiState.value.email.copy(
-                            value = it,
-                            errorMessage = ""
-                        )
-                    )
-                }),
-                password = TextField(onChange = {
-                    _uiState.value = _uiState.value.copy(
-                        password = _uiState.value.password.copy(
-                            value = it,
-                            errorMessage = ""
-                        )
-                    )
-                }),
-                birthDate = TextField(onChange = {
-                    _uiState.value = _uiState.value.copy(
-                        birthDate = _uiState.value.birthDate.copy(
-                            value = it,
-                            errorMessage = ""
-                        )
-                    )
-                }),
-                phone = TextField(onChange = {
-                    _uiState.value = _uiState.value.copy(
-                        phone = _uiState.value.phone.copy(
-                            value = it,
-                            errorMessage = ""
-                        )
-                    )
-                })
             )
         }
+    }
+
+    private fun initializePhoneTextField(): TextField {
+        return TextField(onChange = {
+            _uiState.value = _uiState.value.copy(
+                phone = _uiState.value.phone.copy(
+                    value = it,
+                    errorMessage = ""
+                ),
+                toPerson = _uiState.value.toPerson.copy(phone = it)
+            )
+        })
+    }
+
+    private fun initializeBirthDatePickerField(): DatePickerTextField {
+        return DatePickerTextField(
+            onDatePickerOpenChange = { newOpen ->
+                _uiState.value = _uiState.value.copy(
+                    birthDate = _uiState.value.birthDate.copy(datePickerOpen = newOpen)
+                )
+            },
+            onDateChange = { newDate ->
+                _uiState.value = _uiState.value.copy(
+                    birthDate = _uiState.value.birthDate.copy(
+                        value = newDate.format(EnumDateTimePatterns.DATE_ONLY_NUMBERS),
+                        errorMessage = ""
+                    ),
+                )
+
+                _uiState.value.birthDate.onDatePickerDismiss()
+            },
+            onDatePickerDismiss = {
+                _uiState.value = _uiState.value.copy(
+                    birthDate = _uiState.value.birthDate.copy(datePickerOpen = false)
+                )
+            },
+            onChange = { text ->
+                if (text.isDigitsOnly()) {
+                    _uiState.value = _uiState.value.copy(
+                        birthDate = _uiState.value.birthDate.copy(
+                            value = text,
+                            errorMessage = ""
+                        ),
+                        toPerson = _uiState.value.toPerson.copy(
+                            birthDate = text.parseToLocalDate(DATE_ONLY_NUMBERS)
+                        )
+                    )
+                }
+            }
+        )
+    }
+
+    private fun initializePasswordTextField(): TextField {
+        return TextField(onChange = {
+            _uiState.value = _uiState.value.copy(
+                password = _uiState.value.password.copy(
+                    value = it,
+                    errorMessage = ""
+                ),
+                toPerson = _uiState.value.toPerson.copy(
+                    toUser = _uiState.value.toPerson.toUser?.copy(password = it)
+                )
+            )
+        })
+    }
+
+    private fun initializeEmailTextField(): TextField {
+        return TextField(onChange = {
+            _uiState.value = _uiState.value.copy(
+                email = _uiState.value.email.copy(
+                    value = it,
+                    errorMessage = ""
+                ),
+                toPerson = _uiState.value.toPerson.copy(
+                    toUser = _uiState.value.toPerson.toUser?.copy(email = it)
+                )
+            )
+        })
+    }
+
+    private fun initializeNameTextField(): TextField {
+        return TextField(onChange = {
+            _uiState.value = _uiState.value.copy(
+                name = _uiState.value.name.copy(
+                    value = it,
+                    errorMessage = ""
+                ),
+                toPerson = _uiState.value.toPerson.copy(name = it)
+            )
+        })
     }
 
     private fun isVisibleFieldPhone(
         context: EnumOptionsBottomSheetRegisterUser?,
         toPerson: TOPerson?
     ): Boolean {
-        return (context?.let {
-            it in listOf(
+        return if (context != null) {
+            context in listOf(
                 EnumOptionsBottomSheetRegisterUser.NUTRITIONIST,
                 EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER
             )
-        } ?: toPerson?.toUser?.type) in listOf(
-            EnumUserType.NUTRITIONIST,
-            EnumUserType.PERSONAL_TRAINER
-        )
+        } else {
+            toPerson?.toUser?.type!! in listOf(
+                EnumUserType.NUTRITIONIST,
+                EnumUserType.PERSONAL_TRAINER
+            )
+        }
     }
 
     private fun getTabsWithDefaultState() = mutableListOf(
@@ -173,7 +235,7 @@ class RegisterUserViewModel @Inject constructor(
         Tab(
             enum = EnumTabsRegisterUserScreen.ACADEMY,
             selected = mutableStateOf(false),
-            isEnabled = { _uiState.value.toPerson != null }
+            isEnabled = { _uiState.value.toPerson.id != null }
         )
     )
 
@@ -198,34 +260,11 @@ class RegisterUserViewModel @Inject constructor(
     }
 
     fun saveUser(onSuccess: () -> Unit) {
-        val toPerson = if (_uiState.value.toPerson != null) {
-            _uiState.value.toPerson!!.copy(
-                name = _uiState.value.name.value,
-                birthDate = _uiState.value.birthDate.value.parseToLocalDate(DATE),
-                phone = _uiState.value.phone.value,
-                toUser = _uiState.value.toPerson!!.toUser!!.copy(
-                    email = _uiState.value.email.value,
-                    password = _uiState.value.password.value
-                )
-            )
-        } else {
-            TOPerson(
-                name = _uiState.value.name.value,
-                birthDate = _uiState.value.birthDate.value.parseToLocalDate(DATE),
-                phone = _uiState.value.phone.value,
-                toUser = TOUser(
-                    email = _uiState.value.email.value,
-                    password = _uiState.value.password.value,
-                    type = getUserTypeFromContext(_uiState.value.context!!)
-                ),
-            )
-        }
-
         viewModelScope.launch {
-            val validationResults = savePersonUseCase.execute(toPerson)
+            val validationResults = savePersonUseCase.execute(_uiState.value.toPerson)
 
             if (validationResults.isEmpty()) {
-                updateInfosAfterSave(toPerson)
+                updateInfosAfterSave()
                 onSuccess()
             } else {
                 showValidationMessages(validationResults)
@@ -233,7 +272,9 @@ class RegisterUserViewModel @Inject constructor(
         }
     }
 
-    private fun updateInfosAfterSave(toPerson: TOPerson) {
+    private fun updateInfosAfterSave() {
+        val toPerson = _uiState.value.toPerson
+
         _uiState.update {
             it.copy(
                 title = getTitle(context = _uiState.value.context, toPerson = toPerson),

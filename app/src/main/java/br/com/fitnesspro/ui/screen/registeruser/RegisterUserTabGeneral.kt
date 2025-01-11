@@ -5,18 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,23 +14,17 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.R
-import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCalendar
+import br.com.fitnesspro.compose.components.fields.DatePickerOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.transformation.PhoneVisualTransformation
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPhoneKeyboardOptions
-import br.com.fitnesspro.core.keyboard.NormalTextKeyboardOptions
 import br.com.fitnesspro.core.keyboard.PasswordKeyboardOptions
 import br.com.fitnesspro.core.keyboard.PersonNameKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.ui.state.RegisterUserUIState
-import java.time.Instant
-import java.time.ZoneId
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
     val scrollState = rememberScrollState()
@@ -52,9 +36,6 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
             .verticalScroll(scrollState)
     ) {
         val (nameRef, emailRef, passwordRef, birthDayDatePickerRef, phoneRef) = createRefs()
-
-        var birthDayDatePickerShow by remember { mutableStateOf(false) }
-        val birthDayDatePickerState = rememberDatePickerState()
 
         OutlinedTextFieldValidation(
             field = state.name,
@@ -95,7 +76,7 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
             keyboardOptions = PasswordKeyboardOptions
         )
 
-        OutlinedTextFieldValidation(
+        DatePickerOutlinedTextFieldValidation(
             modifier = Modifier
                 .constrainAs(birthDayDatePickerRef) {
                     start.linkTo(parent.start)
@@ -105,44 +86,8 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
                     width = Dimension.fillToConstraints
                 },
             field = state.birthDate,
-            label = { Text(text = stringResource(R.string.register_user_screen_label_birth_date)) },
-            keyboardOptions = NormalTextKeyboardOptions,
-            readOnly = true,
-            trailingIcon = {
-                IconButtonCalendar { birthDayDatePickerShow = true }
-            }
+            fieldLabel = stringResource(R.string.register_user_screen_label_birth_date),
         )
-
-        if (birthDayDatePickerShow) {
-            DatePickerDialog(
-                onDismissRequest = {
-                    birthDayDatePickerShow = false
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            birthDayDatePickerState.selectedDateMillis?.let {
-                                val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
-                                val formatedDate = localDate.format(EnumDateTimePatterns.DATE)
-
-                                state.birthDate.onChange(formatedDate)
-                            }
-
-                            birthDayDatePickerShow = false
-                        },
-                    ) {
-                        Text(text = stringResource(id = br.com.fitnesspro.compose.components.R.string.label_confirm))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { birthDayDatePickerShow = false }) {
-                        Text(text = stringResource(id = br.com.fitnesspro.compose.components.R.string.label_cancel))
-                    }
-                }
-            ) {
-                DatePicker(state = birthDayDatePickerState)
-            }
-        }
 
         if (state.isVisibleFieldPhone) {
             OutlinedTextFieldValidation(
