@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
+import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.model.enums.EnumUserType
-import br.com.fitnesspro.repository.UserRepository
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.ui.state.HomeUIState
 import dagger.hilt.android.lifecycle.HiltViewModel

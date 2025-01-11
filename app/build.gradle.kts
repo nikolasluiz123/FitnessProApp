@@ -55,6 +55,10 @@ dependencies {
     implementation(project(":fitnesspro-model"))
     implementation(project(":fitnesspro-local-data-access"))
 
+    implementation(project(":fitnesspro-common-module"))
+    implementation(project(":fitnesspro-scheduler-module"))
+    implementation(project(":fitnesspro-workout-module"))
+
     implementation(libs.java.faker)
 
     implementation(libs.splash)

@@ -1,8 +1,8 @@
 package br.com.fitnesspro.model.enums
 
 import android.content.Context
+import br.com.fitnesspro.model.R
 import br.com.fitnesspro.model.enums.interfaces.IEnumDomain
-import br.com.fitnesspro_model.R
 
 enum class EnumCompromiseType : IEnumDomain {
     FIRST {

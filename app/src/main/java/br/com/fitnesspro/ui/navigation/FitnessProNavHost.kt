@@ -5,6 +5,20 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
+import br.com.fitnesspro.common.ui.navigation.loginScreen
+import br.com.fitnesspro.common.ui.navigation.loginScreenRoute
+import br.com.fitnesspro.common.ui.navigation.navigateToRegisterAcademyScreen
+import br.com.fitnesspro.common.ui.navigation.navigateToRegisterUserScreen
+import br.com.fitnesspro.common.ui.navigation.registerAcademyScreen
+import br.com.fitnesspro.common.ui.navigation.registerUserScreen
+import br.com.fitnesspro.scheduler.ui.navigation.compromiseScreen
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToCompromiseScreen
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToScheduleScreen
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerConfigScreen
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerDetailsScreen
+import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreen
+import br.com.fitnesspro.scheduler.ui.navigation.schedulerDetailsScreen
+import br.com.fitnesspro.scheduler.ui.navigation.schedulerScreen
 
 @Composable
 fun FitnessProNavHost(

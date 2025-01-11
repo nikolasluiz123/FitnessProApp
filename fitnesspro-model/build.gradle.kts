@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "br.com.fitnesspro_model"
+    namespace = "br.com.fitnesspro.model"
     compileSdk = 35
 
     defaultConfig {

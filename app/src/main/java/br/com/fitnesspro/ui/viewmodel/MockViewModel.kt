@@ -2,7 +2,7 @@ package br.com.fitnesspro.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.fitnesspro.mock.PersonMockHelper
+import br.com.fitnesspro.common.mock.PersonMockHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
