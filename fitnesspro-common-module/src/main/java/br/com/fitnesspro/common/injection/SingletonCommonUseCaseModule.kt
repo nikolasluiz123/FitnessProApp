@@ -16,7 +16,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-class SingletonAuthenticationUseCaseModule {
+class SingletonCommonUseCaseModule {
 
     @Provides
     fun provideSavePersonUseCase(

@@ -11,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-class SingletonAuthenticationMockModule {
+class SingletonCommonMockModule {
 
     @Provides
     fun providePersonMockHelper(
