@@ -4,56 +4,37 @@ import android.content.Context
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.core.security.HashHelper
-import br.com.fitnesspro.model.general.Person
-import br.com.fitnesspro.model.general.User
+import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.to.TOPerson
 
 class SavePersonMockUseCase(
     context: Context,
     userRepository: UserRepository,
-    saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase
+    saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase,
+    passwordHasher: IPasswordHasher
 ): SavePersonUseCase(
     context = context,
     userRepository = userRepository,
-    saveSchedulerConfigUseCase = saveSchedulerConfigUseCase
+    saveSchedulerConfigUseCase = saveSchedulerConfigUseCase,
+    passwordHasher = passwordHasher
 ) {
     suspend fun executeInclusionBatch(toPersons: List<TOPerson>): MutableList<Pair<EnumValidatedPersonFields, String>> {
-        val users = toPersons.map {
-            User(
-                email = it.toUser?.email,
-                password = it.toUser?.password,
-                type = it.toUser?.type
-            )
-        }
-
-        val persons = toPersons.mapIndexed { index, toPerson ->
-            Person(
-                name = toPerson.name,
-                birthDate = toPerson.birthDate,
-                phone = toPerson.phone,
-                userId = users[index].id
-            )
-        }
-
         val validationResults = mutableListOf<Pair<EnumValidatedPersonFields, String>>()
 
-        users.forEach {
+        toPersons.forEach {
             val result = validateUser(it)
+            result.addAll(validatePerson(it))
 
             if (result.isEmpty()) {
-                it.password = HashHelper.applyHash(it.password!!)
+                it.toUser?.password = HashHelper.applyHash(it.toUser?.password!!)
             }
 
             validationResults.addAll(result)
         }
 
-        persons.forEach {
-            validationResults.addAll(validatePerson(it))
-        }
-
         if (validationResults.isEmpty()) {
-            userRepository.savePersonBatch(users, persons)
-            saveSchedulerConfigUseCase.createConfigBatch(persons.map { it.id })
+            userRepository.savePersonBatch(toPersons)
+            saveSchedulerConfigUseCase.createConfigBatch(toPersons.map { it.id!! })
         }
 
         return validationResults

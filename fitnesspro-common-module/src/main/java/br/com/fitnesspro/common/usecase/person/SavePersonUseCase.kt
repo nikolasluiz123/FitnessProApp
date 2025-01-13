@@ -10,81 +10,49 @@ import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.NAME
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.PASSWORD
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.PHONE
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
-import br.com.fitnesspro.core.security.HashHelper
-import br.com.fitnesspro.model.general.Person
-import br.com.fitnesspro.model.general.User
+import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.to.TOPerson
 import java.time.LocalDate
 
 open class SavePersonUseCase(
     private val context: Context,
     protected val userRepository: UserRepository,
-    protected val saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase
+    protected val saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase,
+    protected val passwordHasher: IPasswordHasher
 ) {
 
     suspend fun execute(toPerson: TOPerson): List<Pair<EnumValidatedPersonFields, String>> {
-        val user = if (toPerson.toUser?.id != null) {
-            userRepository.findUserById(toPerson.toUser?.id!!).copy(
-                email = toPerson.toUser?.email,
-                password = toPerson.toUser?.password
-            )
-        } else {
-            User(
-                email = toPerson.toUser?.email,
-                password = toPerson.toUser?.password,
-                type = toPerson.toUser?.type
-            )
-        }
-
-        val person = if (toPerson.id != null) {
-            userRepository.findPersonById(toPerson.id!!).copy(
-                name = toPerson.name,
-                birthDate = toPerson.birthDate,
-                phone = toPerson.phone
-            )
-        } else {
-            Person(
-                name = toPerson.name,
-                birthDate = toPerson.birthDate,
-                phone = toPerson.phone,
-                userId = user.id
-            )
-        }
-
         val validationResults = mutableListOf<Pair<EnumValidatedPersonFields, String>>()
-        validationResults.addAll(validateUser(user))
-        validationResults.addAll(validatePerson(person))
+        validationResults.addAll(validateUser(toPerson))
+        validationResults.addAll(validatePerson(toPerson))
 
         if (validationResults.isEmpty()) {
-            toPerson.toUser?.id = user.id
-            toPerson.id = person.id
+            toPerson.toUser!!.password = passwordHasher.hashPassword(toPerson.toUser?.password!!)
 
-            user.password = HashHelper.applyHash(user.password!!)
-
-            userRepository.savePerson(user, person)
-            saveSchedulerConfigUseCase.saveConfig(person.id)
+            userRepository.savePerson(toPerson)
+            saveSchedulerConfigUseCase.saveConfig(toPerson.id!!)
         }
 
         return validationResults
     }
 
-    protected fun validatePerson(person: Person): MutableList<Pair<EnumValidatedPersonFields, String>> {
+    protected fun validatePerson(toPerson: TOPerson): MutableList<Pair<EnumValidatedPersonFields, String>> {
         val validationResults = mutableListOf(
-            validatePersonName(person),
-            validatePersonBirthDate(person),
-            validatePersonPhone(person)
+            validatePersonName(toPerson),
+            validatePersonBirthDate(toPerson),
+            validatePersonPhone(toPerson)
         )
 
         return validationResults.filterNotNull().toMutableList()
     }
 
-    private fun validatePersonName(person: Person): Pair<EnumValidatedPersonFields, String>? {
-        val name = person.name?.trim()
+    private fun validatePersonName(toPerson: TOPerson): Pair<EnumValidatedPersonFields, String>? {
+        val name = toPerson.name?.trim()
 
         val validationPair = when {
             name.isNullOrEmpty() -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
+                    R.string.validation_msg_required_field,
                     context.getString(NAME.labelResId)
                 )
 
@@ -105,14 +73,14 @@ open class SavePersonUseCase(
         }
 
         if (validationPair == null) {
-            person.name = name
+            toPerson.name = name
         }
 
         return validationPair
     }
 
-    private fun validatePersonBirthDate(person: Person): Pair<EnumValidatedPersonFields, String>? {
-        val birthDate = person.birthDate ?: return null
+    private fun validatePersonBirthDate(toPerson: TOPerson): Pair<EnumValidatedPersonFields, String>? {
+        val birthDate = toPerson.birthDate ?: return null
 
         val validationPair = when {
             birthDate > LocalDate.now() -> {
@@ -130,8 +98,8 @@ open class SavePersonUseCase(
         return validationPair
     }
 
-    private fun validatePersonPhone(person: Person): Pair<EnumValidatedPersonFields, String>? {
-        val phone = person.phone?.trim() ?: return null
+    private fun validatePersonPhone(toPerson: TOPerson): Pair<EnumValidatedPersonFields, String>? {
+        val phone = toPerson.phone?.trim() ?: return null
 
         val validationPair = when {
             phone.length > PHONE.maxLength -> {
@@ -148,28 +116,28 @@ open class SavePersonUseCase(
         }
 
         if (validationPair == null) {
-            person.phone = phone
+            toPerson.phone = phone
         }
 
         return validationPair
     }
 
-    protected suspend fun validateUser(user: User): MutableList<Pair<EnumValidatedPersonFields, String>> {
+    protected suspend fun validateUser(toPerson: TOPerson): MutableList<Pair<EnumValidatedPersonFields, String>> {
         val validationResults = mutableListOf(
-            validateUserEmail(user),
-            validateUserPassword(user)
+            validateUserEmail(toPerson),
+            validateUserPassword(toPerson)
         )
 
         return validationResults.filterNotNull().toMutableList()
     }
 
-    private suspend fun validateUserEmail(user: User): Pair<EnumValidatedPersonFields, String>? {
-        val email = user.email?.trim()
+    private suspend fun validateUserEmail(toPerson: TOPerson): Pair<EnumValidatedPersonFields, String>? {
+        val email = toPerson.toUser?.email?.trim()
 
         val validationPair = when {
             email.isNullOrEmpty() -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
+                    R.string.validation_msg_required_field,
                     context.getString(EMAIL.labelResId)
                 )
 
@@ -195,7 +163,7 @@ open class SavePersonUseCase(
                 Pair(EMAIL, message)
             }
 
-            userRepository.hasUserWithEmail(email, user.id) -> {
+            userRepository.hasUserWithEmail(email, toPerson.toUser?.id) -> {
                 val message = context.getString(R.string.validation_msg_email_in_use)
                 Pair(EMAIL, message)
             }
@@ -204,26 +172,26 @@ open class SavePersonUseCase(
         }
 
         if (validationPair == null) {
-            user.email = email
+            toPerson.toUser?.email = email
         }
 
         return validationPair
     }
 
-    private fun validateUserPassword(user: User): Pair<EnumValidatedPersonFields, String>? {
-        val password = user.password?.trim()
+    private fun validateUserPassword(toPerson: TOPerson): Pair<EnumValidatedPersonFields, String>? {
+        val password = toPerson.toUser?.password?.trim()
 
         val validationPair = when {
             password.isNullOrEmpty() -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
+                    R.string.validation_msg_required_field,
                     context.getString(PASSWORD.labelResId)
                 )
 
                 Pair(PASSWORD, message)
             }
 
-            user.password!!.length > PASSWORD.maxLength -> {
+            toPerson.toUser?.password!!.length > PASSWORD.maxLength -> {
                 val message = context.getString(
                     R.string.validation_msg_field_with_max_length,
                     context.getString(PASSWORD.labelResId),
@@ -237,7 +205,7 @@ open class SavePersonUseCase(
         }
 
         if (validationPair == null) {
-            user.password = password
+            toPerson.toUser?.password = password
         }
 
         return validationPair

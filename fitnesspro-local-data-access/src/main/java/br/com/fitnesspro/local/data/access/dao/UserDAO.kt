@@ -17,7 +17,7 @@ abstract class UserDAO: BaseDAO() {
     abstract suspend fun saveBatch(users: List<User>)
 
     @Query("select exists(select 1 from user where email = :email and id != :userId)")
-    abstract suspend fun hasUserWithEmail(email: String, userId: String): Boolean
+    abstract suspend fun hasUserWithEmail(email: String, userId: String?): Boolean
 
     @Query("select exists (select 1 from user where email = :email and password = :hashedPassword)")
     abstract suspend fun hasUserWithCredentials(email: String, hashedPassword: String): Boolean

@@ -1,13 +1,13 @@
 package br.com.fitnesspro.common.injection
 
-import android.content.Context
 import br.com.fitnesspro.common.mock.PersonMockHelper
 import br.com.fitnesspro.common.usecase.person.SavePersonMockUseCase
+import com.github.javafaker.Faker
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import java.util.Locale
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -15,11 +15,17 @@ class SingletonCommonMockModule {
 
     @Provides
     fun providePersonMockHelper(
-        @ApplicationContext context: Context,
-        savePersonMockUseCase: SavePersonMockUseCase
+        savePersonMockUseCase: SavePersonMockUseCase,
+        faker: Faker
     ): PersonMockHelper {
         return PersonMockHelper(
-            savePersonMockUseCase = savePersonMockUseCase
+            savePersonMockUseCase = savePersonMockUseCase,
+            faker = faker
         )
+    }
+
+    @Provides
+    fun provideFaker(): Faker {
+        return Faker(Locale.getDefault())
     }
 }

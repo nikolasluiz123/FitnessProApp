@@ -7,10 +7,10 @@ import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
 import com.github.javafaker.Faker
 import java.time.ZoneId
-import java.util.Locale
 
 class PersonMockHelper(
-    private val savePersonMockUseCase: SavePersonMockUseCase
+    private val savePersonMockUseCase: SavePersonMockUseCase,
+    private val faker: Faker
 ) {
 
     private val users = mutableListOf<TOUser>()
@@ -18,8 +18,6 @@ class PersonMockHelper(
 
     private val persons = mutableListOf<TOPerson>()
     private var lastPersonIndex = 0
-
-    private val faker = Faker(Locale.getDefault())
 
     suspend fun executeInsertsPersonMock() {
         while (lastPersonIndex < MAX_PERSONS) {

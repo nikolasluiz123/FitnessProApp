@@ -8,6 +8,8 @@ import br.com.fitnesspro.common.usecase.login.LoginUseCase
 import br.com.fitnesspro.common.usecase.person.SavePersonMockUseCase
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
+import br.com.fitnesspro.core.security.DefaultPasswordHasher
+import br.com.fitnesspro.core.security.IPasswordHasher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,15 +29,20 @@ class SingletonCommonUseCaseModule {
         return SavePersonUseCase(
             context = context,
             userRepository = userRepository,
-            saveSchedulerConfigUseCase = saveSchedulerConfigUseCase
+            saveSchedulerConfigUseCase = saveSchedulerConfigUseCase,
+            passwordHasher = DefaultPasswordHasher()
         )
+    }
+
+    @Provides
+    fun providePasswordHasher(): IPasswordHasher {
+        return DefaultPasswordHasher()
     }
 
     @Provides
     fun provideSavePersonAcademyTimeUseCase(
         @ApplicationContext context: Context,
         academyRepository: AcademyRepository,
-        userRepository: UserRepository,
     ): SavePersonAcademyTimeUseCase {
         return SavePersonAcademyTimeUseCase(
             context = context,
@@ -58,12 +65,14 @@ class SingletonCommonUseCaseModule {
     fun provideSavePersonMockUseCase(
         @ApplicationContext context: Context,
         userRepository: UserRepository,
-        saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase
+        saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase,
+        passwordHasher: IPasswordHasher
     ): SavePersonMockUseCase {
         return SavePersonMockUseCase(
             context = context,
             userRepository = userRepository,
-            saveSchedulerConfigUseCase = saveSchedulerConfigUseCase
+            saveSchedulerConfigUseCase = saveSchedulerConfigUseCase,
+            passwordHasher = passwordHasher
         )
     }
 }
