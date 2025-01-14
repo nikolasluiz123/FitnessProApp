@@ -18,6 +18,7 @@ class SavePersonAcademyTimeUseCase(
             validateAcademy(toPersonAcademyTime),
             validateStart(toPersonAcademyTime),
             validateEnd(toPersonAcademyTime),
+            validateTimePeriod(toPersonAcademyTime),
             validateDayOfWeek(toPersonAcademyTime),
             validateRepeat(toPersonAcademyTime)
         ).filterNotNull()
@@ -57,15 +58,6 @@ class SavePersonAcademyTimeUseCase(
                 Pair(EnumValidatedAcademyFields.DATE_TIME_START, message)
             }
 
-            toPersonAcademyTime.timeStart!! > toPersonAcademyTime.timeEnd -> {
-                val message = context.getString(
-                    R.string.validation_msg_invalid_field,
-                    context.getString(EnumValidatedAcademyFields.DATE_TIME_START.labelResId)
-                )
-
-                Pair(EnumValidatedAcademyFields.DATE_TIME_START, message)
-            }
-
             else -> null
         }
 
@@ -83,13 +75,21 @@ class SavePersonAcademyTimeUseCase(
                 Pair(EnumValidatedAcademyFields.DATE_TIME_END, message)
             }
 
-            toPersonAcademyTime.timeEnd!! < toPersonAcademyTime.timeStart -> {
-                val message = context.getString(
-                    R.string.validation_msg_invalid_field,
-                    context.getString(EnumValidatedAcademyFields.DATE_TIME_END.labelResId)
-                )
+            else -> null
+        }
 
-                Pair(EnumValidatedAcademyFields.DATE_TIME_END, message)
+        return validationPair
+    }
+
+    private fun validateTimePeriod(toPersonAcademyTime: TOPersonAcademyTime): Pair<EnumValidatedAcademyFields?, String>? {
+        if (toPersonAcademyTime.timeStart == null || toPersonAcademyTime.timeEnd == null) return null
+
+        val validationPair = when {
+            toPersonAcademyTime.timeStart!!.isAfter(toPersonAcademyTime.timeEnd) ||
+            toPersonAcademyTime.timeStart == toPersonAcademyTime.timeEnd -> {
+                val message = context.getString(R.string.save_person_academy_time_msg_invalid_time_period)
+
+                return Pair(null, message)
             }
 
             else -> null

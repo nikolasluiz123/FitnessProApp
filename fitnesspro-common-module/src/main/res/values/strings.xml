@@ -88,4 +88,5 @@
     <string name="save_scheduler_config_msg_invalid_break_period">O período de descanso é inválido.</string>
     <string name="register_academy_screen_title_select_academy">Academias</string>
     <string name="register_user_screen_simple_filter_placeholder_gym_dialog_list">Buscar por Nome</string>
+    <string name="save_person_academy_time_msg_invalid_time_period">O período de início e fim é inválido.</string>
 </resources>
