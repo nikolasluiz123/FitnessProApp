@@ -80,7 +80,7 @@ class RegisterUserViewModel @Inject constructor(
     }
 
     private suspend fun getAcademiesFromAuthenticatedPerson(personId: String): List<AcademyGroupDecorator> {
-        return academyRepository.getAcademies(personId)
+        return academyRepository.getAcademiesFromPerson(personId)
     }
 
     fun updateAcademies() {
@@ -221,7 +221,7 @@ class RegisterUserViewModel @Inject constructor(
                 EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER
             )
         } else {
-            toPerson?.toUser?.type!! in listOf(
+            toPerson?.toUser?.type in listOf(
                 EnumUserType.NUTRITIONIST,
                 EnumUserType.PERSONAL_TRAINER
             )

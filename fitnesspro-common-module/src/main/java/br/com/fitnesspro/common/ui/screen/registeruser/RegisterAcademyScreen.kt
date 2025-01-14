@@ -1,12 +1,13 @@
 package br.com.fitnesspro.common.ui.screen.registeruser
 
 import android.content.Context
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -16,36 +17,33 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.common.R
-import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
-import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
-import br.com.fitnesspro.compose.components.buttons.icons.IconButtonTime
-import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.dialog.TimePickerInput
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.transformation.TimeVisualTransformation
-import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnSaveAcademyClick
 import br.com.fitnesspro.common.ui.state.RegisterAcademyUIState
 import br.com.fitnesspro.common.ui.viewmodel.RegisterAcademyViewModel
+import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
+import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
+import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
+import br.com.fitnesspro.compose.components.fields.TimePickerOutlinedTextFieldValidation
+import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
+import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
+import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.core.theme.SnackBarTextStyle
+import br.com.fitnesspro.core.theme.ValueTextStyle
+import br.com.fitnesspro.tuple.AcademyTuple
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -101,7 +99,7 @@ fun RegisterAcademyScreen(
                         onClick = {
 
                         },
-                        enabled = state.toPersonAcademyTime != null
+                        enabled = state.toPersonAcademyTime.id != null
                     )
                 }
             )
@@ -121,10 +119,6 @@ fun RegisterAcademyScreen(
                 .fillMaxSize()
         ) {
             val (gymRef, dayWeekRef, startRef, endRef) = createRefs()
-            var academiesOpen by remember { mutableStateOf(false) }
-            var dayWeeksOpen by remember { mutableStateOf(false) }
-            var timePickerStartOpen by remember { mutableStateOf(false) }
-            var timePickerEndOpen by remember { mutableStateOf(false) }
 
             FitnessProMessageDialog(
                 type = state.dialogType,
@@ -133,122 +127,84 @@ fun RegisterAcademyScreen(
                 message = state.dialogMessage
             )
 
-            DefaultExposedDropdownMenu(
-                modifier = Modifier
-                    .constrainAs(gymRef) {
-                        start.linkTo(parent.start)
-                        top.linkTo(parent.top)
-                        end.linkTo(parent.end)
-                    }
-                    .fillMaxWidth(),
+            PagedListDialogOutlinedTextFieldValidation(
                 field = state.academy,
-                labelResId = R.string.register_user_screen_label_gym,
-                expanded = academiesOpen,
-                onExpandedChange = { academiesOpen = !academiesOpen },
-                onMenuDismissRequest = { academiesOpen = false },
-                onItemClick = {
-                    state.academy.onChange(it.label)
-                    academiesOpen = false
+                fieldLabel = stringResource(R.string.register_user_screen_label_gym),
+                simpleFilterPlaceholderResId = R.string.register_user_screen_simple_filter_placeholder_gym_dialog_list,
+                itemLayout = { academyTuple ->
+                    DialogListItem(
+                        academy = academyTuple,
+                        onItemClick = state.academy.onDataListItemClick
+                    )
                 },
-                items = state.academies
+                modifier = Modifier.constrainAs(gymRef) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+
+                    width = Dimension.fillToConstraints
+                }
             )
 
             DefaultExposedDropdownMenu(
                 modifier = Modifier.constrainAs(dayWeekRef) {
                     start.linkTo(parent.start)
-                    top.linkTo(gymRef.bottom)
+                    top.linkTo(gymRef.bottom, margin = 8.dp)
                     end.linkTo(parent.end)
 
                     width = Dimension.fillToConstraints
                 },
                 field = state.dayWeek,
                 labelResId = R.string.register_user_screen_label_day_week,
-                expanded = dayWeeksOpen,
-                onExpandedChange = { dayWeeksOpen = !dayWeeksOpen },
-                onMenuDismissRequest = { dayWeeksOpen = false },
-                onItemClick = {
-                    state.dayWeek.onChange(it.label)
-                    dayWeeksOpen = false
-                },
-                items = state.dayWeeks
             )
 
-            createHorizontalChain(startRef, endRef)
 
-            OutlinedTextFieldValidation(
+            TimePickerOutlinedTextFieldValidation(
+                field = state.start,
+                fieldLabel = stringResource(R.string.register_user_screen_label_start),
+                timePickerTitle = stringResource(R.string.register_academy_label_start),
                 modifier = Modifier
                     .constrainAs(startRef) {
                         start.linkTo(parent.start)
-                        top.linkTo(dayWeekRef.bottom)
+                        end.linkTo(parent.end)
+                        top.linkTo(dayWeekRef.bottom, margin = 8.dp)
 
                         width = Dimension.fillToConstraints
-                        horizontalChainWeight = 0.5f
-                    }
-                    .padding(end = 8.dp),
-                field = state.start,
-                label = stringResource(R.string.register_user_screen_label_start),
-                trailingIcon = {
-                    IconButtonTime { timePickerStartOpen = true }
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
-                visualTransformation = TimeVisualTransformation(),
-                maxLength = 4
+                    },
             )
 
-            if (timePickerStartOpen) {
-                TimePickerInput(
-                    title = stringResource(R.string.register_academy_label_start),
-                    onConfirm = {
-                        state.start.onChange(it.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS))
-                    },
-                    onDismiss = { timePickerStartOpen = false }
-                )
-            }
-
-            OutlinedTextFieldValidation(
+            TimePickerOutlinedTextFieldValidation(
+                field = state.end,
+                fieldLabel = stringResource(R.string.register_user_screen_label_end),
+                timePickerTitle = stringResource(R.string.register_academy_label_end),
                 modifier = Modifier.constrainAs(endRef) {
-                    top.linkTo(dayWeekRef.bottom)
+                    top.linkTo(startRef.bottom, margin = 8.dp)
+                    start.linkTo(parent.start)
                     end.linkTo(parent.end)
 
                     width = Dimension.fillToConstraints
-                    horizontalChainWeight = 0.5f
                 },
-                field = state.end,
-                label = stringResource(R.string.register_user_screen_label_end),
-                trailingIcon = {
-                    IconButtonTime { timePickerEndOpen = true }
-                },
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        onSaveAcademyClick?.onExecute(
-                            onSaved = {
-                                showSuccessMessage(coroutineScope, snackbarHostState, context)
-                            }
-                        )
-                    }
-                ),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
-                visualTransformation = TimeVisualTransformation(),
-                maxLength = 4
             )
-
-            if (timePickerEndOpen) {
-                TimePickerInput(
-                    title = stringResource(R.string.register_academy_label_end),
-                    onConfirm = {
-                        state.end.onChange(it.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS))
-                    },
-                    onDismiss = { timePickerEndOpen = false }
-                )
-            }
         }
+    }
+}
 
+@Composable
+fun DialogListItem(academy: AcademyTuple, onItemClick: (AcademyTuple) -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clickable { onItemClick(academy) },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            modifier = Modifier.padding(12.dp),
+            text = academy.name,
+            style = ValueTextStyle.copy(fontSize = 16.sp)
+        )
     }
 
+    HorizontalDivider()
 }
 
 private fun showSuccessMessage(

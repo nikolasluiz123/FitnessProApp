@@ -6,7 +6,6 @@ import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
-import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.to.TOPersonAcademyTime
 
 class SavePersonAcademyTimeUseCase(
@@ -15,42 +14,26 @@ class SavePersonAcademyTimeUseCase(
 ) {
 
     suspend fun execute(toPersonAcademyTime: TOPersonAcademyTime): List<Pair<EnumValidatedAcademyFields?, String>> {
-        val personAcademyTime = toPersonAcademyTime.id?.let {
-            academyRepository.findPersonAcademyTimeById(it).apply {
-                personId = toPersonAcademyTime.personId!!
-                academyId = toPersonAcademyTime.toAcademy?.id!!
-                timeStart = toPersonAcademyTime.timeStart
-                timeEnd = toPersonAcademyTime.timeEnd
-                dayOfWeek = toPersonAcademyTime.dayOfWeek
-            }
-        } ?: PersonAcademyTime(
-            personId = toPersonAcademyTime.personId!!,
-            academyId = toPersonAcademyTime.toAcademy?.id!!,
-            timeStart = toPersonAcademyTime.timeStart,
-            timeEnd = toPersonAcademyTime.timeEnd,
-            dayOfWeek = toPersonAcademyTime.dayOfWeek,
-        )
-
         val validationsResults = mutableListOf(
-            validateAcademy(personAcademyTime),
-            validateStart(personAcademyTime),
-            validateEnd(personAcademyTime),
-            validateDayOfWeek(personAcademyTime),
-            validateRepeat(personAcademyTime)
+            validateAcademy(toPersonAcademyTime),
+            validateStart(toPersonAcademyTime),
+            validateEnd(toPersonAcademyTime),
+            validateDayOfWeek(toPersonAcademyTime),
+            validateRepeat(toPersonAcademyTime)
         ).filterNotNull()
 
         if (validationsResults.isEmpty()) {
-            academyRepository.savePersonAcademyTime(personAcademyTime)
+            academyRepository.savePersonAcademyTime(toPersonAcademyTime)
         }
 
         return validationsResults
     }
 
-    private fun validateAcademy(personAcademyTime: PersonAcademyTime): Pair<EnumValidatedAcademyFields, String>? {
+    private fun validateAcademy(toPersonAcademyTime: TOPersonAcademyTime): Pair<EnumValidatedAcademyFields, String>? {
         val validationPair = when {
-            personAcademyTime.academyId.isNullOrEmpty() -> {
+            toPersonAcademyTime.toAcademy?.id.isNullOrEmpty() -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
+                    R.string.validation_msg_required_field,
                     context.getString(EnumValidatedAcademyFields.ACADEMY.labelResId)
                 )
 
@@ -63,18 +46,18 @@ class SavePersonAcademyTimeUseCase(
         return validationPair
     }
 
-    private fun validateStart(personAcademyTime: PersonAcademyTime): Pair<EnumValidatedAcademyFields, String>? {
+    private fun validateStart(toPersonAcademyTime: TOPersonAcademyTime): Pair<EnumValidatedAcademyFields, String>? {
         val validationPair = when {
-            personAcademyTime.timeStart == null -> {
+            toPersonAcademyTime.timeStart == null -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
+                    R.string.validation_msg_required_field,
                     context.getString(EnumValidatedAcademyFields.DATE_TIME_START.labelResId)
                 )
 
                 Pair(EnumValidatedAcademyFields.DATE_TIME_START, message)
             }
 
-            personAcademyTime.timeStart!! > personAcademyTime.timeEnd -> {
+            toPersonAcademyTime.timeStart!! > toPersonAcademyTime.timeEnd -> {
                 val message = context.getString(
                     R.string.validation_msg_invalid_field,
                     context.getString(EnumValidatedAcademyFields.DATE_TIME_START.labelResId)
@@ -89,18 +72,18 @@ class SavePersonAcademyTimeUseCase(
         return validationPair
     }
 
-    private fun validateEnd(personAcademyTime: PersonAcademyTime): Pair<EnumValidatedAcademyFields, String>? {
+    private fun validateEnd(toPersonAcademyTime: TOPersonAcademyTime): Pair<EnumValidatedAcademyFields, String>? {
         val validationPair = when {
-            personAcademyTime.timeEnd == null -> {
+            toPersonAcademyTime.timeEnd == null -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
+                    R.string.validation_msg_required_field,
                     context.getString(EnumValidatedAcademyFields.DATE_TIME_END.labelResId)
                 )
 
                 Pair(EnumValidatedAcademyFields.DATE_TIME_END, message)
             }
 
-            personAcademyTime.timeEnd!! < personAcademyTime.timeStart -> {
+            toPersonAcademyTime.timeEnd!! < toPersonAcademyTime.timeStart -> {
                 val message = context.getString(
                     R.string.validation_msg_invalid_field,
                     context.getString(EnumValidatedAcademyFields.DATE_TIME_END.labelResId)
@@ -115,11 +98,11 @@ class SavePersonAcademyTimeUseCase(
         return validationPair
     }
 
-    private fun validateDayOfWeek(personAcademyTime: PersonAcademyTime): Pair<EnumValidatedAcademyFields, String>? {
+    private fun validateDayOfWeek(toPersonAcademyTime: TOPersonAcademyTime): Pair<EnumValidatedAcademyFields, String>? {
         val validationPair = when {
-            personAcademyTime.dayOfWeek == null -> {
+            toPersonAcademyTime.dayOfWeek == null -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
+                    R.string.validation_msg_required_field,
                     context.getString(EnumValidatedAcademyFields.DAY_OF_WEEK.labelResId)
                 )
 
@@ -132,8 +115,8 @@ class SavePersonAcademyTimeUseCase(
         return validationPair
     }
 
-    private suspend fun validateRepeat(personAcademyTime: PersonAcademyTime): Pair<EnumValidatedAcademyFields?, String>? {
-        val conflict = academyRepository.getConflictPersonAcademyTime(personAcademyTime)
+    private suspend fun validateRepeat(toPersonAcademyTime: TOPersonAcademyTime): Pair<EnumValidatedAcademyFields?, String>? {
+        val conflict = academyRepository.getConflictPersonAcademyTime(toPersonAcademyTime)
 
         return if (conflict != null) {
             val message = context.getString(
