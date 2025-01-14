@@ -5,6 +5,12 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.END_BREAK_TIME
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.END_WORK_TIME
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MAX_SCHEDULE_DENSITY
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MIN_SCHEDULE_DENSITY
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.START_BREAK_TIME
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.START_WORK_TIME
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOSchedulerConfig
 
@@ -15,16 +21,7 @@ class SaveSchedulerConfigUseCase(
 ) {
 
     suspend fun saveConfig(personId: String, toSchedulerConfig: TOSchedulerConfig? = null): MutableList<Pair<EnumValidatedSchedulerConfigFields?, String>> {
-        val config = if (toSchedulerConfig != null) {
-            schedulerConfigRepository.getTOSchedulerConfigByPersonId(personId)!!.copy(
-                alarm = toSchedulerConfig.alarm,
-                notification = toSchedulerConfig.notification,
-                minScheduleDensity = toSchedulerConfig.minScheduleDensity,
-                maxScheduleDensity = toSchedulerConfig.maxScheduleDensity
-            )
-        } else {
-            TOSchedulerConfig(personId = personId)
-        }
+        val config = toSchedulerConfig ?: TOSchedulerConfig(personId = personId)
 
         val validationResults = validateSchedulerConfig(config)
 
@@ -58,20 +55,20 @@ class SaveSchedulerConfigUseCase(
         val validationPair = when {
             config.minScheduleDensity == null -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
-                    context.getString(EnumValidatedSchedulerConfigFields.MIN_EVENT_DENSITY.labelResId)
+                    R.string.validation_msg_required_field,
+                    context.getString(MIN_SCHEDULE_DENSITY.labelResId)
                 )
 
-                Pair(EnumValidatedSchedulerConfigFields.MIN_EVENT_DENSITY, message)
+                Pair(MIN_SCHEDULE_DENSITY, message)
             }
 
             config.minScheduleDensity!! < 1 -> {
                 val message = context.getString(
                     R.string.validation_msg_invalid_field,
-                    context.getString(EnumValidatedSchedulerConfigFields.MIN_EVENT_DENSITY.labelResId)
+                    context.getString(MIN_SCHEDULE_DENSITY.labelResId)
                 )
 
-                Pair(EnumValidatedSchedulerConfigFields.MIN_EVENT_DENSITY, message)
+                Pair(MIN_SCHEDULE_DENSITY, message)
             }
 
             else -> null
@@ -84,20 +81,20 @@ class SaveSchedulerConfigUseCase(
         val validationPair = when {
             config.maxScheduleDensity == null -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
-                    context.getString(EnumValidatedSchedulerConfigFields.MAX_EVENT_DENSITY.labelResId)
+                    R.string.validation_msg_required_field,
+                    context.getString(MAX_SCHEDULE_DENSITY.labelResId)
                 )
 
-                Pair(EnumValidatedSchedulerConfigFields.MAX_EVENT_DENSITY, message)
+                Pair(MAX_SCHEDULE_DENSITY, message)
             }
 
             config.maxScheduleDensity!! < 1 -> {
                 val message = context.getString(
                     R.string.validation_msg_invalid_field,
-                    context.getString(EnumValidatedSchedulerConfigFields.MAX_EVENT_DENSITY.labelResId)
+                    context.getString(MAX_SCHEDULE_DENSITY.labelResId)
                 )
 
-                Pair(EnumValidatedSchedulerConfigFields.MAX_EVENT_DENSITY, message)
+                Pair(MAX_SCHEDULE_DENSITY, message)
             }
 
             else -> null
@@ -107,6 +104,8 @@ class SaveSchedulerConfigUseCase(
     }
 
     private fun validateDensityRange(config: TOSchedulerConfig): Pair<EnumValidatedSchedulerConfigFields?, String>? {
+        if (config.minScheduleDensity == null || config.maxScheduleDensity == null) return null
+
         val validationPair = when {
             config.minScheduleDensity!! > config.maxScheduleDensity!! ||
             config.minScheduleDensity!! == config.maxScheduleDensity!! -> {
@@ -124,11 +123,11 @@ class SaveSchedulerConfigUseCase(
         val validationPair = when {
             config.startWorkTime == null -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
-                    context.getString(EnumValidatedSchedulerConfigFields.START_WORK_TIME.labelResId)
+                    R.string.validation_msg_required_field,
+                    context.getString(START_WORK_TIME.labelResId)
                 )
 
-                Pair(EnumValidatedSchedulerConfigFields.START_WORK_TIME, message)
+                Pair(START_WORK_TIME, message)
             }
 
             else -> null
@@ -141,11 +140,11 @@ class SaveSchedulerConfigUseCase(
         val validationPair = when {
             config.endWorkTime == null -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
-                    context.getString(EnumValidatedSchedulerConfigFields.END_WORK_TIME.labelResId)
+                    R.string.validation_msg_required_field,
+                    context.getString(END_WORK_TIME.labelResId)
                 )
 
-                Pair(EnumValidatedSchedulerConfigFields.END_WORK_TIME, message)
+                Pair(END_WORK_TIME, message)
             }
 
             else -> null
@@ -155,10 +154,11 @@ class SaveSchedulerConfigUseCase(
     }
 
     private fun validateWorkoutPeriod(config: TOSchedulerConfig): Pair<EnumValidatedSchedulerConfigFields?, String>? {
+        if (config.startWorkTime == null || config.endWorkTime == null) return null
+
         val validationPair = when {
-            config.startWorkTime!!.isBefore(config.endWorkTime!!) ||
-                    config.startWorkTime == config.endWorkTime ||
-                    config.endWorkTime!!.isAfter(config.startWorkTime!!) -> {
+            config.startWorkTime!!.isAfter(config.endWorkTime!!) ||
+            config.startWorkTime == config.endWorkTime -> {
                 val message = context.getString(R.string.save_scheduler_config_msg_invalid_workout_period)
 
                 Pair(null, message)
@@ -174,11 +174,11 @@ class SaveSchedulerConfigUseCase(
         val validationPair = when {
             config.startBreakTime == null -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
-                    context.getString(EnumValidatedSchedulerConfigFields.START_BREAK_TIME.labelResId)
+                    R.string.validation_msg_required_field,
+                    context.getString(START_BREAK_TIME.labelResId)
                 )
 
-                Pair(EnumValidatedSchedulerConfigFields.START_BREAK_TIME, message)
+                Pair(START_BREAK_TIME, message)
             }
 
             else -> null
@@ -191,11 +191,11 @@ class SaveSchedulerConfigUseCase(
         val validationPair = when {
             config.endBreakTime == null -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
-                    context.getString(EnumValidatedSchedulerConfigFields.END_BREAK_TIME.labelResId)
+                    R.string.validation_msg_required_field,
+                    context.getString(END_BREAK_TIME.labelResId)
                 )
 
-                Pair(EnumValidatedSchedulerConfigFields.END_BREAK_TIME, message)
+                Pair(END_BREAK_TIME, message)
             }
 
             else -> null
@@ -205,10 +205,11 @@ class SaveSchedulerConfigUseCase(
     }
 
     private fun validateBreakPeriod(config: TOSchedulerConfig): Pair<EnumValidatedSchedulerConfigFields?, String>? {
+        if (config.startBreakTime == null || config.endBreakTime == null) return null
+
         val validationPair = when {
-            config.startBreakTime!!.isBefore(config.endBreakTime!!) ||
-                    config.startBreakTime == config.endBreakTime ||
-                    config.endBreakTime!!.isAfter(config.startBreakTime!!) -> {
+            config.startBreakTime!!.isAfter(config.endBreakTime!!) ||
+            config.startBreakTime == config.endBreakTime -> {
                 val message = context.getString(R.string.save_scheduler_config_msg_invalid_break_period)
 
                 Pair(null, message)

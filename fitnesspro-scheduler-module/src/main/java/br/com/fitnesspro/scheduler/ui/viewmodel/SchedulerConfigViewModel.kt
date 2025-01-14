@@ -316,7 +316,7 @@ class SchedulerConfigViewModel @Inject constructor(
 
         validationResults.forEach {
             when (it.first!!) {
-                EnumValidatedSchedulerConfigFields.MIN_EVENT_DENSITY -> {
+                EnumValidatedSchedulerConfigFields.MIN_SCHEDULE_DENSITY -> {
                     _uiState.value = _uiState.value.copy(
                         minEventDensity = _uiState.value.minEventDensity.copy(
                             errorMessage = it.second
@@ -324,7 +324,7 @@ class SchedulerConfigViewModel @Inject constructor(
                     )
                 }
 
-                EnumValidatedSchedulerConfigFields.MAX_EVENT_DENSITY -> {
+                EnumValidatedSchedulerConfigFields.MAX_SCHEDULE_DENSITY -> {
                     _uiState.value = _uiState.value.copy(
                         maxEventDensity = _uiState.value.maxEventDensity.copy(
                             errorMessage = it.second
