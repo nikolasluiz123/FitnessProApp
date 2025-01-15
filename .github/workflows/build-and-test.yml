@@ -5,6 +5,7 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+
   workflow_dispatch:
 
 jobs:
@@ -27,7 +28,7 @@ jobs:
           wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip
           sudo mkdir /opt/gradle
           sudo unzip -d /opt/gradle gradle-${GRADLE_VERSION}-bin.zip
-          echo "PATH=/opt/gradle/gradle-${GRADLE_VERSION}/bin:\$PATH" >> $GITHUB_ENV
+          echo "export PATH=/opt/gradle/gradle-${GRADLE_VERSION}/bin:\$PATH" >> $GITHUB_ENV
           gradle --version
 
       - name: Cache Gradle dependencies
@@ -40,36 +41,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle
 
-      - name: Install Android Command-line Tools
-        run: |
-          sudo mkdir -p $HOME/android-sdk/cmdline-tools
-          cd $HOME/android-sdk/cmdline-tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O commandlinetools.zip
-          unzip commandlinetools.zip -d latest
-          rm commandlinetools.zip
-          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
-          echo "PATH=$HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools:\$PATH" >> $GITHUB_ENV
-          source $GITHUB_ENV
-
       - name: Set Android SDK Version
         run: |
+          echo "export ANDROID_SDK_ROOT=\$HOME/android-sdk" >> $GITHUB_ENV
+          echo "export PATH=\$ANDROID_SDK_ROOT/platform-tools:\$PATH" >> $GITHUB_ENV
+          echo "export PATH=\$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:\$PATH" >> $GITHUB_ENV
           yes | sdkmanager --licenses
-          sdkmanager "platforms;android-34" "build-tools;34.0.0"
-        env:
-          ANDROID_SDK_ROOT: $HOME/android-sdk
-          PATH: $HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools:$PATH
+          sdkmanager "platforms;android-34"
 
       - name: Run Unit Tests
         run: gradle testDebugUnitTest
-        env:
-          ANDROID_SDK_ROOT: $HOME/android-sdk
-          PATH: $HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools:$PATH
 
       - name: Build APK
         run: gradle assembleDebug
-        env:
-          ANDROID_SDK_ROOT: $HOME/android-sdk
-          PATH: $HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools:$PATH
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
