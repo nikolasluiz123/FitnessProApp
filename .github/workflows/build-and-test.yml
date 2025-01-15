@@ -23,7 +23,13 @@ jobs:
           java-version: '17'
 
       - name: Install Gradle
-        run: chmod +x ./gradlew wrapper --gradle-version=8.8
+        run: |
+          GRADLE_VERSION=8.8.0
+          wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip
+          sudo mkdir /opt/gradle
+          sudo unzip -d /opt/gradle gradle-${GRADLE_VERSION}-bin.zip
+          echo "export PATH=/opt/gradle/gradle-${GRADLE_VERSION}/bin:\$PATH" >> $GITHUB_ENV
+          gradle --version
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
