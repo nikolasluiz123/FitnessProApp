@@ -26,6 +26,9 @@ jobs:
       - name: Grant Permissions to gradlew
         run: chmod +x gradlew
 
+      - name: Decode keystore
+        run: echo $KEYSTORE_FILE | base64 --decode > /tmp/fitness-pro-release-key.keystore
+
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
@@ -76,8 +79,3 @@ jobs:
           asset_path: app/build/outputs/apk/release/app-release.apk
           asset_name: app-release-v${{ env.VERSION }}.apk
           asset_content_type: application/vnd.android.package-archive
-        env:
-          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
