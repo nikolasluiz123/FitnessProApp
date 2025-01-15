@@ -36,8 +36,8 @@ jobs:
 
   build-apk:
     runs-on: ubuntu-latest
-    needs: run-tests  # Garante que o job de testes seja concluído antes
-    if: ${{ github.event_name == 'workflow_dispatch' }}  # Só executa manualmente
+    needs: run-tests
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
