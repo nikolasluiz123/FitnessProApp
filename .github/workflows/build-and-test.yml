@@ -3,10 +3,6 @@ name: Execução dos Testes e Build do APK
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
-  workflow_dispatch:
 
 jobs:
   build:
@@ -23,7 +19,7 @@ jobs:
           java-version: '17'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       #      - name: Install Gradle
       #        run: |
@@ -52,10 +48,14 @@ jobs:
       #          yes | sdkmanager --licenses
       #          sdkmanager "platforms;android-34"
 
-      - name: Run Unit Tests
-        run: |
-          chmod +x gradlew
-          ./gradlew testDebugUnitTest
+      - name: Grant Permissions to gradlew
+        run: chmod +x gradlew
+
+#      - name: Run Unit Tests
+#        run: ./gradlew testDebugUnitTest
+
+      - name: Run Tests
+        run: ./gradlew test --tests "*"
 
       - name: Build APK
         run: ./gradlew assembleDebug
