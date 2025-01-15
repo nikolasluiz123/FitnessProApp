@@ -3,33 +3,62 @@ name: Execução dos Testes e Build do APK
 on:
   push:
     branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Clona o repositório
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 2. Configura o JDK 17
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+      # 3. Configura o Android Command-line Tools
+      - name: Install Android Command-line Tools
+        run: |
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd $HOME/android-sdk/cmdline-tools
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O commandlinetools.zip
+          unzip commandlinetools.zip -d latest
+          rm commandlinetools.zip
+          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "PATH=$HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools:\$PATH" >> $GITHUB_ENV
+          source $GITHUB_ENV
 
-      - name: Grant Permissions to gradlew
-        run: chmod +x gradlew
+      # 4. Instala o SDK e as Build Tools necessárias
+      - name: Install Android SDKs
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "platforms;android-34" "build-tools;34.0.0"
+        env:
+          ANDROID_SDK_ROOT: $HOME/android-sdk
+          PATH: $HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools:$PATH
 
-      - name: Run Tests
-        run: ./gradlew test --tests "*"
+      # 5. Executa os testes de unidade usando o Gradle Wrapper
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest
+        env:
+          ANDROID_SDK_ROOT: $HOME/android-sdk
+          PATH: $HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools:$PATH
 
+      # 6. Gera o APK de depuração usando o Gradle Wrapper
       - name: Build APK
         run: ./gradlew assembleDebug
+        env:
+          ANDROID_SDK_ROOT: $HOME/android-sdk
+          PATH: $HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools:$PATH
 
+      # 7. Faz o upload do APK gerado
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
