@@ -3,11 +3,11 @@ name: Execução dos Testes, Build do APK e Criação de Release
 on:
   push:
     branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
-  build:
+  run-tests:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -21,9 +21,6 @@ jobs:
       - name: Grant Permissions to gradlew
         run: chmod +x gradlew
 
-      - name: Decode keystore
-        run: echo $KEYSTORE_FILE | base64 --decode > /tmp/fitness-pro-release-key.keystore
-
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
@@ -36,6 +33,23 @@ jobs:
 
       - name: Run Unit Tests
         run: ./gradlew testReleaseUnitTest
+
+  build-apk:
+    runs-on: ubuntu-latest
+    needs: run-tests  # Garante que o job de testes seja concluído antes
+    if: ${{ github.event_name == 'workflow_dispatch' }}  # Só executa manualmente
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Grant Permissions to gradlew
+        run: chmod +x gradlew
 
       - name: Build APK
         run: ./gradlew assembleDebug
