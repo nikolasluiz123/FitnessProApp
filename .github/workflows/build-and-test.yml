@@ -24,7 +24,7 @@ jobs:
 
       - name: Install Gradle
         run: |
-          GRADLE_VERSION=8.8.0
+          GRADLE_VERSION=8.8
           wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip
           sudo mkdir /opt/gradle
           sudo unzip -d /opt/gradle gradle-${GRADLE_VERSION}-bin.zip
