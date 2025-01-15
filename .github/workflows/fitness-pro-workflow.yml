@@ -3,11 +3,13 @@ name: Execução dos Testes, Build do APK e Criação de Release
 on:
   push:
     branches: [ "master" ]
-  workflow_dispatch:
+  workflow_dispatch:  # Permite executar manualmente
 
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    outputs:
+      tests-passed: ${{ steps.tests-outcome.outputs.success }}  # Sinaliza se os testes passaram
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -32,12 +34,14 @@ jobs:
             ${{ runner.os }}-gradle
 
       - name: Run Unit Tests
+        id: tests-outcome
         run: ./gradlew testReleaseUnitTest
+        continue-on-error: false  # Falha se os testes falharem
 
   build-apk:
     runs-on: ubuntu-latest
     needs: run-tests
-    if: ${{ github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event_name == 'workflow_dispatch' }}  # Apenas manual
     steps:
       - name: Checkout
         uses: actions/checkout@v3
