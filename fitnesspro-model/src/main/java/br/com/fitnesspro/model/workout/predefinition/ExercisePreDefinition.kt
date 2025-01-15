@@ -3,6 +3,7 @@ package br.com.fitnesspro.model.workout.predefinition
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.general.Person
@@ -23,6 +24,10 @@ import java.util.UUID
             childColumns = ["workout_group_pre_definition_id"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index("personal_trainer_person_id"),
+        Index("workout_group_pre_definition_id")
     ]
 )
 data class ExercisePreDefinition(

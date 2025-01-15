@@ -3,6 +3,7 @@ package br.com.fitnesspro.model.nutrition.diet
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.BaseModel
 import java.time.LocalTime
@@ -17,6 +18,9 @@ import java.util.UUID
             childColumns = ["day_week_diet_id"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index("day_week_diet_id")
     ]
 )
 data class Meal(

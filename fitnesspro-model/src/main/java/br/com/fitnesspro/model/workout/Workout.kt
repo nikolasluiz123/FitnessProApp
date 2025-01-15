@@ -3,6 +3,7 @@ package br.com.fitnesspro.model.workout
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.general.Person
@@ -24,6 +25,10 @@ import java.util.UUID
             childColumns = ["personal_trainer_person_id"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index("academy_member_person_id"),
+        Index("personal_trainer_person_id")
     ]
 )
 data class Workout(

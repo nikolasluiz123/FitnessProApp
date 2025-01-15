@@ -3,6 +3,7 @@ package br.com.fitnesspro.model.general
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.BaseModel
 import java.time.DayOfWeek
@@ -24,6 +25,10 @@ import java.util.UUID
             childColumns = ["academy_id"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index("person_id"),
+        Index("academy_id")
     ]
 )
 data class PersonAcademyTime(

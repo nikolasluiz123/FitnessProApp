@@ -3,6 +3,7 @@ package br.com.fitnesspro.model.scheduler
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.general.Person
@@ -19,6 +20,9 @@ import java.util.UUID
             childColumns = ["person_id"],
             onDelete = ForeignKey.CASCADE,
         )
+    ],
+    indices = [
+        Index("person_id")
     ]
 )
 data class SchedulerConfig(
