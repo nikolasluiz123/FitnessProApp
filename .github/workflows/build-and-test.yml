@@ -53,7 +53,9 @@ jobs:
       #          sdkmanager "platforms;android-34"
 
       - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest
+        run: |
+          chmod +x gradlew
+          ./gradlew testDebugUnitTest
 
       - name: Build APK
         run: ./gradlew assembleDebug
