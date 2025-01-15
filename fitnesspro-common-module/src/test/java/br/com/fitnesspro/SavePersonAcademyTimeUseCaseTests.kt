@@ -85,8 +85,8 @@ class SavePersonAcademyTimeUseCaseTests {
 
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = getFakeAcademy(),
-            timeStart = LocalTime.now().plusHours(2),
-            timeEnd = LocalTime.now(),
+            timeStart = LocalTime.of(12, 0),
+            timeEnd = LocalTime.of(10,0),
             dayOfWeek = DayOfWeek.FRIDAY
         )
 
