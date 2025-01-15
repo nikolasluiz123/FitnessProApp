@@ -41,8 +41,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle
 
-#      - name: Grant execute permissions for Gradle Wrapper
-#        run: chmod +x gradle
+      - name: Set Android SDK Version
+        run: |
+          echo "export ANDROID_SDK_ROOT=\$HOME/android-sdk" >> $GITHUB_ENV
+          echo "export PATH=\$ANDROID_SDK_ROOT/platform-tools:\$PATH" >> $GITHUB_ENV
+          echo "export PATH=\$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:\$PATH" >> $GITHUB_ENV
+          yes | sdkmanager --licenses
+          sdkmanager "platforms;android-34"
 
       - name: Run Unit Tests
         run: gradle testDebugUnitTest
