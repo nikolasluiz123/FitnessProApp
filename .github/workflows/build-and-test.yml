@@ -1,12 +1,8 @@
-name: Execução dos Testes e Build do APK
+name: Execução dos Testes, Build do APK e Criação de Release
 
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
-  workflow_dispatch:
 
 jobs:
   build:
@@ -36,13 +32,36 @@ jobs:
             ${{ runner.os }}-gradle
 
       - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew testReleaseUnitTest
 
       - name: Build APK
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleRelease
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
+      - name: Create Tag
+        id: create_tag
+        run: |
+          VERSION=$(date +'%Y.%m.%d.%H%M%S')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          git tag -a "v$VERSION" -m "Release v$VERSION"
+          git push origin "v$VERSION"
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
         with:
-          name: app-debug.apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          tag_name: v${{ env.VERSION }}
+          release_name: Release v${{ env.VERSION }}
+          body: |
+            Geração automática de release.
+            Este APK é construído automaticamente a partir do branch master.
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload APK to Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app/build/outputs/apk/release/app-release.apk
+          asset_name: app-release-v${{ env.VERSION }}.apk
+          asset_content_type: application/vnd.android.package-archive
