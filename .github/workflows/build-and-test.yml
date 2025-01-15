@@ -19,6 +19,7 @@ jobs:
           which wget
           which unzip
           uname -a
+          echo "HOME directory: $HOME"
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -50,7 +51,7 @@ jobs:
 
       - name: Install Android Command-line Tools
         run: |
-          mkdir -p $HOME/android-sdk/cmdline-tools
+          sudo /usr/bin/mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk/cmdline-tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O commandlinetools.zip
           unzip commandlinetools.zip -d latest
