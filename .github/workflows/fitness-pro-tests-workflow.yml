@@ -31,6 +31,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle
 
+      - name: Set TimeZone
+        run: sudo timedatectl set-timezone America/Sao_Paulo
+
       - name: Run Unit Tests
         run: ./gradlew testReleaseUnitTest
 
