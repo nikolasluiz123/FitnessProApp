@@ -38,6 +38,8 @@ class SavePersonUseCaseTests {
 
     @BeforeEach
     fun setUp() {
+        Locale.setDefault(Locale("pt", "BR"))
+
         context = mockk(relaxed = true)
         faker = Faker(Locale.getDefault())
         userRepository = mockk(relaxed = true)
