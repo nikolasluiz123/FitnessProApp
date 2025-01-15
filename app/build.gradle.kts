@@ -25,7 +25,7 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(System.getenv("KEYSTORE_FILE"))
+            storeFile = file(System.getenv("KEYSTORE_FILE") ?: throw GradleException("Keystore file is missing"))
             storePassword = System.getenv("KEYSTORE_PASSWORD")
             keyAlias = System.getenv("KEY_ALIAS")
             keyPassword = System.getenv("KEY_PASSWORD")
