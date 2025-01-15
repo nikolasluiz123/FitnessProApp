@@ -34,8 +34,8 @@ class SavePersonAcademyTimeUseCaseTests {
     fun should_fail_when_academy_is_null(): Unit = runBlocking {
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = null,
-            timeStart = LocalTime.now(),
-            timeEnd = LocalTime.now().plusHours(1),
+            timeStart = LocalTime.of(12, 0),
+            timeEnd = LocalTime.of(14, 0),
             dayOfWeek = DayOfWeek.FRIDAY
         )
 
@@ -52,7 +52,7 @@ class SavePersonAcademyTimeUseCaseTests {
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = getFakeAcademy(),
             timeStart = null,
-            timeEnd = LocalTime.now().plusHours(1),
+            timeEnd = LocalTime.of(12, 0),
             dayOfWeek = DayOfWeek.FRIDAY
         )
 
@@ -68,7 +68,7 @@ class SavePersonAcademyTimeUseCaseTests {
 
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = getFakeAcademy(),
-            timeStart = LocalTime.now(),
+            timeStart = LocalTime.of(12, 0),
             timeEnd = null,
             dayOfWeek = DayOfWeek.FRIDAY
         )
@@ -102,8 +102,8 @@ class SavePersonAcademyTimeUseCaseTests {
 
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = getFakeAcademy(),
-            timeStart = LocalTime.now(),
-            timeEnd = LocalTime.now().plusHours(1),
+            timeStart = LocalTime.of(12,0),
+            timeEnd = LocalTime.of(13,0),
             dayOfWeek = null
         )
 
@@ -118,8 +118,8 @@ class SavePersonAcademyTimeUseCaseTests {
     fun should_fail_when_there_is_a_conflict(): Unit = runBlocking {
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = getFakeAcademy(),
-            timeStart = LocalTime.now(),
-            timeEnd = LocalTime.now().plusHours(1),
+            timeStart = LocalTime.of(12,0),
+            timeEnd = LocalTime.of(13,0),
             dayOfWeek = DayOfWeek.FRIDAY
         )
 
@@ -134,8 +134,8 @@ class SavePersonAcademyTimeUseCaseTests {
     fun should_pass_when_all_fields_are_valid(): Unit = runBlocking {
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = getFakeAcademy(),
-            timeStart = LocalTime.now(),
-            timeEnd = LocalTime.now().plusHours(1),
+            timeStart = LocalTime.of(12,0),
+            timeEnd = LocalTime.of(13,0),
             dayOfWeek = DayOfWeek.FRIDAY
         )
 
