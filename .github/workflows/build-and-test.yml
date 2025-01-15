@@ -34,9 +34,6 @@ jobs:
       - name: Run Unit Tests
         run: ./gradlew testReleaseUnitTest
 
-      - name: Ensure output directory exists
-        run: mkdir -p app/build/outputs/apk/release
-
       - name: Build APK
         run: ./gradlew assembleRelease
 
@@ -74,3 +71,8 @@ jobs:
           asset_path: app/build/outputs/apk/release/app-release.apk
           asset_name: app-release-v${{ env.VERSION }}.apk
           asset_content_type: application/vnd.android.package-archive
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
