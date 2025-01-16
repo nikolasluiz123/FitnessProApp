@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields
 import br.com.fitnesspro.compose.components.fields.state.SwitchButtonField
 import br.com.fitnesspro.compose.components.fields.state.TextField
@@ -13,6 +14,7 @@ import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.validation.ValidationError
 import br.com.fitnesspro.scheduler.ui.state.SchedulerConfigUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -300,13 +302,13 @@ class SchedulerConfigViewModel @Inject constructor(
         }
     }
 
-    private fun showValidationMessage(validationResults: MutableList<Pair<EnumValidatedSchedulerConfigFields?, String>>) {
-        val dialogValidations = validationResults.firstOrNull { it.first == null }
+    private fun showValidationMessage(validationResults: MutableList<ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>>) {
+        val dialogValidations = validationResults.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {
             _uiState.value.onShowDialog?.onShow(
                 type = EnumDialogType.ERROR,
-                message = dialogValidations.second,
+                message = dialogValidations.message,
                 onConfirm = { _uiState.value.onHideDialog.invoke() },
                 onCancel = { _uiState.value.onHideDialog.invoke() }
             )
@@ -315,11 +317,11 @@ class SchedulerConfigViewModel @Inject constructor(
         }
 
         validationResults.forEach {
-            when (it.first!!) {
+            when (it.field!!) {
                 EnumValidatedSchedulerConfigFields.MIN_SCHEDULE_DENSITY -> {
                     _uiState.value = _uiState.value.copy(
                         minEventDensity = _uiState.value.minEventDensity.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -327,7 +329,7 @@ class SchedulerConfigViewModel @Inject constructor(
                 EnumValidatedSchedulerConfigFields.MAX_SCHEDULE_DENSITY -> {
                     _uiState.value = _uiState.value.copy(
                         maxEventDensity = _uiState.value.maxEventDensity.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -335,7 +337,7 @@ class SchedulerConfigViewModel @Inject constructor(
                 EnumValidatedSchedulerConfigFields.START_WORK_TIME -> {
                     _uiState.value = _uiState.value.copy(
                         startWorkTime = _uiState.value.startWorkTime.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -343,7 +345,7 @@ class SchedulerConfigViewModel @Inject constructor(
                 EnumValidatedSchedulerConfigFields.END_WORK_TIME -> {
                     _uiState.value = _uiState.value.copy(
                         endWorkTime = _uiState.value.endWorkTime.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -351,7 +353,7 @@ class SchedulerConfigViewModel @Inject constructor(
                 EnumValidatedSchedulerConfigFields.START_BREAK_TIME -> {
                     _uiState.value = _uiState.value.copy(
                         startBreakTime = _uiState.value.startBreakTime.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -359,7 +361,7 @@ class SchedulerConfigViewModel @Inject constructor(
                 EnumValidatedSchedulerConfigFields.END_BREAK_TIME -> {
                     _uiState.value = _uiState.value.copy(
                         endBreakTime = _uiState.value.endBreakTime.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
