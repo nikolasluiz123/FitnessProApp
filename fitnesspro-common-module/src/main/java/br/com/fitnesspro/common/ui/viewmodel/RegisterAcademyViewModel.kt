@@ -11,6 +11,7 @@ import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.navigation.RegisterAcademyScreenArgs
 import br.com.fitnesspro.common.ui.state.RegisterAcademyUIState
+import br.com.fitnesspro.common.usecase.academy.EnumAcademyValidationTypes
 import br.com.fitnesspro.common.usecase.academy.EnumValidatedAcademyFields
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeUseCase
 import br.com.fitnesspro.compose.components.fields.menu.MenuItem
@@ -23,6 +24,7 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.extensions.parseToLocalTime
+import br.com.fitnesspro.core.validation.ValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOAcademy
 import br.com.fitnesspro.to.TOPerson
@@ -305,13 +307,13 @@ class RegisterAcademyViewModel @Inject constructor(
 
     }
 
-    private fun showValidationMessages(validationResults: List<Pair<EnumValidatedAcademyFields?, String>>) {
-        val dialogValidations = validationResults.firstOrNull { it.first == null }
+    private fun showValidationMessages(validationResults: List<ValidationError<EnumValidatedAcademyFields, EnumAcademyValidationTypes>>) {
+        val dialogValidations = validationResults.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {
             _uiState.value.onShowDialog?.onShow(
                 type = EnumDialogType.ERROR,
-                message = dialogValidations.second,
+                message = dialogValidations.message,
                 onConfirm = { _uiState.value.onHideDialog.invoke() },
                 onCancel = { _uiState.value.onHideDialog.invoke() }
             )
@@ -320,11 +322,11 @@ class RegisterAcademyViewModel @Inject constructor(
         }
 
         validationResults.forEach {
-            when (it.first!!) {
+            when (it.field!!) {
                 EnumValidatedAcademyFields.ACADEMY -> {
                     _uiState.value = _uiState.value.copy(
                         academy = _uiState.value.academy.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -332,7 +334,7 @@ class RegisterAcademyViewModel @Inject constructor(
                 EnumValidatedAcademyFields.DATE_TIME_START -> {
                     _uiState.value = _uiState.value.copy(
                         start = _uiState.value.start.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -340,7 +342,7 @@ class RegisterAcademyViewModel @Inject constructor(
                 EnumValidatedAcademyFields.DATE_TIME_END -> {
                     _uiState.value = _uiState.value.copy(
                         end = _uiState.value.end.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -348,7 +350,7 @@ class RegisterAcademyViewModel @Inject constructor(
                 EnumValidatedAcademyFields.DAY_OF_WEEK -> {
                     _uiState.value = _uiState.value.copy(
                         dayWeek = _uiState.value.dayWeek.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }

@@ -2,8 +2,9 @@ package br.com.fitnesspro
 
 import android.content.Context
 import br.com.fitnesspro.common.repository.AcademyRepository
-import br.com.fitnesspro.common.usecase.academy.EnumValidatedAcademyFields
+import br.com.fitnesspro.common.usecase.academy.EnumAcademyValidationTypes
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeUseCase
+import br.com.fitnesspro.core.validation.getValidations
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.to.TOAcademy
 import br.com.fitnesspro.to.TOPersonAcademyTime
@@ -41,9 +42,9 @@ class SavePersonAcademyTimeUseCaseTests {
 
         coEvery { academyRepository.getConflictPersonAcademyTime(any()) } returns null
 
-        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).map { it.first }
+        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).getValidations()
 
-        validationResults.shouldContainOnly(EnumValidatedAcademyFields.ACADEMY)
+        validationResults.shouldContainOnly(EnumAcademyValidationTypes.REQUIRED_ACADEMY)
     }
 
     @Test
@@ -58,9 +59,9 @@ class SavePersonAcademyTimeUseCaseTests {
 
         coEvery { academyRepository.getConflictPersonAcademyTime(any()) } returns null
 
-        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).map { it.first }
+        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).getValidations()
 
-        validationResults.shouldContainOnly(EnumValidatedAcademyFields.DATE_TIME_START)
+        validationResults.shouldContainOnly(EnumAcademyValidationTypes.REQUIRED_TIME_START)
     }
 
     @Test
@@ -75,9 +76,9 @@ class SavePersonAcademyTimeUseCaseTests {
 
         coEvery { academyRepository.getConflictPersonAcademyTime(any()) } returns null
 
-        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).map { it.first }
+        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).getValidations()
 
-        validationResults.shouldContainOnly(EnumValidatedAcademyFields.DATE_TIME_END)
+        validationResults.shouldContainOnly(EnumAcademyValidationTypes.REQUIRED_TIME_END)
     }
 
     @Test
@@ -92,9 +93,9 @@ class SavePersonAcademyTimeUseCaseTests {
 
         coEvery { academyRepository.getConflictPersonAcademyTime(any()) } returns null
 
-        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).map { it.first }
+        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).getValidations()
 
-        validationResults.shouldContainOnly(null)
+        validationResults.shouldContainOnly(EnumAcademyValidationTypes.INVALID_TIME_PERIOD)
     }
 
     @Test
@@ -109,9 +110,9 @@ class SavePersonAcademyTimeUseCaseTests {
 
         coEvery { academyRepository.getConflictPersonAcademyTime(any()) } returns null
 
-        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).map { it.first }
+        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).getValidations()
 
-        validationResults.shouldContainOnly(EnumValidatedAcademyFields.DAY_OF_WEEK)
+        validationResults.shouldContainOnly(EnumAcademyValidationTypes.REQUIRED_DAY_OF_WEEK)
     }
 
     @Test
@@ -125,9 +126,9 @@ class SavePersonAcademyTimeUseCaseTests {
 
         coEvery { academyRepository.getConflictPersonAcademyTime(any()) } returns PersonAcademyTime()
 
-        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).map { it.first }
+        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).getValidations()
 
-        validationResults.shouldContainOnly(null)
+        validationResults.shouldContainOnly(EnumAcademyValidationTypes.CONFLICT_TIME_PERIOD)
     }
 
     @Test
@@ -141,7 +142,7 @@ class SavePersonAcademyTimeUseCaseTests {
 
         coEvery { academyRepository.getConflictPersonAcademyTime(any()) } returns null
 
-        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).map { it.first }
+        val validationResults = savePersonAcademyTimeUseCase.execute(toPersonAcademyTime).getValidations()
 
         validationResults.shouldBeEmpty()
     }
