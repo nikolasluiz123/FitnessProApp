@@ -4,12 +4,18 @@ import android.content.Context
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.END_BREAK_TIME
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.END_WORK_TIME
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MAX_SCHEDULE_DENSITY
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MIN_SCHEDULE_DENSITY
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.START_BREAK_TIME
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.START_WORK_TIME
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes.INVALID_BREAK_PERIOD
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes.INVALID_DENSITY_RANGE
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes.INVALID_MAX_SCHEDULE_DENSITY
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes.INVALID_MIN_SCHEDULE_DENSITY
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes.INVALID_WORK_PERIOD
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes.REQUIRED_END_BREAK_TIME
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes.REQUIRED_END_WORK_TIME
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes.REQUIRED_MAX_SCHEDULE_DENSITY
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes.REQUIRED_MIN_SCHEDULE_DENSITY
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes.REQUIRED_START_BREAK_TIME
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes.REQUIRED_START_WORK_TIME
+import br.com.fitnesspro.core.validation.getValidations
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOSchedulerConfig
@@ -70,9 +76,9 @@ class SaveSchedulerConfigUseCaseTests {
 
         val to = TOSchedulerConfig(personId = UUID.randomUUID().toString(), minScheduleDensity = null)
 
-        val result = saveSchedulerConfigUseCase.saveConfig("", to).map { it.first }
+        val result = saveSchedulerConfigUseCase.saveConfig("", to).getValidations()
 
-        result.shouldContainOnly(MIN_SCHEDULE_DENSITY)
+        result.shouldContainOnly(REQUIRED_MIN_SCHEDULE_DENSITY)
     }
 
     @Test
@@ -81,9 +87,9 @@ class SaveSchedulerConfigUseCaseTests {
 
         val to = TOSchedulerConfig(personId = UUID.randomUUID().toString(), minScheduleDensity = 0)
 
-        val result = saveSchedulerConfigUseCase.saveConfig("", to).map { it.first }
+        val result = saveSchedulerConfigUseCase.saveConfig("", to).getValidations()
 
-        result.shouldContainOnly(MIN_SCHEDULE_DENSITY)
+        result.shouldContainOnly(INVALID_MIN_SCHEDULE_DENSITY)
     }
 
     @Test
@@ -92,9 +98,9 @@ class SaveSchedulerConfigUseCaseTests {
 
         val to = TOSchedulerConfig(personId = UUID.randomUUID().toString(),maxScheduleDensity = null)
 
-        val result = saveSchedulerConfigUseCase.saveConfig("", to).map { it.first }
+        val result = saveSchedulerConfigUseCase.saveConfig("", to).getValidations()
 
-        result.shouldContainOnly(MAX_SCHEDULE_DENSITY)
+        result.shouldContainOnly(REQUIRED_MAX_SCHEDULE_DENSITY)
     }
 
     @Test
@@ -103,12 +109,12 @@ class SaveSchedulerConfigUseCaseTests {
 
         val to = TOSchedulerConfig(
             personId = UUID.randomUUID().toString(),
-            maxScheduleDensity = 0
+            maxScheduleDensity = 0,
         )
 
-        val result = saveSchedulerConfigUseCase.saveConfig("", to).map { it.first }
+        val result = saveSchedulerConfigUseCase.saveConfig("", to).getValidations()
 
-        result.shouldContainOnly(MAX_SCHEDULE_DENSITY, null)
+        result.shouldContainOnly(INVALID_MAX_SCHEDULE_DENSITY, INVALID_DENSITY_RANGE)
     }
 
     @Test
@@ -126,11 +132,11 @@ class SaveSchedulerConfigUseCaseTests {
             maxScheduleDensity = 2
         )
 
-        val resultEquals = saveSchedulerConfigUseCase.saveConfig("", toEquals).map { it.first }
-        val resultGreater = saveSchedulerConfigUseCase.saveConfig("", toGreater).map { it.first }
+        val resultEquals = saveSchedulerConfigUseCase.saveConfig("", toEquals).getValidations()
+        val resultGreater = saveSchedulerConfigUseCase.saveConfig("", toGreater).getValidations()
 
-        resultEquals.shouldContainOnly(null)
-        resultGreater.shouldContainOnly(null)
+        resultEquals.shouldContainOnly(INVALID_DENSITY_RANGE)
+        resultGreater.shouldContainOnly(INVALID_DENSITY_RANGE)
     }
 
     @Test
@@ -139,9 +145,9 @@ class SaveSchedulerConfigUseCaseTests {
 
         val to = TOSchedulerConfig(personId = UUID.randomUUID().toString(), startWorkTime = null)
 
-        val result = saveSchedulerConfigUseCase.saveConfig("", to).map { it.first }
+        val result = saveSchedulerConfigUseCase.saveConfig("", to).getValidations()
 
-        result.shouldContainOnly(START_WORK_TIME)
+        result.shouldContainOnly(REQUIRED_START_WORK_TIME)
     }
 
     @Test
@@ -150,9 +156,9 @@ class SaveSchedulerConfigUseCaseTests {
 
         val to = TOSchedulerConfig(personId = UUID.randomUUID().toString(), endWorkTime = null)
 
-        val result = saveSchedulerConfigUseCase.saveConfig("", to).map { it.first }
+        val result = saveSchedulerConfigUseCase.saveConfig("", to).getValidations()
 
-        result.shouldContainOnly(END_WORK_TIME)
+        result.shouldContainOnly(REQUIRED_END_WORK_TIME)
     }
 
     @Test
@@ -170,11 +176,11 @@ class SaveSchedulerConfigUseCaseTests {
             endWorkTime = LocalTime.of(9, 0)
         )
 
-        val resultEquals = saveSchedulerConfigUseCase.saveConfig("", toEquals).map { it.first }
-        val resultGreater = saveSchedulerConfigUseCase.saveConfig("", toGreater).map { it.first }
+        val resultEquals = saveSchedulerConfigUseCase.saveConfig("", toEquals).getValidations()
+        val resultGreater = saveSchedulerConfigUseCase.saveConfig("", toGreater).getValidations()
 
-        resultEquals.shouldContainOnly(null)
-        resultGreater.shouldContainOnly(null)
+        resultEquals.shouldContainOnly(INVALID_WORK_PERIOD)
+        resultGreater.shouldContainOnly(INVALID_WORK_PERIOD)
     }
 
     @Test
@@ -183,9 +189,9 @@ class SaveSchedulerConfigUseCaseTests {
 
         val to = TOSchedulerConfig(personId = UUID.randomUUID().toString(), startBreakTime = null)
 
-        val result = saveSchedulerConfigUseCase.saveConfig("", to).map { it.first }
+        val result = saveSchedulerConfigUseCase.saveConfig("", to).getValidations()
 
-        result.shouldContainOnly(START_BREAK_TIME)
+        result.shouldContainOnly(REQUIRED_START_BREAK_TIME)
     }
 
     @Test
@@ -194,9 +200,9 @@ class SaveSchedulerConfigUseCaseTests {
 
         val to = TOSchedulerConfig(personId = UUID.randomUUID().toString(), endBreakTime = null)
 
-        val result = saveSchedulerConfigUseCase.saveConfig("", to).map { it.first }
+        val result = saveSchedulerConfigUseCase.saveConfig("", to).getValidations()
 
-        result.shouldContainOnly(END_BREAK_TIME)
+        result.shouldContainOnly(REQUIRED_END_BREAK_TIME)
     }
 
     @Test
@@ -214,11 +220,11 @@ class SaveSchedulerConfigUseCaseTests {
             endBreakTime = LocalTime.of(13, 0)
         )
 
-        val resultEquals = saveSchedulerConfigUseCase.saveConfig("", toEquals).map { it.first }
-        val resultGreater = saveSchedulerConfigUseCase.saveConfig("", toGreater).map { it.first }
+        val resultEquals = saveSchedulerConfigUseCase.saveConfig("", toEquals).getValidations()
+        val resultGreater = saveSchedulerConfigUseCase.saveConfig("", toGreater).getValidations()
 
-        resultEquals.shouldContainOnly(null)
-        resultGreater.shouldContainOnly(null)
+        resultEquals.shouldContainOnly(INVALID_BREAK_PERIOD)
+        resultGreater.shouldContainOnly(INVALID_BREAK_PERIOD)
     }
 
     private fun prepareMockGetTOPersonByIdWithPersonal() {
