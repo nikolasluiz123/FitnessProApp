@@ -1,0 +1,19 @@
+package br.com.fitnesspro.common.usecase.person
+
+enum class EnumPersonValidationTypes {
+    REQUIRED_PERSON_NAME,
+    MAX_LENGTH_PERSON_NAME,
+
+    PERSON_BIRTH_DATE_FUTURE,
+
+    MAX_LENGTH_PERSON_PHONE,
+
+    REQUIRED_USER_EMAIL,
+    MAX_LENGTH_USER_EMAIL,
+    INVALID_USER_EMAIL,
+    USER_EMAIL_IN_USE,
+
+    REQUIRED_USER_PASSWORD,
+    MAX_LENGTH_USER_PASSWORD
+
+}

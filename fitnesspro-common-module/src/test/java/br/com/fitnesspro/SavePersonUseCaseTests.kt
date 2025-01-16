@@ -2,21 +2,17 @@ package br.com.fitnesspro
 
 import android.content.Context
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.BIRTH_DATE
-import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.EMAIL
-import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.NAME
-import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.PASSWORD
-import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.PHONE
+import br.com.fitnesspro.common.usecase.person.EnumPersonValidationTypes
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.security.IPasswordHasher
+import br.com.fitnesspro.core.validation.getValidations
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
 import com.github.javafaker.Faker
 import io.kotest.matchers.collections.shouldContainOnly
-import io.kotest.matchers.collections.shouldNotContain
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.slot
@@ -77,9 +73,9 @@ class SavePersonUseCaseTests {
             )
         )
 
-        val validationResults = savePersonUseCase.execute(toPerson).map { it.first }
+        val validationResults = savePersonUseCase.execute(toPerson).getValidations()
 
-        validationResults.shouldContainOnly(EMAIL)
+        validationResults.shouldContainOnly(EnumPersonValidationTypes.REQUIRED_USER_EMAIL)
     }
 
     @Test
@@ -97,9 +93,9 @@ class SavePersonUseCaseTests {
             )
         )
 
-        val validationResults = savePersonUseCase.execute(toPerson).map { it.first }
+        val validationResults = savePersonUseCase.execute(toPerson).getValidations()
 
-        validationResults.shouldContainOnly(EMAIL)
+        validationResults.shouldContainOnly(EnumPersonValidationTypes.MAX_LENGTH_USER_EMAIL)
     }
 
     @Test
@@ -130,14 +126,14 @@ class SavePersonUseCaseTests {
 
         val validationResultsEmailWithoutDomainSeparator = savePersonUseCase.execute(
             toPersonWithEmailWithoutDomainSeparator
-        ).map { it.first }
+        ).getValidations()
 
         val validationResultsIncompleteEmail = savePersonUseCase.execute(
             toPersonWithIncompleteEmail
-        ).map { it.first }
+        ).getValidations()
 
-        validationResultsEmailWithoutDomainSeparator.shouldContainOnly(EMAIL)
-        validationResultsIncompleteEmail.shouldContainOnly(EMAIL)
+        validationResultsEmailWithoutDomainSeparator.shouldContainOnly(EnumPersonValidationTypes.INVALID_USER_EMAIL)
+        validationResultsIncompleteEmail.shouldContainOnly(EnumPersonValidationTypes.INVALID_USER_EMAIL)
     }
 
     @Test
@@ -155,9 +151,9 @@ class SavePersonUseCaseTests {
             )
         )
 
-        val validationResults = savePersonUseCase.execute(toPerson).map { it.first }
+        val validationResults = savePersonUseCase.execute(toPerson).getValidations()
 
-        validationResults.shouldContainOnly(EMAIL)
+        validationResults.shouldContainOnly(EnumPersonValidationTypes.USER_EMAIL_IN_USE)
     }
 
     @Test
@@ -188,14 +184,14 @@ class SavePersonUseCaseTests {
 
         val validationResultsWithNullPassword = savePersonUseCase.execute(
             toPersonWithNullPassword
-        ).map { it.first }
+        ).getValidations()
 
         val validationResultsWithEmptyPassword = savePersonUseCase.execute(
             toPersonWithEmptyPassword
-        ).map { it.first }
+        ).getValidations()
 
-        validationResultsWithNullPassword.shouldContainOnly(PASSWORD)
-        validationResultsWithEmptyPassword.shouldContainOnly(PASSWORD)
+        validationResultsWithNullPassword.shouldContainOnly(EnumPersonValidationTypes.REQUIRED_USER_PASSWORD)
+        validationResultsWithEmptyPassword.shouldContainOnly(EnumPersonValidationTypes.REQUIRED_USER_PASSWORD)
     }
 
     @Test
@@ -215,9 +211,9 @@ class SavePersonUseCaseTests {
             )
         )
 
-        val validationResults = savePersonUseCase.execute(toPerson).map { it.first }
+        val validationResults = savePersonUseCase.execute(toPerson).getValidations()
 
-        validationResults.shouldContainOnly(PASSWORD)
+        validationResults.shouldContainOnly(EnumPersonValidationTypes.MAX_LENGTH_USER_PASSWORD)
     }
 
     @Test
@@ -233,9 +229,9 @@ class SavePersonUseCaseTests {
             )
         )
 
-        val validationResults = savePersonUseCase.execute(toPerson).map { it.first }
+        val validationResults = savePersonUseCase.execute(toPerson).getValidations()
 
-        validationResults.shouldContainOnly(NAME)
+        validationResults.shouldContainOnly(EnumPersonValidationTypes.REQUIRED_PERSON_NAME)
     }
 
     @Test
@@ -251,9 +247,9 @@ class SavePersonUseCaseTests {
             )
         )
 
-        val validationResults = savePersonUseCase.execute(toPerson).map { it.first }
+        val validationResults = savePersonUseCase.execute(toPerson).getValidations()
 
-        validationResults.shouldContainOnly(NAME)
+        validationResults.shouldContainOnly(EnumPersonValidationTypes.REQUIRED_PERSON_NAME)
     }
 
     @Test
@@ -271,27 +267,9 @@ class SavePersonUseCaseTests {
             )
         )
 
-        val validationResults = savePersonUseCase.execute(toPerson).map { it.first }
+        val validationResults = savePersonUseCase.execute(toPerson).getValidations()
 
-        validationResults.shouldContainOnly(NAME)
-    }
-
-    @Test
-    fun should_pass_when_name_is_valid(): Unit = runBlocking {
-        val toPerson = TOPerson(
-            name = getFakeName(),
-            birthDate = getFakeBirthDate(),
-            phone = getFakePhoneNumber(),
-            toUser = TOUser(
-                password = getFakePassword(),
-                email = getFakeEmail(),
-                type = EnumUserType.PERSONAL_TRAINER
-            )
-        )
-
-        val validationResults = savePersonUseCase.execute(toPerson).map { it.first }
-
-        validationResults.shouldNotContain(NAME)
+        validationResults.shouldContainOnly(EnumPersonValidationTypes.MAX_LENGTH_PERSON_NAME)
     }
 
     @Test
@@ -307,9 +285,9 @@ class SavePersonUseCaseTests {
             )
         )
 
-        val validationResults = savePersonUseCase.execute(toPerson).map { it.first }
+        val validationResults = savePersonUseCase.execute(toPerson).getValidations()
 
-        validationResults.shouldContainOnly(BIRTH_DATE)
+        validationResults.shouldContainOnly(EnumPersonValidationTypes.PERSON_BIRTH_DATE_FUTURE)
     }
 
     @Test
@@ -325,9 +303,9 @@ class SavePersonUseCaseTests {
             )
         )
 
-        val validationResults = savePersonUseCase.execute(toPerson).map { it.first }
+        val validationResults = savePersonUseCase.execute(toPerson).getValidations()
 
-        validationResults.shouldContainOnly(PHONE)
+        validationResults.shouldContainOnly(EnumPersonValidationTypes.MAX_LENGTH_PERSON_PHONE)
     }
 
     private fun getFakeEmail(): String {

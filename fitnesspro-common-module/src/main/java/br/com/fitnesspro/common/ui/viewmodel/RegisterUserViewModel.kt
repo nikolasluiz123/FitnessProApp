@@ -15,6 +15,7 @@ import br.com.fitnesspro.common.ui.navigation.registerUserArguments
 import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDecorator
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
 import br.com.fitnesspro.common.ui.state.RegisterUserUIState
+import br.com.fitnesspro.common.usecase.person.EnumPersonValidationTypes
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
 import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
@@ -26,6 +27,7 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.parseToLocalDate
+import br.com.fitnesspro.core.validation.ValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -286,36 +288,36 @@ class RegisterUserViewModel @Inject constructor(
         }
     }
 
-    private fun showValidationMessages(validationResults: List<Pair<EnumValidatedPersonFields, String>>) {
+    private fun showValidationMessages(validationResults: List<ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>>) {
         validationResults.forEach {
-            when (it.first) {
+            when (it.field) {
                 EnumValidatedPersonFields.NAME -> {
                     _uiState.value = _uiState.value.copy(
-                        name = _uiState.value.name.copy(errorMessage = it.second)
+                        name = _uiState.value.name.copy(errorMessage = it.message)
                     )
                 }
 
                 EnumValidatedPersonFields.EMAIL -> {
                     _uiState.value = _uiState.value.copy(
-                        email = _uiState.value.email.copy(errorMessage = it.second)
+                        email = _uiState.value.email.copy(errorMessage = it.message)
                     )
                 }
 
                 EnumValidatedPersonFields.PASSWORD -> {
                     _uiState.value = _uiState.value.copy(
-                        password = _uiState.value.password.copy(errorMessage = it.second)
+                        password = _uiState.value.password.copy(errorMessage = it.message)
                     )
                 }
 
                 EnumValidatedPersonFields.BIRTH_DATE -> {
                     _uiState.value = _uiState.value.copy(
-                        birthDate = _uiState.value.birthDate.copy(errorMessage = it.second)
+                        birthDate = _uiState.value.birthDate.copy(errorMessage = it.message)
                     )
                 }
 
                 EnumValidatedPersonFields.PHONE -> {
                     _uiState.value = _uiState.value.copy(
-                        phone = _uiState.value.phone.copy(errorMessage = it.second)
+                        phone = _uiState.value.phone.copy(errorMessage = it.message)
                     )
                 }
             }

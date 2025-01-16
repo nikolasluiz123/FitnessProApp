@@ -71,7 +71,7 @@ class PersonMockHelper(
             Log.e(TAG, "Nao foi possivel salvar o batch $batchNumber")
 
             validationResults.forEach {
-                Log.e(TAG, "${it.first.name}: ${it.second}")
+                Log.e(TAG, "${it.field?.name}: ${it.message}")
             }
         } else {
             Log.i(TAG, "Batch $batchNumber salvo com sucesso")
