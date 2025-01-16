@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalTime
 import java.util.UUID
 
-class SaveSchedulerConfigUseCase {
+class SaveSchedulerConfigUseCaseTests {
 
     private lateinit var context: Context
     private lateinit var schedulerConfigRepository: SchedulerConfigRepository

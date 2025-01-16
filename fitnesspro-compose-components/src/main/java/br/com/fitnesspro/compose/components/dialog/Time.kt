@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.compose.components.buttons.FitnessProTextButton
+import br.com.fitnesspro.core.extensions.timeNow
 import br.com.fitnesspro.core.theme.GREY_200
 import br.com.fitnesspro.core.theme.GREY_300
 import br.com.fitnesspro.core.theme.GREY_800
@@ -66,7 +67,7 @@ fun TimePickerInput(
     onConfirm: (LocalTime) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val time = value ?: LocalTime.now()
+    val time = value ?: timeNow()
 
     val timePickerState = rememberTimePickerState(
         initialHour = time.hour,

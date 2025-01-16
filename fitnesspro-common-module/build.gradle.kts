@@ -61,17 +61,12 @@ dependencies {
     implementation(project(":fitnesspro-local-data-access"))
 
     implementation(libs.google.gson)
-
     implementation(libs.java.faker)
-
     implementation(libs.constraint.layout.compose)
-
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-
     implementation(libs.room.paging)
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

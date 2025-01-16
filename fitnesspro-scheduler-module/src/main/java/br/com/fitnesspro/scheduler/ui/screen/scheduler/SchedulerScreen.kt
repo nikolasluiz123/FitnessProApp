@@ -48,6 +48,7 @@ import br.com.fitnesspro.compose.components.buttons.fab.FitnessProFloatingAction
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonConfig
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.getShortDisplayNameAllCaps
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -60,11 +61,11 @@ import br.com.fitnesspro.core.theme.RED_400
 import br.com.fitnesspro.core.theme.RED_600
 import br.com.fitnesspro.core.theme.RED_800
 import br.com.fitnesspro.model.enums.EnumUserType
+import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnDayClick
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnNavigateToCompromise
 import br.com.fitnesspro.scheduler.ui.state.SchedulerUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerViewModel
-import br.com.fitnesspro.scheduler.R
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -435,7 +436,7 @@ private fun DayCellPreview() {
     FitnessProTheme {
         Surface {
             DayCell(
-                day = LocalDate.now(),
+                day = dateNow(),
                 style = DayStyle(
                     backgroundColor = RED_400,
                     textStyle = LabelCalendarDayTextStyle,

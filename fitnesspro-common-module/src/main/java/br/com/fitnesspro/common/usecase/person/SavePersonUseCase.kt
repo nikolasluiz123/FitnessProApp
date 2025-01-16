@@ -10,6 +10,7 @@ import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.NAME
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.PASSWORD
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.PHONE
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
+import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.to.TOPerson
 import java.time.LocalDate
@@ -83,7 +84,7 @@ open class SavePersonUseCase(
         val birthDate = toPerson.birthDate ?: return null
 
         val validationPair = when {
-            birthDate > LocalDate.now() -> {
+            birthDate > dateNow() -> {
                 val message = context.getString(
                     R.string.validation_msg_invalid_field,
                     context.getString(BIRTH_DATE.labelResId)

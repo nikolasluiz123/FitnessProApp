@@ -33,6 +33,24 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    packaging {
+        resources {
+            excludes.addAll(
+                mutableSetOf(
+                    "META-INF/LICENSE.md",
+                    "META-INF/LICENSE.txt",
+                    "META-INF/NOTICE.txt",
+                    "META-INF/NOTICE.md",
+                    "META-INF/LICENSE-notice.md"
+                )
+            )
+        }
+    }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 dependencies {
@@ -43,15 +61,12 @@ dependencies {
     implementation(project(":fitnesspro-common-module"))
 
     implementation(libs.google.gson)
-
     implementation(libs.constraint.layout.compose)
-
+    implementation(libs.java.faker)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-
     implementation(libs.room.paging)
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -60,6 +75,21 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    testRuntimeOnly(libs.junit.jupter.engine)
+    testImplementation(libs.junit.jupter.api)
+    testImplementation(libs.kotest.assertion)
+    testImplementation(libs.hilt.android.testing)
+    testImplementation(libs.mockk)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.junit)
+    kspTest(libs.hilt.compiler)
+
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.mockk.android)
+    kspAndroidTest(libs.hilt.compiler)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

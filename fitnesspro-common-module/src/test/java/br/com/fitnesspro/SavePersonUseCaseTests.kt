@@ -9,6 +9,7 @@ import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.PASSWOR
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.PHONE
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
+import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
@@ -297,7 +298,7 @@ class SavePersonUseCaseTests {
     fun should_fail_when_birthDate_is_in_the_future(): Unit = runBlocking {
         val toPerson = TOPerson(
             name = getFakeName(),
-            birthDate = LocalDate.now().plusDays(1),
+            birthDate = dateNow().plusDays(1),
             phone = getFakePhoneNumber(),
             toUser = TOUser(
                 password = getFakePassword(),

@@ -6,20 +6,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
+import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.ui.navigation.SchedulerDetailsScreenArgs
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerDetailsArguments
 import br.com.fitnesspro.scheduler.ui.state.SchedulerDetailsUIState
-import br.com.fitnesspro.scheduler.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -73,7 +73,7 @@ class SchedulerDetailsViewModel @Inject constructor(
             it.copy(
                 title = context.getString(R.string.scheduler_details_screen_title),
                 subtitle = args.scheduledDate.format(EnumDateTimePatterns.DATE),
-                isVisibleFabAdd = args.scheduledDate >= LocalDate.now()
+                isVisibleFabAdd = args.scheduledDate >= dateNow()
             )
         }
     }

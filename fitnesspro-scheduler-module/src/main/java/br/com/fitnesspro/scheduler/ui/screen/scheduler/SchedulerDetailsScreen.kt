@@ -25,17 +25,18 @@ import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumUserType
+import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnNavigateToCompromise
 import br.com.fitnesspro.scheduler.ui.state.SchedulerDetailsUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerDetailsViewModel
 import br.com.fitnesspro.to.TOScheduler
-import br.com.fitnesspro.scheduler.R
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -126,7 +127,7 @@ fun SchedulerDetailsScreen(
 private fun getEmptyMessage(state: SchedulerDetailsUIState): Int {
     val date = state.subtitle.parseToLocalDate(EnumDateTimePatterns.DATE)!!
 
-    return if (date < LocalDate.now()) {
+    return if (date < dateNow()) {
         R.string.scheduler_details_empty_message_past_date
     } else {
         R.string.scheduler_details_empty_message

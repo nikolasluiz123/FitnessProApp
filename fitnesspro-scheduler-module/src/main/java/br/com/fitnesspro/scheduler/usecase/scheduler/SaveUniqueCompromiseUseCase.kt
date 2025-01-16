@@ -4,10 +4,12 @@ import android.content.Context
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.validation.ValidationError
+import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
 import br.com.fitnesspro.to.TOScheduler
-import br.com.fitnesspro.scheduler.R
 
 class SaveUniqueCompromiseUseCase(
     context: Context,
@@ -15,7 +17,7 @@ class SaveUniqueCompromiseUseCase(
     userRepository: UserRepository
 ): SaveCompromiseCommonUseCase(context, schedulerRepository, userRepository) {
 
-    suspend fun saveUniqueCompromise(toScheduler: TOScheduler): MutableList<Pair<EnumValidatedCompromiseFields?, String>> {
+    suspend fun saveUniqueCompromise(toScheduler: TOScheduler): MutableList<ValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
         val validationResults = validateUniqueCompromise(toScheduler)
 
         if (validationResults.isEmpty()) {
@@ -25,11 +27,12 @@ class SaveUniqueCompromiseUseCase(
         return validationResults
     }
 
-    private suspend fun validateUniqueCompromise(toScheduler: TOScheduler): MutableList<Pair<EnumValidatedCompromiseFields?, String>> {
+    private suspend fun validateUniqueCompromise(toScheduler: TOScheduler): MutableList<ValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
         val validationResults = mutableListOf(
             validateMember(toScheduler),
             validateHourStart(toScheduler),
             validateHourEnd(toScheduler),
+            validateObservation(toScheduler),
             validateHourPeriod(toScheduler),
             validateSchedulerConflictMember(toScheduler)
         )
@@ -37,7 +40,15 @@ class SaveUniqueCompromiseUseCase(
         return validationResults.filterNotNull().toMutableList()
     }
 
-    private suspend fun validateSchedulerConflictMember(scheduler: TOScheduler): Pair<EnumValidatedCompromiseFields?, String>? {
+    private suspend fun validateSchedulerConflictMember(scheduler: TOScheduler): ValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+        val requiredFields = listOf(
+            scheduler.start,
+            scheduler.end,
+            scheduler.academyMemberPersonId
+        )
+
+        if (requiredFields.any { it == null }) return null
+
         val member = userRepository.getTOPersonById(scheduler.academyMemberPersonId!!)
 
         val hasConflict = schedulerRepository.getHasSchedulerConflict(
@@ -49,7 +60,7 @@ class SaveUniqueCompromiseUseCase(
             end = scheduler.end!!
         )
 
-        val validationPair = when {
+        return when {
             hasConflict -> {
                 val message = context.getString(
                     R.string.save_compromise_scheduler_conflict_member,
@@ -59,12 +70,14 @@ class SaveUniqueCompromiseUseCase(
                     member.name
                 )
 
-                Pair(null, message)
+                ValidationError(
+                    field = null,
+                    validationType = EnumCompromiseValidationTypes.SCHEDULER_CONFLICT_MEMBER,
+                    message = message
+                )
             }
 
             else -> null
         }
-
-        return validationPair
     }
 }

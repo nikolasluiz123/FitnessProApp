@@ -18,21 +18,23 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.core.extensions.parseToLocalTime
+import br.com.fitnesspro.core.validation.ValidationError
 import br.com.fitnesspro.model.enums.EnumCompromiseType.FIRST
 import br.com.fitnesspro.model.enums.EnumCompromiseType.RECURRENT
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumUserType
+import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs
 import br.com.fitnesspro.scheduler.ui.navigation.compromiseArguments
 import br.com.fitnesspro.scheduler.ui.state.CompromiseUIState
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseUseCase
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOScheduler
 import br.com.fitnesspro.tuple.PersonTuple
-import br.com.fitnesspro.scheduler.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -526,13 +528,13 @@ class CompromiseViewModel @Inject constructor(
         }
     }
 
-    private fun showValidationMessages(validationResults: MutableList<Pair<EnumValidatedCompromiseFields?, String>>) {
-        val dialogValidations = validationResults.firstOrNull { it.first == null }
+    private fun showValidationMessages(validationResults: MutableList<ValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>>) {
+        val dialogValidations = validationResults.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {
             _uiState.value.onShowDialog?.onShow(
                 type = EnumDialogType.ERROR,
-                message = dialogValidations.second,
+                message = dialogValidations.message,
                 onConfirm = { _uiState.value.onHideDialog.invoke() },
                 onCancel = { _uiState.value.onHideDialog.invoke() }
             )
@@ -541,11 +543,11 @@ class CompromiseViewModel @Inject constructor(
         }
 
         validationResults.forEach {
-            when (it.first!!) {
+            when (it.field!!) {
                 EnumValidatedCompromiseFields.MEMBER -> {
                     _uiState.value = _uiState.value.copy(
                         member = _uiState.value.member.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -553,7 +555,7 @@ class CompromiseViewModel @Inject constructor(
                 EnumValidatedCompromiseFields.PROFESSIONAL -> {
                     _uiState.value = _uiState.value.copy(
                         professional = _uiState.value.professional.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -561,7 +563,7 @@ class CompromiseViewModel @Inject constructor(
                 EnumValidatedCompromiseFields.DATE_START -> {
                     _uiState.value = _uiState.value.copy(
                         dateStart = _uiState.value.dateStart.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -569,7 +571,7 @@ class CompromiseViewModel @Inject constructor(
                 EnumValidatedCompromiseFields.DATE_END -> {
                     _uiState.value = _uiState.value.copy(
                         dateEnd = _uiState.value.dateEnd.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -577,7 +579,7 @@ class CompromiseViewModel @Inject constructor(
                 EnumValidatedCompromiseFields.HOUR_START -> {
                     _uiState.value = _uiState.value.copy(
                         hourStart = _uiState.value.hourStart.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -585,7 +587,7 @@ class CompromiseViewModel @Inject constructor(
                 EnumValidatedCompromiseFields.HOUR_END -> {
                     _uiState.value = _uiState.value.copy(
                         hourEnd = _uiState.value.hourEnd.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -593,7 +595,7 @@ class CompromiseViewModel @Inject constructor(
                 EnumValidatedCompromiseFields.OBSERVATION -> {
                     _uiState.value = _uiState.value.copy(
                         observation = _uiState.value.observation.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
@@ -601,7 +603,7 @@ class CompromiseViewModel @Inject constructor(
                 EnumValidatedCompromiseFields.DAY_OF_WEEKS -> {
                     _uiState.value.onShowDialog?.onShow(
                         type = EnumDialogType.ERROR,
-                        message = it.second,
+                        message = it.message,
                         onConfirm = { _uiState.value.onHideDialog.invoke() },
                         onCancel = { _uiState.value.onHideDialog.invoke() }
                     )

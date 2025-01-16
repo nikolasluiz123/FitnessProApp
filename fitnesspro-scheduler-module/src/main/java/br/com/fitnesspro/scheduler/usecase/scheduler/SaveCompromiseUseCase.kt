@@ -1,5 +1,7 @@
 package br.com.fitnesspro.scheduler.usecase.scheduler
 
+import br.com.fitnesspro.core.validation.ValidationError
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
 import br.com.fitnesspro.to.TOScheduler
@@ -14,7 +16,7 @@ class SaveCompromiseUseCase(
         toScheduler: TOScheduler,
         type: EnumSchedulerType,
         recurrentConfig: CompromiseRecurrentConfig? = null
-    ): MutableList<Pair<EnumValidatedCompromiseFields?, String>> {
+    ): MutableList<ValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
         return when (type) {
             EnumSchedulerType.SUGGESTION -> {
                 suggestionCompromiseUseCase.saveCompromiseSuggestion(toScheduler)

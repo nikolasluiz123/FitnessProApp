@@ -105,3 +105,9 @@ fun LocalDateTime.format(enumDateTimePatterns: EnumDateTimePatterns): String {
 fun YearMonth.format(enumDateTimePatterns: EnumDateTimePatterns): String {
     return this.format(DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
 }
+
+fun timeNow(): LocalTime = LocalTime.now()
+
+fun dateNow(): LocalDate = LocalDate.now()
+
+fun dateTimeNow(): LocalDateTime = LocalDateTime.now()
