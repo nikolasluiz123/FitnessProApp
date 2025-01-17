@@ -1,4 +1,4 @@
-package br.com.fitnesspro
+package br.com.fitnesspro.common
 
 import android.content.Context
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
