@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinAndroidKsp)
     alias(libs.plugins.hiltAndroid)
-    alias(libs.plugins.kotest)
 }
 
 android {
@@ -13,7 +12,7 @@ android {
     defaultConfig {
         minSdk = 26
 
-        testInstrumentationRunner = "br.com.fitnesspro.runner.LocalDataAccessCustomTestRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -71,14 +70,4 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.junit4)
-    androidTestImplementation(libs.hilt.android.testing)
-    androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.room.testing)
-    androidTestImplementation(libs.kotest.assertion)
-    kspAndroidTest(libs.hilt.compiler)
 }

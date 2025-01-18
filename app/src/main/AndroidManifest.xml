@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    
+    <instrumentation
+        android:name="br.com.fitnesspro.runner.FitnessProCustomTestRunner"
+        android:targetPackage="br.com.fitnesspro" />
 
     <application
         android:name=".FitnessProApplication"
