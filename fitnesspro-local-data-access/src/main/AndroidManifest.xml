@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <instrumentation
-        android:name="br.com.fitnesspro.runner.LocalDataAccessCustomTestRunner"
-        android:targetPackage="br.com.fitnesspro.local.data.access" />
-
 </manifest>
