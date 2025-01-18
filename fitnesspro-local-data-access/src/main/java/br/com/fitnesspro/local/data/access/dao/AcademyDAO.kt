@@ -22,6 +22,12 @@ abstract class AcademyDAO: BaseDAO() {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun saveAcademyTime(personAcademyTime: PersonAcademyTime)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun saveAcademiesBatch(academies: List<Academy>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun savePersonAcademyTimesBatch(personAcademyTimes: List<PersonAcademyTime>)
+
     fun getAcademies(name: String): PagingSource<Int, AcademyTuple> {
         val params = mutableListOf<Any>()
 
