@@ -21,6 +21,18 @@ jobs:
       - name: Grant Permissions to gradlew
         run: chmod +x gradlew
 
+      - name: Set TimeZone
+        run: sudo timedatectl set-timezone America/Sao_Paulo
+
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: build/test-results
+
       - name: Cache Gradle dependencies
         uses: actions/cache@v4
         with:
@@ -30,15 +42,3 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle
-
-      - name: Set TimeZone
-        run: sudo timedatectl set-timezone America/Sao_Paulo
-
-      - name: Run Unit Tests
-        run: ./gradlew testReleaseUnitTest
-
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: build/test-results
