@@ -9,6 +9,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
@@ -67,6 +68,7 @@ abstract class SchedulerDAO: BaseDAO() {
             add("       or `end` between ? and ? ")
             add("     ) ")
             add(" and schedule.scheduled_date = ? ")
+            add(" and schedule.situation != '${EnumSchedulerSituation.CANCELLED}' ")
 
 
             val startFormated = start.format(EnumDateTimePatterns.TIME)

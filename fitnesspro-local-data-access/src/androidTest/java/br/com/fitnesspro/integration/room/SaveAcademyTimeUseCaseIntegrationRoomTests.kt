@@ -85,7 +85,7 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
     }
 
     @Test
-    fun should_return_true_for_conflict_when_time_start_inner_range_of_other_academy_time_with_same_day_of_week(): Unit = runBlocking {
+    fun should_return_conflict_when_time_start_inner_range_of_other_academy_time_with_same_day_of_week(): Unit = runBlocking {
         createSimpleAcademyTimeList()
 
         val academyTime = PersonAcademyTime(
@@ -111,7 +111,7 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
     }
 
     @Test
-    fun should_return_true_for_conflict_when_time_end_inner_range_of_other_academy_time_with_same_day_of_week(): Unit = runBlocking {
+    fun should_return_conflict_when_time_end_inner_range_of_other_academy_time_with_same_day_of_week(): Unit = runBlocking {
         createSimpleAcademyTimeList()
 
         val academyTime = PersonAcademyTime(
@@ -137,7 +137,7 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
     }
 
     @Test
-    fun should_return_false_for_conflict_when_different_day_of_week_and_same_time_range(): Unit = runBlocking {
+    fun should_return_conflict_when_different_day_of_week_and_same_time_range(): Unit = runBlocking {
         createSimpleAcademyTimeList()
 
         val academyTime = PersonAcademyTime(
@@ -160,7 +160,7 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
     }
 
     @Test
-    fun should_return_false_for_conflict_when_time_range_is_after(): Unit = runBlocking {
+    fun should_return_conflict_when_time_range_is_after(): Unit = runBlocking {
         createSimpleAcademyTimeList()
 
         val academyTime = PersonAcademyTime(
@@ -183,7 +183,7 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
     }
 
     @Test
-    fun should_return_false_for_conflict_when_time_range_is_before(): Unit = runBlocking {
+    fun should_return_conflict_when_time_range_is_before(): Unit = runBlocking {
         createSimpleAcademyTimeList()
 
         val academyTime = PersonAcademyTime(
