@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinAndroidKsp)
     alias(libs.plugins.hiltAndroid)
+    alias(libs.plugins.kotest)
 }
 
 android {
@@ -12,7 +13,7 @@ android {
     defaultConfig {
         minSdk = 26
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "br.com.fitnesspro.runner.LocalDataAccessCustomTestRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -38,6 +39,20 @@ android {
     ksp {
         arg("room.schemaLocation", "$projectDir/schemas")
     }
+
+    packaging {
+        resources {
+            excludes.addAll(
+                mutableSetOf(
+                    "META-INF/LICENSE.md",
+                    "META-INF/LICENSE.txt",
+                    "META-INF/NOTICE.txt",
+                    "META-INF/NOTICE.md",
+                    "META-INF/LICENSE-notice.md"
+                )
+            )
+        }
+    }
 }
 
 dependencies {
@@ -56,4 +71,14 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.room.testing)
+    androidTestImplementation(libs.kotest.assertion)
+    kspAndroidTest(libs.hilt.compiler)
 }

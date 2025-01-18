@@ -1,0 +1,46 @@
+package br.com.fitnesspro.injection
+
+import android.content.Context
+import androidx.room.Room
+import br.com.fitnesspro.local.data.access.database.AppDatabase
+import br.com.fitnesspro.local.data.access.injection.DatabaseModule
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
+import javax.inject.Singleton
+
+@Module
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [DatabaseModule::class]
+)
+class DatabaseModuleTests {
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        return Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserDao(appDatabase: AppDatabase) = appDatabase.userDAO()
+
+    @Provides
+    @Singleton
+    fun providePersonDao(appDatabase: AppDatabase) = appDatabase.personDAO()
+
+    @Provides
+    @Singleton
+    fun provideAcademyDao(appDatabase: AppDatabase) = appDatabase.academyDAO()
+
+    @Provides
+    @Singleton
+    fun provideSchedulerDao(appDatabase: AppDatabase) = appDatabase.schedulerDAO()
+
+    @Provides
+    @Singleton
+    fun provideWorkoutDao(appDatabase: AppDatabase) = appDatabase.workoutDAO()
+}
