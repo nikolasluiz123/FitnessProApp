@@ -97,6 +97,7 @@ abstract class AcademyDAO: BaseDAO() {
             from person_academy_time pat
             where pat.person_id = :personId
             and pat.academy_id = academy.id
+            and pat.active = 1
         )
     """)
     abstract suspend fun getAcademiesFromPerson(personId: String): List<Academy>
