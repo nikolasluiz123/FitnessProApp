@@ -139,7 +139,9 @@ fun RegisterAcademyScreen(
                 type = state.dialogType,
                 show = state.showDialog,
                 onDismissRequest = { state.onHideDialog() },
-                message = state.dialogMessage
+                message = state.dialogMessage,
+                onConfirm = state.onConfirm,
+                onCancel = state.onCancel
             )
 
             PagedListDialogOutlinedTextFieldValidation(
