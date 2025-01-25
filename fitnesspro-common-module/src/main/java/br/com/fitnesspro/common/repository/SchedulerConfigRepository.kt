@@ -32,10 +32,6 @@ class SchedulerConfigRepository(
                 notification = notification,
                 minScheduleDensity = minScheduleDensity,
                 maxScheduleDensity = maxScheduleDensity,
-                startBreakTime = startBreakTime,
-                endBreakTime = endBreakTime,
-                startWorkTime = startWorkTime,
-                endWorkTime = endWorkTime
             )
         }
     }

@@ -64,13 +64,13 @@
     <string name="scheduler_config_screen_label_event_density_min">Mínimo *</string>
     <string name="scheduler_config_screen_label_event_density_max">Máximo *</string>
     <string name="scheduler_config_screen_label_work_time">Horário de Trabalho</string>
-    <string name="scheduler_config_screen_label_work_time_explanation">Horário que será utilizado para validar as sugestões de agendamento criadas pelos membros.</string>
+    <string name="scheduler_config_screen_label_work_time_explanation">O horário de trabalho será definido de acordo com o cadastro dos horários nas academias e dias da semana. Por isso, é necessário que essa informação esteja sempre correta.</string>
     <string name="scheduler_config_screen_label_work_time_start">Início *</string>
     <string name="scheduler_config_screen_label_work_time_start_time_picker_title">Horário de Início</string>
     <string name="scheduler_config_screen_label_work_time_end">Fim *</string>
     <string name="scheduler_config_screen_label_work_time_end_time_picker_title">Horário de Fim</string>
     <string name="scheduler_config_screen_label_break_time">Pausa Realizada</string>
-    <string name="scheduler_config_screen_label_break_time_explanation">Horário em que não serão permitidos agendamentos.</string>
+    <string name="scheduler_config_screen_label_break_time_explanation">Ao definir corretamente os horários de trabalho automaticamente fica definido que, qualquer horário que não esteja dentro dos horários de trabalho será considerado uma pausa.</string>
     <string name="scheduler_config_screen_label_break_time_start">Início *</string>
     <string name="scheduler_config_screen_label_break_time_start_time_picker_title">Horário de Início</string>
     <string name="scheduler_config_screen_label_break_time_end">Fim *</string>

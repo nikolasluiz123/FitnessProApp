@@ -10,11 +10,7 @@ import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValid
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields
 import br.com.fitnesspro.compose.components.fields.state.SwitchButtonField
 import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME_ONLY_NUMBERS
 import br.com.fitnesspro.core.enums.EnumDialogType
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.parseToLocalTime
 import br.com.fitnesspro.core.extensions.toIntOrNull
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.scheduler.ui.state.SchedulerConfigUIState
@@ -47,10 +43,6 @@ class SchedulerConfigViewModel @Inject constructor(
                 notification = initializeNotificationSwitchField(),
                 minEventDensity = initializeMinEventDensityTextField(),
                 maxEventDensity = initializeMaxEventDensityTextField(),
-                startWorkTime = initializeStartWorkTimeTimePickerField(),
-                endWorkTime = initializeEndWorkTimeTimePickerField(),
-                startBreakTime = initializeStartBreakTimeTimePickerField(),
-                endBreakTime = initializeEndBreakTimeTimePickerField(),
                 onShowDialog = initializeOnShowDialog(),
                 onHideDialog = initializeOnHideDialog(),
             )
@@ -76,18 +68,6 @@ class SchedulerConfigViewModel @Inject constructor(
                 ),
                 maxEventDensity = _uiState.value.maxEventDensity.copy(
                     value = toConfig.maxScheduleDensity.toString()
-                ),
-                startWorkTime = _uiState.value.startWorkTime.copy(
-                    value = toConfig.startWorkTime!!.format(TIME_ONLY_NUMBERS)
-                ),
-                endWorkTime = _uiState.value.endWorkTime.copy(
-                    value = toConfig.endWorkTime!!.format(TIME_ONLY_NUMBERS)
-                ),
-                startBreakTime = _uiState.value.startBreakTime.copy(
-                    value = toConfig.startBreakTime!!.format(TIME_ONLY_NUMBERS)
-                ),
-                endBreakTime = _uiState.value.endBreakTime.copy(
-                    value = toConfig.endBreakTime!!.format(TIME_ONLY_NUMBERS)
                 )
             )
         }
@@ -107,160 +87,6 @@ class SchedulerConfigViewModel @Inject constructor(
                 onCancel = onCancel
             )
         }
-    }
-
-    private fun initializeEndBreakTimeTimePickerField(): TimePickerTextField {
-        return TimePickerTextField(
-            onTimePickerOpenChange = {
-                _uiState.value = _uiState.value.copy(
-                    endBreakTime = _uiState.value.endBreakTime.copy(timePickerOpen = it)
-                )
-            },
-            onTimeChange = { newTime ->
-                _uiState.value = _uiState.value.copy(
-                    endBreakTime = _uiState.value.endBreakTime.copy(
-                        value = newTime.format(TIME_ONLY_NUMBERS),
-                        errorMessage = ""
-                    ),
-                    toConfig = _uiState.value.toConfig.copy(endBreakTime = newTime)
-                )
-
-                _uiState.value.endBreakTime.onTimeDismiss()
-            },
-            onTimeDismiss = {
-                _uiState.value = _uiState.value.copy(
-                    endBreakTime = _uiState.value.endBreakTime.copy(timePickerOpen = false)
-                )
-            },
-            onChange = { text ->
-                if (text.isDigitsOnly()) {
-                    _uiState.value = _uiState.value.copy(
-                        endBreakTime = _uiState.value.endBreakTime.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        toConfig = _uiState.value.toConfig.copy(
-                            endBreakTime = text.parseToLocalTime(TIME_ONLY_NUMBERS)
-                        )
-                    )
-                }
-            }
-        )
-    }
-
-    private fun initializeStartBreakTimeTimePickerField(): TimePickerTextField {
-        return TimePickerTextField(
-            onTimePickerOpenChange = {
-                _uiState.value = _uiState.value.copy(
-                    startBreakTime = _uiState.value.startBreakTime.copy(timePickerOpen = it)
-                )
-            },
-            onTimeChange = { newTime ->
-                _uiState.value = _uiState.value.copy(
-                    startBreakTime = _uiState.value.startBreakTime.copy(
-                        value = newTime.format(TIME_ONLY_NUMBERS),
-                        errorMessage = ""
-                    ),
-                    toConfig = _uiState.value.toConfig.copy(startBreakTime = newTime)
-                )
-
-                _uiState.value.startBreakTime.onTimeDismiss()
-            },
-            onTimeDismiss = {
-                _uiState.value = _uiState.value.copy(
-                    startBreakTime = _uiState.value.startBreakTime.copy(timePickerOpen = false)
-                )
-            },
-            onChange = { text ->
-                if (text.isDigitsOnly()) {
-                    _uiState.value = _uiState.value.copy(
-                        startBreakTime = _uiState.value.startBreakTime.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        toConfig = _uiState.value.toConfig.copy(
-                            startBreakTime = text.parseToLocalTime(TIME_ONLY_NUMBERS)
-                        )
-                    )
-                }
-            }
-        )
-    }
-
-    private fun initializeEndWorkTimeTimePickerField(): TimePickerTextField {
-        return TimePickerTextField(
-            onTimePickerOpenChange = {
-                _uiState.value = _uiState.value.copy(
-                    endWorkTime = _uiState.value.endWorkTime.copy(timePickerOpen = it)
-                )
-            },
-            onTimeChange = { newTime ->
-                _uiState.value = _uiState.value.copy(
-                    endWorkTime = _uiState.value.endWorkTime.copy(
-                        value = newTime.format(TIME_ONLY_NUMBERS),
-                        errorMessage = ""
-                    ),
-                    toConfig = _uiState.value.toConfig.copy(endWorkTime = newTime)
-                )
-
-                _uiState.value.endWorkTime.onTimeDismiss()
-            },
-            onTimeDismiss = {
-                _uiState.value = _uiState.value.copy(
-                    endWorkTime = _uiState.value.endWorkTime.copy(timePickerOpen = false)
-                )
-            },
-            onChange = { text ->
-                if (text.isDigitsOnly()) {
-                    _uiState.value = _uiState.value.copy(
-                        endWorkTime = _uiState.value.endWorkTime.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        toConfig = _uiState.value.toConfig.copy(
-                            endWorkTime = text.parseToLocalTime(TIME_ONLY_NUMBERS)
-                        )
-                    )
-                }
-            }
-        )
-    }
-
-    private fun initializeStartWorkTimeTimePickerField(): TimePickerTextField {
-        return TimePickerTextField(
-            onTimePickerOpenChange = { newOpen ->
-                _uiState.value = _uiState.value.copy(
-                    startWorkTime = _uiState.value.startWorkTime.copy(timePickerOpen = newOpen)
-                )
-            },
-            onTimeChange = { newTime ->
-                _uiState.value = _uiState.value.copy(
-                    startWorkTime = _uiState.value.startWorkTime.copy(
-                        value = newTime.format(TIME_ONLY_NUMBERS),
-                        errorMessage = ""
-                    ),
-                    toConfig = _uiState.value.toConfig.copy(startWorkTime = newTime)
-                )
-            },
-            onTimeDismiss = {
-                _uiState.value = _uiState.value.copy(
-                    startWorkTime = _uiState.value.startWorkTime.copy(timePickerOpen = false)
-                )
-            },
-            onChange = {
-                if (it.isDigitsOnly()) {
-                    _uiState.value = _uiState.value.copy(
-                        startWorkTime = _uiState.value.startWorkTime.copy(
-                            value = it,
-                            errorMessage = ""
-                        ),
-                        toConfig = _uiState.value.toConfig.copy(
-                            startWorkTime = it.parseToLocalTime(TIME_ONLY_NUMBERS)
-                        )
-                    )
-                }
-            }
-        )
     }
 
     private fun initializeMaxEventDensityTextField(): TextField {
@@ -353,38 +179,6 @@ class SchedulerConfigViewModel @Inject constructor(
                 EnumValidatedSchedulerConfigFields.MAX_SCHEDULE_DENSITY -> {
                     _uiState.value = _uiState.value.copy(
                         maxEventDensity = _uiState.value.maxEventDensity.copy(
-                            errorMessage = it.message
-                        )
-                    )
-                }
-
-                EnumValidatedSchedulerConfigFields.START_WORK_TIME -> {
-                    _uiState.value = _uiState.value.copy(
-                        startWorkTime = _uiState.value.startWorkTime.copy(
-                            errorMessage = it.message
-                        )
-                    )
-                }
-
-                EnumValidatedSchedulerConfigFields.END_WORK_TIME -> {
-                    _uiState.value = _uiState.value.copy(
-                        endWorkTime = _uiState.value.endWorkTime.copy(
-                            errorMessage = it.message
-                        )
-                    )
-                }
-
-                EnumValidatedSchedulerConfigFields.START_BREAK_TIME -> {
-                    _uiState.value = _uiState.value.copy(
-                        startBreakTime = _uiState.value.startBreakTime.copy(
-                            errorMessage = it.message
-                        )
-                    )
-                }
-
-                EnumValidatedSchedulerConfigFields.END_BREAK_TIME -> {
-                    _uiState.value = _uiState.value.copy(
-                        endBreakTime = _uiState.value.endBreakTime.copy(
                             errorMessage = it.message
                         )
                     )

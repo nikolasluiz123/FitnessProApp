@@ -11,8 +11,6 @@ import br.com.fitnesspro.AndroidTestsActivity
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreenRoute
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_END_BREAK_TIME_FIELD
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_END_WORK_TIME_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_LABELED_SWITCH_BUTTON_ALARM
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_LABELED_SWITCH_BUTTON_NOTIFICATION
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_LABEL_BREAK_TIME
@@ -24,8 +22,6 @@ import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfig
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_LABEL_WORK_TIME_EXPLANATION
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_MAX_DENSITY_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_MIN_DENSITY_FIELD
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_START_BREAK_TIME_FIELD
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_START_WORK_TIME_FIELD
 import br.com.fitnesspro.tests.ui.common.BaseAuthenticatedUITest
 import br.com.fitnesspro.tests.ui.extensions.assertDisplayed
 import br.com.fitnesspro.tests.ui.extensions.assertNotDisplayed
@@ -114,15 +110,11 @@ class SchedulerConfigScreenStateUITests : BaseAuthenticatedUITest() {
     private fun AndroidComposeTestRule<*, *>.assertNotIsDisplayedBreakTimeSession() {
         assertNotDisplayed(SCHEDULER_CONFIG_SCREEN_LABEL_BREAK_TIME)
         assertNotDisplayed(SCHEDULER_CONFIG_SCREEN_LABEL_BREAK_TIME_EXPLANATION)
-        assertNotDisplayed(SCHEDULER_CONFIG_SCREEN_START_BREAK_TIME_FIELD)
-        assertNotDisplayed(SCHEDULER_CONFIG_SCREEN_END_BREAK_TIME_FIELD)
     }
 
     private fun AndroidComposeTestRule<*, *>.assertNotIsDisplayedWorkTimeSession() {
         assertNotDisplayed(SCHEDULER_CONFIG_SCREEN_LABEL_WORK_TIME)
         assertNotDisplayed(SCHEDULER_CONFIG_SCREEN_LABEL_WORK_TIME_EXPLANATION)
-        assertNotDisplayed(SCHEDULER_CONFIG_SCREEN_START_WORK_TIME_FIELD)
-        assertNotDisplayed(SCHEDULER_CONFIG_SCREEN_END_WORK_TIME_FIELD)
     }
 
     private fun AndroidComposeTestRule<*, *>.assertNotIsDisplayedDensityEventsSession() {
@@ -135,15 +127,11 @@ class SchedulerConfigScreenStateUITests : BaseAuthenticatedUITest() {
     private fun AndroidComposeTestRule<*, *>.assertIsDisplayedBreakTimeSession() {
         assertDisplayed(SCHEDULER_CONFIG_SCREEN_LABEL_BREAK_TIME)
         assertDisplayed(SCHEDULER_CONFIG_SCREEN_LABEL_BREAK_TIME_EXPLANATION)
-        assertDisplayed(SCHEDULER_CONFIG_SCREEN_START_BREAK_TIME_FIELD)
-        assertDisplayed(SCHEDULER_CONFIG_SCREEN_END_BREAK_TIME_FIELD)
     }
 
     private fun AndroidComposeTestRule<*, *>.assertIsDisplayedWorkTimeSession() {
         assertDisplayed(SCHEDULER_CONFIG_SCREEN_LABEL_WORK_TIME)
         assertDisplayed(SCHEDULER_CONFIG_SCREEN_LABEL_WORK_TIME_EXPLANATION)
-        assertDisplayed(SCHEDULER_CONFIG_SCREEN_START_WORK_TIME_FIELD)
-        assertDisplayed(SCHEDULER_CONFIG_SCREEN_END_WORK_TIME_FIELD)
     }
 
     private fun AndroidComposeTestRule<*, *>.assertIsDisplayedDensityEventsSession() {

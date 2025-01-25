@@ -6,12 +6,8 @@ import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.END_BREAK_TIME
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.END_WORK_TIME
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MAX_SCHEDULE_DENSITY
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MIN_SCHEDULE_DENSITY
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.START_BREAK_TIME
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.START_WORK_TIME
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOSchedulerConfig
@@ -45,12 +41,6 @@ class SaveSchedulerConfigUseCase(
             validateMinScheduleDensity(config),
             validateMaxScheduleDensity(config),
             validateDensityRange(config),
-            validateStartWorkTime(config),
-            validateEndWorkTime(config),
-            validateWorkoutPeriod(config),
-            validateStartBreakTime(config),
-            validateEndBreakTime(config),
-            validateBreakPeriod(config)
         )
 
         return validationResults.filterNotNull().toMutableList()
@@ -134,128 +124,6 @@ class SaveSchedulerConfigUseCase(
                 FieldValidationError(
                     field = null,
                     validationType = EnumSchedulerConfigValidationTypes.INVALID_DENSITY_RANGE,
-                    message = message
-                )
-            }
-
-            else -> null
-        }
-    }
-
-    private fun validateStartWorkTime(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
-        val validationPair = when {
-            config.startWorkTime == null -> {
-                val message = context.getString(
-                    R.string.validation_msg_required_field,
-                    context.getString(START_WORK_TIME.labelResId)
-                )
-
-                FieldValidationError(
-                    field = START_WORK_TIME,
-                    validationType = EnumSchedulerConfigValidationTypes.REQUIRED_START_WORK_TIME,
-                    message = message
-                )
-            }
-
-            else -> null
-        }
-
-        return validationPair
-    }
-
-    private fun validateEndWorkTime(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
-        val validationPair = when {
-            config.endWorkTime == null -> {
-                val message = context.getString(
-                    R.string.validation_msg_required_field,
-                    context.getString(END_WORK_TIME.labelResId)
-                )
-
-                FieldValidationError(
-                    field = END_WORK_TIME,
-                    validationType = EnumSchedulerConfigValidationTypes.REQUIRED_END_WORK_TIME,
-                    message = message
-                )
-            }
-
-            else -> null
-        }
-
-        return validationPair
-    }
-
-    private fun validateWorkoutPeriod(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
-        if (config.startWorkTime == null || config.endWorkTime == null) return null
-
-        return when {
-            config.startWorkTime!!.isAfter(config.endWorkTime!!) ||
-            config.startWorkTime == config.endWorkTime -> {
-                val message = context.getString(R.string.save_scheduler_config_msg_invalid_workout_period)
-
-                FieldValidationError(
-                    field = null,
-                    validationType = EnumSchedulerConfigValidationTypes.INVALID_WORK_PERIOD,
-                    message = message
-                )
-            }
-
-            else -> null
-        }
-    }
-
-    private fun validateStartBreakTime(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
-        val validationPair = when {
-            config.startBreakTime == null -> {
-                val message = context.getString(
-                    R.string.validation_msg_required_field,
-                    context.getString(START_BREAK_TIME.labelResId)
-                )
-
-                FieldValidationError(
-                    field = START_BREAK_TIME,
-                    validationType = EnumSchedulerConfigValidationTypes.REQUIRED_START_BREAK_TIME,
-                    message = message
-                )
-            }
-
-            else -> null
-        }
-
-        return validationPair
-    }
-
-    private fun validateEndBreakTime(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
-        val validationPair = when {
-            config.endBreakTime == null -> {
-                val message = context.getString(
-                    R.string.validation_msg_required_field,
-                    context.getString(END_BREAK_TIME.labelResId)
-                )
-
-                FieldValidationError(
-                    field = END_BREAK_TIME,
-                    validationType = EnumSchedulerConfigValidationTypes.REQUIRED_END_BREAK_TIME,
-                    message = message
-                )
-            }
-
-            else -> null
-        }
-
-        return validationPair
-    }
-
-    private fun validateBreakPeriod(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
-        if (config.startBreakTime == null || config.endBreakTime == null) return null
-
-        return when {
-            config.startBreakTime!!.isAfter(config.endBreakTime!!) ||
-            config.startBreakTime == config.endBreakTime -> {
-                val message = context.getString(R.string.save_scheduler_config_msg_invalid_break_period)
-
-                FieldValidationError(
-                    field = null,
-                    validationType = EnumSchedulerConfigValidationTypes.INVALID_BREAK_PERIOD,
                     message = message
                 )
             }

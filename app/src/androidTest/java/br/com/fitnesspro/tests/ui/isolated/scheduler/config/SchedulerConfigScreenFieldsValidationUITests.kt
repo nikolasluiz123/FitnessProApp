@@ -9,22 +9,14 @@ import androidx.navigation.NavHostController
 import br.com.fitnesspro.AndroidTestsActivity
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.END_BREAK_TIME
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.END_WORK_TIME
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MAX_SCHEDULE_DENSITY
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MIN_SCHEDULE_DENSITY
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.START_BREAK_TIME
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.START_WORK_TIME
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreenRoute
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_END_BREAK_TIME_FIELD
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_END_WORK_TIME_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_FAB_SAVE
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_LABEL_GENERAL
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_MAX_DENSITY_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_MIN_DENSITY_FIELD
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_START_BREAK_TIME_FIELD
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_START_WORK_TIME_FIELD
 import br.com.fitnesspro.tests.ui.common.BaseAuthenticatedUITest
 import br.com.fitnesspro.tests.ui.extensions.assertRequiredTextFieldValidation
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -95,86 +87,6 @@ class SchedulerConfigScreenFieldsValidationUITests : BaseAuthenticatedUITest() {
                 message = activity.getString(
                     R.string.validation_msg_required_field,
                     activity.getString(MAX_SCHEDULE_DENSITY.labelResId)
-                )
-            )
-        }
-    }
-
-    @Test
-    fun should_show_error_when_start_work_time_is_empty_and_save_is_clicked() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            waitUntil(5000) {
-                onNodeWithTag(SCHEDULER_CONFIG_SCREEN_LABEL_GENERAL.name).isDisplayed()
-            }
-
-            assertRequiredTextFieldValidation(
-                fieldTag = SCHEDULER_CONFIG_SCREEN_START_WORK_TIME_FIELD,
-                buttonTag = SCHEDULER_CONFIG_SCREEN_FAB_SAVE,
-                message = activity.getString(
-                    R.string.validation_msg_required_field,
-                    activity.getString(START_WORK_TIME.labelResId)
-                )
-            )
-        }
-    }
-
-    @Test
-    fun should_show_error_when_end_work_time_is_empty_and_save_is_clicked() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            waitUntil(5000) {
-                onNodeWithTag(SCHEDULER_CONFIG_SCREEN_LABEL_GENERAL.name).isDisplayed()
-            }
-
-            assertRequiredTextFieldValidation(
-                fieldTag = SCHEDULER_CONFIG_SCREEN_END_WORK_TIME_FIELD,
-                buttonTag = SCHEDULER_CONFIG_SCREEN_FAB_SAVE,
-                message = activity.getString(
-                    R.string.validation_msg_required_field,
-                    activity.getString(END_WORK_TIME.labelResId)
-                )
-            )
-        }
-    }
-
-    @Test
-    fun should_show_error_when_start_break_time_is_empty_and_save_is_clicked() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            waitUntil(5000) {
-                onNodeWithTag(SCHEDULER_CONFIG_SCREEN_LABEL_GENERAL.name).isDisplayed()
-            }
-
-            assertRequiredTextFieldValidation(
-                fieldTag = SCHEDULER_CONFIG_SCREEN_START_BREAK_TIME_FIELD,
-                buttonTag = SCHEDULER_CONFIG_SCREEN_FAB_SAVE,
-                message = activity.getString(
-                    R.string.validation_msg_required_field,
-                    activity.getString(START_BREAK_TIME.labelResId)
-                )
-            )
-        }
-    }
-
-    @Test
-    fun should_show_error_when_end_break_time_is_empty_and_save_is_clicked() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            waitUntil(5000) {
-                onNodeWithTag(SCHEDULER_CONFIG_SCREEN_LABEL_GENERAL.name).isDisplayed()
-            }
-
-            assertRequiredTextFieldValidation(
-                fieldTag = SCHEDULER_CONFIG_SCREEN_END_BREAK_TIME_FIELD,
-                buttonTag = SCHEDULER_CONFIG_SCREEN_FAB_SAVE,
-                message = activity.getString(
-                    R.string.validation_msg_required_field,
-                    activity.getString(END_BREAK_TIME.labelResId)
                 )
             )
         }

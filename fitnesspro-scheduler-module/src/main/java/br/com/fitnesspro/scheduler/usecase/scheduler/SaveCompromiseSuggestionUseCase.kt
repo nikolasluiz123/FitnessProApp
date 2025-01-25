@@ -9,13 +9,8 @@ import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
-import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.END_HOUR_OUT_OF_WORK_TIME_RANGE
-import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.RECURRENT_SCHEDULER_CONFLICT
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.REQUIRED_PROFESSIONAL
-import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.START_HOUR_OUT_OF_WORK_TIME_RANGE
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
-import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.HOUR_END
-import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.HOUR_START
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.PROFESSIONAL
 import br.com.fitnesspro.to.TOScheduler
 import java.time.LocalTime
@@ -72,32 +67,34 @@ class SaveCompromiseSuggestionUseCase(
     private suspend fun validateSuggestionHourStart(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         var validationResult = validateHourStart(scheduler)
 
-        if (validationResult == null) {
-            if (scheduler.professionalPersonId == null) return null
+        // TODO - Ajustar isso com a nova lógica usando as academias cadastradas
 
-            val config = schedulerConfigRepository.getTOSchedulerConfigByPersonId(scheduler.professionalPersonId!!)!!
-            val startWorkTime = config.startWorkTime!!
-            val endWorkTime = config.endWorkTime!!
-
-            validationResult = when {
-                scheduler.start!! < startWorkTime || scheduler.start!! > endWorkTime -> {
-                    val message = context.getString(
-                        R.string.save_compromise_start_hour_out_of_work_time_range,
-                        context.getString(HOUR_START.labelResId),
-                        startWorkTime.format(EnumDateTimePatterns.TIME),
-                        endWorkTime.format(EnumDateTimePatterns.TIME)
-                    )
-
-                    FieldValidationError(
-                        field = HOUR_START,
-                        validationType = START_HOUR_OUT_OF_WORK_TIME_RANGE,
-                        message = message
-                    )
-                }
-
-                else -> null
-            }
-        }
+//        if (validationResult == null) {
+//            if (scheduler.professionalPersonId == null) return null
+//
+//            val config = schedulerConfigRepository.getTOSchedulerConfigByPersonId(scheduler.professionalPersonId!!)!!
+//            val startWorkTime = config.startWorkTime!!
+//            val endWorkTime = config.endWorkTime!!
+//
+//            validationResult = when {
+//                scheduler.start!! < startWorkTime || scheduler.start!! > endWorkTime -> {
+//                    val message = context.getString(
+//                        R.string.save_compromise_start_hour_out_of_work_time_range,
+//                        context.getString(HOUR_START.labelResId),
+//                        startWorkTime.format(EnumDateTimePatterns.TIME),
+//                        endWorkTime.format(EnumDateTimePatterns.TIME)
+//                    )
+//
+//                    FieldValidationError(
+//                        field = HOUR_START,
+//                        validationType = START_HOUR_OUT_OF_WORK_TIME_RANGE,
+//                        message = message
+//                    )
+//                }
+//
+//                else -> null
+//            }
+//        }
 
         return validationResult
     }
@@ -105,32 +102,34 @@ class SaveCompromiseSuggestionUseCase(
     private suspend fun validateSuggestionHourEnd(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         var validationResult = validateHourEnd(scheduler)
 
-        if (validationResult == null) {
-            if (scheduler.professionalPersonId == null) return null
+        // TODO - Ajustar isso com a nova lógica usando as academias cadastradas
 
-            val config = schedulerConfigRepository.getTOSchedulerConfigByPersonId(scheduler.professionalPersonId!!)!!
-            val startWorkTime = config.startWorkTime!!
-            val endWorkTime = config.endWorkTime!!
-
-            validationResult = when {
-                scheduler.end!! < startWorkTime || scheduler.end!! > endWorkTime -> {
-                    val message = context.getString(
-                        R.string.save_compromise_start_hour_out_of_work_time_range,
-                        context.getString(HOUR_END.labelResId),
-                        startWorkTime.format(EnumDateTimePatterns.TIME),
-                        endWorkTime.format(EnumDateTimePatterns.TIME)
-                    )
-
-                    FieldValidationError(
-                        field = HOUR_END,
-                        validationType = END_HOUR_OUT_OF_WORK_TIME_RANGE,
-                        message = message
-                    )
-                }
-
-                else -> null
-            }
-        }
+//        if (validationResult == null) {
+//            if (scheduler.professionalPersonId == null) return null
+//
+//            val config = schedulerConfigRepository.getTOSchedulerConfigByPersonId(scheduler.professionalPersonId!!)!!
+//            val startWorkTime = config.startWorkTime!!
+//            val endWorkTime = config.endWorkTime!!
+//
+//            validationResult = when {
+//                scheduler.end!! < startWorkTime || scheduler.end!! > endWorkTime -> {
+//                    val message = context.getString(
+//                        R.string.save_compromise_start_hour_out_of_work_time_range,
+//                        context.getString(HOUR_END.labelResId),
+//                        startWorkTime.format(EnumDateTimePatterns.TIME),
+//                        endWorkTime.format(EnumDateTimePatterns.TIME)
+//                    )
+//
+//                    FieldValidationError(
+//                        field = HOUR_END,
+//                        validationType = END_HOUR_OUT_OF_WORK_TIME_RANGE,
+//                        message = message
+//                    )
+//                }
+//
+//                else -> null
+//            }
+//        }
 
         return validationResult
     }
@@ -146,54 +145,58 @@ class SaveCompromiseSuggestionUseCase(
 
         val professional = userRepository.getTOPersonById(toScheduler.professionalPersonId!!)
 
-        val hasConflict = schedulerRepository.getHasSchedulerConflict(
-            schedulerId = toScheduler.id,
-            personId = toScheduler.professionalPersonId!!,
-            userType = professional.toUser?.type!!,
-            scheduledDate = toScheduler.scheduledDate!!,
-            start = toScheduler.start!!,
-            end = toScheduler.end!!
-        )
+//        val hasConflict = schedulerRepository.getHasSchedulerConflict(
+//            schedulerId = toScheduler.id,
+//            personId = toScheduler.professionalPersonId!!,
+//            userType = professional.toUser?.type!!,
+//            scheduledDate = toScheduler.scheduledDate!!,
+//            start = toScheduler.start!!,
+//            end = toScheduler.end!!
+//        )
 
         return when {
-            hasConflict -> {
-                val schedulerConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(professional.id!!)!!
-                val schedulers = schedulerRepository.getSchedulerList(
-                    scheduledDate = toScheduler.scheduledDate,
-                    toPerson = professional
-                )
-                val availableSlots = getProfessionalAvailableSlots(
-                    workHours = TimeSlot(
-                        schedulerConfig.startWorkTime!!,
-                        schedulerConfig.endWorkTime!!
-                    ),
-                    lunchBreak = TimeSlot(
-                        schedulerConfig.startBreakTime!!,
-                        schedulerConfig.endBreakTime!!
-                    ),
-                    appointments = schedulers.map { TimeSlot(it.start!!, it.end!!) }
-                ).joinToString(separator = "\n") { it.format(context) }
+            true -> {
+                // TODO - Ajustar isso com a nova lógica usando as academias cadastradas
 
-                val message = if (availableSlots.isEmpty()) {
-                    context.getString(
-                        R.string.save_compromise_scheduler_conflict,
-                        professional.name!!,
-                        toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE)
-                    )
-                } else {
-                    context.getString(
-                        R.string.save_compromise_scheduler_conflict_with_suggestions,
-                        professional.name!!,
-                        toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
-                        availableSlots
-                    )
-                }
+//                val schedulerConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(professional.id!!)!!
+//                val schedulers = schedulerRepository.getSchedulerList(
+//                    scheduledDate = toScheduler.scheduledDate,
+//                    toPerson = professional
+//                )
+//                val availableSlots = getProfessionalAvailableSlots(
+//                    workHours = TimeSlot(
+//                        schedulerConfig.startWorkTime!!,
+//                        schedulerConfig.endWorkTime!!
+//                    ),
+//                    lunchBreak = TimeSlot(
+//                        schedulerConfig.startBreakTime!!,
+//                        schedulerConfig.endBreakTime!!
+//                    ),
+//                    appointments = schedulers.map { TimeSlot(it.start!!, it.end!!) }
+//                ).joinToString(separator = "\n") { it.format(context) }
+//
+//                val message = if (availableSlots.isEmpty()) {
+//                    context.getString(
+//                        R.string.save_compromise_scheduler_conflict,
+//                        professional.name!!,
+//                        toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE)
+//                    )
+//                } else {
+//                    context.getString(
+//                        R.string.save_compromise_scheduler_conflict_with_suggestions,
+//                        professional.name!!,
+//                        toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
+//                        availableSlots
+//                    )
+//                }
+//
+//                FieldValidationError(
+//                    field = null,
+//                    validationType = RECURRENT_SCHEDULER_CONFLICT,
+//                    message = message
+//                )
 
-                FieldValidationError(
-                    field = null,
-                    validationType = RECURRENT_SCHEDULER_CONFLICT,
-                    message = message
-                )
+                null
             }
 
             else -> null

@@ -11,26 +11,15 @@ import br.com.fitnesspro.AndroidTestsActivity
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.compose.components.buttons.enums.EnumSwitchButtonTestTags.HORIZONTAL_LABELED_SWITCH_BUTTON_LABEL
 import br.com.fitnesspro.compose.components.buttons.enums.EnumSwitchButtonTestTags.SWITCH_BUTTON
-import br.com.fitnesspro.compose.components.dialog.enums.EnumTimePickerInputTestTags.TIME_PICKER_DIALOG
-import br.com.fitnesspro.compose.components.dialog.enums.EnumTimePickerInputTestTags.TIME_PICKER_DIALOG_BUTTON_CONFIRM
-import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_TRAILING_ICON
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreenRoute
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_END_BREAK_TIME_FIELD
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_END_WORK_TIME_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_MAX_DENSITY_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_MIN_DENSITY_FIELD
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_START_BREAK_TIME_FIELD
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_START_WORK_TIME_FIELD
 import br.com.fitnesspro.tests.ui.common.BaseAuthenticatedUITest
-import br.com.fitnesspro.tests.ui.extensions.assertDisplayed
 import br.com.fitnesspro.tests.ui.extensions.assertOnlyDigitsFieldValidation
 import br.com.fitnesspro.tests.ui.extensions.assertPositionWithText
-import br.com.fitnesspro.tests.ui.extensions.assertWithText
 import br.com.fitnesspro.tests.ui.extensions.assertWriteTextField
-import br.com.fitnesspro.tests.ui.extensions.onClick
-import br.com.fitnesspro.tests.ui.extensions.onClickWithParent
 import br.com.fitnesspro.tests.ui.extensions.onPosition
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -38,8 +27,6 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 @HiltAndroidTest
 class SchedulerConfigScreenWriteFieldsUITests : BaseAuthenticatedUITest() {
@@ -118,107 +105,6 @@ class SchedulerConfigScreenWriteFieldsUITests : BaseAuthenticatedUITest() {
     }
 
     @Test
-    fun should_show_text_on_start_work_time_field_when_write() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            assertWriteTextField(
-                value = "1000",
-                testTag = SCHEDULER_CONFIG_SCREEN_START_WORK_TIME_FIELD,
-                assertValue = "10:00"
-            )
-        }
-    }
-
-    @Test
-    fun should_show_text_on_start_work_time_field_when_confirm_time_in_dialog() = runTest(timeout = 30.toDuration(
-        DurationUnit.SECONDS)) {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            onClickWithParent(OUTLINED_TEXT_FIELD_TRAILING_ICON, SCHEDULER_CONFIG_SCREEN_START_WORK_TIME_FIELD)
-            assertDisplayed(TIME_PICKER_DIALOG)
-            onClick(TIME_PICKER_DIALOG_BUTTON_CONFIRM)
-            assertWithText("08:00", SCHEDULER_CONFIG_SCREEN_START_WORK_TIME_FIELD)
-        }
-    }
-
-    @Test
-    fun should_show_text_on_end_work_time_field_when_write() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            assertWriteTextField(
-                value = "1200",
-                testTag = SCHEDULER_CONFIG_SCREEN_END_WORK_TIME_FIELD,
-                assertValue = "12:00"
-            )
-        }
-    }
-
-    @Test
-    fun should_show_text_on_end_work_time_field_when_confirm_time_in_dialog() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            onClickWithParent(OUTLINED_TEXT_FIELD_TRAILING_ICON, SCHEDULER_CONFIG_SCREEN_END_WORK_TIME_FIELD)
-            assertDisplayed(TIME_PICKER_DIALOG)
-            onClick(TIME_PICKER_DIALOG_BUTTON_CONFIRM)
-            assertWithText("17:30", SCHEDULER_CONFIG_SCREEN_END_WORK_TIME_FIELD)
-        }
-    }
-
-    @Test
-    fun should_show_text_on_start_break_time_field_when_write() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            assertWriteTextField(
-                value = "1100",
-                testTag = SCHEDULER_CONFIG_SCREEN_START_BREAK_TIME_FIELD,
-                assertValue = "11:00"
-            )
-        }
-    }
-
-    @Test
-    fun should_show_text_on_start_break_time_field_when_confirm_time_in_dialog() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            onClickWithParent(OUTLINED_TEXT_FIELD_TRAILING_ICON, SCHEDULER_CONFIG_SCREEN_START_BREAK_TIME_FIELD)
-            assertDisplayed(TIME_PICKER_DIALOG)
-            onClick(TIME_PICKER_DIALOG_BUTTON_CONFIRM)
-            assertWithText("12:00", SCHEDULER_CONFIG_SCREEN_START_BREAK_TIME_FIELD)
-        }
-    }
-
-    @Test
-    fun should_show_text_on_end_break_time_field_when_write() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            assertWriteTextField(
-                value = "1300",
-                testTag = SCHEDULER_CONFIG_SCREEN_END_BREAK_TIME_FIELD,
-                assertValue = "13:00"
-            )
-        }
-    }
-
-    @Test
-    fun should_show_text_on_end_break_time_field_when_confirm_time_in_dialog() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            onClickWithParent(OUTLINED_TEXT_FIELD_TRAILING_ICON, SCHEDULER_CONFIG_SCREEN_END_BREAK_TIME_FIELD)
-            assertDisplayed(TIME_PICKER_DIALOG)
-            onClick(TIME_PICKER_DIALOG_BUTTON_CONFIRM)
-            assertWithText("12:00", SCHEDULER_CONFIG_SCREEN_START_BREAK_TIME_FIELD)
-        }
-    }
-
-    @Test
     fun should_permit_only_digits_on_min_density_field_when_write_in_input() = runTest {
         defaultPersonalPreset()
 
@@ -233,42 +119,6 @@ class SchedulerConfigScreenWriteFieldsUITests : BaseAuthenticatedUITest() {
 
         composeTestRule.apply {
             assertOnlyDigitsFieldValidation(SCHEDULER_CONFIG_SCREEN_MAX_DENSITY_FIELD, "aaaa")
-        }
-    }
-
-    @Test
-    fun should_permit_only_digits_on_start_work_time_field_when_write_in_input() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            assertOnlyDigitsFieldValidation(SCHEDULER_CONFIG_SCREEN_START_WORK_TIME_FIELD, "aaaa")
-        }
-    }
-
-    @Test
-    fun should_permit_only_digits_on_end_work_time_field_when_write_in_input() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            assertOnlyDigitsFieldValidation(SCHEDULER_CONFIG_SCREEN_END_WORK_TIME_FIELD, "aaaa")
-        }
-    }
-
-    @Test
-    fun should_permit_only_digits_on_start_break_time_field_when_write_in_input() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            assertOnlyDigitsFieldValidation(SCHEDULER_CONFIG_SCREEN_START_BREAK_TIME_FIELD, "aaaa")
-        }
-    }
-
-    @Test
-    fun should_permit_only_digits_on_end_break_time_field_when_write_in_input() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            assertOnlyDigitsFieldValidation(SCHEDULER_CONFIG_SCREEN_END_BREAK_TIME_FIELD, "aaaa")
         }
     }
 

@@ -8,18 +8,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import br.com.fitnesspro.AndroidTestsActivity
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
-import br.com.fitnesspro.compose.components.dialog.enums.EnumTimePickerInputTestTags.TIME_PICKER_DIALOG
-import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_TRAILING_ICON
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreenRoute
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_FAB_SAVE
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_START_WORK_TIME_FIELD
 import br.com.fitnesspro.tests.ui.common.BaseAuthenticatedUITest
-import br.com.fitnesspro.tests.ui.extensions.assertDisplayed
 import br.com.fitnesspro.tests.ui.extensions.assertDisplayedWithText
 import br.com.fitnesspro.tests.ui.extensions.onClick
-import br.com.fitnesspro.tests.ui.extensions.onClickWithParent
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import jakarta.inject.Inject
@@ -51,16 +46,6 @@ class SchedulerConfigScreenActionsUITests : BaseAuthenticatedUITest() {
         schedulerConfigScreen(
             onBackClick = navController::popBackStack
         )
-    }
-
-    @Test
-    fun should_show_dialog_start_work_time_when_click_on_start_work_time_field() = runTest {
-        defaultPersonalPreset()
-
-        composeTestRule.apply {
-            onClickWithParent(OUTLINED_TEXT_FIELD_TRAILING_ICON, SCHEDULER_CONFIG_SCREEN_START_WORK_TIME_FIELD)
-            assertDisplayed(TIME_PICKER_DIALOG)
-        }
     }
 
     @Test

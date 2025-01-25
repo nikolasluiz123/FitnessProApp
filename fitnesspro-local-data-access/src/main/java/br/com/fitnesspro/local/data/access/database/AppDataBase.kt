@@ -2,6 +2,7 @@ package br.com.fitnesspro.local.data.access.database
 
 import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.DeleteColumn
 import androidx.room.RenameColumn
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -38,7 +39,7 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 
 @Database(
-    version = 8,
+    version = 9,
     entities = [
         User::class, Person::class, Academy::class, PersonAcademyTime::class, PhysicEvaluation::class,
         IngredientPreDefinition::class, MealOptionPreDefinition::class, Diet::class, DayWeekDiet::class, Meal::class,
@@ -55,7 +56,8 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
         AutoMigration(from = 4, to = 5),
         AutoMigration(from = 5, to = 6),
         AutoMigration(from = 6, to = 7),
-        AutoMigration(from = 7, to = 8)
+        AutoMigration(from = 7, to = 8),
+        AutoMigration(from = 8, to = 9, spec = AutoMigrationSpec8To9::class)
     ]
 )
 @TypeConverters(RoomTypeConverters::class)
@@ -76,3 +78,9 @@ abstract class AppDatabase : RoomDatabase() {
 @RenameColumn(tableName = "person_academy_time", fromColumnName = "date_time_start", toColumnName = "time_start")
 @RenameColumn(tableName = "person_academy_time", fromColumnName = "date_time_end", toColumnName = "time_end")
 class AutoMigrationSpec2To3 : AutoMigrationSpec
+
+@DeleteColumn("scheduler_config", "start_work_time")
+@DeleteColumn("scheduler_config", "end_work_time")
+@DeleteColumn("scheduler_config", "start_break_time")
+@DeleteColumn("scheduler_config", "end_break_time")
+class AutoMigrationSpec8To9 : AutoMigrationSpec
