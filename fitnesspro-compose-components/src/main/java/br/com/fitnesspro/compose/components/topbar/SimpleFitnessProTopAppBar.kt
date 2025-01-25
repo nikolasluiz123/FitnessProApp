@@ -7,7 +7,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import br.com.fitnesspro.compose.components.topbar.enums.EnumFitnessProTopAppBarTestTags.FITNESS_PRO_TOP_APP_BAR_SUBTITLE
+import br.com.fitnesspro.compose.components.topbar.enums.EnumFitnessProTopAppBarTestTags.FITNESS_PRO_TOP_APP_BAR_TITLE
 import br.com.fitnesspro.core.theme.TopAppBarSubtitleTextStyle
 import br.com.fitnesspro.core.theme.TopAppBarTitleTextStyle
 
@@ -55,14 +59,16 @@ fun SimpleFitnessProTopAppBar(
                 Text(
                     text = title,
                     style = TopAppBarTitleTextStyle,
-                    color = Color.White
+                    color = Color.White,
+                    modifier = Modifier.testTag(FITNESS_PRO_TOP_APP_BAR_TITLE.name)
                 )
 
                 if (subtitle != null) {
                     Text(
                         text = subtitle,
                         style = TopAppBarSubtitleTextStyle,
-                        color = Color.White
+                        color = Color.White,
+                        modifier = Modifier.testTag(FITNESS_PRO_TOP_APP_BAR_SUBTITLE.name)
                     )
                 }
             }

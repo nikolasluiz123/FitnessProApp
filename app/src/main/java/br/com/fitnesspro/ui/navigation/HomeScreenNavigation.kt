@@ -6,14 +6,15 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import br.com.fitnesspro.ui.screen.home.HomeScreen
-import br.com.fitnesspro.ui.screen.home.OnNavigateToAccountInformation
+import br.com.fitnesspro.ui.screen.home.callbacks.OnNavigateToAccountInformation
 import br.com.fitnesspro.ui.viewmodel.HomeViewModel
 
-internal const val homeScreenRoute = "home"
+const val homeScreenRoute = "home"
 
 fun NavGraphBuilder.homeScreen(
     onNavigateToAccountInformation: OnNavigateToAccountInformation,
-    onNavigateToSchedule: () -> Unit
+    onNavigateToSchedule: () -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
     composable(route = homeScreenRoute) {
         val loginViewModel = hiltViewModel<HomeViewModel>()
@@ -21,7 +22,8 @@ fun NavGraphBuilder.homeScreen(
         HomeScreen(
             viewModel = loginViewModel,
             onNavigateToAccountInformation = onNavigateToAccountInformation,
-            onNavigateToSchedule = onNavigateToSchedule
+            onNavigateToSchedule = onNavigateToSchedule,
+            onNavigateToLogin = onNavigateToLogin
         )
     }
 }

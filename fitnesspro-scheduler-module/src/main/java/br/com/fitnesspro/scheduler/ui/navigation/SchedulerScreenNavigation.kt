@@ -10,7 +10,7 @@ import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnDayClick
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnNavigateToCompromise
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerViewModel
 
-internal const val schedulerScreenRoute = "scheduler"
+const val schedulerScreenRoute = "scheduler"
 
 fun NavGraphBuilder.schedulerScreen(
     onBackClick: () -> Unit,

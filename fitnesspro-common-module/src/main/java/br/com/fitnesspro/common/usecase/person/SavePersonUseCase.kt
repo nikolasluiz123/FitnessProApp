@@ -22,7 +22,7 @@ import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.PHONE
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.security.IPasswordHasher
-import br.com.fitnesspro.core.validation.ValidationError
+import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOPerson
 
 open class SavePersonUseCase(
@@ -32,8 +32,8 @@ open class SavePersonUseCase(
     protected val passwordHasher: IPasswordHasher
 ) {
 
-    suspend fun execute(toPerson: TOPerson): List<ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>> {
-        val validationResults = mutableListOf<ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>>()
+    suspend fun execute(toPerson: TOPerson): List<FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>> {
+        val validationResults = mutableListOf<FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>>()
         validationResults.addAll(validateUser(toPerson))
         validationResults.addAll(validatePerson(toPerson))
 
@@ -47,7 +47,7 @@ open class SavePersonUseCase(
         return validationResults
     }
 
-    protected fun validatePerson(toPerson: TOPerson): MutableList<ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>> {
+    protected fun validatePerson(toPerson: TOPerson): MutableList<FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>> {
         val validationResults = mutableListOf(
             validatePersonName(toPerson),
             validatePersonBirthDate(toPerson),
@@ -57,7 +57,7 @@ open class SavePersonUseCase(
         return validationResults.filterNotNull().toMutableList()
     }
 
-    private fun validatePersonName(toPerson: TOPerson): ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>? {
+    private fun validatePersonName(toPerson: TOPerson): FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>? {
         val name = toPerson.name?.trim()
 
         val validationPair = when {
@@ -67,7 +67,7 @@ open class SavePersonUseCase(
                     context.getString(NAME.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = NAME,
                     message = message,
                     validationType = REQUIRED_PERSON_NAME
@@ -81,7 +81,7 @@ open class SavePersonUseCase(
                     NAME.maxLength
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = NAME,
                     message = message,
                     validationType = MAX_LENGTH_PERSON_NAME
@@ -98,7 +98,7 @@ open class SavePersonUseCase(
         return validationPair
     }
 
-    private fun validatePersonBirthDate(toPerson: TOPerson): ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>? {
+    private fun validatePersonBirthDate(toPerson: TOPerson): FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>? {
         val birthDate = toPerson.birthDate ?: return null
 
         val validationPair = when {
@@ -108,7 +108,7 @@ open class SavePersonUseCase(
                     context.getString(BIRTH_DATE.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = BIRTH_DATE,
                     message = message,
                     validationType = PERSON_BIRTH_DATE_FUTURE
@@ -121,7 +121,7 @@ open class SavePersonUseCase(
         return validationPair
     }
 
-    private fun validatePersonPhone(toPerson: TOPerson): ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>? {
+    private fun validatePersonPhone(toPerson: TOPerson): FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>? {
         val phone = toPerson.phone?.trim() ?: return null
 
         val validationPair = when {
@@ -132,7 +132,7 @@ open class SavePersonUseCase(
                     PHONE.maxLength
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = PHONE,
                     message = message,
                     validationType = MAX_LENGTH_PERSON_PHONE
@@ -149,7 +149,7 @@ open class SavePersonUseCase(
         return validationPair
     }
 
-    protected suspend fun validateUser(toPerson: TOPerson): MutableList<ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>> {
+    protected suspend fun validateUser(toPerson: TOPerson): MutableList<FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>> {
         val validationResults = mutableListOf(
             validateUserEmail(toPerson),
             validateUserPassword(toPerson)
@@ -158,7 +158,7 @@ open class SavePersonUseCase(
         return validationResults.filterNotNull().toMutableList()
     }
 
-    private suspend fun validateUserEmail(toPerson: TOPerson): ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>? {
+    private suspend fun validateUserEmail(toPerson: TOPerson): FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>? {
         val email = toPerson.toUser?.email?.trim()
 
         val validationPair = when {
@@ -168,7 +168,7 @@ open class SavePersonUseCase(
                     context.getString(EMAIL.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = EMAIL,
                     message = message,
                     validationType = REQUIRED_USER_EMAIL
@@ -182,7 +182,7 @@ open class SavePersonUseCase(
                     EMAIL.maxLength
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = EMAIL,
                     message = message,
                     validationType = MAX_LENGTH_USER_EMAIL
@@ -195,7 +195,7 @@ open class SavePersonUseCase(
                     context.getString(EMAIL.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = EMAIL,
                     message = message,
                     validationType = INVALID_USER_EMAIL
@@ -204,7 +204,7 @@ open class SavePersonUseCase(
 
             userRepository.hasUserWithEmail(email, toPerson.toUser?.id) -> {
                 val message = context.getString(R.string.validation_msg_email_in_use)
-                ValidationError(
+                FieldValidationError(
                     field = EMAIL,
                     message = message,
                     validationType = USER_EMAIL_IN_USE
@@ -221,7 +221,7 @@ open class SavePersonUseCase(
         return validationPair
     }
 
-    private fun validateUserPassword(toPerson: TOPerson): ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>? {
+    private fun validateUserPassword(toPerson: TOPerson): FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>? {
         val password = toPerson.toUser?.password?.trim()
 
         val validationPair = when {
@@ -231,7 +231,7 @@ open class SavePersonUseCase(
                     context.getString(PASSWORD.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = PASSWORD,
                     message = message,
                     validationType = REQUIRED_USER_PASSWORD
@@ -245,7 +245,7 @@ open class SavePersonUseCase(
                     PASSWORD.maxLength
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = PASSWORD,
                     message = message,
                     validationType = MAX_LENGTH_USER_PASSWORD

@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.SchedulerConfigScreen
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerConfigViewModel
 
-internal const val schedulerConfigScreenRoute = "schedulerConfig"
+const val schedulerConfigScreenRoute = "schedulerConfig"
 
 
 fun NavGraphBuilder.schedulerConfigScreen(

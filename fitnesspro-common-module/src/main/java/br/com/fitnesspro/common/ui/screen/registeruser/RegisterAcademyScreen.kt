@@ -22,6 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,7 +30,15 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnInactivateAcademyClick
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnSaveAcademyClick
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademyTestTags.REGISTER_ACADEMY_ACTION_BUTTON_DELETE
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademyTestTags.REGISTER_ACADEMY_DIALOG_ACADEMIES_LIST_ITEM
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademyTestTags.REGISTER_ACADEMY_SCREEN_FAB_SAVE
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademyTestTags.REGISTER_ACADEMY_SCREEN_FIELD_ACADEMY
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademyTestTags.REGISTER_ACADEMY_SCREEN_FIELD_DAY_WEEK
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademyTestTags.REGISTER_ACADEMY_SCREEN_FIELD_END
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademyTestTags.REGISTER_ACADEMY_SCREEN_FIELD_START
 import br.com.fitnesspro.common.ui.state.RegisterAcademyUIState
 import br.com.fitnesspro.common.ui.viewmodel.RegisterAcademyViewModel
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
@@ -57,7 +66,8 @@ fun RegisterAcademyScreen(
     RegisterAcademyScreen(
         state = state,
         onBackClick = onBackClick,
-        onSaveAcademyClick = viewModel::saveAcademy
+        onSaveAcademyClick = viewModel::saveAcademy,
+        onInactivateAcademyClick = viewModel::inactivateAcademy
     )
 }
 
@@ -66,7 +76,8 @@ fun RegisterAcademyScreen(
 fun RegisterAcademyScreen(
     state: RegisterAcademyUIState = RegisterAcademyUIState(),
     onBackClick: () -> Unit = { },
-    onSaveAcademyClick: OnSaveAcademyClick? = null
+    onSaveAcademyClick: OnSaveAcademyClick? = null,
+    onInactivateAcademyClick: OnInactivateAcademyClick? = null
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -85,10 +96,11 @@ fun RegisterAcademyScreen(
             FitnessProBottomAppBar(
                 floatingActionButton = {
                     FloatingActionButtonSave(
+                        modifier = Modifier.testTag(REGISTER_ACADEMY_SCREEN_FAB_SAVE.name),
                         onClick = {
                             onSaveAcademyClick?.onExecute(
                                 onSaved = {
-                                    showSuccessMessage(coroutineScope, snackbarHostState, context)
+                                    showSaveSuccessMessage(coroutineScope, snackbarHostState, context)
                                 }
                             )
                         }
@@ -96,10 +108,13 @@ fun RegisterAcademyScreen(
                 },
                 actions = {
                     IconButtonDelete(
+                        modifier = Modifier.testTag(REGISTER_ACADEMY_ACTION_BUTTON_DELETE.name),
                         onClick = {
-
+                            onInactivateAcademyClick?.onExecute {
+                                showInactivatedSuccessMessage(coroutineScope, snackbarHostState, context)
+                            }
                         },
-                        enabled = state.toPersonAcademyTime.id != null
+                        enabled = state.isEnabledInactivationButton
                     )
                 }
             )
@@ -137,7 +152,9 @@ fun RegisterAcademyScreen(
                         onItemClick = state.academy.onDataListItemClick
                     )
                 },
-                modifier = Modifier.constrainAs(gymRef) {
+                modifier = Modifier
+                    .testTag(REGISTER_ACADEMY_SCREEN_FIELD_ACADEMY.name)
+                    .constrainAs(gymRef) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
@@ -147,7 +164,9 @@ fun RegisterAcademyScreen(
             )
 
             DefaultExposedDropdownMenu(
-                modifier = Modifier.constrainAs(dayWeekRef) {
+                modifier = Modifier
+                    .testTag(REGISTER_ACADEMY_SCREEN_FIELD_DAY_WEEK.name)
+                    .constrainAs(dayWeekRef) {
                     start.linkTo(parent.start)
                     top.linkTo(gymRef.bottom, margin = 8.dp)
                     end.linkTo(parent.end)
@@ -164,6 +183,7 @@ fun RegisterAcademyScreen(
                 fieldLabel = stringResource(R.string.register_user_screen_label_start),
                 timePickerTitle = stringResource(R.string.register_academy_label_start),
                 modifier = Modifier
+                    .testTag(REGISTER_ACADEMY_SCREEN_FIELD_START.name)
                     .constrainAs(startRef) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
@@ -177,7 +197,9 @@ fun RegisterAcademyScreen(
                 field = state.end,
                 fieldLabel = stringResource(R.string.register_user_screen_label_end),
                 timePickerTitle = stringResource(R.string.register_academy_label_end),
-                modifier = Modifier.constrainAs(endRef) {
+                modifier = Modifier
+                    .testTag(REGISTER_ACADEMY_SCREEN_FIELD_END.name)
+                    .constrainAs(endRef) {
                     top.linkTo(startRef.bottom, margin = 8.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
@@ -189,10 +211,23 @@ fun RegisterAcademyScreen(
     }
 }
 
+fun showInactivatedSuccessMessage(
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+    context: Context
+) {
+    coroutineScope.launch {
+        snackbarHostState.showSnackbar(
+            message = context.getString(R.string.register_academy_screen_inactivate_success_message)
+        )
+    }
+}
+
 @Composable
 fun DialogListItem(academy: AcademyTuple, onItemClick: (AcademyTuple) -> Unit) {
     Row(
         Modifier
+            .testTag(REGISTER_ACADEMY_DIALOG_ACADEMIES_LIST_ITEM.name)
             .fillMaxWidth()
             .clickable { onItemClick(academy) },
         verticalAlignment = Alignment.CenterVertically
@@ -207,14 +242,14 @@ fun DialogListItem(academy: AcademyTuple, onItemClick: (AcademyTuple) -> Unit) {
     HorizontalDivider()
 }
 
-private fun showSuccessMessage(
+private fun showSaveSuccessMessage(
     coroutineScope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     context: Context
 ) {
     coroutineScope.launch {
         snackbarHostState.showSnackbar(
-            message = context.getString(R.string.register_academy_screen_success_message)
+            message = context.getString(R.string.register_academy_screen_success_save_message)
         )
     }
 }

@@ -1,7 +1,7 @@
 [versions]
 splash = "1.0.1"
 
-dataStore = "1.1.1"
+dataStore = "1.1.2"
 
 retrofit = "2.11.0"
 serviceLogs = "4.12.0"
@@ -26,8 +26,8 @@ junitVersion = "1.2.1"
 testCoreVersion = "1.6.1"
 testRunnerVersion = "1.6.2"
 lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.9.3"
-composeBom = "2024.12.01"
+activityCompose = "1.10.0"
+composeBom = "2025.01.00"
 appcompat = "1.7.0"
 material = "1.12.0"
 material3 = "1.3.1"
@@ -38,6 +38,8 @@ paging = "3.3.5"
 kotestPluginVersion = "5.0.2"
 kotestVersion = "5.9.1"
 mockkVersion = "1.13.16"
+navigationTestVersion = "2.8.5"
+espressoVersion = "3.6.1"
 
 [libraries]
 splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
@@ -57,7 +59,7 @@ google-id = { group = "com.google.android.libraries.identity.googleid", name = "
 constraint-layout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayoutCompose" }
 
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltVersion" } # troquei de hilt-compiler para hilt-android-compiler
+hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltVersion" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hiltVersion" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
@@ -67,6 +69,8 @@ junit-jupter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engin
 androidx-test-core = { group = "androidx.test", name = "core-ktx", version.ref = "testCoreVersion" }
 androidx-junit = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitVersion" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunnerVersion" }
+androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationTestVersion" }
+androidx-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoVersion" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4Version" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }

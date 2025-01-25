@@ -12,7 +12,7 @@ import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerCo
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MIN_SCHEDULE_DENSITY
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.START_BREAK_TIME
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.START_WORK_TIME
-import br.com.fitnesspro.core.validation.ValidationError
+import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOSchedulerConfig
 
@@ -25,7 +25,7 @@ class SaveSchedulerConfigUseCase(
     suspend fun saveConfig(
         personId: String,
         toSchedulerConfig: TOSchedulerConfig? = null
-    ): MutableList<ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
+    ): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
         val config = toSchedulerConfig ?: TOSchedulerConfig(personId = personId)
 
         val validationResults = validateSchedulerConfig(config)
@@ -37,7 +37,7 @@ class SaveSchedulerConfigUseCase(
         return validationResults
     }
 
-    private suspend fun validateSchedulerConfig(config: TOSchedulerConfig): MutableList<ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
+    private suspend fun validateSchedulerConfig(config: TOSchedulerConfig): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
         val userType = userRepository.getTOPersonById(config.personId!!).toUser?.type!!
         if (userType == EnumUserType.ACADEMY_MEMBER) return mutableListOf()
 
@@ -56,7 +56,7 @@ class SaveSchedulerConfigUseCase(
         return validationResults.filterNotNull().toMutableList()
     }
 
-    private fun validateMinScheduleDensity(config: TOSchedulerConfig): ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
+    private fun validateMinScheduleDensity(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
         val validationPair = when {
             config.minScheduleDensity == null -> {
                 val message = context.getString(
@@ -64,7 +64,7 @@ class SaveSchedulerConfigUseCase(
                     context.getString(MIN_SCHEDULE_DENSITY.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = MIN_SCHEDULE_DENSITY,
                     validationType = EnumSchedulerConfigValidationTypes.REQUIRED_MIN_SCHEDULE_DENSITY,
                     message = message
@@ -77,7 +77,7 @@ class SaveSchedulerConfigUseCase(
                     context.getString(MIN_SCHEDULE_DENSITY.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = MIN_SCHEDULE_DENSITY,
                     validationType = EnumSchedulerConfigValidationTypes.INVALID_MIN_SCHEDULE_DENSITY,
                     message = message
@@ -90,7 +90,7 @@ class SaveSchedulerConfigUseCase(
         return validationPair
     }
 
-    private fun validateMaxScheduleDensity(config: TOSchedulerConfig): ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
+    private fun validateMaxScheduleDensity(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
         val validationPair = when {
             config.maxScheduleDensity == null -> {
                 val message = context.getString(
@@ -98,7 +98,7 @@ class SaveSchedulerConfigUseCase(
                     context.getString(MAX_SCHEDULE_DENSITY.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = MAX_SCHEDULE_DENSITY,
                     validationType = EnumSchedulerConfigValidationTypes.REQUIRED_MAX_SCHEDULE_DENSITY,
                     message = message
@@ -111,7 +111,7 @@ class SaveSchedulerConfigUseCase(
                     context.getString(MAX_SCHEDULE_DENSITY.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = MAX_SCHEDULE_DENSITY,
                     validationType = EnumSchedulerConfigValidationTypes.INVALID_MAX_SCHEDULE_DENSITY,
                     message = message
@@ -124,14 +124,14 @@ class SaveSchedulerConfigUseCase(
         return validationPair
     }
 
-    private fun validateDensityRange(config: TOSchedulerConfig): ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
+    private fun validateDensityRange(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
         if (config.minScheduleDensity == null || config.maxScheduleDensity == null) return null
 
         return when {
             config.minScheduleDensity!! > config.maxScheduleDensity!! ||
             config.minScheduleDensity!! == config.maxScheduleDensity!! -> {
                 val message = context.getString(R.string.save_scheduler_config_msg_invalid_density_range)
-                ValidationError(
+                FieldValidationError(
                     field = null,
                     validationType = EnumSchedulerConfigValidationTypes.INVALID_DENSITY_RANGE,
                     message = message
@@ -142,7 +142,7 @@ class SaveSchedulerConfigUseCase(
         }
     }
 
-    private fun validateStartWorkTime(config: TOSchedulerConfig): ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
+    private fun validateStartWorkTime(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
         val validationPair = when {
             config.startWorkTime == null -> {
                 val message = context.getString(
@@ -150,7 +150,7 @@ class SaveSchedulerConfigUseCase(
                     context.getString(START_WORK_TIME.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = START_WORK_TIME,
                     validationType = EnumSchedulerConfigValidationTypes.REQUIRED_START_WORK_TIME,
                     message = message
@@ -163,7 +163,7 @@ class SaveSchedulerConfigUseCase(
         return validationPair
     }
 
-    private fun validateEndWorkTime(config: TOSchedulerConfig): ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
+    private fun validateEndWorkTime(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
         val validationPair = when {
             config.endWorkTime == null -> {
                 val message = context.getString(
@@ -171,7 +171,7 @@ class SaveSchedulerConfigUseCase(
                     context.getString(END_WORK_TIME.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = END_WORK_TIME,
                     validationType = EnumSchedulerConfigValidationTypes.REQUIRED_END_WORK_TIME,
                     message = message
@@ -184,7 +184,7 @@ class SaveSchedulerConfigUseCase(
         return validationPair
     }
 
-    private fun validateWorkoutPeriod(config: TOSchedulerConfig): ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
+    private fun validateWorkoutPeriod(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
         if (config.startWorkTime == null || config.endWorkTime == null) return null
 
         return when {
@@ -192,7 +192,7 @@ class SaveSchedulerConfigUseCase(
             config.startWorkTime == config.endWorkTime -> {
                 val message = context.getString(R.string.save_scheduler_config_msg_invalid_workout_period)
 
-                ValidationError(
+                FieldValidationError(
                     field = null,
                     validationType = EnumSchedulerConfigValidationTypes.INVALID_WORK_PERIOD,
                     message = message
@@ -203,7 +203,7 @@ class SaveSchedulerConfigUseCase(
         }
     }
 
-    private fun validateStartBreakTime(config: TOSchedulerConfig): ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
+    private fun validateStartBreakTime(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
         val validationPair = when {
             config.startBreakTime == null -> {
                 val message = context.getString(
@@ -211,7 +211,7 @@ class SaveSchedulerConfigUseCase(
                     context.getString(START_BREAK_TIME.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = START_BREAK_TIME,
                     validationType = EnumSchedulerConfigValidationTypes.REQUIRED_START_BREAK_TIME,
                     message = message
@@ -224,7 +224,7 @@ class SaveSchedulerConfigUseCase(
         return validationPair
     }
 
-    private fun validateEndBreakTime(config: TOSchedulerConfig): ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
+    private fun validateEndBreakTime(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
         val validationPair = when {
             config.endBreakTime == null -> {
                 val message = context.getString(
@@ -232,7 +232,7 @@ class SaveSchedulerConfigUseCase(
                     context.getString(END_BREAK_TIME.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = END_BREAK_TIME,
                     validationType = EnumSchedulerConfigValidationTypes.REQUIRED_END_BREAK_TIME,
                     message = message
@@ -245,7 +245,7 @@ class SaveSchedulerConfigUseCase(
         return validationPair
     }
 
-    private fun validateBreakPeriod(config: TOSchedulerConfig): ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
+    private fun validateBreakPeriod(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
         if (config.startBreakTime == null || config.endBreakTime == null) return null
 
         return when {
@@ -253,7 +253,7 @@ class SaveSchedulerConfigUseCase(
             config.startBreakTime == config.endBreakTime -> {
                 val message = context.getString(R.string.save_scheduler_config_msg_invalid_break_period)
 
-                ValidationError(
+                FieldValidationError(
                     field = null,
                     validationType = EnumSchedulerConfigValidationTypes.INVALID_BREAK_PERIOD,
                     message = message
@@ -264,7 +264,7 @@ class SaveSchedulerConfigUseCase(
         }
     }
 
-    suspend fun createConfigBatch(personIds: List<String>): List<ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
+    suspend fun createConfigBatch(personIds: List<String>): List<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
         val configs = personIds.map {
             TOSchedulerConfig(personId = it)
         }

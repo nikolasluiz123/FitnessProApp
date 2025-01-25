@@ -5,6 +5,8 @@ import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
+import br.com.fitnesspro.scheduler.usecase.scheduler.ConfirmationSchedulerUseCase
+import br.com.fitnesspro.scheduler.usecase.scheduler.InactivateSchedulerUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseSuggestionUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveRecurrentCompromiseUseCase
@@ -83,6 +85,28 @@ class SingletonSchedulerUseCaseModule {
             uniqueCompromiseUseCase = uniqueCompromiseUseCase,
             recurrentCompromiseUseCase = recurrentCompromiseUseCase,
             suggestionCompromiseUseCase = suggestionCompromiseUseCase,
+        )
+    }
+
+    @Provides
+    fun provideInactivateSchedulerUseCase(
+        @ApplicationContext context: Context,
+        schedulerRepository: SchedulerRepository,
+    ): InactivateSchedulerUseCase {
+        return InactivateSchedulerUseCase(
+            context = context,
+            schedulerRepository = schedulerRepository,
+        )
+    }
+
+    @Provides
+    fun provideConfirmationSchedulerUseCase(
+        @ApplicationContext context: Context,
+        schedulerRepository: SchedulerRepository,
+    ): ConfirmationSchedulerUseCase {
+        return ConfirmationSchedulerUseCase(
+            context = context,
+            schedulerRepository = schedulerRepository,
         )
     }
 }

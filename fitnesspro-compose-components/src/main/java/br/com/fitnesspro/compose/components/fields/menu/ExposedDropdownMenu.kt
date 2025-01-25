@@ -10,9 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonArrowDown
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
+import br.com.fitnesspro.compose.components.fields.enums.EnumDropdownMenuTestTags.DROP_DOWN_MENU_ITEM
+import br.com.fitnesspro.compose.components.fields.enums.EnumDropdownMenuTestTags.DROP_DOWN_MENU_OUTLINED_TEXT_FIELD
+import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_TRAILING_ICON
 import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.ITextField
 
@@ -53,13 +57,16 @@ fun <T> DefaultExposedDropdownMenu(
     ) {
         OutlinedTextFieldValidation(
             modifier = Modifier
+                .testTag(DROP_DOWN_MENU_OUTLINED_TEXT_FIELD.name)
                 .menuAnchor()
                 .fillMaxWidth(),
             field = field,
             label = stringResource(labelResId),
             trailingIcon = {
                 IconButtonArrowDown(
-                    modifier = Modifier.rotate(if (expanded) 180f else 0f),
+                    modifier = Modifier
+                        .testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name)
+                        .rotate(if (expanded) 180f else 0f),
                     onClick = { }
                 )
             },
@@ -75,6 +82,7 @@ fun <T> DefaultExposedDropdownMenu(
         ) {
             items.forEach { item ->
                 DropdownMenuItem(
+                    modifier = Modifier.testTag(DROP_DOWN_MENU_ITEM.name),
                     text = { Text(text = item.label) },
                     onClick = {
                         items.selectValue(item.value)

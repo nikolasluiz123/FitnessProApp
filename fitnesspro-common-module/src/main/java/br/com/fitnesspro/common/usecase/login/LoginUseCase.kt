@@ -6,13 +6,14 @@ import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.login.EnumValidatedLoginFields.EMAIL
 import br.com.fitnesspro.common.usecase.login.EnumValidatedLoginFields.PASSWORD
 import br.com.fitnesspro.core.security.HashHelper
+import br.com.fitnesspro.core.validation.FieldValidationError
 
 class LoginUseCase(
     private val context: Context,
     private val userRepository: UserRepository,
 ) {
 
-    suspend fun execute(email: String?, password: String?): List<Pair<EnumValidatedLoginFields?, String>> {
+    suspend fun execute(email: String?, password: String?): List<FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>> {
         val validationsResults = mutableListOf(
             validateEmail(email),
             validatePassword(password),
@@ -27,30 +28,38 @@ class LoginUseCase(
         return validationsResults
     }
 
-    private fun validatePassword(password: String?): Pair<EnumValidatedLoginFields, String>? {
+    private fun validatePassword(password: String?): FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>? {
         return when {
             password?.trim().isNullOrEmpty() -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
+                    R.string.validation_msg_required_field,
                     context.getString(PASSWORD.labelResId)
                 )
 
-                Pair(PASSWORD, message)
+                FieldValidationError(
+                    field = PASSWORD,
+                    message = message,
+                    validationType = EnumLoginValidationTypes.REQUIRED_PASSWORD
+                )
             }
 
             else -> null
         }
     }
 
-    private fun validateEmail(email: String?): Pair<EnumValidatedLoginFields, String>? {
+    private fun validateEmail(email: String?): FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>? {
         return when {
             email?.trim().isNullOrEmpty() -> {
                 val message = context.getString(
-                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
+                    R.string.validation_msg_required_field,
                     context.getString(EMAIL.labelResId)
                 )
 
-                Pair(EMAIL, message)
+                FieldValidationError(
+                    field = EMAIL,
+                    message = message,
+                    validationType = EnumLoginValidationTypes.REQUIRED_EMAIL
+                )
             }
 
             else -> null
@@ -60,7 +69,7 @@ class LoginUseCase(
     private suspend fun validateUserCredentials(
         email: String?,
         password: String?
-    ): Pair<EnumValidatedLoginFields?, String>? {
+    ): FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>? {
         val emailTrimmed = email?.trim()
         val passwordTrimmed = password?.trim()
 
@@ -74,7 +83,11 @@ class LoginUseCase(
 
         return when {
             invalidLength || userNotExists -> {
-                Pair(null, context.getString(R.string.validation_msg_invalid_credetials_login))
+                FieldValidationError(
+                    field = null,
+                    message = context.getString(R.string.validation_msg_invalid_credetials_login),
+                    validationType = EnumLoginValidationTypes.INVALID_CREDENTIALS
+                )
             }
 
             else -> null

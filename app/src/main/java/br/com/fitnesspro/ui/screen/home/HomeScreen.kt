@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,11 +29,20 @@ import br.com.fitnesspro.compose.components.buttons.SquaredButton
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonAccount
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonLogout
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonNotification
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_600
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.ui.bottomsheet.workout.BottomSheetWorkout
+import br.com.fitnesspro.ui.screen.home.callbacks.OnLogoutClick
+import br.com.fitnesspro.ui.screen.home.callbacks.OnNavigateToAccountInformation
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_ACCOUNT_BUTTON
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_SCHEDULER
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_WORKOUT
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_LOGOUT_BUTTON
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_NOTIFICATIONS_BUTTON
 import br.com.fitnesspro.ui.state.HomeUIState
 import br.com.fitnesspro.ui.viewmodel.HomeViewModel
 
@@ -40,14 +50,17 @@ import br.com.fitnesspro.ui.viewmodel.HomeViewModel
 fun HomeScreen(
     viewModel: HomeViewModel,
     onNavigateToAccountInformation: OnNavigateToAccountInformation,
-    onNavigateToSchedule: () -> Unit
+    onNavigateToSchedule: () -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
     HomeScreen(
         state = state,
         onNavigateToAccountInformation = onNavigateToAccountInformation,
-        onNavigateToSchedule = onNavigateToSchedule
+        onNavigateToSchedule = onNavigateToSchedule,
+        onLogoutClick = viewModel::logout,
+        onNavigateToLogin = onNavigateToLogin
     )
 }
 
@@ -56,7 +69,9 @@ fun HomeScreen(
 fun HomeScreen(
     state: HomeUIState,
     onNavigateToAccountInformation: OnNavigateToAccountInformation? = null,
-    onNavigateToSchedule: () -> Unit = { }
+    onNavigateToSchedule: () -> Unit = { },
+    onLogoutClick: OnLogoutClick? = null,
+    onNavigateToLogin: () -> Unit = { }
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
@@ -65,12 +80,22 @@ fun HomeScreen(
                 title = state.title,
                 subtitle = state.subtitle,
                 actions = {
-                    IconButtonNotification()
-                    IconButtonLogout()
+                    IconButtonNotification(
+                        modifier = Modifier.testTag(HOME_SCREEN_NOTIFICATIONS_BUTTON.name)
+                    )
+                    IconButtonLogout(
+                        modifier = Modifier.testTag(HOME_SCREEN_LOGOUT_BUTTON.name),
+                        onClick = {
+                            onLogoutClick?.onExecute {
+                                onNavigateToLogin()
+                            }
+                        }
+                    )
                 },
                 showNavigationIcon = true,
                 customNavigationIcon = {
                     IconButtonAccount(
+                        modifier = Modifier.testTag(HOME_SCREEN_ACCOUNT_BUTTON.name),
                         onClick = {
                             onNavigateToAccountInformation?.onNavigate(RegisterUserScreenArgs())
                         }
@@ -86,6 +111,15 @@ fun HomeScreen(
                 .padding(padding)
         ) {
             val (footerRef, moduleButtonsRef) = createRefs()
+
+            FitnessProMessageDialog(
+                type = state.dialogType,
+                show = state.showDialog,
+                onDismissRequest = { state.onHideDialog() },
+                message = state.dialogMessage,
+                onConfirm = state.onConfirm,
+                onCancel = state.onCancel
+            )
 
             ConstraintLayout(
                 Modifier
@@ -114,6 +148,7 @@ fun HomeScreen(
 
                 SquaredButton(
                     modifier = Modifier
+                        .testTag(HOME_SCREEN_BUTTON_SCHEDULER.name)
                         .padding(8.dp)
                         .constrainAs(btnSchedulerRef) {
                             start.linkTo(parent.start)
@@ -132,6 +167,7 @@ fun HomeScreen(
 
                 SquaredButton(
                     modifier = Modifier
+                        .testTag(HOME_SCREEN_BUTTON_WORKOUT.name)
                         .padding(8.dp)
                         .constrainAs(btnWorkoutRef) {
                             top.linkTo(parent.top)
@@ -160,6 +196,7 @@ fun HomeScreen(
 
                 SquaredButton(
                     modifier = Modifier
+                        .testTag(EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_NUTRITION.name)
                         .padding(8.dp)
                         .constrainAs(btnNutritionRef) {
                             start.linkTo(parent.start)

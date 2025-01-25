@@ -1,4 +1,4 @@
-package br.com.fitnesspro.integration.room
+package br.com.fitnesspro.tests.integration.room
 
 import androidx.paging.PagingSource
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
 import br.com.fitnesspro.common.ui.navigation.loginScreen
 import br.com.fitnesspro.common.ui.navigation.loginScreenRoute
+import br.com.fitnesspro.common.ui.navigation.navigateToLoginScreen
 import br.com.fitnesspro.common.ui.navigation.navigateToRegisterAcademyScreen
 import br.com.fitnesspro.common.ui.navigation.navigateToRegisterUserScreen
 import br.com.fitnesspro.common.ui.navigation.registerAcademyScreen
@@ -55,7 +56,14 @@ fun FitnessProNavHost(
 
         homeScreen(
             onNavigateToAccountInformation = navController::navigateToRegisterUserScreen,
-            onNavigateToSchedule = navController::navigateToScheduleScreen
+            onNavigateToSchedule = navController::navigateToScheduleScreen,
+            onNavigateToLogin = {
+                navController.navigateToLoginScreen(
+                    navOptions = navOptions {
+                        popUpTo(homeScreenRoute) { inclusive = true }
+                    }
+                )
+            }
         )
 
         schedulerScreen(

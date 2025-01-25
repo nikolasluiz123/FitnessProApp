@@ -1,7 +1,6 @@
 package br.com.fitnesspro.common.ui.viewmodel
 
 import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -13,21 +12,22 @@ import br.com.fitnesspro.common.ui.bottomsheet.registeruser.EnumOptionsBottomShe
 import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.common.ui.navigation.registerUserArguments
 import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDecorator
-import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen.ACADEMY
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen.GENERAL
 import br.com.fitnesspro.common.ui.state.RegisterUserUIState
 import br.com.fitnesspro.common.usecase.person.EnumPersonValidationTypes
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
 import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
+import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.tabs.Tab
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.parseToLocalDate
-import br.com.fitnesspro.core.validation.ValidationError
+import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -74,7 +74,10 @@ class RegisterUserViewModel @Inject constructor(
                         birthDate = it.birthDate.copy(
                             value = toPerson.birthDate?.format(DATE) ?: ""
                         ),
-                        phone = it.phone.copy(value = toPerson.phone ?: "")
+                        phone = it.phone.copy(value = toPerson.phone ?: ""),
+                        tabState = it.tabState.copy(
+                            tabs = getTabListAllEnabled()
+                        )
                     )
                 }
             }
@@ -96,13 +99,20 @@ class RegisterUserViewModel @Inject constructor(
     }
 
     private fun initialLoadUIState(args: RegisterUserScreenArgs) {
-        val tabs = getTabsWithDefaultState()
-
         _uiState.update { currentState ->
             currentState.copy(
                 title = getTitle(context = args.context, toPerson = null),
                 context = args.context,
-                tabs = tabs,
+                tabState = TabState(
+                    tabs = getTabsWithDefaultState(),
+                    onSelectTab = { selectedTab ->
+                        _uiState.value = _uiState.value.copy(
+                            tabState = _uiState.value.tabState.copy(
+                                tabs = getTabListWithSelectedTab(selectedTab)
+                            )
+                        )
+                    }
+                ),
                 isVisibleFieldPhone = isVisibleFieldPhone(context = args.context, toPerson = null),
                 name = initializeNameTextField(),
                 email = initializeEmailTextField(),
@@ -145,7 +155,7 @@ class RegisterUserViewModel @Inject constructor(
             onDateChange = { newDate ->
                 _uiState.value = _uiState.value.copy(
                     birthDate = _uiState.value.birthDate.copy(
-                        value = newDate.format(EnumDateTimePatterns.DATE_ONLY_NUMBERS),
+                        value = newDate.format(DATE_ONLY_NUMBERS),
                         errorMessage = ""
                     ),
                 )
@@ -230,19 +240,6 @@ class RegisterUserViewModel @Inject constructor(
         }
     }
 
-    private fun getTabsWithDefaultState() = mutableListOf(
-        Tab(
-            enum = EnumTabsRegisterUserScreen.GENERAL,
-            selected = mutableStateOf(true),
-            isEnabled = { true }
-        ),
-        Tab(
-            enum = EnumTabsRegisterUserScreen.ACADEMY,
-            selected = mutableStateOf(false),
-            isEnabled = { _uiState.value.toPerson.id != null }
-        )
-    )
-
     /**
      * Função utilizada para recuperar o titulo que deve ser exibido na barra superior.
      */
@@ -265,7 +262,10 @@ class RegisterUserViewModel @Inject constructor(
 
     fun saveUser(onSuccess: () -> Unit) {
         viewModelScope.launch {
-            val validationResults = savePersonUseCase.execute(_uiState.value.toPerson)
+            val toPerson = _uiState.value.toPerson
+            toPerson.toUser!!.type = getUserTypeFromContext(_uiState.value.context)
+
+            val validationResults = savePersonUseCase.execute(toPerson)
 
             if (validationResults.isEmpty()) {
                 updateInfosAfterSave()
@@ -283,12 +283,42 @@ class RegisterUserViewModel @Inject constructor(
             it.copy(
                 title = getTitle(context = _uiState.value.context, toPerson = toPerson),
                 subtitle = toPerson.name!!,
-                toPerson = toPerson
+                toPerson = toPerson,
+                tabState = _uiState.value.tabState.copy(
+                    tabs = getTabListAllEnabled()
+                ),
             )
         }
     }
 
-    private fun showValidationMessages(validationResults: List<ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>>) {
+    private fun getTabsWithDefaultState(): MutableList<Tab> {
+        return mutableListOf(
+            Tab(
+                enum = GENERAL,
+                selected = true,
+                enabled = true
+            ),
+            Tab(
+                enum = ACADEMY,
+                selected = false,
+                enabled = false
+            )
+        )
+    }
+
+    private fun getTabListWithSelectedTab(selectedTab: Tab): MutableList<Tab> {
+        return _uiState.value.tabState.tabs.map { tab ->
+            tab.copy(selected = tab.enum == selectedTab.enum)
+        }.toMutableList()
+    }
+
+    private fun getTabListAllEnabled(): MutableList<Tab> {
+        return _uiState.value.tabState.tabs.map { tab ->
+            tab.copy(enabled = true)
+        }.toMutableList()
+    }
+
+    private fun showValidationMessages(validationResults: List<FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>>) {
         validationResults.forEach {
             when (it.field) {
                 EnumValidatedPersonFields.NAME -> {
@@ -324,11 +354,12 @@ class RegisterUserViewModel @Inject constructor(
         }
     }
 
-    private fun getUserTypeFromContext(context: EnumOptionsBottomSheetRegisterUser): EnumUserType {
+    private fun getUserTypeFromContext(context: EnumOptionsBottomSheetRegisterUser?): EnumUserType {
         return when (context) {
             EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER -> EnumUserType.ACADEMY_MEMBER
             EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER -> EnumUserType.PERSONAL_TRAINER
             EnumOptionsBottomSheetRegisterUser.NUTRITIONIST -> EnumUserType.NUTRITIONIST
+            null -> _uiState.value.toPerson.toUser?.type!!
         }
     }
 }

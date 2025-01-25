@@ -37,11 +37,13 @@ import br.com.fitnesspro.core.theme.BottomSheetItemTextStyle
 fun <T: IEnumOptionsBottomSheet> BottomSheet(
     items: List<IBottomSheetItem<T>>,
     onDismissRequest: () -> Unit,
-    onItemClickListener: (T) -> Unit
+    onItemClickListener: (T) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val bottomSheetState = rememberModalBottomSheetState()
 
     ModalBottomSheet(
+        modifier = modifier,
         onDismissRequest = onDismissRequest,
         sheetState = bottomSheetState,
         containerColor = MaterialTheme.colorScheme.background,

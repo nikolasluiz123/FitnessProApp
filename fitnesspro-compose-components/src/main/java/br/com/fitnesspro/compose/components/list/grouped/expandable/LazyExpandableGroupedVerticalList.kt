@@ -25,6 +25,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import br.com.fitnesspro.compose.components.LabeledText
 import br.com.fitnesspro.compose.components.R
+import br.com.fitnesspro.compose.components.list.grouped.expandable.enums.EnumLazyExpandableListTestTags.EXPANDABLE_LIST_ITEM
+import br.com.fitnesspro.compose.components.list.grouped.expandable.enums.EnumLazyExpandableListTestTags.EXPANDABLE_LIST_ITEM_ICON_EXPANDED
+import br.com.fitnesspro.compose.components.list.grouped.expandable.enums.EnumLazyExpandableListTestTags.EXPANDABLE_LIST_ITEM_LABELED_TEXT
+import br.com.fitnesspro.compose.components.list.grouped.expandable.enums.EnumLazyExpandableListTestTags.EXPANDABLE_LIST_LAZY_COLUMN
 import br.com.fitnesspro.core.R.drawable
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_600
@@ -66,7 +71,7 @@ fun <T, GROUP : IBasicExpandableGroup<T>> LazyExpandableVerticalList(
 
     if (groups.isNotEmpty()) {
         LazyColumn(
-            modifier = modifier,
+            modifier = modifier.testTag(EXPANDABLE_LIST_LAZY_COLUMN.name),
             content = {
                 groups.forEach { group ->
                     item {
@@ -123,11 +128,17 @@ fun BasicExpandableSection(
         if (expanded) 180f else 0f
     }
 
-    ConstraintLayout(modifier.clickable { onClick() }) {
+    ConstraintLayout(
+        modifier
+            .testTag(EXPANDABLE_LIST_ITEM.name)
+            .clickable { onClick() }
+    ) {
         val (textRef, iconRef, dividerRef) = createRefs()
 
         LabeledText(
-            modifier = Modifier.constrainAs(textRef) {
+            modifier = Modifier
+                .testTag(EXPANDABLE_LIST_ITEM_LABELED_TEXT.name)
+                .constrainAs(textRef) {
                 start.linkTo(parent.start)
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom)
@@ -138,6 +149,7 @@ fun BasicExpandableSection(
 
         Icon(
             modifier = Modifier
+                .testTag(EXPANDABLE_LIST_ITEM_ICON_EXPANDED.name)
                 .constrainAs(iconRef) {
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)

@@ -1,0 +1,195 @@
+package br.com.fitnesspro.tests.ui.isolated.scheduler.compromise.personal
+
+import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import br.com.fitnesspro.AndroidTestsActivity
+import br.com.fitnesspro.common.R
+import br.com.fitnesspro.scheduler.ui.navigation.compromiseScreen
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToCompromiseScreen
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerConfigScreen
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerDetailsScreen
+import br.com.fitnesspro.scheduler.ui.navigation.schedulerDetailsScreen
+import br.com.fitnesspro.scheduler.ui.navigation.schedulerScreen
+import br.com.fitnesspro.scheduler.ui.navigation.schedulerScreenRoute
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_END_DATE_FIELD
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_END_HOUR_FIELD
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_FAB_SAVE
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_MEMBER_FIELD
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_START_DATE_FIELD
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_START_HOUR_FIELD
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreenTestTags.SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB
+import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseUseCase
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.DATE_END
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.DATE_START
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.HOUR_END
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.HOUR_START
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.MEMBER
+import br.com.fitnesspro.tests.ui.common.BaseAuthenticatedUITest
+import br.com.fitnesspro.tests.ui.extensions.assertRequiredTextFieldValidation
+import br.com.fitnesspro.tests.ui.extensions.onClick
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import jakarta.inject.Inject
+import kotlinx.coroutines.test.runTest
+import org.junit.Rule
+import org.junit.Test
+
+@HiltAndroidTest
+class PersonalRecurrentCompromiseScreenFieldsValidationUITests : BaseAuthenticatedUITest() {
+
+    @get:Rule(order = 1)
+    var hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<AndroidTestsActivity>()
+
+    @Inject
+    lateinit var saveCompromiseUseCase: SaveCompromiseUseCase
+
+    override fun getHiltAndroidRule() = hiltRule
+
+    override fun getAndroidComposeRule() = composeTestRule
+
+    override fun getTag(): String = TAG
+
+    override fun getStartingDestination(): String = schedulerScreenRoute
+
+    override fun NavGraphBuilder.testNavGraph(navController: NavHostController) {
+        schedulerScreen(
+            onBackClick = navController::popBackStack,
+            onDayClick = navController::navigateToSchedulerDetailsScreen,
+            onNavigateToCompromise = navController::navigateToCompromiseScreen,
+            onNavigateToConfig = navController::navigateToSchedulerConfigScreen
+        )
+
+        schedulerDetailsScreen(
+            onBackClick = navController::popBackStack,
+            onNavigateToCompromise = navController::navigateToCompromiseScreen
+        )
+
+        compromiseScreen(
+            onBackClick = navController::popBackStack
+        )
+    }
+
+    @Test
+    fun should_show_error_when_member_is_not_informed() {
+        runTest {
+            prepareDatabaseWithPersons()
+            authenticatePersonal()
+            setNavHostContent()
+
+            composeTestRule.apply {
+                waitRecurrentScheduleFABVisibleAndClick()
+                assertRequiredTextFieldValidation(
+                    COMPROMISE_SCREEN_MEMBER_FIELD,
+                    COMPROMISE_SCREEN_FAB_SAVE,
+                    activity.getString(
+                        R.string.validation_msg_required_field,
+                        activity.getString(MEMBER.labelResId)
+                    )
+                )
+            }
+        }
+    }
+
+    @Test
+    fun should_show_error_when_start_time_is_not_informed() {
+        runTest {
+            prepareDatabaseWithPersons()
+            authenticatePersonal()
+            setNavHostContent()
+
+            composeTestRule.apply {
+                waitRecurrentScheduleFABVisibleAndClick()
+                assertRequiredTextFieldValidation(
+                    COMPROMISE_SCREEN_START_HOUR_FIELD,
+                    COMPROMISE_SCREEN_FAB_SAVE,
+                    activity.getString(
+                        R.string.validation_msg_required_field,
+                        activity.getString(HOUR_START.labelResId)
+                    )
+                )
+            }
+        }
+    }
+
+    @Test
+    fun should_show_error_when_end_time_is_not_informed() {
+        runTest {
+            prepareDatabaseWithPersons()
+            authenticatePersonal()
+            setNavHostContent()
+
+            composeTestRule.apply {
+                waitRecurrentScheduleFABVisibleAndClick()
+                assertRequiredTextFieldValidation(
+                    COMPROMISE_SCREEN_END_HOUR_FIELD,
+                    COMPROMISE_SCREEN_FAB_SAVE,
+                    activity.getString(
+                        R.string.validation_msg_required_field,
+                        activity.getString(HOUR_END.labelResId)
+                    )
+                )
+            }
+        }
+    }
+
+    @Test
+    fun should_show_error_when_start_date_is_not_informed() {
+        runTest {
+            prepareDatabaseWithPersons()
+            authenticatePersonal()
+            setNavHostContent()
+
+            composeTestRule.apply {
+                waitRecurrentScheduleFABVisibleAndClick()
+                assertRequiredTextFieldValidation(
+                    COMPROMISE_SCREEN_START_DATE_FIELD,
+                    COMPROMISE_SCREEN_FAB_SAVE,
+                    activity.getString(
+                        R.string.validation_msg_required_field,
+                        activity.getString(DATE_START.labelResId)
+                    )
+                )
+            }
+        }
+    }
+
+    @Test
+    fun should_show_error_when_end_date_is_not_informed() {
+        runTest {
+            prepareDatabaseWithPersons()
+            authenticatePersonal()
+            setNavHostContent()
+
+            composeTestRule.apply {
+                waitRecurrentScheduleFABVisibleAndClick()
+                assertRequiredTextFieldValidation(
+                    COMPROMISE_SCREEN_END_DATE_FIELD,
+                    COMPROMISE_SCREEN_FAB_SAVE,
+                    activity.getString(
+                        R.string.validation_msg_required_field,
+                        activity.getString(DATE_END.labelResId)
+                    )
+                )
+            }
+        }
+    }
+
+    private fun AndroidComposeTestRule<*, *>.waitRecurrentScheduleFABVisibleAndClick() {
+        waitUntil(2000) {
+            onNodeWithTag(SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB.name).isDisplayed()
+        }
+
+        onClick(SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB)
+    }
+
+    companion object {
+        const val TAG = "PersonalRecurrentCompromiseScreenFieldsValidationUITests"
+    }
+}

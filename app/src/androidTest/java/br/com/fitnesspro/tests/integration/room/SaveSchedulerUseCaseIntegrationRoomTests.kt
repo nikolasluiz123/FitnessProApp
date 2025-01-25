@@ -1,4 +1,4 @@
-package br.com.fitnesspro.integration.room
+package br.com.fitnesspro.tests.integration.room
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import br.com.fitnesspro.local.data.access.dao.PersonDAO

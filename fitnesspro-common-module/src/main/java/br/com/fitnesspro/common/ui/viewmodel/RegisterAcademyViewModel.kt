@@ -24,7 +24,7 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.extensions.parseToLocalTime
-import br.com.fitnesspro.core.validation.ValidationError
+import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOAcademy
 import br.com.fitnesspro.to.TOPerson
@@ -248,7 +248,8 @@ class RegisterAcademyViewModel @Inject constructor(
         viewModelScope.launch {
             val toPerson = userRepository.getTOPersonById(personId = args.personId)
             val menuItemListAcademy = getListAcademies()
-            val toPersonAcademyTime = args.personAcademyTimeId?.let {
+            val id = args.personAcademyTimeId ?: _uiState.value.toPersonAcademyTime.id
+            val toPersonAcademyTime = id?.let {
                 academyRepository.getTOPersonAcademyTimeById(personAcademyTimeId = it)
             }
 
@@ -263,7 +264,8 @@ class RegisterAcademyViewModel @Inject constructor(
                     dayWeek = state.dayWeek.copy(value = toPersonAcademyTime?.dayOfWeek?.getFirstPartFullDisplayName() ?: ""),
                     start = state.start.copy(value = toPersonAcademyTime?.timeStart?.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS) ?: ""),
                     end = state.end.copy(value = toPersonAcademyTime?.timeEnd?.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS) ?: ""),
-                    toPersonAcademyTime = toPersonAcademyTime ?: TOPersonAcademyTime(personId = args.personId)
+                    toPersonAcademyTime = toPersonAcademyTime ?: TOPersonAcademyTime(personId = args.personId),
+                    isEnabledInactivationButton = toPersonAcademyTime?.id != null
                 )
             }
         }
@@ -307,7 +309,7 @@ class RegisterAcademyViewModel @Inject constructor(
 
     }
 
-    private fun showValidationMessages(validationResults: List<ValidationError<EnumValidatedAcademyFields, EnumAcademyValidationTypes>>) {
+    private fun showValidationMessages(validationResults: List<FieldValidationError<EnumValidatedAcademyFields, EnumAcademyValidationTypes>>) {
         val dialogValidations = validationResults.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {
@@ -331,7 +333,7 @@ class RegisterAcademyViewModel @Inject constructor(
                     )
                 }
 
-                EnumValidatedAcademyFields.DATE_TIME_START -> {
+                EnumValidatedAcademyFields.TIME_START -> {
                     _uiState.value = _uiState.value.copy(
                         start = _uiState.value.start.copy(
                             errorMessage = it.message
@@ -339,7 +341,7 @@ class RegisterAcademyViewModel @Inject constructor(
                     )
                 }
 
-                EnumValidatedAcademyFields.DATE_TIME_END -> {
+                EnumValidatedAcademyFields.TIME_END -> {
                     _uiState.value = _uiState.value.copy(
                         end = _uiState.value.end.copy(
                             errorMessage = it.message
@@ -356,6 +358,22 @@ class RegisterAcademyViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun inactivateAcademy(onSuccess: () -> Unit) {
+        val state = _uiState.value
+
+        state.onShowDialog?.onShow(
+            type = EnumDialogType.ERROR,
+            message = context.getString(R.string.register_academy_screen_message_inactivate_academy),
+            onConfirm = {
+                viewModelScope.launch {
+                    academyRepository.inactivatePersonAcademyTime(state.toPersonAcademyTime)
+                    onSuccess()
+                }
+            },
+            onCancel = { }
+        )
     }
 
 }

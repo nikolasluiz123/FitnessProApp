@@ -14,35 +14,37 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
+import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAcademyItemClick
+import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAddAcademy
+import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnSaveUserClick
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_FAB_ADD
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_FAB_SAVE
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
+import br.com.fitnesspro.common.ui.state.RegisterUserUIState
+import br.com.fitnesspro.common.ui.viewmodel.RegisterUserViewModel
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
+import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
 import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
-import br.com.fitnesspro.common.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
-import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAcademyItemClick
-import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAddAcademy
-import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnSaveUserClick
-import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
-import br.com.fitnesspro.common.ui.state.RegisterUserUIState
-import br.com.fitnesspro.common.ui.viewmodel.RegisterUserViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -79,8 +81,6 @@ fun RegisterUserScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val tabs by remember { derivedStateOf { state.tabs } }
-    val selectedTab = tabs.first { it.selected.value }
 
     Scaffold(
         topBar = {
@@ -101,18 +101,20 @@ fun RegisterUserScreen(
         bottomBar = {
             FitnessProBottomAppBar(
                 floatingActionButton = {
-                    if (selectedTab.enum == EnumTabsRegisterUserScreen.GENERAL) {
+                    if (state.tabState.selectedTab.enum == EnumTabsRegisterUserScreen.GENERAL) {
                         FloatingActionButtonSave(
+                            modifier = Modifier.testTag(REGISTER_USER_SCREEN_FAB_SAVE.name),
                             onClick = {
                                 onSaveUserClick?.onExecute(
                                     onSaved = {
-                                        showSuccessMessage(coroutineScope, snackbarHostState, context)
+                                        showSaveSuccessMessage(coroutineScope, snackbarHostState, context)
                                     }
                                 )
                             }
                         )
                     } else {
                         FloatingActionButtonAdd(
+                            modifier = Modifier.testTag(REGISTER_USER_SCREEN_FAB_ADD.name),
                             onClick = {
                                 onAddAcademyClick?.onExecute(
                                     args = br.com.fitnesspro.common.ui.navigation.RegisterAcademyScreenArgs(
@@ -138,10 +140,12 @@ fun RegisterUserScreen(
                 type = state.dialogType,
                 show = state.showDialog,
                 onDismissRequest = { state.onHideDialog() },
-                message = state.dialogMessage
+                message = state.dialogMessage,
+                onConfirm = state.onConfirm,
+                onCancel = state.onCancel
             )
 
-            val pagerState = rememberPagerState(pageCount = state.tabs::size)
+            val pagerState = rememberPagerState(pageCount = state.tabState::tabsSize)
 
             FitnessProTabRow(
                 modifier = Modifier.constrainAs(tabRowRef) {
@@ -149,7 +153,7 @@ fun RegisterUserScreen(
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
                 },
-                tabs = tabs,
+                tabState = state.tabState,
                 coroutineScope = coroutineScope,
                 pagerState = pagerState
             )
@@ -164,7 +168,7 @@ fun RegisterUserScreen(
                     height = Dimension.fillToConstraints
                 },
                 pagerState = pagerState,
-                tabs = tabs
+                tabState = state.tabState
             ) { index ->
                 when (index) {
                     EnumTabsRegisterUserScreen.GENERAL.index -> {
@@ -172,7 +176,7 @@ fun RegisterUserScreen(
                             state = state,
                             onDone = {
                                 onSaveUserClick?.onExecute {
-                                    showSuccessMessage(coroutineScope, snackbarHostState, context)
+                                    showSaveSuccessMessage(coroutineScope, snackbarHostState, context)
                                 }
                             }
                         )
@@ -191,7 +195,7 @@ fun RegisterUserScreen(
     }
 }
 
-private fun showSuccessMessage(
+private fun showSaveSuccessMessage(
     coroutineScope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     context: Context
@@ -206,9 +210,6 @@ private fun showSuccessMessage(
 @Preview
 @Composable
 private fun RegisterUserScreenTabGeneralPreview() {
-    val tab1Selected = remember { mutableStateOf(true) }
-    val tab2Selected = remember { mutableStateOf(false) }
-
     FitnessProTheme {
         Surface {
             RegisterUserScreen(
@@ -216,16 +217,18 @@ private fun RegisterUserScreenTabGeneralPreview() {
                     title = "Título",
                     subtitle = "Subtítulo",
                     context = EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER,
-                    tabs = mutableListOf(
-                        Tab(
-                            enum = EnumTabsRegisterUserScreen.GENERAL,
-                            selected = tab1Selected,
-                            isEnabled = { true }
-                        ),
-                        Tab(
-                            enum = EnumTabsRegisterUserScreen.ACADEMY,
-                            selected = tab2Selected,
-                            isEnabled = { false }
+                    tabState = TabState(
+                        tabs = mutableListOf(
+                            Tab(
+                                enum = EnumTabsRegisterUserScreen.GENERAL,
+                                selected = true,
+                                enabled = true
+                            ),
+                            Tab(
+                                enum = EnumTabsRegisterUserScreen.ACADEMY,
+                                selected = false,
+                                enabled = false
+                            )
                         )
                     )
                 )
@@ -237,9 +240,6 @@ private fun RegisterUserScreenTabGeneralPreview() {
 @Preview
 @Composable
 private fun RegisterUserScreenTabAcademiesPreview() {
-    val tab1Selected = remember { mutableStateOf(false) }
-    val tab2Selected = remember { mutableStateOf(true) }
-
     FitnessProTheme {
         Surface {
             RegisterUserScreen(
@@ -247,16 +247,18 @@ private fun RegisterUserScreenTabAcademiesPreview() {
                     title = "Título",
                     subtitle = "Subtítulo",
                     context = EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER,
-                    tabs = mutableListOf(
-                        Tab(
-                            enum = EnumTabsRegisterUserScreen.GENERAL,
-                            selected = tab1Selected,
-                            isEnabled = { true }
-                        ),
-                        Tab(
-                            enum = EnumTabsRegisterUserScreen.ACADEMY,
-                            selected = tab2Selected,
-                            isEnabled = { true }
+                    tabState = TabState(
+                        tabs = mutableListOf(
+                            Tab(
+                                enum = EnumTabsRegisterUserScreen.GENERAL,
+                                selected = false,
+                                enabled = true
+                            ),
+                            Tab(
+                                enum = EnumTabsRegisterUserScreen.ACADEMY,
+                                selected = true,
+                                enabled = true
+                            )
                         )
                     )
                 )

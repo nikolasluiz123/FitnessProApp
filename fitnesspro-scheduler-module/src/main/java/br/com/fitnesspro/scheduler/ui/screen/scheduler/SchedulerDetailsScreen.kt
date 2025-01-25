@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,13 @@ import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnNavigateToCompromise
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerDetailsTestTags.SCHEDULER_DETAILS_SCREEN_FAB_ADD
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerDetailsTestTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerDetailsTestTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST_COMPROMISE_TYPE
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerDetailsTestTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_HOUR
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerDetailsTestTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_NAME
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerDetailsTestTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_PROFESSIONAL
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerDetailsTestTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_SITUATION
 import br.com.fitnesspro.scheduler.ui.state.SchedulerDetailsUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerDetailsViewModel
 import br.com.fitnesspro.to.TOScheduler
@@ -77,6 +85,7 @@ fun SchedulerDetailsScreen(
         floatingActionButton = {
             if (state.isVisibleFabAdd) {
                 FloatingActionButtonAdd(
+                    modifier = Modifier.testTag(SCHEDULER_DETAILS_SCREEN_FAB_ADD.name),
                     onClick = {
                         onNavigateToCompromise?.onExecute(
                             args = br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs(
@@ -146,6 +155,7 @@ fun SchedulerDetailItem(
         Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
+            .testTag(SCHEDULER_DETAILS_SCREEN_ITEM_LIST.name)
             .clickable {
                 onNavigateToCompromise?.onExecute(
                     args = br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs(
@@ -164,6 +174,7 @@ fun SchedulerDetailItem(
         LabeledText(
             modifier = Modifier
                 .padding(start = 8.dp, end = 8.dp)
+                .testTag(SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_NAME.name)
                 .constrainAs(nameRef) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -177,6 +188,7 @@ fun SchedulerDetailItem(
 
         LabeledText(
             modifier = Modifier
+                .testTag(SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_HOUR.name)
                 .padding(end = 8.dp)
                 .constrainAs(hourRef) {
                     top.linkTo(parent.top)
@@ -197,6 +209,7 @@ fun SchedulerDetailItem(
 
         LabeledText(
             modifier = Modifier
+                .testTag(SCHEDULER_DETAILS_SCREEN_ITEM_LIST_COMPROMISE_TYPE.name)
                 .padding(start = 8.dp, end = 8.dp)
                 .constrainAs(compromiseTypeRef) {
                     top.linkTo(nameRef.bottom, margin = 12.dp)
@@ -211,6 +224,7 @@ fun SchedulerDetailItem(
 
         LabeledText(
             modifier = Modifier
+                .testTag(SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_SITUATION.name)
                 .padding(end = 8.dp)
                 .constrainAs(situationRef) {
                     top.linkTo(hourRef.bottom, margin = 12.dp)
@@ -226,6 +240,7 @@ fun SchedulerDetailItem(
         if (state.userType == EnumUserType.ACADEMY_MEMBER) {
             LabeledText(
                 modifier = Modifier
+                    .testTag(SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_PROFESSIONAL.name)
                     .padding(horizontal = 8.dp)
                     .constrainAs(professionalRef) {
                         top.linkTo(compromiseTypeRef.bottom, margin = 12.dp)

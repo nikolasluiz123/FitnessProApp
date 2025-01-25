@@ -3,10 +3,12 @@ package br.com.fitnesspro.common.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.usecase.login.EnumLoginValidationTypes
 import br.com.fitnesspro.common.usecase.login.EnumValidatedLoginFields
 import br.com.fitnesspro.common.usecase.login.LoginUseCase
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.enums.EnumDialogType
+import br.com.fitnesspro.core.validation.FieldValidationError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -94,13 +96,13 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun showValidationMessages(validationsResult: List<Pair<EnumValidatedLoginFields?, String>>) {
-        val dialogValidations = validationsResult.firstOrNull { it.first == null }
+    private fun showValidationMessages(validationsResult: List<FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>>) {
+        val dialogValidations = validationsResult.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {
             _uiState.value.onShowDialog?.onShow(
                 type = EnumDialogType.ERROR,
-                message = dialogValidations.second,
+                message = dialogValidations.message,
                 onConfirm = { _uiState.value.onHideDialog.invoke() },
                 onCancel = { _uiState.value.onHideDialog.invoke() }
             )
@@ -109,18 +111,18 @@ class LoginViewModel @Inject constructor(
         }
 
         validationsResult.forEach {
-            when(it.first!!) {
+            when(it.field!!) {
                 EnumValidatedLoginFields.EMAIL -> {
                     _uiState.value = _uiState.value.copy(
                         email = _uiState.value.email.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }
                 EnumValidatedLoginFields.PASSWORD -> {
                     _uiState.value = _uiState.value.copy(
                         password = _uiState.value.password.copy(
-                            errorMessage = it.second
+                            errorMessage = it.message
                         )
                     )
                 }

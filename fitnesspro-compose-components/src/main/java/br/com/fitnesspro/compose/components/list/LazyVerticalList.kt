@@ -10,10 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import br.com.fitnesspro.compose.components.list.enums.EnumListTestTags.EMPTY_STATE
+import br.com.fitnesspro.compose.components.list.enums.EnumListTestTags.EMPTY_STATE_MESSAGE
+import br.com.fitnesspro.compose.components.list.enums.EnumListTestTags.LAZY_COLUMN
 import br.com.fitnesspro.core.theme.GREY_600
 import br.com.fitnesspro.core.theme.LabelTextStyle
 
@@ -40,7 +44,7 @@ fun <T> LazyVerticalList(
 ) {
     if (items.isNotEmpty()) {
         LazyColumn(
-            modifier = modifier,
+            modifier = modifier.testTag(LAZY_COLUMN.name),
             verticalArrangement = Arrangement.spacedBy(verticalArrangementSpace),
             contentPadding = PaddingValues(contentPadding)
         ) {
@@ -50,10 +54,13 @@ fun <T> LazyVerticalList(
         }
     } else {
         Box(
-            modifier = modifier.fillMaxSize(),
+            modifier = modifier
+                .testTag(EMPTY_STATE.name)
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Text(
+                modifier = Modifier.testTag(EMPTY_STATE_MESSAGE.name),
                 text = stringResource(id = emptyMessageResId),
                 style = LabelTextStyle,
                 color = GREY_600,

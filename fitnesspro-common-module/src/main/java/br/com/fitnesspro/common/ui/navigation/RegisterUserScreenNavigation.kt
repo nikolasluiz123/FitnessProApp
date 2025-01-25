@@ -5,12 +5,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
-import br.com.fitnesspro.common.ui.viewmodel.RegisterUserViewModel
 import br.com.fitnesspro.common.ui.screen.registeruser.RegisterUserScreen
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAcademyItemClick
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAddAcademy
+import br.com.fitnesspro.common.ui.viewmodel.RegisterUserViewModel
+import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
 import com.google.gson.GsonBuilder
 
 internal const val registerUserScreenRoute = "registerUser"

@@ -1,5 +1,6 @@
 package br.com.fitnesspro.scheduler.ui.state
 
+import br.com.fitnesspro.core.extensions.yearMonthNow
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.decorator.SchedulerDecorator
 import br.com.fitnesspro.to.TOSchedulerConfig
@@ -10,7 +11,7 @@ data class SchedulerUIState(
     val userType: EnumUserType? = null,
     val toSchedulerConfig: TOSchedulerConfig? = null,
     val schedules: List<SchedulerDecorator> = emptyList(),
-    val selectedYearMonth: YearMonth = YearMonth.now(),
+    val selectedYearMonth: YearMonth = yearMonthNow(),
     val onSelectYearMonth: (newYearMonth: YearMonth) -> Unit = { },
     val isVisibleFabRecurrentScheduler: Boolean = false,
 )

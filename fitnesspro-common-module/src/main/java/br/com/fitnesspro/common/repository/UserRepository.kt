@@ -157,4 +157,8 @@ class UserRepository(
             )
         }
     }
+
+    suspend fun logout() = withContext(IO) {
+        userDAO.logoutAll()
+    }
 }

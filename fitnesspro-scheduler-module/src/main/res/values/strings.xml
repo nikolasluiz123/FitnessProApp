@@ -29,6 +29,7 @@
     <string name="compromise_screen_label_end_hour">Hora de Fim *</string>
     <string name="compromise_screen_subtitle">%s %s às %s</string>
     <string name="compromise_screen_title_new_sugestion">Sugestão de Compromisso</string>
+    <string name="compromise_screen_title_compromise_with_situation">Compromisso - %s</string>
     <string name="compromise_screen_title_compromise">Compromisso</string>
     <string name="compromise_screen_title_new_recurrent_compromise">Novo Compromisso Recorrente</string>
     <string name="compromise_screen_title_recurrent_compromise">Compromisso Recorrente</string>
@@ -82,4 +83,15 @@
     <string name="save_compromise_start_hour_require_antecedence">O horário de início deve ser definido com 1 hora de antecedência.</string>
     <string name="save_compromise_start_hour_out_of_work_time_range">O %s deve ser entre %s e %s.</string>
     <string name="save_compromise_start_hour_require_future">O horário de início deve ser posterior a hora atual</string>
+    <string name="compromise_screen_dialog_inactivation_message">Deseja realmente cancelar o compromisso do dia %s das %s às %s?</string>
+    <string name="compromise_screen_message_inactivated">Compromisso cancelado com sucesso</string>
+    <string name="compromise_screen_message_question_confirmation">Deseja realmente Confirmar o compromisso do dia %s das %s às %s?</string>
+    <string name="compromise_screen_message_question_finalization">Deseja realmente Finalizar o compromisso do dia %s das %s às %s?</string>
+    <string name="compromise_confirmation_invalid_situation_message">Situação inválida para %s. O Compromisso deve ser %s ou %s para que possa ser %s.</string>
+    <string name="label_confirmacao">confirmação</string>
+    <string name="label_cancelamento">cancelamento</string>
+    <string name="compromise_screen_message_success_confirmed">Compromisso Confirmado com Sucesso</string>
+    <string name="compromise_screen_message_success_completed">Compromisso Finalizado com Sucesso</string>
+    <string name="label_cancelado">cancelado</string>
+    <string name="label_confirmado">confirmado</string>
 </resources>

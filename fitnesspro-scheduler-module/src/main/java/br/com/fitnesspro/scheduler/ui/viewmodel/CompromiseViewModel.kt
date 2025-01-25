@@ -18,7 +18,7 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.core.extensions.parseToLocalTime
-import br.com.fitnesspro.core.validation.ValidationError
+import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumCompromiseType.FIRST
 import br.com.fitnesspro.model.enums.EnumCompromiseType.RECURRENT
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
@@ -28,10 +28,20 @@ import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs
 import br.com.fitnesspro.scheduler.ui.navigation.compromiseArguments
 import br.com.fitnesspro.scheduler.ui.state.CompromiseUIState
+import br.com.fitnesspro.scheduler.usecase.scheduler.ConfirmationSchedulerUseCase
+import br.com.fitnesspro.scheduler.usecase.scheduler.InactivateSchedulerUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.DATE_END
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.DATE_START
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.DAY_OF_WEEKS
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.HOUR_END
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.HOUR_START
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.MEMBER
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.OBSERVATION
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.PROFESSIONAL
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOScheduler
 import br.com.fitnesspro.tuple.PersonTuple
@@ -51,6 +61,8 @@ class CompromiseViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val schedulerRepository: SchedulerRepository,
     private val saveCompromiseUseCase: SaveCompromiseUseCase,
+    private val confirmationSchedulerUseCase: ConfirmationSchedulerUseCase,
+    private val inactivateSchedulerUseCase: InactivateSchedulerUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -368,7 +380,6 @@ class CompromiseViewModel @Inject constructor(
                     title = getTitle(
                         userType = userType,
                         recurrent = args.recurrent,
-                        schedulerId = args.schedulerId
                     ),
                     userType = userType,
                     professional = _uiState.value.professional.copy(
@@ -381,7 +392,7 @@ class CompromiseViewModel @Inject constructor(
                 )
             }
 
-            initializeEditionInfos(args)
+            initializeEditionInfos()
         }
     }
 
@@ -408,12 +419,19 @@ class CompromiseViewModel @Inject constructor(
         }
     }
 
-    private suspend fun CompromiseViewModel.initializeEditionInfos(args: CompromiseScreenArgs) {
-        val toScheduler = args.schedulerId?.let { schedulerRepository.getTOSchedulerById(it) }
+    private suspend fun initializeEditionInfos() {
+        val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
+        val id = args.schedulerId ?: _uiState.value.toScheduler.id
+        val toScheduler = id?.let { schedulerRepository.getTOSchedulerById(it) }
 
         toScheduler?.let { to ->
             _uiState.update { state ->
                 state.copy(
+                    title = getTitle(
+                        userType = _uiState.value.userType!!,
+                        recurrent = args.recurrent,
+                        toScheduler = to
+                    ),
                     subtitle = getSubtitle(to),
                     professional = _uiState.value.professional.copy(
                         value = to.professionalName!!,
@@ -424,10 +442,10 @@ class CompromiseViewModel @Inject constructor(
                         errorMessage = ""
                     ),
                     hourStart = _uiState.value.hourStart.copy(
-                        value = to.start!!.format(EnumDateTimePatterns.TIME)
+                        value = to.start!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
                     ),
                     hourEnd = _uiState.value.hourEnd.copy(
-                        value = to.end!!.format(EnumDateTimePatterns.TIME)
+                        value = to.end!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
                     ),
                     observation = _uiState.value.observation.copy(
                         value = to.observation ?: ""
@@ -462,33 +480,35 @@ class CompromiseViewModel @Inject constructor(
     private fun getTitle(
         userType: EnumUserType,
         recurrent: Boolean,
-        schedulerId: String?
+        toScheduler: TOScheduler? = null,
     ): String {
         return when (userType) {
             EnumUserType.PERSONAL_TRAINER -> {
                 if (recurrent) {
-                    if (schedulerId != null) {
+                    if (toScheduler?.id != null) {
                         context.getString(R.string.compromise_screen_title_recurrent_compromise)
                     } else {
                         context.getString(R.string.compromise_screen_title_new_recurrent_compromise)
                     }
                 } else {
-                    if (schedulerId != null) {
-                        context.getString(R.string.compromise_screen_title_compromise)
+                    if (toScheduler?.id != null) {
+                        val situation = _uiState.value.toScheduler.situation!!.getLabel(context)!!
+                        context.getString(R.string.compromise_screen_title_compromise_with_situation, situation)
                     } else {
                         context.getString(R.string.compromise_screen_title_new_compromise)
                     }
                 }
             }
             EnumUserType.NUTRITIONIST -> {
-                if (schedulerId != null) {
-                    context.getString(R.string.compromise_screen_title_compromise)
+                if (toScheduler?.id != null) {
+                    val situation = _uiState.value.toScheduler.situation!!.getLabel(context)!!
+                    context.getString(R.string.compromise_screen_title_compromise_with_situation, situation)
                 } else {
                     context.getString(R.string.compromise_screen_title_new_compromise)
                 }
             }
             EnumUserType.ACADEMY_MEMBER -> {
-                if (schedulerId != null) {
+                if (toScheduler?.id != null) {
                     context.getString(R.string.compromise_screen_title_compromise)
                 } else {
                     context.getString(R.string.compromise_screen_title_new_sugestion)
@@ -522,13 +542,14 @@ class CompromiseViewModel @Inject constructor(
 
             if (validationResults.isEmpty()) {
                 onSuccess(enumSchedulerType)
+                initializeEditionInfos()
             } else {
-                showValidationMessages(validationResults)
+                showFieldsValidationMessages(validationResults)
             }
         }
     }
 
-    private fun showValidationMessages(validationResults: MutableList<ValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>>) {
+    private fun showFieldsValidationMessages(validationResults: MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>>) {
         val dialogValidations = validationResults.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {
@@ -544,7 +565,7 @@ class CompromiseViewModel @Inject constructor(
 
         validationResults.forEach {
             when (it.field!!) {
-                EnumValidatedCompromiseFields.MEMBER -> {
+                MEMBER -> {
                     _uiState.value = _uiState.value.copy(
                         member = _uiState.value.member.copy(
                             errorMessage = it.message
@@ -552,7 +573,7 @@ class CompromiseViewModel @Inject constructor(
                     )
                 }
 
-                EnumValidatedCompromiseFields.PROFESSIONAL -> {
+                PROFESSIONAL -> {
                     _uiState.value = _uiState.value.copy(
                         professional = _uiState.value.professional.copy(
                             errorMessage = it.message
@@ -560,7 +581,7 @@ class CompromiseViewModel @Inject constructor(
                     )
                 }
 
-                EnumValidatedCompromiseFields.DATE_START -> {
+                DATE_START -> {
                     _uiState.value = _uiState.value.copy(
                         dateStart = _uiState.value.dateStart.copy(
                             errorMessage = it.message
@@ -568,7 +589,7 @@ class CompromiseViewModel @Inject constructor(
                     )
                 }
 
-                EnumValidatedCompromiseFields.DATE_END -> {
+                DATE_END -> {
                     _uiState.value = _uiState.value.copy(
                         dateEnd = _uiState.value.dateEnd.copy(
                             errorMessage = it.message
@@ -576,7 +597,7 @@ class CompromiseViewModel @Inject constructor(
                     )
                 }
 
-                EnumValidatedCompromiseFields.HOUR_START -> {
+                HOUR_START -> {
                     _uiState.value = _uiState.value.copy(
                         hourStart = _uiState.value.hourStart.copy(
                             errorMessage = it.message
@@ -584,7 +605,7 @@ class CompromiseViewModel @Inject constructor(
                     )
                 }
 
-                EnumValidatedCompromiseFields.HOUR_END -> {
+                HOUR_END -> {
                     _uiState.value = _uiState.value.copy(
                         hourEnd = _uiState.value.hourEnd.copy(
                             errorMessage = it.message
@@ -592,7 +613,7 @@ class CompromiseViewModel @Inject constructor(
                     )
                 }
 
-                EnumValidatedCompromiseFields.OBSERVATION -> {
+                OBSERVATION -> {
                     _uiState.value = _uiState.value.copy(
                         observation = _uiState.value.observation.copy(
                             errorMessage = it.message
@@ -600,7 +621,7 @@ class CompromiseViewModel @Inject constructor(
                     )
                 }
 
-                EnumValidatedCompromiseFields.DAY_OF_WEEKS -> {
+                DAY_OF_WEEKS -> {
                     _uiState.value.onShowDialog?.onShow(
                         type = EnumDialogType.ERROR,
                         message = it.message,
@@ -620,5 +641,83 @@ class CompromiseViewModel @Inject constructor(
             state.recurrent -> EnumSchedulerType.RECURRENT
             else -> EnumSchedulerType.UNIQUE
         }
+    }
+
+    fun onInactivateCompromiseClick(onSuccess: () -> Unit) {
+        val state = _uiState.value
+        val toScheduler = state.toScheduler
+
+        state.onShowDialog?.onShow(
+            type = EnumDialogType.CONFIRMATION,
+            message = context.getString(
+                R.string.compromise_screen_dialog_inactivation_message,
+                toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
+                toScheduler.start!!.format(EnumDateTimePatterns.TIME),
+                toScheduler.end!!.format(EnumDateTimePatterns.TIME)
+            ),
+            onConfirm = {
+                viewModelScope.launch {
+                    val result = inactivateSchedulerUseCase(toScheduler)
+
+                    if (result != null) {
+                        state.onShowDialog.onShow(
+                            type = EnumDialogType.ERROR,
+                            message = result.message,
+                            onConfirm = { },
+                            onCancel = { }
+                        )
+                    } else {
+                        initializeEditionInfos()
+                        onSuccess()
+                    }
+
+                }
+            },
+            onCancel = { }
+        )
+    }
+
+    fun onScheduleConfirmClick(onSuccess: () -> Unit) {
+        val state = _uiState.value
+        val toScheduler = state.toScheduler
+
+        val message = if (toScheduler.situation == EnumSchedulerSituation.SCHEDULED) {
+            context.getString(
+                R.string.compromise_screen_message_question_confirmation,
+                toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
+                toScheduler.start!!.format(EnumDateTimePatterns.TIME),
+                toScheduler.end!!.format(EnumDateTimePatterns.TIME)
+            )
+        } else {
+            context.getString(
+                R.string.compromise_screen_message_question_finalization,
+                toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
+                toScheduler.start!!.format(EnumDateTimePatterns.TIME),
+                toScheduler.end!!.format(EnumDateTimePatterns.TIME)
+            )
+        }
+
+        state.onShowDialog?.onShow(
+            type = EnumDialogType.CONFIRMATION,
+            message = message,
+            onConfirm = {
+                viewModelScope.launch {
+                    val result = confirmationSchedulerUseCase(toScheduler)
+
+                    if (result != null) {
+                        state.onShowDialog.onShow(
+                            type = EnumDialogType.ERROR,
+                            message = result.message,
+                            onConfirm = { },
+                            onCancel = { }
+                        )
+                    } else {
+                        initializeEditionInfos()
+                        onSuccess()
+                    }
+                }
+            },
+            onCancel = { }
+        )
     }
 }

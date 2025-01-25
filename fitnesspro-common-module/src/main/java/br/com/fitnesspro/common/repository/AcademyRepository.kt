@@ -35,7 +35,7 @@ class AcademyRepository(
 
     suspend fun getConflictPersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime): PersonAcademyTime? = withContext(IO) {
         academyDAO.getConflictPersonAcademyTime(
-            personAcademyTimeId = toPersonAcademyTime.id!!,
+            personAcademyTimeId = toPersonAcademyTime.id,
             personId = toPersonAcademyTime.personId!!,
             dayOfWeek = toPersonAcademyTime.dayOfWeek!!,
             start = toPersonAcademyTime.timeStart!!,
@@ -107,7 +107,7 @@ class AcademyRepository(
                 active = active
             )
         } else {
-            PersonAcademyTime(
+            val model = PersonAcademyTime(
                 personId = personId,
                 academyId = toAcademy?.id,
                 timeStart = timeStart,
@@ -115,6 +115,15 @@ class AcademyRepository(
                 dayOfWeek = dayOfWeek,
                 active = active
             )
+
+            this.id = model.id
+
+            model
         }
+    }
+
+    suspend fun inactivatePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
+        toPersonAcademyTime.active = false
+        savePersonAcademyTime(toPersonAcademyTime)
     }
 }

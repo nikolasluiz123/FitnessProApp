@@ -1,4 +1,4 @@
-package br.com.fitnesspro.ui.screen.home
+package br.com.fitnesspro.ui.screen.home.callbacks
 
 import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
 

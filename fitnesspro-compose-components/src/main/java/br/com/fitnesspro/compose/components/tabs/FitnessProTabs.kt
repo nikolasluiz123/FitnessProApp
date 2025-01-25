@@ -14,8 +14,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import br.com.fitnesspro.compose.components.fields.state.TabState
+import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.HORIZONTAL_PAGER
+import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.TAB
+import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.TAB_ROW
 import br.com.fitnesspro.core.theme.GREY_500
 import br.com.fitnesspro.core.theme.TabTitleTextStyle
 import kotlinx.coroutines.CoroutineScope
@@ -25,45 +30,45 @@ import kotlinx.coroutines.launch
  * Componente Wrapper para o [TabRow] onde criamos as tabs.
  *
  * @param modifier Modifier para posicionamento e demais configurações que forem necessárias
- * @param tabs Lista de tabs que farão parte do [TabRow]
+ * @param tabState Objeto de state que contem os comportamentos necessários para o [TabRow]
  * @param coroutineScope CoroutineScope para controle do [TabRow]
  * @param pagerState PagerState para controle do [TabRow]
  */
 @Composable
 fun FitnessProTabRow(
     modifier: Modifier = Modifier,
-    tabs: MutableList<Tab>,
+    tabState: TabState,
     coroutineScope: CoroutineScope,
     pagerState: PagerState,
 ) {
     TabRow(
-        modifier = modifier,
-        selectedTabIndex = tabs.first { it.selected.value }.enum.index,
+        modifier = modifier.testTag(TAB_ROW.name),
+        selectedTabIndex = tabState.tabs.first { it.selected }.enum.index,
         containerColor = MaterialTheme.colorScheme.secondary,
         contentColor = MaterialTheme.colorScheme.onSecondary,
         divider = {
             HorizontalDivider(color = MaterialTheme.colorScheme.onSecondary)
         }
     ) {
-        tabs.forEach { tabToCreate ->
+        tabState.tabs.forEach { tabToCreate ->
             Tab(
-                selected = tabToCreate.selected.value,
+                modifier = Modifier.testTag(TAB.name),
+                selected = tabToCreate.selected,
                 onClick = {
-                    tabs.forEach { it.selected.value = false }
-                    tabToCreate.selected.value = true
+                    tabState.onSelectTab(tabToCreate)
 
                     coroutineScope.launch {
-                        pagerState.animateScrollToPage(tabToCreate.enum.index)
+                        pagerState.scrollToPage(tabToCreate.enum.index)
                     }
                 },
                 text = {
                     Text(
                         text = stringResource(id = tabToCreate.enum.labelResId),
                         style = TabTitleTextStyle,
-                        color = if (tabToCreate.isEnabled()) Color.White else GREY_500
+                        color = if (tabToCreate.enabled) Color.White else GREY_500
                     )
                 },
-                enabled = tabToCreate.isEnabled()
+                enabled = tabToCreate.enabled
             )
         }
     }
@@ -74,22 +79,22 @@ fun FitnessProTabRow(
  * tabs do [TabRow], além do conteúdo de cada tab.
  *
  * @param pagerState PagerState para controle do [HorizontalPager]
- * @param tabs Lista de tabs que farão parte do [HorizontalPager]
+ * @param tabState Objeto de state que contem os comportamentos necessários para o [HorizontalPager]
  * @param modifier Modifier para posicionamento e demais configurações que forem necessárias
  * @param content Composable que será renderizado para cada tab
  */
 @Composable
 fun FitnessProHorizontalPager(
     pagerState: PagerState,
-    tabs: List<Tab>,
+    tabState: TabState,
     modifier: Modifier = Modifier,
     content: @Composable (index: Int) -> Unit
 ) {
     HorizontalPager(
-        modifier = modifier,
+        modifier = modifier.testTag(HORIZONTAL_PAGER.name),
         state = pagerState,
         pageSpacing = 0.dp,
-        userScrollEnabled = getUserScrollEnabled(tabs),
+        userScrollEnabled = getUserScrollEnabled(tabState.tabs),
         reverseLayout = false,
         contentPadding = PaddingValues(0.dp),
         pageSize = PageSize.Fill,
@@ -100,9 +105,7 @@ fun FitnessProHorizontalPager(
             orientation = Orientation.Horizontal
         )
     ) { index ->
-        tabs.forEach { it.selected.value = false }
-        tabs.getOrNull(index)?.selected?.value = true
-
+        tabState.onSelectTab(tabState.tabs[index])
         content(index)
     }
 }
@@ -113,9 +116,9 @@ fun FitnessProHorizontalPager(
  * Basicamente ele deve ser habilitado se a próxima tab ou a tab anterior estiver habilitada.
  */
 private fun getUserScrollEnabled(tabs: List<Tab>): Boolean {
-    val tabSelected = tabs.first { it.selected.value }
+    val tabSelected = tabs.first { it.selected }
     val nextTab = tabs.getOrNull(tabs.indexOf(tabSelected) + 1)
     val previousTab = tabs.getOrNull(tabs.indexOf(tabSelected) - 1)
 
-    return nextTab?.isEnabled?.invoke() == true || previousTab?.isEnabled?.invoke() == true
+    return nextTab?.enabled == true || previousTab?.enabled == true
 }

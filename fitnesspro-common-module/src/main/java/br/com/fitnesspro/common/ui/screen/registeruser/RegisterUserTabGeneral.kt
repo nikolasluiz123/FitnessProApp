@@ -8,12 +8,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_BIRTH_DATE
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_EMAIL
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_NAME
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_PASSWORD
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_PHONE
 import br.com.fitnesspro.common.ui.state.RegisterUserUIState
 import br.com.fitnesspro.compose.components.fields.DatePickerOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
@@ -31,6 +38,7 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
 
     ConstraintLayout(
         Modifier
+            .testTag(REGISTER_USER_SCREEN_TAB_GENERAL.name)
             .padding(12.dp)
             .fillMaxSize()
             .verticalScroll(scrollState)
@@ -40,20 +48,24 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
         OutlinedTextFieldValidation(
             field = state.name,
             label = stringResource(R.string.register_user_screen_label_name),
-            modifier = Modifier.constrainAs(nameRef) {
-                start.linkTo(parent.start)
-                top.linkTo(parent.top)
-                end.linkTo(parent.end)
+            modifier = Modifier
+                .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_NAME.name)
+                .constrainAs(nameRef) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
 
-                width = Dimension.fillToConstraints
-            },
+                    width = Dimension.fillToConstraints
+                },
             keyboardOptions = PersonNameKeyboardOptions,
         )
 
         OutlinedTextFieldValidation(
             field = state.email,
             label = stringResource(R.string.register_user_screen_label_email),
-            modifier = Modifier.constrainAs(emailRef) {
+            modifier = Modifier
+                .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_EMAIL.name)
+                .constrainAs(emailRef) {
                 start.linkTo(parent.start)
                 top.linkTo(nameRef.bottom)
                 end.linkTo(parent.end)
@@ -66,7 +78,9 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
         OutlinedTextFieldPasswordValidation(
             field = state.password,
             label = stringResource(R.string.register_user_screen_label_password),
-            modifier = Modifier.constrainAs(passwordRef) {
+            modifier = Modifier
+                .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_PASSWORD.name)
+                .constrainAs(passwordRef) {
                 start.linkTo(parent.start)
                 top.linkTo(emailRef.bottom)
                 end.linkTo(parent.end)
@@ -78,6 +92,7 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
 
         DatePickerOutlinedTextFieldValidation(
             modifier = Modifier
+                .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_BIRTH_DATE.name)
                 .constrainAs(birthDayDatePickerRef) {
                     start.linkTo(parent.start)
                     top.linkTo(passwordRef.bottom)
@@ -93,7 +108,9 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
             OutlinedTextFieldValidation(
                 field = state.phone,
                 label = stringResource(R.string.register_user_screen_label_phone),
-                modifier = Modifier.constrainAs(phoneRef) {
+                modifier = Modifier
+                    .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_PHONE.name)
+                    .constrainAs(phoneRef) {
                     start.linkTo(parent.start)
                     top.linkTo(birthDayDatePickerRef.bottom)
                     end.linkTo(parent.end)

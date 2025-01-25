@@ -81,7 +81,7 @@ abstract class AcademyDAO: BaseDAO() {
         and pat.id != :personAcademyTimeId
     """)
     abstract suspend fun getConflictPersonAcademyTime(
-        personAcademyTimeId: String,
+        personAcademyTimeId: String?,
         personId: String,
         dayOfWeek: DayOfWeek,
         start: LocalTime,

@@ -51,6 +51,14 @@ fun <ARG> String.fromJsonNavParamToArgs(clazz: Class<ARG>, gson: Gson = GsonBuil
     return gson.getAdapter(clazz).fromJson(this.formatJsonNavParam())
 }
 
+fun String.toIntOrNull(): Int? {
+    return try {
+        this.toInt()
+    } catch (e: NumberFormatException) {
+        null
+    }
+}
+
 fun String?.searchWordsInText(search: String?): Boolean {
     if (this == null || search == null) {
         return false

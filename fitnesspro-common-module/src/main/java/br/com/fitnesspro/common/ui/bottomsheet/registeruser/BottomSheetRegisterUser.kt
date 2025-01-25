@@ -1,7 +1,10 @@
 package br.com.fitnesspro.common.ui.bottomsheet.registeruser
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.ui.enums.EnumBottomSheetsTestTags.BOTTOM_SHEET_REGISTER_USER
 import br.com.fitnesspro.compose.components.bottomsheet.BottomSheet
 import br.com.fitnesspro.core.R.drawable
 
@@ -20,7 +23,7 @@ fun BottomSheetRegisterUser(
     val items = listOf(
         BottomSheetRegisterUserItem(
             option = EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER,
-            labelResId = R.string.label_student_bottom_sheet_register_user,
+            labelResId = R.string.label_member_bottom_sheet_register_user,
             iconResId = drawable.ic_gym_member_24dp,
             iconDescriptionResId = R.string.label_icon_student_bottom_sheet_register_user_description
         ),
@@ -39,6 +42,7 @@ fun BottomSheetRegisterUser(
     )
 
     BottomSheet(
+        modifier = Modifier.testTag(BOTTOM_SHEET_REGISTER_USER.name),
         items = items,
         onDismissRequest = onDismissRequest,
         onItemClickListener = {

@@ -18,6 +18,7 @@ data class RegisterAcademyUIState(
     val start: TimePickerTextField = TimePickerTextField(),
     val end: TimePickerTextField = TimePickerTextField(),
     var toPersonAcademyTime: TOPersonAcademyTime = TOPersonAcademyTime(),
+    var isEnabledInactivationButton: Boolean = false,
     override val dialogMessage: String = "",
     override val showDialog: Boolean = false,
     override val dialogType: EnumDialogType = EnumDialogType.ERROR,

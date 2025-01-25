@@ -5,7 +5,7 @@ import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.core.security.HashHelper
 import br.com.fitnesspro.core.security.IPasswordHasher
-import br.com.fitnesspro.core.validation.ValidationError
+import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOPerson
 
 class SavePersonMockUseCase(
@@ -19,8 +19,8 @@ class SavePersonMockUseCase(
     saveSchedulerConfigUseCase = saveSchedulerConfigUseCase,
     passwordHasher = passwordHasher
 ) {
-    suspend fun executeInclusionBatch(toPersons: List<TOPerson>): MutableList<ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>> {
-        val validationResults = mutableListOf<ValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>>()
+    suspend fun executeInclusionBatch(toPersons: List<TOPerson>): MutableList<FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>> {
+        val validationResults = mutableListOf<FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>>()
 
         toPersons.forEach {
             val result = validateUser(it)

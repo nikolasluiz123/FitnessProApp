@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,10 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.BottomSheetRegisterUser
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.OnBottomSheetRegisterUserItemClick
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginClick
+import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_EMAIL_FIELD
+import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_LOGIN_BUTTON
+import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_PASSWORD_FIELD
+import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_REGISTER_BUTTON
 import br.com.fitnesspro.common.ui.state.LoginUIState
 import br.com.fitnesspro.common.ui.viewmodel.LoginViewModel
 import br.com.fitnesspro.compose.components.buttons.FitnessProButton
@@ -141,26 +146,30 @@ fun LoginScreen(
                     )
 
                     OutlinedTextFieldValidation(
-                        modifier = Modifier.constrainAs(emailRef) {
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            top.linkTo(parent.top)
+                        modifier = Modifier
+                            .testTag(LOGIN_SCREEN_EMAIL_FIELD.name)
+                            .constrainAs(emailRef) {
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                top.linkTo(parent.top)
 
-                            width = Dimension.fillToConstraints
-                        },
+                                width = Dimension.fillToConstraints
+                            },
                         field = state.email,
                         label = stringResource(R.string.login_screen_label_user),
                         keyboardOptions = EmailKeyboardOptions,
                     )
 
                     OutlinedTextFieldPasswordValidation(
-                        modifier = Modifier.constrainAs(passwordRef) {
-                            start.linkTo(emailRef.start)
-                            end.linkTo(emailRef.end)
-                            top.linkTo(emailRef.bottom, margin = 8.dp)
+                        modifier = Modifier
+                            .testTag(LOGIN_SCREEN_PASSWORD_FIELD.name)
+                            .constrainAs(passwordRef) {
+                                start.linkTo(emailRef.start)
+                                end.linkTo(emailRef.end)
+                                top.linkTo(emailRef.bottom, margin = 8.dp)
 
-                            width = Dimension.fillToConstraints
-                        },
+                                width = Dimension.fillToConstraints
+                            },
                         field = state.password,
                         label = stringResource(R.string.login_screen_label_password),
                         keyboardOptions = LastPasswordKeyboardOptions,
@@ -169,7 +178,9 @@ fun LoginScreen(
                     createHorizontalChain(registerButtonRef, loginButtonRef)
 
                     FitnessProButton(
-                        modifier = Modifier.constrainAs(loginButtonRef) {
+                        modifier = Modifier
+                            .testTag(LOGIN_SCREEN_LOGIN_BUTTON.name)
+                            .constrainAs(loginButtonRef) {
                                 start.linkTo(parent.start)
                                 top.linkTo(passwordRef.bottom, margin = 8.dp)
 
@@ -185,14 +196,16 @@ fun LoginScreen(
                     )
 
                     FitnessProOutlinedButton(
-                        modifier = Modifier.constrainAs(registerButtonRef) {
-                            end.linkTo(parent.end)
-                            top.linkTo(passwordRef.bottom, margin = 8.dp)
+                        modifier = Modifier
+                            .testTag(LOGIN_SCREEN_REGISTER_BUTTON.name)
+                            .constrainAs(registerButtonRef) {
+                                end.linkTo(parent.end)
+                                top.linkTo(passwordRef.bottom, margin = 8.dp)
 
-                            horizontalChainWeight = 0.45F
+                                horizontalChainWeight = 0.45F
 
-                            width = Dimension.fillToConstraints
-                        },
+                                width = Dimension.fillToConstraints
+                            },
                         label = stringResource(R.string.login_screen_label_button_register),
                         onClickListener = { openBottomSheet = true }
                     )

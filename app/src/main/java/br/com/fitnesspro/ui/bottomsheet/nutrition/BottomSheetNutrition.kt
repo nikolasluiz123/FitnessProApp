@@ -1,7 +1,10 @@
 package br.com.fitnesspro.ui.bottomsheet.nutrition
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import br.com.fitnesspro.R
+import br.com.fitnesspro.common.ui.enums.EnumBottomSheetsTestTags.BOTTOM_SHEET_NUTRITION
 import br.com.fitnesspro.compose.components.bottomsheet.BottomSheet
 import br.com.fitnesspro.core.R.drawable
 import br.com.fitnesspro.model.enums.EnumUserType
@@ -64,6 +67,7 @@ fun BottomSheetNutrition(
     }
 
     BottomSheet(
+        modifier = Modifier.testTag(BOTTOM_SHEET_NUTRITION.name),
         items = items,
         onDismissRequest = onDismissRequest,
         onItemClickListener = {

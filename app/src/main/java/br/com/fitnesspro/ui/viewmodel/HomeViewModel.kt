@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.ui.state.HomeUIState
@@ -55,6 +56,20 @@ class HomeViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun logout(onSuccess: () -> Unit) {
+        _uiState.value.onShowDialog?.onShow(
+            type = EnumDialogType.CONFIRMATION,
+            message = context.getString(R.string.home_screen_dialog_logout_message),
+            onConfirm = {
+                viewModelScope.launch {
+                    userRepository.logout()
+                    onSuccess()
+                }
+            },
+            onCancel = { }
+        )
     }
 
     private fun getTitle(toPerson: TOPerson): String {

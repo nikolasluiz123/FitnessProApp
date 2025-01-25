@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -64,6 +65,12 @@ import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnDayClick
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnNavigateToCompromise
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreenTestTags.SCHEDULER_SCREEN_BACK_MONTH_BUTTON
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreenTestTags.SCHEDULER_SCREEN_BUTTON_CONFIG
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreenTestTags.SCHEDULER_SCREEN_DAY_CELL
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreenTestTags.SCHEDULER_SCREEN_FORWARD_MONTH_BUTTON
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreenTestTags.SCHEDULER_SCREEN_LABEL_YEAR_MONTH
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreenTestTags.SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB
 import br.com.fitnesspro.scheduler.ui.state.SchedulerUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerViewModel
 import java.time.DayOfWeek
@@ -107,13 +114,17 @@ fun SchedulerScreen(
                 showMenuWithLogout = false,
                 onBackClick = onBackClick,
                 actions = {
-                    IconButtonConfig(onClick = onNavigateToConfig)
+                    IconButtonConfig(
+                        modifier = Modifier.testTag(SCHEDULER_SCREEN_BUTTON_CONFIG.name),
+                        onClick = onNavigateToConfig
+                    )
                 }
             )
         },
         floatingActionButton = {
             if (state.isVisibleFabRecurrentScheduler) {
                 FitnessProFloatingActionButton(
+                    modifier = Modifier.testTag(SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB.name),
                     content = {
                         Icon(
                             painter = painterResource(br.com.fitnesspro.core.R.drawable.ic_edit_calendar_24dp),
@@ -185,11 +196,13 @@ private fun SchedulerHeader(
         val (monthRef, backRef, forwardRef) = createRefs()
 
         IconButton(
-            modifier = Modifier.constrainAs(backRef) {
-                start.linkTo(parent.start)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            },
+            modifier = Modifier
+                .testTag(SCHEDULER_SCREEN_BACK_MONTH_BUTTON.name)
+                .constrainAs(backRef) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                },
             onClick = {
                 onBackClick(selectedYearMonth.minusMonths(1))
             }
@@ -201,23 +214,27 @@ private fun SchedulerHeader(
         }
 
         Text(
-            modifier = Modifier.constrainAs(monthRef) {
-                start.linkTo(backRef.end)
-                end.linkTo(forwardRef.start)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            },
+            modifier = Modifier
+                .testTag(SCHEDULER_SCREEN_LABEL_YEAR_MONTH.name)
+                .constrainAs(monthRef) {
+                    start.linkTo(backRef.end)
+                    end.linkTo(forwardRef.start)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                },
             text = selectedYearMonth.format(EnumDateTimePatterns.MONTH_YEAR),
             style = LabelTextStyle,
             color = GREY_800
         )
 
         IconButton(
-            modifier = Modifier.constrainAs(forwardRef) {
-                end.linkTo(parent.end)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            },
+            modifier = Modifier
+                .testTag(SCHEDULER_SCREEN_FORWARD_MONTH_BUTTON.name)
+                .constrainAs(forwardRef) {
+                    end.linkTo(parent.end)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                },
             onClick = {
                 onForwardClick(selectedYearMonth.plusMonths(1))
             }
@@ -404,6 +421,7 @@ private fun DayCell(
             .padding(4.dp)
             .size(40.dp)
             .background(color = style.backgroundColor, shape = CircleShape)
+            .testTag(SCHEDULER_SCREEN_DAY_CELL.name)
             .clickable(
                 interactionSource = interactionSource,
                 indication = ripple(bounded = true, radius = 20.dp, color = Color.Gray)

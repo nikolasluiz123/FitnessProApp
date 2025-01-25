@@ -111,3 +111,5 @@ fun timeNow(): LocalTime = LocalTime.now()
 fun dateNow(): LocalDate = LocalDate.now()
 
 fun dateTimeNow(): LocalDateTime = LocalDateTime.now()
+
+fun yearMonthNow(): YearMonth = YearMonth.now()

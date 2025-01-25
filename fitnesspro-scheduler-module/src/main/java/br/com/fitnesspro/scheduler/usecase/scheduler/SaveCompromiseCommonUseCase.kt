@@ -4,7 +4,7 @@ import android.content.Context
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.timeNow
-import br.com.fitnesspro.core.validation.ValidationError
+import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
@@ -27,7 +27,7 @@ abstract class SaveCompromiseCommonUseCase(
     protected val userRepository: UserRepository
 ) {
 
-    protected fun validateMember(scheduler: TOScheduler): ValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    protected fun validateMember(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         return when {
             scheduler.academyMemberPersonId.isNullOrEmpty() -> {
                 val message = context.getString(
@@ -35,7 +35,7 @@ abstract class SaveCompromiseCommonUseCase(
                     context.getString(MEMBER.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = MEMBER,
                     validationType = REQUIRED_MEMBER,
                     message = message
@@ -46,7 +46,7 @@ abstract class SaveCompromiseCommonUseCase(
         }
     }
 
-    protected fun validateHourStart(scheduler: TOScheduler): ValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    protected fun validateHourStart(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         val actualHour = timeNow()
         val start = scheduler.start
 
@@ -57,7 +57,7 @@ abstract class SaveCompromiseCommonUseCase(
                     context.getString(HOUR_START.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = HOUR_START,
                     validationType = REQUIRED_HOUR_START,
                     message = message
@@ -67,7 +67,7 @@ abstract class SaveCompromiseCommonUseCase(
             start!! < actualHour && scheduler.scheduledDate == dateNow() -> {
                 val message = context.getString(R.string.save_compromise_start_hour_require_future)
 
-                ValidationError(
+                FieldValidationError(
                     field = HOUR_START,
                     validationType = START_HOUR_IN_PAST_TODAY,
                     message = message
@@ -77,7 +77,7 @@ abstract class SaveCompromiseCommonUseCase(
             start <= actualHour.plusHours(1) && scheduler.scheduledDate == dateNow() -> {
                 val message = context.getString(R.string.save_compromise_start_hour_require_antecedence)
 
-                ValidationError(
+                FieldValidationError(
                     field = HOUR_START,
                     validationType = START_HOUR_WITHOUT_ONE_HOUR_ANTECEDENCE_TODAY,
                     message = message
@@ -88,7 +88,7 @@ abstract class SaveCompromiseCommonUseCase(
         }
     }
 
-    protected fun validateHourEnd(scheduler: TOScheduler): ValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    protected fun validateHourEnd(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         return when {
             scheduler.end == null -> {
                 val message = context.getString(
@@ -96,7 +96,7 @@ abstract class SaveCompromiseCommonUseCase(
                     context.getString(HOUR_END.labelResId)
                 )
 
-                ValidationError(
+                FieldValidationError(
                     field = HOUR_END,
                     validationType = REQUIRED_HOUR_END,
                     message = message
@@ -107,14 +107,14 @@ abstract class SaveCompromiseCommonUseCase(
         }
     }
 
-    protected fun validateHourPeriod(scheduler: TOScheduler): ValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    protected fun validateHourPeriod(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         if (scheduler.start == null || scheduler.end == null) return null
 
         return when {
             scheduler.start!!.isAfter(scheduler.end!!) || scheduler.start == scheduler.end -> {
                 val message = context.getString(R.string.save_compromise_invalid_hour_period)
 
-                ValidationError(
+                FieldValidationError(
                     field = null,
                     validationType = INVALID_HOUR_PERIOD,
                     message = message
@@ -125,7 +125,7 @@ abstract class SaveCompromiseCommonUseCase(
         }
     }
 
-    protected fun validateObservation(scheduler: TOScheduler): ValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    protected fun validateObservation(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         val observation = scheduler.observation?.trim()
 
         return if (!observation.isNullOrEmpty() && observation.length > OBSERVATION.maxLength) {
@@ -136,7 +136,7 @@ abstract class SaveCompromiseCommonUseCase(
                 OBSERVATION.maxLength
             )
 
-            ValidationError(
+            FieldValidationError(
                 field = OBSERVATION,
                 validationType = EnumCompromiseValidationTypes.MAX_LENGTH_OBSERVATION,
                 message = message

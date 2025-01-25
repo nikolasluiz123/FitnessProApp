@@ -22,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -36,7 +37,10 @@ import br.com.fitnesspro.compose.components.buttons.icons.IconButtonSearch
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonTime
 import br.com.fitnesspro.compose.components.dialog.FitnessProDatePickerDialog
 import br.com.fitnesspro.compose.components.dialog.FitnessProPagedListDialog
-import br.com.fitnesspro.compose.components.dialog.TimePickerInput
+import br.com.fitnesspro.compose.components.dialog.TimePickerDialog
+import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_ERROR_MESSAGE
+import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_ERROR_TRAILING_ICON
+import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_TRAILING_ICON
 import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
 import br.com.fitnesspro.compose.components.fields.state.ITextField
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
@@ -44,6 +48,8 @@ import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
 import br.com.fitnesspro.compose.components.fields.transformation.DateVisualTransformation
 import br.com.fitnesspro.compose.components.fields.transformation.TimeVisualTransformation
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.extensions.parseToLocalTime
 import br.com.fitnesspro.core.menu.ITupleListItem
 import br.com.fitnesspro.core.theme.FieldErrorTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -66,8 +72,9 @@ fun OutlinedTextFieldValidation(
     trailingIcon: @Composable (() -> Unit)? = {
         if (field.errorMessage.isNotEmpty())
             Icon(
-                Icons.Default.Warning,
-                "error",
+                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_ERROR_TRAILING_ICON.name),
+                imageVector = Icons.Default.Warning,
+                contentDescription = "error",
                 tint = MaterialTheme.colorScheme.error
             )
     },
@@ -200,8 +207,9 @@ fun OutlinedTextFieldValidation(
     trailingIcon: @Composable (() -> Unit)? = {
         if (error.isNotEmpty())
             Icon(
-                Icons.Default.Warning,
-                "error",
+                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_ERROR_TRAILING_ICON.name),
+                imageVector = Icons.Default.Warning,
+                contentDescription = "error",
                 tint = MaterialTheme.colorScheme.error
             )
     },
@@ -236,6 +244,7 @@ fun OutlinedTextFieldValidation(
         supportingText = {
             if (error.isNotEmpty()) {
                 Text(
+                    modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_ERROR_MESSAGE.name),
                     text = error,
                     color = MaterialTheme.colorScheme.error,
                     style = FieldErrorTextStyle
@@ -352,7 +361,10 @@ fun OutlinedTextFieldPasswordValidation(
                 description = stringResource(R.string.description_icon_show_password)
             }
 
-            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+            IconButton(
+                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),
+                onClick = { passwordVisible = !passwordVisible }
+            ) {
                 Icon(painter = painterResource(resource), description, tint = MaterialTheme.colorScheme.onBackground)
             }
         },
@@ -374,7 +386,9 @@ fun TimePickerOutlinedTextFieldValidation(
         label = fieldLabel,
         modifier = modifier,
         trailingIcon = {
-            IconButtonTime { field.onTimePickerOpenChange(true) }
+            IconButtonTime(
+                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name)
+            ) { field.onTimePickerOpenChange(true) }
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
@@ -385,8 +399,9 @@ fun TimePickerOutlinedTextFieldValidation(
     )
 
     if (field.timePickerOpen) {
-        TimePickerInput(
+        TimePickerDialog(
             title = timePickerTitle,
+            value = field.value.parseToLocalTime(EnumDateTimePatterns.TIME_ONLY_NUMBERS),
             onConfirm = field.onTimeChange,
             onDismiss = field.onTimeDismiss
         )
@@ -405,7 +420,9 @@ fun DatePickerOutlinedTextFieldValidation(
         label = fieldLabel,
         modifier = modifier,
         trailingIcon = {
-            IconButtonCalendar { field.onDatePickerOpenChange(true) }
+            IconButtonCalendar(
+                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name)
+            ) { field.onDatePickerOpenChange(true) }
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
@@ -437,7 +454,10 @@ fun <T: ITupleListItem> PagedListDialogOutlinedTextFieldValidation(
         label = fieldLabel,
         modifier = modifier,
         trailingIcon = {
-            IconButtonSearch(onClick = field.onShow)
+            IconButtonSearch(
+                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),
+                onClick = field.onShow
+            )
         }
     )
 

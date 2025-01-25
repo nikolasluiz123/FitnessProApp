@@ -11,10 +11,12 @@ import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerCo
 import br.com.fitnesspro.compose.components.fields.state.SwitchButtonField
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME_ONLY_NUMBERS
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.validation.ValidationError
+import br.com.fitnesspro.core.extensions.parseToLocalTime
+import br.com.fitnesspro.core.extensions.toIntOrNull
+import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.scheduler.ui.state.SchedulerConfigUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,14 +43,14 @@ class SchedulerConfigViewModel @Inject constructor(
     private fun initialUIStateLoad() {
         _uiState.update { state ->
             state.copy(
-                alarm = initializeAlarmSwitchField(state),
-                notification = initializeNotificationSwitchField(state),
-                minEventDensity = initializeMinEventDensityTextField(state),
-                maxEventDensity = initializeMaxEventDensityTextField(state),
-                startWorkTime = initializeStartWorkTimeTimePickerField(state),
-                endWorkTime = initializeEndWorkTimeTimePickerField(state),
-                startBreakTime = initializeStartBreakTimeTimePickerField(state),
-                endBreakTime = initializeEndBreakTimeTimePickerField(state),
+                alarm = initializeAlarmSwitchField(),
+                notification = initializeNotificationSwitchField(),
+                minEventDensity = initializeMinEventDensityTextField(),
+                maxEventDensity = initializeMaxEventDensityTextField(),
+                startWorkTime = initializeStartWorkTimeTimePickerField(),
+                endWorkTime = initializeEndWorkTimeTimePickerField(),
+                startBreakTime = initializeStartBreakTimeTimePickerField(),
+                endBreakTime = initializeEndBreakTimeTimePickerField(),
                 onShowDialog = initializeOnShowDialog(),
                 onHideDialog = initializeOnHideDialog(),
             )
@@ -76,16 +78,16 @@ class SchedulerConfigViewModel @Inject constructor(
                     value = toConfig.maxScheduleDensity.toString()
                 ),
                 startWorkTime = _uiState.value.startWorkTime.copy(
-                    value = toConfig.startWorkTime!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
+                    value = toConfig.startWorkTime!!.format(TIME_ONLY_NUMBERS)
                 ),
                 endWorkTime = _uiState.value.endWorkTime.copy(
-                    value = toConfig.endWorkTime!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
+                    value = toConfig.endWorkTime!!.format(TIME_ONLY_NUMBERS)
                 ),
                 startBreakTime = _uiState.value.startBreakTime.copy(
-                    value = toConfig.startBreakTime!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
+                    value = toConfig.startBreakTime!!.format(TIME_ONLY_NUMBERS)
                 ),
                 endBreakTime = _uiState.value.endBreakTime.copy(
-                    value = toConfig.endBreakTime!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
+                    value = toConfig.endBreakTime!!.format(TIME_ONLY_NUMBERS)
                 )
             )
         }
@@ -107,21 +109,23 @@ class SchedulerConfigViewModel @Inject constructor(
         }
     }
 
-    private fun initializeEndBreakTimeTimePickerField(state: SchedulerConfigUIState): TimePickerTextField {
+    private fun initializeEndBreakTimeTimePickerField(): TimePickerTextField {
         return TimePickerTextField(
             onTimePickerOpenChange = {
                 _uiState.value = _uiState.value.copy(
-                    endBreakTime = state.endBreakTime.copy(timePickerOpen = it)
+                    endBreakTime = _uiState.value.endBreakTime.copy(timePickerOpen = it)
                 )
             },
             onTimeChange = { newTime ->
                 _uiState.value = _uiState.value.copy(
                     endBreakTime = _uiState.value.endBreakTime.copy(
-                        value = newTime.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS),
+                        value = newTime.format(TIME_ONLY_NUMBERS),
                         errorMessage = ""
                     ),
                     toConfig = _uiState.value.toConfig.copy(endBreakTime = newTime)
                 )
+
+                _uiState.value.endBreakTime.onTimeDismiss()
             },
             onTimeDismiss = {
                 _uiState.value = _uiState.value.copy(
@@ -134,6 +138,9 @@ class SchedulerConfigViewModel @Inject constructor(
                         endBreakTime = _uiState.value.endBreakTime.copy(
                             value = text,
                             errorMessage = ""
+                        ),
+                        toConfig = _uiState.value.toConfig.copy(
+                            endBreakTime = text.parseToLocalTime(TIME_ONLY_NUMBERS)
                         )
                     )
                 }
@@ -141,21 +148,23 @@ class SchedulerConfigViewModel @Inject constructor(
         )
     }
 
-    private fun initializeStartBreakTimeTimePickerField(state: SchedulerConfigUIState): TimePickerTextField {
+    private fun initializeStartBreakTimeTimePickerField(): TimePickerTextField {
         return TimePickerTextField(
             onTimePickerOpenChange = {
                 _uiState.value = _uiState.value.copy(
-                    startBreakTime = state.startBreakTime.copy(timePickerOpen = it)
+                    startBreakTime = _uiState.value.startBreakTime.copy(timePickerOpen = it)
                 )
             },
             onTimeChange = { newTime ->
                 _uiState.value = _uiState.value.copy(
                     startBreakTime = _uiState.value.startBreakTime.copy(
-                        value = newTime.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS),
+                        value = newTime.format(TIME_ONLY_NUMBERS),
                         errorMessage = ""
                     ),
                     toConfig = _uiState.value.toConfig.copy(startBreakTime = newTime)
                 )
+
+                _uiState.value.startBreakTime.onTimeDismiss()
             },
             onTimeDismiss = {
                 _uiState.value = _uiState.value.copy(
@@ -168,6 +177,9 @@ class SchedulerConfigViewModel @Inject constructor(
                         startBreakTime = _uiState.value.startBreakTime.copy(
                             value = text,
                             errorMessage = ""
+                        ),
+                        toConfig = _uiState.value.toConfig.copy(
+                            startBreakTime = text.parseToLocalTime(TIME_ONLY_NUMBERS)
                         )
                     )
                 }
@@ -175,21 +187,23 @@ class SchedulerConfigViewModel @Inject constructor(
         )
     }
 
-    private fun initializeEndWorkTimeTimePickerField(state: SchedulerConfigUIState): TimePickerTextField {
+    private fun initializeEndWorkTimeTimePickerField(): TimePickerTextField {
         return TimePickerTextField(
             onTimePickerOpenChange = {
                 _uiState.value = _uiState.value.copy(
-                    endWorkTime = state.endWorkTime.copy(timePickerOpen = it)
+                    endWorkTime = _uiState.value.endWorkTime.copy(timePickerOpen = it)
                 )
             },
             onTimeChange = { newTime ->
                 _uiState.value = _uiState.value.copy(
                     endWorkTime = _uiState.value.endWorkTime.copy(
-                        value = newTime.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS),
+                        value = newTime.format(TIME_ONLY_NUMBERS),
                         errorMessage = ""
                     ),
                     toConfig = _uiState.value.toConfig.copy(endWorkTime = newTime)
                 )
+
+                _uiState.value.endWorkTime.onTimeDismiss()
             },
             onTimeDismiss = {
                 _uiState.value = _uiState.value.copy(
@@ -202,6 +216,9 @@ class SchedulerConfigViewModel @Inject constructor(
                         endWorkTime = _uiState.value.endWorkTime.copy(
                             value = text,
                             errorMessage = ""
+                        ),
+                        toConfig = _uiState.value.toConfig.copy(
+                            endWorkTime = text.parseToLocalTime(TIME_ONLY_NUMBERS)
                         )
                     )
                 }
@@ -209,17 +226,17 @@ class SchedulerConfigViewModel @Inject constructor(
         )
     }
 
-    private fun initializeStartWorkTimeTimePickerField(state: SchedulerConfigUIState): TimePickerTextField {
+    private fun initializeStartWorkTimeTimePickerField(): TimePickerTextField {
         return TimePickerTextField(
-            onTimePickerOpenChange = {
+            onTimePickerOpenChange = { newOpen ->
                 _uiState.value = _uiState.value.copy(
-                    startWorkTime = state.startWorkTime.copy(timePickerOpen = it)
+                    startWorkTime = _uiState.value.startWorkTime.copy(timePickerOpen = newOpen)
                 )
             },
             onTimeChange = { newTime ->
                 _uiState.value = _uiState.value.copy(
                     startWorkTime = _uiState.value.startWorkTime.copy(
-                        value = newTime.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS),
+                        value = newTime.format(TIME_ONLY_NUMBERS),
                         errorMessage = ""
                     ),
                     toConfig = _uiState.value.toConfig.copy(startWorkTime = newTime)
@@ -230,12 +247,15 @@ class SchedulerConfigViewModel @Inject constructor(
                     startWorkTime = _uiState.value.startWorkTime.copy(timePickerOpen = false)
                 )
             },
-            onChange = { text ->
-                if (text.isDigitsOnly()) {
+            onChange = {
+                if (it.isDigitsOnly()) {
                     _uiState.value = _uiState.value.copy(
                         startWorkTime = _uiState.value.startWorkTime.copy(
-                            value = text,
+                            value = it,
                             errorMessage = ""
+                        ),
+                        toConfig = _uiState.value.toConfig.copy(
+                            startWorkTime = it.parseToLocalTime(TIME_ONLY_NUMBERS)
                         )
                     )
                 }
@@ -243,44 +263,48 @@ class SchedulerConfigViewModel @Inject constructor(
         )
     }
 
-    private fun initializeMaxEventDensityTextField(state: SchedulerConfigUIState): TextField {
+    private fun initializeMaxEventDensityTextField(): TextField {
         return TextField(
             onChange = { value ->
-                _uiState.value = _uiState.value.copy(
-                    maxEventDensity = state.maxEventDensity.copy(value = value),
-                    toConfig = _uiState.value.toConfig.copy(maxScheduleDensity = value.ifEmpty { null }?.toInt())
-                )
+                if (value.isDigitsOnly()) {
+                    _uiState.value = _uiState.value.copy(
+                        maxEventDensity = _uiState.value.maxEventDensity.copy(value = value),
+                        toConfig = _uiState.value.toConfig.copy(maxScheduleDensity = value.toIntOrNull())
+                    )
+                }
             }
         )
     }
 
-    private fun initializeMinEventDensityTextField(state: SchedulerConfigUIState): TextField {
+    private fun initializeMinEventDensityTextField(): TextField {
         return TextField(
             onChange = { value ->
-                _uiState.value = _uiState.value.copy(
-                    minEventDensity = state.minEventDensity.copy(value = value),
-                    toConfig = _uiState.value.toConfig.copy(minScheduleDensity = value.ifEmpty { null }?.toInt())
-                )
+                if (value.isDigitsOnly()) {
+                    _uiState.value = _uiState.value.copy(
+                        minEventDensity = _uiState.value.minEventDensity.copy(value = value),
+                        toConfig = _uiState.value.toConfig.copy(minScheduleDensity = value.toIntOrNull())
+                    )
+                }
             }
         )
     }
 
-    private fun initializeNotificationSwitchField(state: SchedulerConfigUIState): SwitchButtonField {
+    private fun initializeNotificationSwitchField(): SwitchButtonField {
         return SwitchButtonField(
             onCheckedChange = { checked ->
                 _uiState.value = _uiState.value.copy(
-                    notification = state.notification.copy(checked = checked),
+                    notification = _uiState.value.notification.copy(checked = checked),
                     toConfig = _uiState.value.toConfig.copy(notification = checked)
                 )
             }
         )
     }
 
-    private fun initializeAlarmSwitchField(state: SchedulerConfigUIState): SwitchButtonField {
+    private fun initializeAlarmSwitchField(): SwitchButtonField {
         return SwitchButtonField(
             onCheckedChange = { checked ->
                 _uiState.value = _uiState.value.copy(
-                    alarm = state.alarm.copy(checked = checked),
+                    alarm = _uiState.value.alarm.copy(checked = checked),
                     toConfig = _uiState.value.toConfig.copy(alarm = checked)
                 )
             }
@@ -302,7 +326,7 @@ class SchedulerConfigViewModel @Inject constructor(
         }
     }
 
-    private fun showValidationMessage(validationResults: MutableList<ValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>>) {
+    private fun showValidationMessage(validationResults: MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>>) {
         val dialogValidations = validationResults.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {
