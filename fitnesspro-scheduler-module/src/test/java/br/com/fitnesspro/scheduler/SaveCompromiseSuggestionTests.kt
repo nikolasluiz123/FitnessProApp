@@ -1,6 +1,5 @@
 package br.com.fitnesspro.scheduler
 
-import android.content.Context
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.core.extensions.dateNow
@@ -23,27 +22,25 @@ import br.com.fitnesspro.to.TOScheduler
 import br.com.fitnesspro.to.TOUser
 import io.kotest.matchers.collections.shouldContainOnly
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
 
-class SaveCompromiseSuggestionTests {
+class SaveCompromiseSuggestionTests: BaseUnitTests() {
 
-    private lateinit var context: Context
     private lateinit var schedulerRepository: SchedulerRepository
     private lateinit var userRepository: UserRepository
     private lateinit var academyRepository: AcademyRepository
     private lateinit var saveCompromiseSuggestionUseCase: SaveCompromiseSuggestionUseCase
 
     @BeforeEach
-    fun setUp() {
-        context = mockk(relaxed = true)
+    override fun setUp() {
+        super.setUp()
+
         schedulerRepository = mockk(relaxed = true)
         userRepository = mockk(relaxed = true)
         academyRepository = mockk(relaxed = true)
@@ -53,15 +50,10 @@ class SaveCompromiseSuggestionTests {
             userRepository,
             academyRepository
         )
-
-        mockkStatic(::dateNow, ::timeNow)
-
-        every { dateNow() } returns LocalDate.of(2025, 1, 15)
-        every { timeNow() } returns LocalTime.of(10, 0)
     }
 
     @Test
-    fun should_fail_when_hour_start_is_null(): Unit = runBlocking {
+    fun should_fail_when_hour_start_is_null(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
         mockAcademyTimeList()
@@ -82,7 +74,7 @@ class SaveCompromiseSuggestionTests {
     }
 
     @Test
-    fun should_fail_when_hour_start_is_in_the_past_and_today(): Unit = runBlocking {
+    fun should_fail_when_hour_start_is_in_the_past_and_today(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
         mockAcademyTimeList()
@@ -103,7 +95,7 @@ class SaveCompromiseSuggestionTests {
     }
 
     @Test
-    fun should_fail_when_hour_start_without_one_hour_antecedence(): Unit = runBlocking {
+    fun should_fail_when_hour_start_without_one_hour_antecedence(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
         mockAcademyTimeList()
@@ -124,7 +116,7 @@ class SaveCompromiseSuggestionTests {
     }
 
     @Test
-    fun should_fail_when_hour_start_is_out_of_work_time_range(): Unit = runBlocking {
+    fun should_fail_when_hour_start_is_out_of_work_time_range(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
         mockAcademyTimeList()
@@ -145,7 +137,7 @@ class SaveCompromiseSuggestionTests {
     }
 
     @Test
-    fun should_fail_when_hour_end_is_null(): Unit = runBlocking {
+    fun should_fail_when_hour_end_is_null(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
         mockAcademyTimeList()
@@ -166,7 +158,7 @@ class SaveCompromiseSuggestionTests {
     }
 
     @Test
-    fun should_fail_when_hour_end_is_out_of_work_time_range(): Unit = runBlocking {
+    fun should_fail_when_hour_end_is_out_of_work_time_range(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
         mockAcademyTimeList()
@@ -187,7 +179,7 @@ class SaveCompromiseSuggestionTests {
     }
 
     @Test
-    fun should_fail_when_hour_start_and_end_is_out_of_work_time_range(): Unit = runBlocking {
+    fun should_fail_when_hour_start_and_end_is_out_of_work_time_range(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
         mockAcademyTimeList()
@@ -208,7 +200,7 @@ class SaveCompromiseSuggestionTests {
     }
 
     @Test
-    fun should_fail_when_observation_is_greater_than_4096_characters(): Unit = runBlocking {
+    fun should_fail_when_observation_is_greater_than_4096_characters(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
         mockAcademyTimeList()
@@ -230,7 +222,7 @@ class SaveCompromiseSuggestionTests {
     }
 
     @Test
-    fun should_fail_when_has_conflict(): Unit = runBlocking {
+    fun should_fail_when_has_conflict(): Unit = runTest {
         prepareMockHasConflictTrue()
         prepareMockGetTOPersonByIdPersonalTrainer()
 

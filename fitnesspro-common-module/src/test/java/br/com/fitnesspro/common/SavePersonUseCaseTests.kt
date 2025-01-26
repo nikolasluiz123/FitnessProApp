@@ -1,6 +1,5 @@
 package br.com.fitnesspro.common
 
-import android.content.Context
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.person.EnumPersonValidationTypes
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
@@ -11,34 +10,28 @@ import br.com.fitnesspro.core.validation.getValidations
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
-import com.github.javafaker.Faker
 import io.kotest.matchers.collections.shouldContainOnly
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.slot
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.ZoneId
-import java.util.Locale
 import java.util.UUID
 
-class SavePersonUseCaseTests {
+class SavePersonUseCaseTests: BaseUnitTests() {
 
-    private lateinit var context: Context
-    private lateinit var faker: Faker
     private lateinit var userRepository: UserRepository
     private lateinit var saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase
     private lateinit var savePersonUseCase: SavePersonUseCase
     private lateinit var passwordHasher: IPasswordHasher
 
     @BeforeEach
-    fun setUp() {
-        Locale.setDefault(Locale("pt", "BR"))
+    override fun setUp() {
+        super.setUp()
 
-        context = mockk(relaxed = true)
-        faker = Faker(Locale.getDefault())
         userRepository = mockk(relaxed = true)
         saveSchedulerConfigUseCase = mockk(relaxed = true)
         passwordHasher = mockk(relaxed = true)
@@ -60,7 +53,7 @@ class SavePersonUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_email_not_informed(): Unit = runBlocking {
+    fun should_fail_when_email_not_informed(): Unit = runTest {
         coEvery { userRepository.hasUserWithEmail(any(), any()) } returns false
 
         val toPerson = TOPerson(
@@ -79,7 +72,7 @@ class SavePersonUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_email_is_greater_than_64_characters(): Unit = runBlocking {
+    fun should_fail_when_email_is_greater_than_64_characters(): Unit = runTest {
         coEvery { userRepository.hasUserWithEmail(any(), any()) } returns false
 
         val toPerson = TOPerson(
@@ -99,7 +92,7 @@ class SavePersonUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_email_is_invalid(): Unit = runBlocking {
+    fun should_fail_when_email_is_invalid(): Unit = runTest {
         coEvery { userRepository.hasUserWithEmail(any(), any()) } returns false
 
         val toPersonWithEmailWithoutDomainSeparator = TOPerson(
@@ -137,7 +130,7 @@ class SavePersonUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_email_is_in_use(): Unit = runBlocking {
+    fun should_fail_when_email_is_in_use(): Unit = runTest {
         coEvery { userRepository.hasUserWithEmail(any(), any()) } returns true
 
         val toPerson = TOPerson(
@@ -157,7 +150,7 @@ class SavePersonUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_password_is_null_or_empty(): Unit = runBlocking {
+    fun should_fail_when_password_is_null_or_empty(): Unit = runTest {
         coEvery { userRepository.hasUserWithEmail(any(), any()) } returns false
 
         val toPersonWithNullPassword = TOPerson(
@@ -195,8 +188,8 @@ class SavePersonUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_password_is_greater_than_1024_characters(): Unit = runBlocking {
-        val password = "aB3dE5fG7hI9jK1lM2nO3pQ4rS5tU6vW7xY8zA9bC0dE1fG2hI3jK4lM5nO6pQ7rS8tU9vW0xY1zA2bC3dE4fG5hI6jK7lM8nO9pQ0rS1tU2vW3xY4zA5bC6dE7fG8hI9jK0lM1nO2pQ3rS4tU5vW6xY7zA8bC9dE0fG1hI2jK3lM4nO5pQ6rS7tU8vW9xY0zA1bC2dE3fG4hI5jK6lM7nO8pQ9rS0tU1vW2xY3zA4bC5dE6fG7hI8jK9lM0nO1pQ2rS3tU4vW5xY6zA7bC8dE9fG0hI1jK2lM3nO4pQ5rS6tU7vW8xY9zA0bC1dE2fG3hI4jK5lM6nO7pQ8rS9tU0vW1xY2zA3bC4dE5fG6hI7jK8lM9nO0pQ1rS2tU3vW4xY5zA6bC7dE8fG9hI0jK1lM2nO3pQ4rS5tU6vW7xY8zasdasdasdasdfasdfasdfasdfasdqwerituyhoqweiurtyhgweryuitghweoyurihwehjrgweruighweouirhfweouiyrfhweruyifghweyuroighfweruiyfghoweryuifgwerufgweryugwherjghwerouighwerughweyurgohweuryghweuyrghyuwerghuweorhgwyuerghoweryugwherugweorfweyurfgewrgfweyrugfeywrugferyufgwheryufowgerhfuywegweryufgererggyergyoregyuerfgywerugyrfwegyferwgyergyurwefgyuoregyfergyufwergyuferwgyuwergyugyuergyuergyuergyuerwgyuewrgyugeryuwgyurewgyuergyfuregyuferwguyerfwgyuferwgyuerfwgyuerfwgyuerfwgyurefgwyuergyufgyruefwgyurewfgyuerfwgyurefwgyurefwgyurefgyurefwgyurwefgyuerfwgyerfwgyurefgywurgyefuwyguerwfgyuerfwweriu8ewitowerotwioeruitwieuiruiewuhfrweuhirewfhuirefhui"
+    fun should_fail_when_password_is_greater_than_1024_characters(): Unit = runTest {
+        val password = "a".repeat(1025)
 
         coEvery { userRepository.hasUserWithEmail(any(), any()) } returns false
 
@@ -217,7 +210,7 @@ class SavePersonUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_name_not_informed(): Unit = runBlocking {
+    fun should_fail_when_name_not_informed(): Unit = runTest {
         val toPerson = TOPerson(
             name = null,
             birthDate = getFakeBirthDate(),
@@ -235,7 +228,7 @@ class SavePersonUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_name_is_empty(): Unit = runBlocking {
+    fun should_fail_when_name_is_empty(): Unit = runTest {
         val toPerson = TOPerson(
             name = "  ",
             birthDate = getFakeBirthDate(),
@@ -253,7 +246,7 @@ class SavePersonUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_name_is_greater_than_512_characters(): Unit = runBlocking {
+    fun should_fail_when_name_is_greater_than_512_characters(): Unit = runTest {
         val name = "a".repeat(513)
 
         val toPerson = TOPerson(
@@ -273,7 +266,7 @@ class SavePersonUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_birthDate_is_in_the_future(): Unit = runBlocking {
+    fun should_fail_when_birthDate_is_in_the_future(): Unit = runTest {
         val toPerson = TOPerson(
             name = getFakeName(),
             birthDate = dateNow().plusDays(1),
@@ -291,7 +284,7 @@ class SavePersonUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_phone_is_greater_than_11_characters(): Unit = runBlocking {
+    fun should_fail_when_phone_is_greater_than_11_characters(): Unit = runTest {
         val toPerson = TOPerson(
             name = getFakeName(),
             birthDate = getFakeBirthDate(),

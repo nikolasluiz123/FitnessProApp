@@ -1,6 +1,5 @@
 package br.com.fitnesspro.common
 
-import android.content.Context
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.usecase.academy.EnumAcademyValidationTypes
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeUseCase
@@ -12,27 +11,27 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainOnly
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.DayOfWeek
 import java.time.LocalTime
 
-class SavePersonAcademyTimeUseCaseTests {
+class SavePersonAcademyTimeUseCaseTests: BaseUnitTests() {
 
-    private lateinit var context: Context
     private lateinit var academyRepository: AcademyRepository
     private lateinit var savePersonAcademyTimeUseCase: SavePersonAcademyTimeUseCase
 
     @BeforeEach
-    fun setUp() {
-        context = mockk(relaxed = true)
+    override fun setUp() {
+        super.setUp()
+
         academyRepository = mockk(relaxed = true)
         savePersonAcademyTimeUseCase = SavePersonAcademyTimeUseCase(context, academyRepository)
     }
 
     @Test
-    fun should_fail_when_academy_is_null(): Unit = runBlocking {
+    fun should_fail_when_academy_is_null(): Unit = runTest {
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = null,
             timeStart = LocalTime.of(12, 0),
@@ -48,7 +47,7 @@ class SavePersonAcademyTimeUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_timeStart_is_null(): Unit = runBlocking {
+    fun should_fail_when_timeStart_is_null(): Unit = runTest {
 
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = getFakeAcademy(),
@@ -65,7 +64,7 @@ class SavePersonAcademyTimeUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_timeEnd_is_null(): Unit = runBlocking {
+    fun should_fail_when_timeEnd_is_null(): Unit = runTest {
 
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = getFakeAcademy(),
@@ -82,7 +81,7 @@ class SavePersonAcademyTimeUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_timeStart_is_after_timeEnd(): Unit = runBlocking {
+    fun should_fail_when_timeStart_is_after_timeEnd(): Unit = runTest {
 
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = getFakeAcademy(),
@@ -99,7 +98,7 @@ class SavePersonAcademyTimeUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_dayOfWeek_is_null(): Unit = runBlocking {
+    fun should_fail_when_dayOfWeek_is_null(): Unit = runTest {
 
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = getFakeAcademy(),
@@ -116,7 +115,7 @@ class SavePersonAcademyTimeUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_there_is_a_conflict(): Unit = runBlocking {
+    fun should_fail_when_there_is_a_conflict(): Unit = runTest {
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = getFakeAcademy(),
             timeStart = LocalTime.of(12,0),
@@ -132,7 +131,7 @@ class SavePersonAcademyTimeUseCaseTests {
     }
 
     @Test
-    fun should_pass_when_all_fields_are_valid(): Unit = runBlocking {
+    fun should_pass_when_all_fields_are_valid(): Unit = runTest {
         val toPersonAcademyTime = TOPersonAcademyTime(
             toAcademy = getFakeAcademy(),
             timeStart = LocalTime.of(12,0),

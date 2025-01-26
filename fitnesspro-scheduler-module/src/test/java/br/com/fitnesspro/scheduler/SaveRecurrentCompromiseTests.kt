@@ -1,6 +1,5 @@
 package br.com.fitnesspro.scheduler
 
-import android.content.Context
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.timeNow
@@ -16,10 +15,8 @@ import br.com.fitnesspro.to.TOScheduler
 import br.com.fitnesspro.to.TOUser
 import io.kotest.matchers.collections.shouldContainOnly
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.DayOfWeek
@@ -27,15 +24,16 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
 
-class SaveRecurrentCompromiseTests {
+class SaveRecurrentCompromiseTests: BaseUnitTests() {
 
-    private lateinit var context: Context
     private lateinit var schedulerRepository: SchedulerRepository
     private lateinit var userRepository: UserRepository
     private lateinit var saveRecurrentCompromiseUseCase: SaveRecurrentCompromiseUseCase
 
     @BeforeEach
-    fun setUp() {
+    override fun setUp() {
+        super.setUp()
+
         context = mockk(relaxed = true)
         schedulerRepository = mockk(relaxed = true)
         userRepository = mockk(relaxed = true)
@@ -44,15 +42,10 @@ class SaveRecurrentCompromiseTests {
             schedulerRepository,
             userRepository,
         )
-
-        mockkStatic(::dateNow, ::timeNow)
-
-        every { dateNow() } returns LocalDate.of(2025, 1, 15)
-        every { timeNow() } returns LocalTime.of(10, 0)
     }
 
     @Test
-    fun should_fail_when_member_is_null(): Unit = runBlocking {
+    fun should_fail_when_member_is_null(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdAcademyMember()
 
@@ -78,7 +71,7 @@ class SaveRecurrentCompromiseTests {
     }
 
     @Test
-    fun should_fail_when_hour_start_is_null(): Unit = runBlocking {
+    fun should_fail_when_hour_start_is_null(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdAcademyMember()
 
@@ -104,7 +97,7 @@ class SaveRecurrentCompromiseTests {
     }
 
     @Test
-    fun should_fail_when_hour_start_is_in_the_past_and_today(): Unit = runBlocking {
+    fun should_fail_when_hour_start_is_in_the_past_and_today(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdAcademyMember()
 
@@ -130,7 +123,7 @@ class SaveRecurrentCompromiseTests {
     }
 
     @Test
-    fun should_fail_when_hour_start_without_one_hour_antecedence(): Unit = runBlocking {
+    fun should_fail_when_hour_start_without_one_hour_antecedence(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdAcademyMember()
 
@@ -156,7 +149,7 @@ class SaveRecurrentCompromiseTests {
     }
 
     @Test
-    fun should_fail_when_hour_end_is_null(): Unit = runBlocking {
+    fun should_fail_when_hour_end_is_null(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdAcademyMember()
 
@@ -182,7 +175,7 @@ class SaveRecurrentCompromiseTests {
     }
 
     @Test
-    fun should_fail_when_observation_is_greater_than_4096_characters(): Unit = runBlocking {
+    fun should_fail_when_observation_is_greater_than_4096_characters(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdAcademyMember()
 
@@ -209,7 +202,7 @@ class SaveRecurrentCompromiseTests {
     }
 
     @Test
-    fun should_fail_when_has_conflict(): Unit = runBlocking {
+    fun should_fail_when_has_conflict(): Unit = runTest {
         prepareMockHasConflictTrue()
         prepareMockGetTOPersonByIdAcademyMember()
 
@@ -235,7 +228,7 @@ class SaveRecurrentCompromiseTests {
     }
 
     @Test
-    fun should_fail_when_date_start_is_null(): Unit = runBlocking {
+    fun should_fail_when_date_start_is_null(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdAcademyMember()
 
@@ -261,7 +254,7 @@ class SaveRecurrentCompromiseTests {
     }
 
     @Test
-    fun should_fail_when_date_end_is_null(): Unit = runBlocking {
+    fun should_fail_when_date_end_is_null(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdAcademyMember()
 
@@ -287,7 +280,7 @@ class SaveRecurrentCompromiseTests {
     }
 
     @Test
-    fun should_fail_when_date_start_is_after_date_end_or_equals(): Unit = runBlocking {
+    fun should_fail_when_date_start_is_after_date_end_or_equals(): Unit = runTest {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdAcademyMember()
 

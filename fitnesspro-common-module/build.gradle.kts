@@ -51,6 +51,8 @@ android {
 }
 
 tasks.withType<Test> {
+    jvmArgs("--add-opens=java.base/java.time=ALL-UNNAMED")
+
     useJUnitPlatform()
 }
 
@@ -83,15 +85,8 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.junit)
+    testImplementation(libs.androidx.ui.test.junit4)
     kspTest(libs.hilt.compiler)
-
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.junit4)
-    androidTestImplementation(libs.hilt.android.testing)
-    androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.androidx.test.runner)
-    kspAndroidTest(libs.hilt.compiler)
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

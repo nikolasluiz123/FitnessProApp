@@ -1,6 +1,5 @@
 package br.com.fitnesspro.common
 
-import android.content.Context
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
@@ -18,21 +17,21 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainOnly
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-class SaveSchedulerConfigUseCaseTests {
+class SaveSchedulerConfigUseCaseTests: BaseUnitTests() {
 
-    private lateinit var context: Context
     private lateinit var schedulerConfigRepository: SchedulerConfigRepository
     private lateinit var userRepository: UserRepository
     private lateinit var saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase
 
     @BeforeEach
-    fun setUp() {
-        context = mockk(relaxed = true)
+    override fun setUp() {
+        super.setUp()
+        
         schedulerConfigRepository = mockk(relaxed = true)
         userRepository = mockk(relaxed = true)
 
@@ -45,7 +44,7 @@ class SaveSchedulerConfigUseCaseTests {
     }
 
     @Test
-    fun should_save_personal_trainer_config_when_all_fields_are_valid(): Unit = runBlocking {
+    fun should_save_personal_trainer_config_when_all_fields_are_valid(): Unit = runTest {
         prepareMockGetTOPersonByIdWithPersonal()
 
         val result = saveSchedulerConfigUseCase.saveConfig("", TOSchedulerConfig(personId = UUID.randomUUID().toString()))
@@ -54,7 +53,7 @@ class SaveSchedulerConfigUseCaseTests {
     }
 
     @Test
-    fun should_save_academy_member_config_when_all_fields_are_valid(): Unit = runBlocking {
+    fun should_save_academy_member_config_when_all_fields_are_valid(): Unit = runTest {
         prepareMockGetTOPersonByIdWithMember()
 
         val to = TOSchedulerConfig(personId = UUID.randomUUID().toString())
@@ -64,7 +63,7 @@ class SaveSchedulerConfigUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_min_schedule_density_is_null(): Unit = runBlocking {
+    fun should_fail_when_min_schedule_density_is_null(): Unit = runTest {
         prepareMockGetTOPersonByIdWithPersonal()
 
         val to = TOSchedulerConfig(personId = UUID.randomUUID().toString(), minScheduleDensity = null)
@@ -75,7 +74,7 @@ class SaveSchedulerConfigUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_min_schedule_density_is_less_than_1(): Unit = runBlocking {
+    fun should_fail_when_min_schedule_density_is_less_than_1(): Unit = runTest {
         prepareMockGetTOPersonByIdWithPersonal()
 
         val to = TOSchedulerConfig(personId = UUID.randomUUID().toString(), minScheduleDensity = 0)
@@ -86,7 +85,7 @@ class SaveSchedulerConfigUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_max_schedule_density_is_null(): Unit = runBlocking {
+    fun should_fail_when_max_schedule_density_is_null(): Unit = runTest {
         prepareMockGetTOPersonByIdWithPersonal()
 
         val to = TOSchedulerConfig(personId = UUID.randomUUID().toString(),maxScheduleDensity = null)
@@ -97,7 +96,7 @@ class SaveSchedulerConfigUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_max_schedule_density_is_less_than_1(): Unit = runBlocking {
+    fun should_fail_when_max_schedule_density_is_less_than_1(): Unit = runTest {
         prepareMockGetTOPersonByIdWithPersonal()
 
         val to = TOSchedulerConfig(
@@ -111,7 +110,7 @@ class SaveSchedulerConfigUseCaseTests {
     }
 
     @Test
-    fun should_fail_when_min_schedule_density_is_greater_than_or_equal_to_max_schedule_density(): Unit = runBlocking {
+    fun should_fail_when_min_schedule_density_is_greater_than_or_equal_to_max_schedule_density(): Unit = runTest {
         prepareMockGetTOPersonByIdWithPersonal()
 
         val toEquals = TOSchedulerConfig(
