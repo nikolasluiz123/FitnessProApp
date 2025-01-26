@@ -8,6 +8,7 @@ import br.com.fitnesspro.core.extensions.timeNow
 import br.com.fitnesspro.core.validation.getValidations
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumUserType
+import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseSuggestionUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.END_HOUR_OUT_OF_WORK_TIME_RANGE
@@ -63,6 +64,7 @@ class SaveCompromiseSuggestionTests {
     fun should_fail_when_hour_start_is_null(): Unit = runBlocking {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
+        mockAcademyTimeList()
 
         val scheduler = TOScheduler(
             academyMemberPersonId = UUID.randomUUID().toString(),
@@ -83,6 +85,7 @@ class SaveCompromiseSuggestionTests {
     fun should_fail_when_hour_start_is_in_the_past_and_today(): Unit = runBlocking {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
+        mockAcademyTimeList()
 
         val scheduler = TOScheduler(
             academyMemberPersonId = UUID.randomUUID().toString(),
@@ -103,6 +106,7 @@ class SaveCompromiseSuggestionTests {
     fun should_fail_when_hour_start_without_one_hour_antecedence(): Unit = runBlocking {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
+        mockAcademyTimeList()
 
         val scheduler = TOScheduler(
             academyMemberPersonId = UUID.randomUUID().toString(),
@@ -123,6 +127,7 @@ class SaveCompromiseSuggestionTests {
     fun should_fail_when_hour_start_is_out_of_work_time_range(): Unit = runBlocking {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
+        mockAcademyTimeList()
 
         val scheduler = TOScheduler(
             academyMemberPersonId = UUID.randomUUID().toString(),
@@ -143,6 +148,7 @@ class SaveCompromiseSuggestionTests {
     fun should_fail_when_hour_end_is_null(): Unit = runBlocking {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
+        mockAcademyTimeList()
 
         val scheduler = TOScheduler(
             academyMemberPersonId = UUID.randomUUID().toString(),
@@ -163,6 +169,7 @@ class SaveCompromiseSuggestionTests {
     fun should_fail_when_hour_end_is_out_of_work_time_range(): Unit = runBlocking {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
+        mockAcademyTimeList()
 
         val scheduler = TOScheduler(
             academyMemberPersonId = UUID.randomUUID().toString(),
@@ -183,6 +190,7 @@ class SaveCompromiseSuggestionTests {
     fun should_fail_when_hour_start_and_end_is_out_of_work_time_range(): Unit = runBlocking {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
+        mockAcademyTimeList()
 
         val scheduler = TOScheduler(
             academyMemberPersonId = UUID.randomUUID().toString(),
@@ -203,6 +211,7 @@ class SaveCompromiseSuggestionTests {
     fun should_fail_when_observation_is_greater_than_4096_characters(): Unit = runBlocking {
         prepareMockHasConflictFalse()
         prepareMockGetTOPersonByIdPersonalTrainer()
+        mockAcademyTimeList()
 
         val scheduler = TOScheduler(
             academyMemberPersonId = UUID.randomUUID().toString(),
@@ -263,5 +272,19 @@ class SaveCompromiseSuggestionTests {
                 any()
             )
         } returns true
+    }
+
+    private fun mockAcademyTimeList() {
+        coEvery {
+            academyRepository.getAcademyTimes(any(), any(), any())
+        } returns listOf(
+            PersonAcademyTime(
+                personId = UUID.randomUUID().toString(),
+                academyId = UUID.randomUUID().toString(),
+                timeStart = LocalTime.of(8, 0),
+                timeEnd = LocalTime.of(17, 0),
+                dayOfWeek = LocalDate.of(2025, 1, 15).dayOfWeek
+            )
+        )
     }
 }
