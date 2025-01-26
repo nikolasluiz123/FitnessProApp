@@ -73,7 +73,11 @@ class UserRepository(
         personDAO.findPersonById(personId)
     }
 
-    fun getListTOPersonWithUserType(types: List<EnumUserType>, simpleFilter: String): Pager<Int, PersonTuple> {
+    fun getListTOPersonWithUserType(
+        authenticatedPersonId: String,
+        types: List<EnumUserType>,
+        simpleFilter: String
+    ): Pager<Int, PersonTuple> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
@@ -81,6 +85,7 @@ class UserRepository(
             ),
             pagingSourceFactory = {
                 personDAO.getPersonsWithUserType(
+                    authenticatedPersonId = authenticatedPersonId,
                     types = types,
                     simpleFilter = simpleFilter
                 )

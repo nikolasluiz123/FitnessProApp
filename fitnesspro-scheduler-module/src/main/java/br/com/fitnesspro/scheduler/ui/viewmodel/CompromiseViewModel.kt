@@ -372,8 +372,8 @@ class CompromiseViewModel @Inject constructor(
             val toPerson = userRepository.getAuthenticatedTOPerson()!!
             val userType = toPerson.toUser?.type!!
             val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
-            val menuItemListProfessional = getListProfessional()
-            val menuItemListMembers = getListMembers()
+            val menuItemListProfessional = getListProfessional(toPerson.id!!)
+            val menuItemListMembers = getListMembers(toPerson.id!!)
 
             _uiState.update { state ->
                 state.copy(
@@ -459,21 +459,23 @@ class CompromiseViewModel @Inject constructor(
         }
     }
 
-    private fun getListProfessional(simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
+    private fun getListProfessional(authenticatedPersonId: String, simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
         val types = listOf(EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST)
 
         return userRepository.getListTOPersonWithUserType(
             types = types,
-            simpleFilter = simpleFilter
+            simpleFilter = simpleFilter,
+            authenticatedPersonId = authenticatedPersonId
         ).flow
     }
 
-    private fun getListMembers(simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
+    private fun getListMembers(authenticatedPersonId: String, simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
         val types = listOf(EnumUserType.ACADEMY_MEMBER)
 
         return userRepository.getListTOPersonWithUserType(
             types = types,
-            simpleFilter = simpleFilter
+            simpleFilter = simpleFilter,
+            authenticatedPersonId = authenticatedPersonId
         ).flow
     }
 

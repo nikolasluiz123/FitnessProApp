@@ -12,6 +12,7 @@ import br.com.fitnesspro.to.TOPersonAcademyTime
 import br.com.fitnesspro.tuple.AcademyTuple
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
+import java.time.DayOfWeek
 
 class AcademyRepository(
     private val academyDAO: AcademyDAO
@@ -64,6 +65,18 @@ class AcademyRepository(
         }
 
         groups
+    }
+
+    suspend fun getAcademyTimes(
+        personId: String,
+        academyId: String? = null,
+        dayOfWeek: DayOfWeek? = null
+    ): List<PersonAcademyTime> = withContext(IO) {
+        academyDAO.getAcademyTimes(
+            personId = personId,
+            academyId = academyId,
+            dayOfWeek = dayOfWeek
+        )
     }
 
     suspend fun getTOPersonAcademyTimeById(personAcademyTimeId: String): TOPersonAcademyTime = withContext(IO) {

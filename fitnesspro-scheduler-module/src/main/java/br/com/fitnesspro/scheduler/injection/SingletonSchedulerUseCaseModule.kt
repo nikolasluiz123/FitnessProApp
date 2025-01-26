@@ -1,6 +1,7 @@
 package br.com.fitnesspro.scheduler.injection
 
 import android.content.Context
+import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
@@ -64,14 +65,14 @@ class SingletonSchedulerUseCaseModule {
     fun provideSaveCompromiseSuggestionUseCase(
         @ApplicationContext context: Context,
         schedulerRepository: SchedulerRepository,
-        schedulerConfigRepository: SchedulerConfigRepository,
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        academyRepository: AcademyRepository
     ): SaveCompromiseSuggestionUseCase {
         return SaveCompromiseSuggestionUseCase(
             context = context,
             schedulerRepository = schedulerRepository,
-            schedulerConfigRepository = schedulerConfigRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            academyRepository = academyRepository
         )
     }
 

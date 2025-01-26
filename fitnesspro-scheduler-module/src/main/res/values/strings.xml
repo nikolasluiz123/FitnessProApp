@@ -47,9 +47,7 @@
     <string name="enum_compromise_date_end">Data de Fim</string>
     <string name="save_compromise_invalid_hour_period">Os horários de Início e Fim são inválidos.</string>
     <string name="save_compromise_time_slot">%s às %s</string>
-    <string name="save_compromise_scheduler_conflict_with_suggestions">Não foi possível realizar o agendamento pois ocorreu um conflito de horários na agenda de %s. Os horários disponíveis para o dia %s são esses:\n\n%s</string>
-    <string name="save_compromise_scheduler_conflict">Não foi possível realizar o agendamento pois ocorreu um conflito de horários na agenda de %s. Não existem horários disponíveis para o dia %s.</string>
-    <string name="save_compromise_scheduler_conflict_member">Não foi possível realizar o agendamento para o dia %s das %s até %s pois ocorreu um conflito. Entre em contato com %s.</string>
+    <string name="save_compromise_scheduler_conflict">Não foi possível realizar o agendamento para o dia %s das %s até %s pois ocorreu um conflito. Entre em contato com %s.</string>
     <string name="save_compromise_invalid_date_period">As datas de Início e Fim são inválidas.</string>
     <string name="enum_compromise_day_of_weeks">Dias da Semana</string>
     <string name="save_recurrent_compromise_conflicts_occurred">Não foi possível concluir o agendamento recorrente pois houveram um ou mais conflitos. As datas com compromissos conflitantes são:\n\n%s\n\nDeseja realizar o agendamento recorrente ignorando as datas com conflito?</string>

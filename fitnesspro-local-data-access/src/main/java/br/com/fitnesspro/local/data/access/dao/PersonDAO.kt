@@ -28,7 +28,11 @@ abstract class PersonDAO: BaseDAO() {
     @Query("select * from person where user_id = :userId")
     abstract suspend fun findPersonByUserId(userId: String): Person
 
-    fun getPersonsWithUserType(types: List<EnumUserType>, simpleFilter: String): PagingSource<Int, PersonTuple> {
+    fun getPersonsWithUserType(
+        authenticatedPersonId: String,
+        types: List<EnumUserType>,
+        simpleFilter: String
+    ): PagingSource<Int, PersonTuple> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -40,11 +44,26 @@ abstract class PersonDAO: BaseDAO() {
         val from = StringJoiner(QR_NL).apply {
             add(" from person ")
             add(" inner join user on user.id = person.user_id ")
+            add(" inner join person_academy_time academy_time on academy_time.person_id = person.id ")
         }
 
         val where = StringJoiner(QR_NL).apply {
             add(" where person.active = 1 ")
             add(" and user.active = 1 ")
+            add(" and academy_time.active = true ")
+            add(" and ( ")
+            add("       select 1 ")
+            add("       from person_academy_time pat_auth_person ")
+            add("       where pat_auth_person.active = 1 ")
+            add("       and pat_auth_person.person_id = ? ")
+            add("       and pat_auth_person.academy_id = academy_time.academy_id ")
+            add("       and pat_auth_person.day_week = academy_time.day_week ")
+            add("       and pat_auth_person.time_start between academy_time.time_start and academy_time.time_end ")
+            add("       and pat_auth_person.time_end between academy_time.time_start and academy_time.time_end ")
+            add("    )   ")
+
+            params.add(authenticatedPersonId)
+
             add(" and user.type in ")
             concatElementsForIn(types.map(EnumUserType::name), params)
         }
@@ -52,6 +71,10 @@ abstract class PersonDAO: BaseDAO() {
         if (simpleFilter.isNotEmpty()) {
             where.add(" and person.name like ? ")
             params.add("%$simpleFilter%")
+        }
+
+        val groupBy = StringJoiner(QR_NL).apply {
+            add(" group by person.id ")
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
@@ -62,6 +85,7 @@ abstract class PersonDAO: BaseDAO() {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(groupBy.toString())
             add(orderBy.toString())
         }
 

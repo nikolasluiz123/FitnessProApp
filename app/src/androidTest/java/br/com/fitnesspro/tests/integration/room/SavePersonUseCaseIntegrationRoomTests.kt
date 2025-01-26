@@ -182,6 +182,7 @@ class SavePersonUseCaseIntegrationRoomTests {
 
     private suspend fun getPersons(types: List<EnumUserType>, simpleFilter: String = ""): List<PersonTuple> {
         val pagingSource = personDAO.getPersonsWithUserType(
+            authenticatedPersonId = "1",
             types = types,
             simpleFilter = simpleFilter
         )
@@ -224,18 +225,22 @@ class SavePersonUseCaseIntegrationRoomTests {
 
         val persons = listOf(
             Person(
+                id = "1",
                 name = "Personal Trainer",
                 userId = users[0].id,
             ),
             Person(
+                id = "2",
                 name = "Nutritionist",
                 userId = users[1].id,
             ),
             Person(
+                id = "3",
                 name = "Academy Member",
                 userId = users[2].id,
             ),
             Person(
+                id = "4",
                 name = "Inactive Personal Trainer",
                 userId = users[3].id,
             )

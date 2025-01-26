@@ -63,7 +63,7 @@ class SaveUniqueCompromiseUseCase(
         return when {
             hasConflict -> {
                 val message = context.getString(
-                    R.string.save_compromise_scheduler_conflict_member,
+                    R.string.save_compromise_scheduler_conflict,
                     scheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
                     scheduler.start!!.format(EnumDateTimePatterns.TIME),
                     scheduler.end!!.format(EnumDateTimePatterns.TIME),

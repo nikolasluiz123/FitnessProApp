@@ -1,7 +1,7 @@
 package br.com.fitnesspro.scheduler
 
 import android.content.Context
-import br.com.fitnesspro.common.repository.SchedulerConfigRepository
+import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.timeNow
@@ -19,7 +19,6 @@ import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidat
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.START_HOUR_WITHOUT_ONE_HOUR_ANTECEDENCE_TODAY
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOScheduler
-import br.com.fitnesspro.to.TOSchedulerConfig
 import br.com.fitnesspro.to.TOUser
 import io.kotest.matchers.collections.shouldContainOnly
 import io.mockk.coEvery
@@ -37,31 +36,27 @@ class SaveCompromiseSuggestionTests {
 
     private lateinit var context: Context
     private lateinit var schedulerRepository: SchedulerRepository
-    private lateinit var schedulerConfigRepository: SchedulerConfigRepository
     private lateinit var userRepository: UserRepository
+    private lateinit var academyRepository: AcademyRepository
     private lateinit var saveCompromiseSuggestionUseCase: SaveCompromiseSuggestionUseCase
 
     @BeforeEach
     fun setUp() {
         context = mockk(relaxed = true)
         schedulerRepository = mockk(relaxed = true)
-        schedulerConfigRepository = mockk(relaxed = true)
         userRepository = mockk(relaxed = true)
+        academyRepository = mockk(relaxed = true)
         saveCompromiseSuggestionUseCase = SaveCompromiseSuggestionUseCase(
             context,
             schedulerRepository,
             userRepository,
-            schedulerConfigRepository
+            academyRepository
         )
 
         mockkStatic(::dateNow, ::timeNow)
 
         every { dateNow() } returns LocalDate.of(2025, 1, 15)
         every { timeNow() } returns LocalTime.of(10, 0)
-
-        coEvery {
-            schedulerConfigRepository.getTOSchedulerConfigByPersonId(any())
-        } returns TOSchedulerConfig()
     }
 
     @Test

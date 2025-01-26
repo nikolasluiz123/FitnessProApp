@@ -109,7 +109,44 @@ abstract class AcademyDAO: BaseDAO() {
         and pat.person_id = :personId
         and pat.academy_id = :academyId
     """)
-    abstract suspend fun getAcademyTimes(personId: String, academyId: String): List<PersonAcademyTime>
+    suspend fun getAcademyTimes(personId: String, academyId: String? = null, dayOfWeek: DayOfWeek? = null): List<PersonAcademyTime> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select * ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from person_academy_time pat ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where pat.active = 1 ")
+            add(" and pat.person_id = ? ")
+            params.add(personId)
+
+            academyId?.let {
+                add(" and pat.academy_id = ? ")
+                params.add(it)
+            }
+
+            dayOfWeek?.let {
+                add(" and pat.day_week = ? ")
+                params.add(it)
+            }
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        return executeQueryAcademyTimes(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery(observedEntities = [PersonAcademyTime::class])
+    abstract suspend fun executeQueryAcademyTimes(query: SupportSQLiteQuery): List<PersonAcademyTime>
 
     @Query("select * from person_academy_time where id = :id")
     abstract suspend fun findPersonAcademyTimeById(id: String): PersonAcademyTime
