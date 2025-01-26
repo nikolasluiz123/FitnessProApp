@@ -315,7 +315,7 @@ class CompromiseViewModel @Inject constructor(
             onSimpleFilterChange = { filter ->
                 _uiState.value = _uiState.value.copy(
                     member = _uiState.value.member.copy(
-                        dataList = getListMembers(filter)
+                        dataList = getListMembers(simpleFilter = filter)
                     )
                 )
             }
@@ -360,7 +360,7 @@ class CompromiseViewModel @Inject constructor(
             onSimpleFilterChange = { filter ->
                 _uiState.value = _uiState.value.copy(
                     professional = _uiState.value.professional.copy(
-                        dataList = getListProfessional(filter)
+                        dataList = getListProfessional(simpleFilter = filter)
                     )
                 )
             }
@@ -372,8 +372,8 @@ class CompromiseViewModel @Inject constructor(
             val toPerson = userRepository.getAuthenticatedTOPerson()!!
             val userType = toPerson.toUser?.type!!
             val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
-            val menuItemListProfessional = getListProfessional(toPerson.id!!)
-            val menuItemListMembers = getListMembers(toPerson.id!!)
+            val menuItemListProfessional = getListProfessional()
+            val menuItemListMembers = getListMembers()
 
             _uiState.update { state ->
                 state.copy(
@@ -459,23 +459,21 @@ class CompromiseViewModel @Inject constructor(
         }
     }
 
-    private fun getListProfessional(authenticatedPersonId: String, simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
+    private fun getListProfessional(simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
         val types = listOf(EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST)
 
         return userRepository.getListTOPersonWithUserType(
             types = types,
-            simpleFilter = simpleFilter,
-            authenticatedPersonId = authenticatedPersonId
+            simpleFilter = simpleFilter
         ).flow
     }
 
-    private fun getListMembers(authenticatedPersonId: String, simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
+    private fun getListMembers(simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
         val types = listOf(EnumUserType.ACADEMY_MEMBER)
 
         return userRepository.getListTOPersonWithUserType(
             types = types,
-            simpleFilter = simpleFilter,
-            authenticatedPersonId = authenticatedPersonId
+            simpleFilter = simpleFilter
         ).flow
     }
 

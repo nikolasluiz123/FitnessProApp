@@ -3,9 +3,10 @@ package br.com.fitnesspro.common.injection
 import android.content.Context
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeBatchUseCase
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeUseCase
 import br.com.fitnesspro.common.usecase.login.LoginUseCase
-import br.com.fitnesspro.common.usecase.person.SavePersonMockUseCase
+import br.com.fitnesspro.common.usecase.person.SavePersonBatchUseCase
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.core.security.DefaultPasswordHasher
@@ -51,6 +52,17 @@ class SingletonCommonUseCaseModule {
     }
 
     @Provides
+    fun provideSavePersonAcademyTimeBatchUseCase(
+        @ApplicationContext context: Context,
+        academyRepository: AcademyRepository,
+    ): SavePersonAcademyTimeBatchUseCase {
+        return SavePersonAcademyTimeBatchUseCase(
+            context = context,
+            academyRepository = academyRepository,
+        )
+    }
+
+    @Provides
     fun provideLoginUseCase(
         @ApplicationContext context: Context,
         userRepository: UserRepository,
@@ -67,8 +79,8 @@ class SingletonCommonUseCaseModule {
         userRepository: UserRepository,
         saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase,
         passwordHasher: IPasswordHasher
-    ): SavePersonMockUseCase {
-        return SavePersonMockUseCase(
+    ): SavePersonBatchUseCase {
+        return SavePersonBatchUseCase(
             context = context,
             userRepository = userRepository,
             saveSchedulerConfigUseCase = saveSchedulerConfigUseCase,

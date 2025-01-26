@@ -36,6 +36,7 @@ import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScree
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_DIALOG_LIST_ITEM
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_END_HOUR_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_FAB_SAVE
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_LABELED_TEXT_DATA_CANCEL
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_LABELED_TEXT_HOUR
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_LABELED_TEXT_NAME
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_LABELED_TEXT_PROFESSIONAL
@@ -109,15 +110,15 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
     }
 
     @Test
-    fun should_change_compromise_suggestion_to_read_only_when_save_with_success() = runTest(timeout = 30.toDuration(SECONDS)) {
+    fun should_change_compromise_suggestion_to_read_only_when_save_with_success() = runTest(timeout = TIMEOUT) {
         executeDefaultPrepareForTest()
         setNavHostContent()
 
         composeTestRule.apply {
             navigateToCompromise()
             populateCompromiseSuggestionFieldsAndSave(
-                start = "1400",
-                end = "1500"
+                start = "0700",
+                end = "0800"
             )
 
             waitUntil(5000) {
@@ -131,7 +132,7 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
     }
 
     @Test
-    fun should_show_professional_dialog_list_when_click_on_search_button_of_professional_field_in_compromise_suggestion() = runTest {
+    fun should_show_professional_dialog_list_when_click_on_search_button_of_professional_field_in_compromise_suggestion() = runTest(timeout = TIMEOUT) {
         executeDefaultPrepareForTest()
         setNavHostContent()
 
@@ -147,20 +148,20 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
     }
 
     @Test
-    fun should_show_only_professionals_with_filtered_name_when_write_on_search_dialog_list_simple_filter_in_compromise_suggestion() = runTest {
+    fun should_show_only_professionals_with_filtered_name_when_write_on_search_dialog_list_simple_filter_in_compromise_suggestion() = runTest(timeout = TIMEOUT) {
         executeDefaultPrepareForTest()
         setNavHostContent()
 
         composeTestRule.apply {
             navigateToCompromise()
             onClickWithParent(OUTLINED_TEXT_FIELD_TRAILING_ICON, COMPROMISE_SCREEN_PROFESSIONAL_FIELD)
-            writeTextField(SIMPLE_FILTER_SEARCH_BAR_INPUT_FIELD, "Nutri")
+            writeTextField(SIMPLE_FILTER_SEARCH_BAR_INPUT_FIELD, "Personal")
             onFirst(COMPROMISE_SCREEN_DIALOG_LIST_ITEM).assert(
                 hasText(
                     activity.getString(
                         R.string.compromise_screen_label_professional_name_and_type,
-                        toPersons[1].name!!,
-                        toPersons[1].toUser?.type!!.getLabel(activity)
+                        toPersons[0].name!!,
+                        toPersons[0].toUser?.type!!.getLabel(activity)
                     )
                 )
             )
@@ -168,7 +169,7 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
     }
 
     @Test
-    fun should_show_time_dialog_when_click_on_time_button_of_start_time_field_in_compromise_suggestion() = runTest {
+    fun should_show_time_dialog_when_click_on_time_button_of_start_time_field_in_compromise_suggestion() = runTest(timeout = TIMEOUT) {
         executeDefaultPrepareForTest()
         setNavHostContent()
 
@@ -180,7 +181,7 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
     }
 
     @Test
-    fun should_show_time_dialog_when_click_on_time_button_of_end_time_field_in_compromise_suggestion() = runTest {
+    fun should_show_time_dialog_when_click_on_time_button_of_end_time_field_in_compromise_suggestion() = runTest(timeout = TIMEOUT) {
         executeDefaultPrepareForTest()
         setNavHostContent()
 
@@ -192,7 +193,7 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
     }
 
     @Test
-    fun should_show_confirmation_dialog_message_when_click_on_inactivation_button() = runTest {
+    fun should_show_confirmation_dialog_message_when_click_on_inactivation_button() = runTest(timeout = TIMEOUT) {
         executeDefaultPrepareForTest()
         createFirstCompromiseSuggestionMember()
         setNavHostContent()
@@ -205,8 +206,8 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
                 activity.getString(
                     R.string.compromise_screen_dialog_inactivation_message,
                     LocalDate.of(2025, 1, 21).format(DATE),
-                    LocalTime.of(13, 0).format(TIME),
-                    LocalTime.of(14, 0).format(TIME),
+                    LocalTime.of(7, 0).format(TIME),
+                    LocalTime.of(8, 0).format(TIME),
                 ),
                 FITNESS_PRO_MESSAGE_DIALOG_MESSAGE
             )
@@ -214,7 +215,7 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
     }
 
     @Test
-    fun show_success_message_when_inactivation_is_successful() = runTest {
+    fun show_success_message_when_cancel_is_successful() = runTest(timeout = TIMEOUT) {
         executeDefaultPrepareForTest()
         createFirstCompromiseSuggestionMember()
         setNavHostContent()
@@ -227,8 +228,8 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
                 activity.getString(
                     R.string.compromise_screen_dialog_inactivation_message,
                     LocalDate.of(2025, 1, 21).format(DATE),
-                    LocalTime.of(13, 0).format(TIME),
-                    LocalTime.of(14, 0).format(TIME),
+                    LocalTime.of(7, 0).format(TIME),
+                    LocalTime.of(8, 0).format(TIME),
                 ),
                 FITNESS_PRO_MESSAGE_DIALOG_MESSAGE
             )
@@ -241,8 +242,7 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
             }
 
             assertDisplayedWithText(EnumSchedulerSituation.CANCELLED.getLabel(activity)!!)
-
-            // TODO - Adicionar o campo da data de cancelamento
+            assertDisplayed(COMPROMISE_SCREEN_LABELED_TEXT_DATA_CANCEL)
         }
     }
 
@@ -257,8 +257,8 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
             professionalPersonId = toPersons[0].id!!,
             professionalType = toPersons[0].toUser?.type!!,
             scheduledDate = dateNow().plusDays(1),
-            start = LocalTime.of(13, 0),
-            end = LocalTime.of(14, 0),
+            start = LocalTime.of(7, 0),
+            end = LocalTime.of(8, 0),
             situation = EnumSchedulerSituation.SCHEDULED,
             compromiseType = EnumCompromiseType.FIRST
         )
@@ -305,5 +305,6 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
 
     companion object {
         const val TAG = "MemberCompromiseSuggestionScreenActionsUITests"
+        val TIMEOUT = 30.toDuration(SECONDS)
     }
 }

@@ -1,7 +1,7 @@
 package br.com.fitnesspro.common.injection
 
 import br.com.fitnesspro.common.mock.PersonMockHelper
-import br.com.fitnesspro.common.usecase.person.SavePersonMockUseCase
+import br.com.fitnesspro.common.usecase.person.SavePersonBatchUseCase
 import com.github.javafaker.Faker
 import dagger.Module
 import dagger.Provides
@@ -15,11 +15,11 @@ class SingletonCommonMockModule {
 
     @Provides
     fun providePersonMockHelper(
-        savePersonMockUseCase: SavePersonMockUseCase,
+        savePersonBatchUseCase: SavePersonBatchUseCase,
         faker: Faker
     ): PersonMockHelper {
         return PersonMockHelper(
-            savePersonMockUseCase = savePersonMockUseCase,
+            savePersonBatchUseCase = savePersonBatchUseCase,
             faker = faker
         )
     }

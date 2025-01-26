@@ -82,7 +82,7 @@ class MemberCompromiseSuggestionScreenWriteFieldsUITests: BaseAuthenticatedUITes
             navigateToCompromise()
             onClickWithParent(OUTLINED_TEXT_FIELD_TRAILING_ICON, COMPROMISE_SCREEN_PROFESSIONAL_FIELD)
             onClickFirst(COMPROMISE_SCREEN_DIALOG_LIST_ITEM)
-            assertWithText(toPersons[1].name!!, COMPROMISE_SCREEN_PROFESSIONAL_FIELD)
+            assertWithText(toPersons[0].name!!, COMPROMISE_SCREEN_PROFESSIONAL_FIELD)
         }
     }
 

@@ -1,7 +1,7 @@
 package br.com.fitnesspro.common.mock
 
 import android.util.Log
-import br.com.fitnesspro.common.usecase.person.SavePersonMockUseCase
+import br.com.fitnesspro.common.usecase.person.SavePersonBatchUseCase
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
@@ -9,7 +9,7 @@ import com.github.javafaker.Faker
 import java.time.ZoneId
 
 class PersonMockHelper(
-    private val savePersonMockUseCase: SavePersonMockUseCase,
+    private val savePersonBatchUseCase: SavePersonBatchUseCase,
     private val faker: Faker
 ) {
 
@@ -64,7 +64,7 @@ class PersonMockHelper(
     }
 
     private suspend fun executeUseCase() {
-        val validationResults = savePersonMockUseCase.executeInclusionBatch(persons)
+        val validationResults = savePersonBatchUseCase.executeInclusionBatch(persons)
         val batchNumber = lastPersonIndex / BATCH_SIZE
 
         if (validationResults.isNotEmpty()) {

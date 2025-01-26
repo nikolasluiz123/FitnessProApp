@@ -203,16 +203,6 @@ class SaveUniqueCompromiseUseCaseTests: BaseUnitTests() {
         result.shouldContainOnly(EnumCompromiseValidationTypes.SCHEDULER_CONFLICT_MEMBER)
     }
 
-    @Test
-    fun should_cancel_compromise_when_situation_is_valid_and_is_edition() {
-        // TODO - Implementar o teste do novo caso de uso
-    }
-
-    @Test
-    fun should_confirm_compromise_when_situation_is_valid_and_is_edition() {
-        // TODO - Implementar o teste do novo caso de uso
-    }
-
     private fun prepareMockGetTOPersonByIdAcademyMember() {
         coEvery { userRepository.getTOPersonById(any()) } returns TOPerson(
             toUser = TOUser(type = EnumUserType.ACADEMY_MEMBER)

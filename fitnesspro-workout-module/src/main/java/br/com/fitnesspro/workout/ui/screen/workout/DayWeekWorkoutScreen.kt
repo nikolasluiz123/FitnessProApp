@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.compose.components.LabeledText
 import br.com.fitnesspro.compose.components.list.grouped.LazyGroupedVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
@@ -29,6 +28,7 @@ import br.com.fitnesspro.core.extensions.toDurationFormatted
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_700
 import br.com.fitnesspro.core.theme.LabelGroupTextStyle
+import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.workout.decorator.DayWeekWorkoutGroupDecorator
 import br.com.fitnesspro.workout.ui.screen.workout.decorator.DayWeekWorkoutItemDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekWorkoutUIState
@@ -46,8 +46,6 @@ fun DayWeekWorkoutScreen(state: DayWeekWorkoutUIState) {
             )
         }
     ) { padding ->
-        // TODO - Adicionar o SimpleFilter aqui. Precisa testar o funcionamento dele ainda.
-
         ConstraintLayout(
             Modifier
                 .padding(padding)

@@ -9,13 +9,23 @@ import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOPersonAcademyTime
 
-class SavePersonAcademyTimeUseCase(
-    private val context: Context,
-    private val academyRepository: AcademyRepository
+open class SavePersonAcademyTimeUseCase(
+    protected val context: Context,
+    protected val academyRepository: AcademyRepository
 ) {
 
     suspend fun execute(toPersonAcademyTime: TOPersonAcademyTime): List<FieldValidationError<EnumValidatedAcademyFields, EnumAcademyValidationTypes>> {
-        val validationsResults = mutableListOf(
+        val validationsResults = getAllValidationResults(toPersonAcademyTime)
+
+        if (validationsResults.isEmpty()) {
+            academyRepository.savePersonAcademyTime(toPersonAcademyTime)
+        }
+
+        return validationsResults
+    }
+
+    protected suspend fun getAllValidationResults(toPersonAcademyTime: TOPersonAcademyTime): List<FieldValidationError<EnumValidatedAcademyFields, EnumAcademyValidationTypes>> {
+        return mutableListOf(
             validateAcademy(toPersonAcademyTime),
             validateStart(toPersonAcademyTime),
             validateEnd(toPersonAcademyTime),
@@ -23,12 +33,6 @@ class SavePersonAcademyTimeUseCase(
             validateDayOfWeek(toPersonAcademyTime),
             validateRepeat(toPersonAcademyTime)
         ).filterNotNull()
-
-        if (validationsResults.isEmpty()) {
-            academyRepository.savePersonAcademyTime(toPersonAcademyTime)
-        }
-
-        return validationsResults
     }
 
     private fun validateAcademy(toPersonAcademyTime: TOPersonAcademyTime): FieldValidationError<EnumValidatedAcademyFields, EnumAcademyValidationTypes>? {

@@ -1,6 +1,5 @@
 package br.com.fitnesspro.tests.ui.isolated.register.academy
 
-import android.util.Log
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -33,8 +32,6 @@ import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.TAB
 import br.com.fitnesspro.compose.components.topbar.enums.EnumFitnessProTopAppBarTestTags.FITNESS_PRO_TOP_APP_BAR_SUBTITLE
 import br.com.fitnesspro.compose.components.topbar.enums.EnumFitnessProTopAppBarTestTags.FITNESS_PRO_TOP_APP_BAR_TITLE
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
-import br.com.fitnesspro.local.data.access.dao.AcademyDAO
-import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToScheduleScreen
 import br.com.fitnesspro.tests.ui.common.BaseAuthenticatedUITest
 import br.com.fitnesspro.tests.ui.extensions.assertEnabled
@@ -43,8 +40,6 @@ import br.com.fitnesspro.tests.ui.extensions.onClick
 import br.com.fitnesspro.tests.ui.extensions.onClickWithParent
 import br.com.fitnesspro.tests.ui.extensions.onPosition
 import br.com.fitnesspro.tests.ui.extensions.writeTextField
-import br.com.fitnesspro.to.TOAcademy
-import br.com.fitnesspro.to.TOPersonAcademyTime
 import br.com.fitnesspro.ui.navigation.homeScreen
 import br.com.fitnesspro.ui.navigation.homeScreenRoute
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_ACCOUNT_BUTTON
@@ -55,7 +50,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import java.time.DayOfWeek
-import java.time.LocalTime
 
 @HiltAndroidTest
 class RegisterAcademyScreenStateUITests: BaseAuthenticatedUITest() {
@@ -68,9 +62,6 @@ class RegisterAcademyScreenStateUITests: BaseAuthenticatedUITest() {
 
     @Inject
     lateinit var saveAcademyTimeUseCase: SavePersonAcademyTimeUseCase
-
-    @Inject
-    lateinit var academyDAO: AcademyDAO
 
     override fun getHiltAndroidRule() = hiltRule
 
@@ -138,7 +129,6 @@ class RegisterAcademyScreenStateUITests: BaseAuthenticatedUITest() {
     fun should_show_title_with_hour_range_when_is_edition() = runTest {
         prepareDatabaseWithPersons()
         authenticatePersonal()
-        createAcademyTimePersonal()
         setNavHostContent()
 
         composeTestRule.apply {
@@ -150,8 +140,8 @@ class RegisterAcademyScreenStateUITests: BaseAuthenticatedUITest() {
                 activity.getString(
                     R.string.register_academy_screen_title_edit,
                     DayOfWeek.MONDAY.getFirstPartFullDisplayName(),
-                    "09:00",
-                    "10:00"
+                    "07:00",
+                    "12:00"
                 ),
                 FITNESS_PRO_TOP_APP_BAR_TITLE
             )
@@ -162,7 +152,6 @@ class RegisterAcademyScreenStateUITests: BaseAuthenticatedUITest() {
     fun should_show_subtitle_with_academy_name_when_is_edition() = runTest {
         prepareDatabaseWithPersons()
         authenticatePersonal()
-        createAcademyTimePersonal()
         setNavHostContent()
 
         composeTestRule.apply {
@@ -170,7 +159,7 @@ class RegisterAcademyScreenStateUITests: BaseAuthenticatedUITest() {
             onPosition(1, TAB).performClick()
             onPosition(0, EXPANDABLE_LIST_ITEM).performClick()
             onPosition(0, REGISTER_USER_SCREEN_TAB_ACADEMY_LIST_ITEM).performClick()
-            assertWithText("academy", FITNESS_PRO_TOP_APP_BAR_SUBTITLE)
+            assertWithText("Academy 1", FITNESS_PRO_TOP_APP_BAR_SUBTITLE)
         }
     }
 
@@ -178,7 +167,6 @@ class RegisterAcademyScreenStateUITests: BaseAuthenticatedUITest() {
     fun should_enable_inactivate_button_when_is_edition() = runTest {
         prepareDatabaseWithPersons()
         authenticatePersonal()
-        createAcademyTimePersonal()
         setNavHostContent()
 
         composeTestRule.apply {
@@ -194,7 +182,6 @@ class RegisterAcademyScreenStateUITests: BaseAuthenticatedUITest() {
     fun should_enable_inactivate_button_when_all_fields_valid_and_save() = runTest {
         prepareDatabaseWithPersons()
         authenticatePersonal()
-        createAcademy()
         setNavHostContent()
 
         composeTestRule.apply {
@@ -231,31 +218,6 @@ class RegisterAcademyScreenStateUITests: BaseAuthenticatedUITest() {
             navigateToRegisterAcademy()
             assertEnabled(REGISTER_ACADEMY_ACTION_BUTTON_DELETE, false)
         }
-    }
-
-    private suspend fun createAcademyTimePersonal() {
-        val academy = createAcademy()
-
-        val toPersonAcademyTime = TOPersonAcademyTime(
-            personId = toPersons[0].id!!,
-            toAcademy = TOAcademy(id = academy.id, name = academy.name),
-            timeStart = LocalTime.of(9, 0),
-            timeEnd = LocalTime.of(10, 0),
-            dayOfWeek = DayOfWeek.MONDAY
-        )
-
-        val result = saveAcademyTimeUseCase.execute(toPersonAcademyTime)
-
-        if (result.isNotEmpty()) {
-            Log.e(TAG, "createAcademyTimePersonal Error ${result.map { it.validationType }}")
-        }
-    }
-
-    private suspend fun createAcademy(): Academy {
-        val academy = Academy(id = "1", name = "academy")
-        academyDAO.saveAcademiesBatch(listOf(academy))
-
-        return academy
     }
 
     private fun AndroidComposeTestRule<ActivityScenarioRule<AndroidTestsActivity>, AndroidTestsActivity>.navigateToRegisterAcademy() {

@@ -221,19 +221,6 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
         result.shouldContainOnly(MAX_LENGTH_OBSERVATION)
     }
 
-    @Test
-    fun should_fail_when_has_conflict(): Unit = runTest {
-        prepareMockHasConflictTrue()
-        prepareMockGetTOPersonByIdPersonalTrainer()
-
-        // TODO: Implementar testes com conflito
-    }
-
-    @Test
-    fun should_cancel_compromise_when_situation_is_valid_and_is_edition() {
-        // TODO - Implementar o teste do novo caso de uso
-    }
-
     private fun prepareMockGetTOPersonByIdPersonalTrainer() {
         coEvery { userRepository.getTOPersonById(any()) } returns TOPerson(
             toUser = TOUser(type = EnumUserType.PERSONAL_TRAINER)
@@ -251,19 +238,6 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
                 any()
             )
         } returns false
-    }
-
-    private fun prepareMockHasConflictTrue() {
-        coEvery {
-            schedulerRepository.getHasSchedulerConflict(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } returns true
     }
 
     private fun mockAcademyTimeList() {

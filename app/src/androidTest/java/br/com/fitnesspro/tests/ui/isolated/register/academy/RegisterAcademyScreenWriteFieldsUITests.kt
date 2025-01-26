@@ -27,8 +27,6 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.extensions.timeNow
-import br.com.fitnesspro.local.data.access.dao.AcademyDAO
-import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToScheduleScreen
 import br.com.fitnesspro.tests.ui.common.BaseAuthenticatedUITest
 import br.com.fitnesspro.tests.ui.extensions.assertDropDownMenuWithText
@@ -43,7 +41,6 @@ import br.com.fitnesspro.ui.navigation.homeScreenRoute
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_ACCOUNT_BUTTON
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import jakarta.inject.Inject
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -57,9 +54,6 @@ class RegisterAcademyScreenWriteFieldsUITests: BaseAuthenticatedUITest() {
 
     @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<AndroidTestsActivity>()
-
-    @Inject
-    lateinit var academyDAO: AcademyDAO
 
     override fun getHiltAndroidRule() = hiltRule
 
@@ -97,14 +91,13 @@ class RegisterAcademyScreenWriteFieldsUITests: BaseAuthenticatedUITest() {
     fun should_show_text_on_academy_field_when_select() = runTest {
         prepareDatabaseWithPersons()
         authenticateMember()
-        createAcademy()
         setNavHostContent()
 
         composeTestRule.apply {
             navigateToRegisterAcademy()
             onClickWithParent(OUTLINED_TEXT_FIELD_TRAILING_ICON, REGISTER_ACADEMY_SCREEN_FIELD_ACADEMY)
             onClickFirst(REGISTER_ACADEMY_DIALOG_ACADEMIES_LIST_ITEM)
-            assertWithText("academy", REGISTER_ACADEMY_SCREEN_FIELD_ACADEMY)
+            assertWithText("Academy 1", REGISTER_ACADEMY_SCREEN_FIELD_ACADEMY)
         }
     }
 
@@ -181,13 +174,6 @@ class RegisterAcademyScreenWriteFieldsUITests: BaseAuthenticatedUITest() {
         onClick(HOME_SCREEN_ACCOUNT_BUTTON)
         onPosition(1, TAB).performClick()
         onClick(REGISTER_USER_SCREEN_FAB_ADD)
-    }
-
-    private suspend fun createAcademy(): Academy {
-        val academy = Academy(id = "1", name = "academy")
-        academyDAO.saveAcademiesBatch(listOf(academy))
-
-        return academy
     }
 
     companion object {

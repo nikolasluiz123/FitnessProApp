@@ -29,7 +29,6 @@ abstract class PersonDAO: BaseDAO() {
     abstract suspend fun findPersonByUserId(userId: String): Person
 
     fun getPersonsWithUserType(
-        authenticatedPersonId: String,
         types: List<EnumUserType>,
         simpleFilter: String
     ): PagingSource<Int, PersonTuple> {
@@ -55,22 +54,30 @@ abstract class PersonDAO: BaseDAO() {
             add("       select 1 ")
             add("       from person_academy_time pat_auth_person ")
             add("       where pat_auth_person.active = 1 ")
-            add("       and pat_auth_person.person_id = ? ")
+            add("       and pat_auth_person.person_id = (  ")
+            add("                                         select p.id ")
+            add("                                         from person p ")
+            add("                                         inner join user u on u.id = p.user_id ")
+            add("                                         where p.active = 1 ")
+            add("                                         and u.active = 1 ")
+            add("                                         and u.authenticated = 1 ")
+            add("                                       ) ")
             add("       and pat_auth_person.academy_id = academy_time.academy_id ")
             add("       and pat_auth_person.day_week = academy_time.day_week ")
-            add("       and pat_auth_person.time_start between academy_time.time_start and academy_time.time_end ")
-            add("       and pat_auth_person.time_end between academy_time.time_start and academy_time.time_end ")
+            add("       and not ( ")
+            add("               pat_auth_person.time_end <= academy_time.time_start ")
+            add("               or ")
+            add("               pat_auth_person.time_start >= academy_time.time_end ")
+            add("           ) ")
             add("    )   ")
 
-            params.add(authenticatedPersonId)
+            if (simpleFilter.isNotEmpty()) {
+                add(" and person.name like ? ")
+                params.add("%$simpleFilter%")
+            }
 
             add(" and user.type in ")
             concatElementsForIn(types.map(EnumUserType::name), params)
-        }
-
-        if (simpleFilter.isNotEmpty()) {
-            where.add(" and person.name like ? ")
-            params.add("%$simpleFilter%")
         }
 
         val groupBy = StringJoiner(QR_NL).apply {

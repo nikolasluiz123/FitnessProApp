@@ -139,4 +139,9 @@ class AcademyRepository(
         toPersonAcademyTime.active = false
         savePersonAcademyTime(toPersonAcademyTime)
     }
+
+    suspend fun savePersonAcademyTimeBatch(toPersonAcademyTimes: List<TOPersonAcademyTime>) = withContext(IO) {
+        val times = toPersonAcademyTimes.map { it.getPersonAcademyTime() }
+        academyDAO.savePersonAcademyTimesBatch(times)
+    }
 }

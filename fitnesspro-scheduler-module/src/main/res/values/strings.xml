@@ -92,4 +92,5 @@
     <string name="compromise_screen_message_success_completed">Compromisso Finalizado com Sucesso</string>
     <string name="label_cancelado">cancelado</string>
     <string name="label_confirmado">confirmado</string>
+    <string name="compromise_screen_label_cancel">Data de Cancelamento</string>
 </resources>

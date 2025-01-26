@@ -132,7 +132,7 @@ abstract class AcademyDAO: BaseDAO() {
 
             dayOfWeek?.let {
                 add(" and pat.day_week = ? ")
-                params.add(it)
+                params.add(it.name)
             }
         }
 

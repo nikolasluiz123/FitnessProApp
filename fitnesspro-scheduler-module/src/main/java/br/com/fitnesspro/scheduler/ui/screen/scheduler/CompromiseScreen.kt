@@ -47,11 +47,13 @@ import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.TimePickerOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.core.theme.ValueTextStyle
+import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CANCELLED
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CONFIRMED
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
@@ -67,6 +69,7 @@ import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScree
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_END_DATE_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_END_HOUR_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_FAB_SAVE
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_LABELED_TEXT_DATA_CANCEL
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_LABELED_TEXT_HOUR
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_LABELED_TEXT_NAME
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumCompromiseScreenTestTags.COMPROMISE_SCREEN_LABELED_TEXT_OBSERVATION
@@ -84,7 +87,9 @@ import br.com.fitnesspro.to.TOScheduler
 import br.com.fitnesspro.tuple.PersonTuple
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.UUID
 
 
 @Composable
@@ -253,15 +258,15 @@ private fun showSuccessMessage(
             EnumSchedulerType.UNIQUE -> {
                 context.getString(
                     R.string.compromise_screen_message_success_unique,
-                    state.toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE)
+                    state.toScheduler.scheduledDate!!.format(DATE)
                 )
             }
 
             EnumSchedulerType.RECURRENT -> {
                 context.getString(
                     R.string.compromise_screen_message_success_recurrent,
-                    state.recurrentConfig.dateStart!!.format(EnumDateTimePatterns.DATE),
-                    state.recurrentConfig.dateEnd!!.format(EnumDateTimePatterns.DATE)
+                    state.recurrentConfig.dateStart!!.format(DATE),
+                    state.recurrentConfig.dateEnd!!.format(DATE)
                 )
             }
         }
@@ -444,12 +449,12 @@ fun UniqueCompromise(state: CompromiseUIState) {
             modifier = Modifier
                 .testTag(COMPROMISE_SCREEN_END_HOUR_FIELD.name)
                 .constrainAs(endRef) {
-                top.linkTo(startRef.bottom, margin = 8.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
+                    top.linkTo(startRef.bottom, margin = 8.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
 
-                width = Dimension.fillToConstraints
-            },
+                    width = Dimension.fillToConstraints
+                },
             field = state.hourEnd,
             fieldLabel = stringResource(R.string.compromise_screen_label_time_end),
             timePickerTitle = stringResource(R.string.compromise_screen_time_picker_title_end_hour),
@@ -459,12 +464,12 @@ fun UniqueCompromise(state: CompromiseUIState) {
             modifier = Modifier
                 .testTag(COMPROMISE_SCREEN_OBSERVATION_FIELD.name)
                 .constrainAs(observationRef) {
-                top.linkTo(endRef.bottom, margin = 8.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
+                    top.linkTo(endRef.bottom, margin = 8.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
 
-                width = Dimension.fillToConstraints
-            },
+                    width = Dimension.fillToConstraints
+                },
             field = state.observation,
             label = stringResource(R.string.compromise_screen_label_observation),
             keyboardActions = KeyboardActions(
@@ -528,7 +533,7 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
             .padding(8.dp)
             .fillMaxSize()
     ) {
-        val (nameRef, hourRef, professionalRef, situationRef, observationRef) = createRefs()
+        val (nameRef, hourRef, professionalRef, situationRef, observationRef, dataCancelRef) = createRefs()
 
         createHorizontalChain(nameRef, professionalRef)
 
@@ -536,12 +541,12 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
             modifier = Modifier
                 .testTag(COMPROMISE_SCREEN_LABELED_TEXT_NAME.name)
                 .constrainAs(nameRef) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
 
-                width = Dimension.fillToConstraints
-                horizontalChainWeight = 0.5f
-            },
+                    width = Dimension.fillToConstraints
+                    horizontalChainWeight = 0.5f
+                },
             label = stringResource(R.string.compromise_screen_label_name),
             value = state.toScheduler.professionalName!!
         )
@@ -550,12 +555,12 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
             modifier = Modifier
                 .testTag(COMPROMISE_SCREEN_LABELED_TEXT_PROFESSIONAL.name)
                 .constrainAs(professionalRef) {
-                top.linkTo(parent.top)
-                end.linkTo(parent.end)
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
 
-                width = Dimension.fillToConstraints
-                horizontalChainWeight = 0.5f
-            },
+                    width = Dimension.fillToConstraints
+                    horizontalChainWeight = 0.5f
+                },
             label = stringResource(R.string.compromise_screen_label_professional_type),
             value = state.toScheduler.professionalType?.getLabel(context)!!
         )
@@ -566,17 +571,17 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
             modifier = Modifier
                 .testTag(COMPROMISE_SCREEN_LABELED_TEXT_HOUR.name)
                 .constrainAs(hourRef) {
-                top.linkTo(nameRef.bottom, margin = 8.dp)
-                start.linkTo(parent.start)
+                    top.linkTo(nameRef.bottom, margin = 8.dp)
+                    start.linkTo(parent.start)
 
-                width = Dimension.fillToConstraints
-                horizontalChainWeight = 0.5f
-            },
+                    width = Dimension.fillToConstraints
+                    horizontalChainWeight = 0.5f
+                },
             label = stringResource(R.string.compromise_screen_label_hour),
             value = stringResource(
                 R.string.compromise_screen_label_hour_value,
-                state.toScheduler.start!!.format(EnumDateTimePatterns.TIME),
-                state.toScheduler.end!!.format(EnumDateTimePatterns.TIME)
+                state.toScheduler.start!!.format(TIME),
+                state.toScheduler.end!!.format(TIME)
             )
         )
 
@@ -584,24 +589,43 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
             modifier = Modifier
                 .testTag(COMPROMISE_SCREEN_LABELED_TEXT_SITUATION.name)
                 .constrainAs(situationRef) {
-                top.linkTo(professionalRef.bottom, margin = 8.dp)
-                end.linkTo(parent.end)
+                    top.linkTo(professionalRef.bottom, margin = 8.dp)
+                    end.linkTo(parent.end)
 
-                width = Dimension.fillToConstraints
-                horizontalChainWeight = 0.5f
-            },
+                    width = Dimension.fillToConstraints
+                    horizontalChainWeight = 0.5f
+                },
             label = stringResource(R.string.compromise_screen_label_situation),
             value = state.toScheduler.situation?.getLabel(context)!!
         )
+
+        if (state.toScheduler.situation == CANCELLED) {
+            LabeledText(
+                modifier = Modifier
+                    .testTag(COMPROMISE_SCREEN_LABELED_TEXT_DATA_CANCEL.name)
+                    .constrainAs(dataCancelRef) {
+                        top.linkTo(situationRef.bottom, margin = 8.dp)
+                        end.linkTo(parent.end)
+
+                        width = Dimension.fillToConstraints
+                        horizontalChainWeight = 0.5f
+                    },
+                label = stringResource(R.string.compromise_screen_label_cancel),
+                value = state.toScheduler.canceledDate?.format(DATE)!!
+            )
+        }
 
         state.toScheduler.observation?.let {
             LabeledText(
                 modifier = Modifier
                     .testTag(COMPROMISE_SCREEN_LABELED_TEXT_OBSERVATION.name)
                     .constrainAs(observationRef) {
-                    top.linkTo(hourRef.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
-                },
+                        val isCanceled = state.toScheduler.situation == CANCELLED
+                        val topAnchor = if (isCanceled) dataCancelRef else situationRef
+
+                        top.linkTo(topAnchor.bottom, margin = 8.dp)
+                        start.linkTo(parent.start)
+                    },
                 label = stringResource(R.string.compromise_screen_label_observation),
                 value = it
             )
@@ -659,12 +683,12 @@ private fun UniqueCompromiseSuggestionEditable(state: CompromiseUIState) {
             modifier = Modifier
                 .testTag(COMPROMISE_SCREEN_END_HOUR_FIELD.name)
                 .constrainAs(endRef) {
-                top.linkTo(startRef.bottom, margin = 8.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
+                    top.linkTo(startRef.bottom, margin = 8.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
 
-                width = Dimension.fillToConstraints
-            },
+                    width = Dimension.fillToConstraints
+                },
             field = state.hourEnd,
             fieldLabel = stringResource(R.string.compromise_screen_label_time_end),
             timePickerTitle = stringResource(R.string.compromise_screen_time_picker_title_end_hour),
@@ -679,12 +703,12 @@ private fun UniqueCompromiseSuggestionEditable(state: CompromiseUIState) {
             modifier = Modifier
                 .testTag(COMPROMISE_SCREEN_OBSERVATION_FIELD.name)
                 .constrainAs(observationRef) {
-                top.linkTo(endRef.bottom, margin = 8.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
+                    top.linkTo(endRef.bottom, margin = 8.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
 
-                width = Dimension.fillToConstraints
-            },
+                    width = Dimension.fillToConstraints
+                },
             field = state.observation,
             label = stringResource(R.string.compromise_screen_label_observation),
             keyboardActions = KeyboardActions(
@@ -741,11 +765,40 @@ private fun CompromiseScreenEditionMemberPreview() {
                     isEnabledDeleteButton = true,
                     isEnabledMessageButton = true,
                     toScheduler = TOScheduler(
+                        id = UUID.randomUUID().toString(),
                         professionalName = "Gabriela da Silva",
                         professionalType = EnumUserType.NUTRITIONIST,
                         start = LocalTime.parse("08:00"),
                         end = LocalTime.parse("09:00"),
                         situation = CONFIRMED,
+                        observation = "Muito bem observado"
+                    )
+                )
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun CompromiseScreenEditionCancelatedMemberPreview() {
+    FitnessProTheme {
+        Surface {
+            CompromiseScreen(
+                state = CompromiseUIState(
+                    title = "Compromisso",
+                    subtitle = "01/05/2024 08:00 às 09:00",
+                    userType = EnumUserType.ACADEMY_MEMBER,
+                    isEnabledDeleteButton = true,
+                    isEnabledMessageButton = true,
+                    toScheduler = TOScheduler(
+                        id = UUID.randomUUID().toString(),
+                        professionalName = "Gabriela da Silva",
+                        professionalType = EnumUserType.NUTRITIONIST,
+                        start = LocalTime.parse("08:00"),
+                        end = LocalTime.parse("09:00"),
+                        situation = CANCELLED,
+                        canceledDate = LocalDateTime.now(),
                         observation = "Muito bem observado"
                     )
                 )

@@ -8,7 +8,7 @@ import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOPerson
 
-class SavePersonMockUseCase(
+class SavePersonBatchUseCase(
     context: Context,
     userRepository: UserRepository,
     saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase,
