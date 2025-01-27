@@ -61,7 +61,10 @@ class RegisterUserViewModel @Inject constructor(
 
     private fun loadUIStateWithAuthenticatedPerson(args: RegisterUserScreenArgs) = viewModelScope.launch {
         if (args.context == null) {
-            userRepository.getAuthenticatedTOPerson()?.let { toPerson ->
+            val authenticatedTOPerson = userRepository.getAuthenticatedTOPerson()
+            authenticatedTOPerson?.toUser?.password = null
+
+            authenticatedTOPerson?.let { toPerson ->
                 _uiState.update {
                     it.copy(
                         title = getTitle(context = null, toPerson = toPerson),

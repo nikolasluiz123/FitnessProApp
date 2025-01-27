@@ -72,7 +72,7 @@ class SchedulerRepository(
         return this?.run {
             val memberPerson = userRepository.findPersonById(academyMemberPersonId!!)
             val professionalPerson = userRepository.findPersonById(professionalPersonId!!)
-            val professionalUser = userRepository.findUserById(professionalPerson.userId!!)
+            val professionalUser = userRepository.findUserById(professionalPerson.userId!!)!!
 
             TOScheduler(
                 id = id,

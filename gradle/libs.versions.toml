@@ -40,6 +40,10 @@ kotestVersion = "5.9.1"
 mockkVersion = "1.13.16"
 navigationTestVersion = "2.8.5"
 espressoVersion = "3.6.1"
+firebaseBom = "33.8.0"
+gmsVersion = "4.4.2"
+crashlyticsPluginVersion = "3.0.2"
+perfPluginVersion = "1.4.2"
 
 [libraries]
 splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
@@ -101,6 +105,13 @@ kotest-assertion = { group = "io.kotest", name = "kotest-assertions-core", versi
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockkVersion" }
 mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockkVersion" }
 
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-performance = { group = "com.google.firebase", name = "firebase-perf" }
+
 [plugins]
 kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
 hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
@@ -111,4 +122,8 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 android-library = { id = "com.android.library", version.ref = "agp" }
 
 kotest = { id = "io.kotest.multiplatform", version.ref = "kotestPluginVersion" }
+
+gms-google-services = { id = "com.google.gms.google-services", version.ref = "gmsVersion" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPluginVersion" }
+firebase-performance = { id = "com.google.firebase.firebase-perf", version.ref = "perfPluginVersion" }
 

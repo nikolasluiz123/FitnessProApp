@@ -61,6 +61,7 @@ dependencies {
     implementation(project(":fitnesspro-compose-components"))
     implementation(project(":fitnesspro-model"))
     implementation(project(":fitnesspro-local-data-access"))
+    implementation(project(":fitnesspro-firebase-api"))
 
     implementation(libs.google.gson)
     implementation(libs.java.faker)
@@ -77,6 +78,12 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
 
     testRuntimeOnly(libs.junit.jupter.engine)
     testImplementation(libs.junit.jupter.api)

@@ -125,8 +125,8 @@ class SavePersonUseCaseIntegrationRoomTests {
         userDAO.saveBatch(listOf(userAuthenticated, otherUser))
         userDAO.authenticate(otherUser.email!!, otherUser.password!!)
 
-        userDAO.findById(otherUser.id).authenticated.shouldBeTrue()
-        userDAO.findById(userAuthenticated.id).authenticated.shouldBeFalse()
+        userDAO.findById(otherUser.id)!!.authenticated.shouldBeTrue()
+        userDAO.findById(userAuthenticated.id)!!.authenticated.shouldBeFalse()
     }
 
     @Test

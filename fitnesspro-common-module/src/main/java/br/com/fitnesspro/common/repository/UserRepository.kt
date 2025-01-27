@@ -1,8 +1,10 @@
 package br.com.fitnesspro.common.repository
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.room.Transaction
+import br.com.fitnesspro.firebase.api.authentication.DefaultAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.enums.EnumUserType
@@ -11,24 +13,40 @@ import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
 import br.com.fitnesspro.tuple.PersonTuple
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
 class UserRepository(
     private val personDAO: PersonDAO,
-    private val userDAO: UserDAO
+    private val userDAO: UserDAO,
+    private val defaultAuthenticationService: DefaultAuthenticationService
 ) {
 
     @Transaction
     suspend fun savePerson(toPerson: TOPerson) = withContext(IO) {
         val user = toPerson.toUser!!.getUser()
         val person = toPerson.getPerson()
+        val existentUser = userDAO.findById(user.id)
 
-        toPerson.toUser?.id = user.id
-        toPerson.id = person.id
+        if (existentUser == null) {
+            registerFirebaseUser(user.email!!, user.password!!)
+        } else {
+            defaultAuthenticationService.updateUserInfos(user)
+        }
 
         userDAO.save(user)
         personDAO.save(person)
+    }
+
+    private fun registerFirebaseUser(email: String, password: String) {
+        defaultAuthenticationService.register(
+            email = email,
+            password = password,
+            onFailure = {
+                Log.e(TAG, it.stackTraceToString())
+            }
+        )
     }
 
     @Transaction
@@ -48,8 +66,27 @@ class UserRepository(
         userDAO.hasUserWithCredentials(email, password)
     }
 
-    suspend fun authenticate(email: String, password: String) = withContext(IO) {
+    suspend fun authenticate(
+        email: String,
+        password: String,
+        onFailure: (Exception) -> Unit = { }
+    ) = withContext(IO) {
         userDAO.authenticate(email, password)
+
+        defaultAuthenticationService.authenticate(
+            email = email,
+            password = password,
+            onFailure = {
+                val userExistsOnlyLocal = it is FirebaseAuthInvalidCredentialsException
+
+                if (userExistsOnlyLocal) {
+                    registerFirebaseUser(email, password)
+                } else {
+                    Log.e(TAG, it.stackTraceToString())
+                    onFailure(it)
+                }
+            }
+        )
     }
 
     suspend fun getTOPersonById(personId: String): TOPerson = withContext(IO) {
@@ -65,7 +102,7 @@ class UserRepository(
         userDAO.getAuthenticatedUser()?.getTOUser()
     }
 
-    suspend fun findUserById(userId: String): User = withContext(IO) {
+    suspend fun findUserById(userId: String): User? = withContext(IO) {
         userDAO.findById(userId)
     }
 
@@ -152,7 +189,7 @@ class UserRepository(
 
             model
         } else {
-            userDAO.findById(id!!).copy(
+            userDAO.findById(id!!)!!.copy(
                 email = email,
                 password = password,
                 type = type,
@@ -163,5 +200,10 @@ class UserRepository(
 
     suspend fun logout() = withContext(IO) {
         userDAO.logoutAll()
+        defaultAuthenticationService.logout()
+    }
+
+    companion object {
+        private const val TAG = "UserRepository"
     }
 }

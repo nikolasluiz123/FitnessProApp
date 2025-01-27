@@ -91,4 +91,5 @@
     <string name="save_person_academy_time_msg_invalid_time_period">O período de início e fim é inválido.</string>
     <string name="register_academy_screen_inactivate_success_message">Horário removido com sucesso</string>
     <string name="register_academy_screen_message_inactivate_academy">Tem certeza de que deseja remover este horário? Os agendamentos e treinos associados também serão removidos.</string>
+    <string name="validation_msg_firebase_auth_error">Ocorreu um erro ao realizar a autenticação com o Firebase. Algumas funcionalidades podem não funcionar.</string>
 </resources>

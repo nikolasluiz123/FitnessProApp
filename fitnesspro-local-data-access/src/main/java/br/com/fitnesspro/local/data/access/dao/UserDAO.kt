@@ -23,7 +23,7 @@ abstract class UserDAO: BaseDAO() {
     abstract suspend fun hasUserWithCredentials(email: String, hashedPassword: String): Boolean
 
     @Query("select * from user where id = :id")
-    abstract suspend fun findById(id: String): User
+    abstract suspend fun findById(id: String): User?
 
     @Query("""
               select user.* 

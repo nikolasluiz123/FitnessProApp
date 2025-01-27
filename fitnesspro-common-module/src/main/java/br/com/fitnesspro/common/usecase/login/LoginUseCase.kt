@@ -5,12 +5,13 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.login.EnumValidatedLoginFields.EMAIL
 import br.com.fitnesspro.common.usecase.login.EnumValidatedLoginFields.PASSWORD
-import br.com.fitnesspro.core.security.HashHelper
+import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.core.validation.FieldValidationError
 
 class LoginUseCase(
     private val context: Context,
     private val userRepository: UserRepository,
+    private val passwordHasher: IPasswordHasher
 ) {
 
     suspend fun execute(email: String?, password: String?): List<FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>> {
@@ -18,11 +19,24 @@ class LoginUseCase(
             validateEmail(email),
             validatePassword(password),
             validateUserCredentials(email, password)
-        ).filterNotNull()
+        ).filterNotNull().toMutableList()
 
         if (validationsResults.isEmpty()) {
-            val hashedPassword = HashHelper.applyHash(password!!)
-            userRepository.authenticate(email!!, hashedPassword)
+            val hashedPassword = passwordHasher.hashPassword(password!!)
+
+            userRepository.authenticate(
+                email = email!!,
+                password = hashedPassword,
+                onFailure = {
+                    validationsResults.add(
+                        FieldValidationError(
+                            validationType = EnumLoginValidationTypes.FIREBASE_AUTH_ERROR,
+                            message = context.getString(R.string.validation_msg_firebase_auth_error),
+                            field = null
+                        )
+                    )
+                }
+            )
         }
 
         return validationsResults
@@ -78,7 +92,7 @@ class LoginUseCase(
         }
 
         val invalidLength = emailTrimmed.length > EMAIL.maxLength || passwordTrimmed.length > PASSWORD.maxLength
-        val hashedPassword = HashHelper.applyHash(passwordTrimmed)
+        val hashedPassword = passwordHasher.hashPassword(passwordTrimmed)
         val userNotExists = !userRepository.hasUserWithCredentials(emailTrimmed, hashedPassword)
 
         return when {
