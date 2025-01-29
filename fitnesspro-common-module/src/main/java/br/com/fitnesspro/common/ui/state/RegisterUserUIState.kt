@@ -6,9 +6,7 @@ import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
 import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.core.callback.IShowDialogCallback
-import br.com.fitnesspro.core.enums.EnumDialogType
-import br.com.fitnesspro.core.state.IDialogUIState
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
@@ -28,11 +26,5 @@ data class RegisterUserUIState(
     val isVisibleFieldPhone: Boolean = false,
     val isRegisterServiceAuth: Boolean = false,
     val academies: List<AcademyGroupDecorator> = mutableListOf(),
-    override val dialogMessage: String = "",
-    override val showDialog: Boolean = false,
-    override val dialogType: EnumDialogType = EnumDialogType.ERROR,
-    override val onHideDialog: () -> Unit = { },
-    override val onShowDialog: IShowDialogCallback? = null,
-    override val onConfirm: () -> Unit = { },
-    override val onCancel: () -> Unit = { },
-): IDialogUIState
+    val messageDialogState: MessageDialogState = MessageDialogState(),
+)

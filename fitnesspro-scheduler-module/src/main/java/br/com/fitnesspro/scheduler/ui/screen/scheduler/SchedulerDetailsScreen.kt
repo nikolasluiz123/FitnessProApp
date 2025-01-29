@@ -23,6 +23,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.LabeledText
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
@@ -110,6 +111,8 @@ fun SchedulerDetailsScreen(
                 .padding(padding)
         ) {
             val listRef = createRef()
+
+            FitnessProMessageDialog(state = state.messageDialogState)
 
             LazyVerticalList(
                 modifier = Modifier

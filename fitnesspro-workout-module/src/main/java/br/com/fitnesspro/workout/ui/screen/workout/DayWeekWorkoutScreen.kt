@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.LabeledText
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.list.grouped.LazyGroupedVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.extensions.toDurationFormatted
@@ -52,6 +53,8 @@ fun DayWeekWorkoutScreen(state: DayWeekWorkoutUIState) {
                 .fillMaxSize()
         ) {
             val (workoutList) = createRefs()
+
+            FitnessProMessageDialog(state = state.messageDialogState)
 
             LazyGroupedVerticalList(
                 modifier = Modifier

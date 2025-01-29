@@ -3,7 +3,6 @@ package br.com.fitnesspro.common.ui.viewmodel
 import android.content.Context
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import br.com.fitnesspro.common.R
@@ -18,12 +17,14 @@ import br.com.fitnesspro.compose.components.fields.menu.MenuItem
 import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
+import br.com.fitnesspro.core.callback.showConfirmationDialog
+import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.extensions.parseToLocalTime
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOAcademy
@@ -47,7 +48,7 @@ class RegisterAcademyViewModel @Inject constructor(
     private val academyRepository: AcademyRepository,
     private val savePersonAcademyTimeUseCase: SavePersonAcademyTimeUseCase,
     savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<RegisterAcademyUIState> = MutableStateFlow(RegisterAcademyUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -59,25 +60,45 @@ class RegisterAcademyViewModel @Inject constructor(
         loadUIStateWithDatabaseInfos()
     }
 
+    override fun onShowError(throwable: Throwable) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
+            message = context.getString(R.string.unknown_error_message)
+        )
+    }
+
     private fun initialLoadUIState() {
         _uiState.update { currentState ->
             currentState.copy(
-                onShowDialog = { type, message, onConfirm, onCancel ->
-                    _uiState.value = _uiState.value.copy(
-                        dialogType = type,
-                        showDialog = true,
-                        dialogMessage = message,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                },
-                onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
+                messageDialogState = initializeMessageDialogState(),
                 academy = initializeAcademyPagedDialogListTextField(),
                 dayWeek = initializeDayWeekDropDownTextField(),
                 start = initializeStartTimePickerTextField(),
                 end = initializeEndTimePickerTextField()
             )
         }
+    }
+
+    private fun initializeMessageDialogState(): MessageDialogState {
+        return MessageDialogState(
+            onShowDialog = { type, message, onConfirm, onCancel ->
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        dialogType = type,
+                        dialogMessage = message,
+                        showDialog = true,
+                        onConfirm = onConfirm,
+                        onCancel = onCancel
+                    )
+                )
+            },
+            onHideDialog = {
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        showDialog = false
+                    )
+                )
+            }
+        )
     }
 
     private fun initializeEndTimePickerTextField(): TimePickerTextField {
@@ -296,7 +317,7 @@ class RegisterAcademyViewModel @Inject constructor(
     }
 
     fun saveAcademy(onSuccess: () -> Unit) {
-        viewModelScope.launch {
+        launch {
             val validationResults = savePersonAcademyTimeUseCase.execute(_uiState.value.toPersonAcademyTime)
 
             if (validationResults.isEmpty()) {
@@ -306,20 +327,13 @@ class RegisterAcademyViewModel @Inject constructor(
                 showValidationMessages(validationResults)
             }
         }
-
     }
 
     private fun showValidationMessages(validationResults: List<FieldValidationError<EnumValidatedAcademyFields, EnumAcademyValidationTypes>>) {
         val dialogValidations = validationResults.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {
-            _uiState.value.onShowDialog?.onShow(
-                type = EnumDialogType.ERROR,
-                message = dialogValidations.message,
-                onConfirm = { _uiState.value.onHideDialog.invoke() },
-                onCancel = { _uiState.value.onHideDialog.invoke() }
-            )
-
+            _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = dialogValidations.message)
             return
         }
 
@@ -363,17 +377,14 @@ class RegisterAcademyViewModel @Inject constructor(
     fun inactivateAcademy(onSuccess: () -> Unit) {
         val state = _uiState.value
 
-        state.onShowDialog?.onShow(
-            type = EnumDialogType.ERROR,
-            message = context.getString(R.string.register_academy_screen_message_inactivate_academy),
-            onConfirm = {
-                viewModelScope.launch {
-                    academyRepository.inactivatePersonAcademyTime(state.toPersonAcademyTime)
-                    onSuccess()
-                }
-            },
-            onCancel = { }
-        )
+        state.messageDialogState.onShowDialog?.showConfirmationDialog(
+            message = context.getString(R.string.register_academy_screen_message_inactivate_academy)
+        ) {
+            launch {
+                academyRepository.inactivatePersonAcademyTime(state.toPersonAcademyTime)
+                onSuccess()
+            }
+        }
     }
 
 }

@@ -1,21 +1,21 @@
 package br.com.fitnesspro.scheduler.ui.viewmodel
 
 import android.content.Context
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
+import br.com.fitnesspro.core.callback.showErrorDialog
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumUserType
+import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.decorator.SchedulerDecorator
 import br.com.fitnesspro.scheduler.ui.state.SchedulerUIState
-import br.com.fitnesspro.scheduler.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +24,7 @@ class SchedulerViewModel @Inject constructor(
     private val schedulerRepository: SchedulerRepository,
     private val schedulerConfigRepository: SchedulerConfigRepository,
     private val userRepository: UserRepository,
-) : ViewModel() {
+) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<SchedulerUIState> = MutableStateFlow(SchedulerUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -35,6 +35,12 @@ class SchedulerViewModel @Inject constructor(
         updateSchedules()
     }
 
+    override fun onShowError(throwable: Throwable) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
+            message = context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
+        )
+    }
+
     private fun initialLoadUIState() {
         _uiState.update {
             it.copy(
@@ -42,13 +48,14 @@ class SchedulerViewModel @Inject constructor(
                 onSelectYearMonth = { newYearMonth ->
                     _uiState.value = _uiState.value.copy(selectedYearMonth = newYearMonth)
                     updateSchedules()
-                }
+                },
+                messageDialogState = initializeMessageDialogState(),
             )
         }
     }
 
     private fun loadUIStateWithDatabaseInfos() {
-        viewModelScope.launch {
+        launch {
             val toPerson = userRepository.getAuthenticatedTOPerson()!!
             val userType = toPerson.toUser?.type!!
 
@@ -63,7 +70,7 @@ class SchedulerViewModel @Inject constructor(
     }
 
     fun updateSchedules() {
-        viewModelScope.launch {
+        launch {
             val groupedTOSchedulers = schedulerRepository.getSchedulerList(
                 yearMonth = _uiState.value.selectedYearMonth
             ).groupBy { it.scheduledDate!! }
@@ -77,5 +84,28 @@ class SchedulerViewModel @Inject constructor(
 
             _uiState.value = _uiState.value.copy(schedules = decorators)
         }
+    }
+
+    private fun initializeMessageDialogState(): MessageDialogState {
+        return MessageDialogState(
+            onShowDialog = { type, message, onConfirm, onCancel ->
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        dialogType = type,
+                        dialogMessage = message,
+                        showDialog = true,
+                        onConfirm = onConfirm,
+                        onCancel = onCancel
+                    )
+                )
+            },
+            onHideDialog = {
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        showDialog = false
+                    )
+                )
+            }
+        )
     }
 }

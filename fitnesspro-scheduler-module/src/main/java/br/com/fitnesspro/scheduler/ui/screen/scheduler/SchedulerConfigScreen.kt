@@ -33,6 +33,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.buttons.HorizontalLabeledSwitchButton
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.state.SwitchButtonField
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
@@ -123,6 +124,8 @@ fun SchedulerConfigScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
+            FitnessProMessageDialog(state = state.messageDialogState)
+
             when (state.userType) {
                 EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST -> {
                     ProfessionalSchedulerConfigScreen(state)

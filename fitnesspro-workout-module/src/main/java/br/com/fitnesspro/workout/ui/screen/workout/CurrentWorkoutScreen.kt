@@ -15,12 +15,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.compose.components.LabeledText
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.workout.decorator.CurrentWorkoutItemDecorator
 import br.com.fitnesspro.workout.ui.state.CurrentWorkoutUIState
 import java.time.DayOfWeek
@@ -45,6 +46,8 @@ fun CurrentWorkoutScreen(
                 .fillMaxSize()
         ) {
             val (listRef) = createRefs()
+
+            FitnessProMessageDialog(state = state.messageDialogState)
 
             LazyVerticalList(
                 modifier = Modifier

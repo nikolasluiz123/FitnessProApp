@@ -142,12 +142,7 @@ fun LoginScreen(
 
                     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
 
-                    FitnessProMessageDialog(
-                        type = state.dialogType,
-                        show = state.showDialog,
-                        onDismissRequest = { state.onHideDialog() },
-                        message = state.dialogMessage
-                    )
+                    FitnessProMessageDialog(state = state.messageDialogState)
 
                     OutlinedTextFieldValidation(
                         modifier = Modifier

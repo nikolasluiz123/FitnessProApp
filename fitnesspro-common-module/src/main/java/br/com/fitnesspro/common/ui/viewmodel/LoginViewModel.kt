@@ -1,33 +1,34 @@
 package br.com.fitnesspro.common.ui.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.content.Context
+import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.ui.state.LoginUIState
 import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
 import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
 import br.com.fitnesspro.common.usecase.login.enums.EnumLoginValidationTypes
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
 import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.core.enums.EnumDialogType
+import br.com.fitnesspro.core.callback.showErrorDialog
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOPerson
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val defaultLoginUseCase: DefaultLoginUseCase,
     private val googleLoginUseCase: GoogleLoginUseCase,
     private val userRepository: UserRepository,
-) : ViewModel() {
+) : FitnessProViewModel() {
 
-    private val _uiState: MutableStateFlow<br.com.fitnesspro.common.ui.state.LoginUIState> = MutableStateFlow(
-        br.com.fitnesspro.common.ui.state.LoginUIState()
-    )
+    private val _uiState: MutableStateFlow<LoginUIState> = MutableStateFlow(LoginUIState())
     val uiState get() = _uiState.asStateFlow()
 
     init {
@@ -35,8 +36,14 @@ class LoginViewModel @Inject constructor(
         loadEmailAuthenticatedUser()
     }
 
+    override fun onShowError(throwable: Throwable) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
+            message = context.getString(R.string.unknown_error_message)
+        )
+    }
+
     private fun loadEmailAuthenticatedUser() {
-        viewModelScope.launch {
+        launch {
             userRepository.getAuthenticatedTOUser()?.apply {
                 _uiState.value = _uiState.value.copy(
                     email = _uiState.value.email.copy(
@@ -50,32 +57,9 @@ class LoginViewModel @Inject constructor(
     private fun initialUIStateLoad() {
         _uiState.update { currentState ->
             currentState.copy(
-                email = TextField(onChange = {
-                    _uiState.value = _uiState.value.copy(
-                        email = _uiState.value.email.copy(
-                            value = it,
-                            errorMessage = ""
-                        )
-                    )
-                }),
-                password = TextField(onChange = {
-                    _uiState.value = _uiState.value.copy(
-                        password = _uiState.value.password.copy(
-                            value = it,
-                            errorMessage = ""
-                        )
-                    )
-                }),
-                onShowDialog = { type, message, onConfirm, onCancel ->
-                    _uiState.value = _uiState.value.copy(
-                        dialogType = type,
-                        showDialog = true,
-                        dialogMessage = message,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                },
-                onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
+                email = initializeEmailTextField(),
+                password = initializePasswordTextField(),
+                messageDialogState = initializeMessageDialogState(),
                 onToggleLoading = {
                     _uiState.value = _uiState.value.copy(showLoading = !_uiState.value.showLoading)
                 },
@@ -83,8 +67,49 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    private fun initializeMessageDialogState(): MessageDialogState {
+        return MessageDialogState(
+            onShowDialog = { type, message, onConfirm, onCancel ->
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        dialogType = type,
+                        dialogMessage = message,
+                        showDialog = true,
+                        onConfirm = onConfirm,
+                        onCancel = onCancel
+                    )
+                )
+            },
+            onHideDialog = {
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        showDialog = false
+                    )
+                )
+            }
+        )
+    }
+
+    private fun initializePasswordTextField() = TextField(onChange = {
+        _uiState.value = _uiState.value.copy(
+            password = _uiState.value.password.copy(
+                value = it,
+                errorMessage = ""
+            )
+        )
+    })
+
+    private fun initializeEmailTextField() = TextField(onChange = {
+        _uiState.value = _uiState.value.copy(
+            email = _uiState.value.email.copy(
+                value = it,
+                errorMessage = ""
+            )
+        )
+    })
+
     fun login(onSuccess: () -> Unit) {
-        viewModelScope.launch {
+        launch {
             val username = _uiState.value.email.value
             val password = _uiState.value.password.value
 
@@ -100,18 +125,12 @@ class LoginViewModel @Inject constructor(
     }
 
     fun loginWithGoogle(onUserNotExistsLocal: (TOPerson) -> Unit, onSuccess: () -> Unit, onFailure: () -> Unit) {
-        viewModelScope.launch {
+        launch {
             val googleAuthResult = googleLoginUseCase()
 
             when {
                 googleAuthResult.success.not() -> {
-                    _uiState.value.onShowDialog?.onShow(
-                        type = EnumDialogType.ERROR,
-                        message = googleAuthResult.errorMessage!!,
-                        onConfirm = { },
-                        onCancel = { }
-                    )
-
+                    _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(googleAuthResult.errorMessage!!)
                     onFailure()
                 }
 
@@ -130,13 +149,7 @@ class LoginViewModel @Inject constructor(
         val dialogValidations = validationsResult.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {
-            _uiState.value.onShowDialog?.onShow(
-                type = EnumDialogType.ERROR,
-                message = dialogValidations.message,
-                onConfirm = { },
-                onCancel = { }
-            )
-
+            _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(dialogValidations.message)
             return
         }
 

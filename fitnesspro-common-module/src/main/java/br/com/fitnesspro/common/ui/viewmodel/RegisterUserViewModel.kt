@@ -3,8 +3,6 @@ package br.com.fitnesspro.common.ui.viewmodel
 import android.content.Context
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.UserRepository
@@ -24,12 +22,14 @@ import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.tabs.Tab
+import br.com.fitnesspro.core.callback.showErrorDialog
+import br.com.fitnesspro.core.callback.showInformationDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
-import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.parseToLocalDate
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
@@ -38,7 +38,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,7 +47,7 @@ class RegisterUserViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val academyRepository: AcademyRepository,
     savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<RegisterUserUIState> = MutableStateFlow(RegisterUserUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -63,6 +62,12 @@ class RegisterUserViewModel @Inject constructor(
 
             showDialogRegisterUserAuthenticatedWithService(args)
         }
+    }
+
+    override fun onShowError(throwable: Throwable) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
+            message = context.getString(R.string.unknown_error_message)
+        )
     }
 
     private fun initialLoadUIState(args: RegisterUserScreenArgs) {
@@ -87,18 +92,32 @@ class RegisterUserViewModel @Inject constructor(
                 birthDate = initializeBirthDatePickerField(),
                 phone = initializePhoneTextField(),
                 userType = initializeUserTypeDropDownMenu(),
-                onShowDialog = { type, message, onConfirm, onCancel ->
-                    _uiState.value = _uiState.value.copy(
+                messageDialogState = initializeMessageDialogState()
+            )
+        }
+    }
+
+    private fun initializeMessageDialogState(): MessageDialogState {
+        return MessageDialogState(
+            onShowDialog = { type, message, onConfirm, onCancel ->
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
                         dialogType = type,
-                        showDialog = true,
                         dialogMessage = message,
+                        showDialog = true,
                         onConfirm = onConfirm,
                         onCancel = onCancel
                     )
-                },
-                onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
-            )
-        }
+                )
+            },
+            onHideDialog = {
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        showDialog = false
+                    )
+                )
+            }
+        )
     }
 
     private fun initializeUserTypeDropDownMenu(): DropDownTextField<EnumUserType> {
@@ -140,7 +159,7 @@ class RegisterUserViewModel @Inject constructor(
         )
     }
 
-    private fun loadUIStateWithAuthenticatedPerson(args: RegisterUserScreenArgs) = viewModelScope.launch {
+    private fun loadUIStateWithAuthenticatedPerson(args: RegisterUserScreenArgs) = launch {
         if (args.context == null && args.toPersonAuthService == null) {
             val authenticatedTOPerson = userRepository.getAuthenticatedTOPerson()
             authenticatedTOPerson?.toUser?.password = null
@@ -186,11 +205,8 @@ class RegisterUserViewModel @Inject constructor(
 
     private fun showDialogRegisterUserAuthenticatedWithService(args: RegisterUserScreenArgs) {
         if (args.toPersonAuthService != null) {
-            _uiState.value.onShowDialog?.onShow(
-                type = EnumDialogType.INFORMATION,
-                message = context.getString(R.string.register_user_screen_message_register_user_authenticated_with_service),
-                onConfirm = { },
-                onCancel = { }
+            _uiState.value.messageDialogState.onShowDialog?.showInformationDialog(
+                message = context.getString(R.string.register_user_screen_message_register_user_authenticated_with_service)
             )
         }
     }
@@ -200,7 +216,7 @@ class RegisterUserViewModel @Inject constructor(
     }
 
     fun updateAcademies() {
-        viewModelScope.launch {
+        launch {
             _uiState.value.toPerson.id?.let { personId ->
                 _uiState.value = _uiState.value.copy(
                     academies = getAcademiesFromAuthenticatedPerson(personId)
@@ -350,7 +366,7 @@ class RegisterUserViewModel @Inject constructor(
     }
 
     fun saveUser(onSuccess: () -> Unit) {
-        viewModelScope.launch {
+        launch {
             val toPerson = _uiState.value.toPerson
             toPerson.toUser!!.type = getUserTypeFromContext(_uiState.value.context)
 

@@ -2,13 +2,14 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
+import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.ui.navigation.SchedulerDetailsScreenArgs
@@ -19,7 +20,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,7 +28,7 @@ class SchedulerDetailsViewModel @Inject constructor(
     private val schedulerRepository: SchedulerRepository,
     private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<SchedulerDetailsUIState> = MutableStateFlow(SchedulerDetailsUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -40,10 +40,16 @@ class SchedulerDetailsViewModel @Inject constructor(
         loadUIStateWithDatabaseInfos()
     }
 
+    override fun onShowError(throwable: Throwable) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
+            message = context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
+        )
+    }
+
     fun updateSchedules() {
         val args = jsonArgs?.fromJsonNavParamToArgs(SchedulerDetailsScreenArgs::class.java)!!
 
-        viewModelScope.launch {
+        launch {
             _uiState.update {
                 it.copy(
                     schedules = schedulerRepository.getSchedulerList(
@@ -55,7 +61,7 @@ class SchedulerDetailsViewModel @Inject constructor(
     }
 
     private fun loadUIStateWithDatabaseInfos() {
-        viewModelScope.launch {
+        launch {
             val toPerson = userRepository.getAuthenticatedTOPerson()!!
 
             _uiState.update {
@@ -73,8 +79,32 @@ class SchedulerDetailsViewModel @Inject constructor(
             it.copy(
                 title = context.getString(R.string.scheduler_details_screen_title),
                 subtitle = args.scheduledDate.format(EnumDateTimePatterns.DATE),
-                isVisibleFabAdd = args.scheduledDate >= dateNow()
+                isVisibleFabAdd = args.scheduledDate >= dateNow(),
+                messageDialogState = initializeMessageDialogState(),
             )
         }
+    }
+
+    private fun initializeMessageDialogState(): MessageDialogState {
+        return MessageDialogState(
+            onShowDialog = { type, message, onConfirm, onCancel ->
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        dialogType = type,
+                        dialogMessage = message,
+                        showDialog = true,
+                        onConfirm = onConfirm,
+                        onCancel = onCancel
+                    )
+                )
+            },
+            onHideDialog = {
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        showDialog = false
+                    )
+                )
+            }
+        )
     }
 }

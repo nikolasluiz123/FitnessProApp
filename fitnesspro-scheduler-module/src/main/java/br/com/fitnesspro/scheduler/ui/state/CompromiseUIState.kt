@@ -5,13 +5,11 @@ import br.com.fitnesspro.compose.components.fields.state.DayWeeksSelectorField
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
-import br.com.fitnesspro.core.callback.IShowDialogCallback
-import br.com.fitnesspro.core.enums.EnumDialogType
-import br.com.fitnesspro.core.state.IDialogUIState
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumUserType
+import br.com.fitnesspro.scheduler.usecase.scheduler.CompromiseRecurrentConfig
 import br.com.fitnesspro.to.TOScheduler
 import br.com.fitnesspro.tuple.PersonTuple
-import br.com.fitnesspro.scheduler.usecase.scheduler.CompromiseRecurrentConfig
 
 data class CompromiseUIState(
     val title: String = "",
@@ -32,11 +30,5 @@ data class CompromiseUIState(
     val isEnabledMessageButton: Boolean = false,
     val isEnabledConfirmButton: Boolean = false,
     val hasNewMessages: Boolean = false,
-    override val dialogType: EnumDialogType = EnumDialogType.ERROR,
-    override val dialogMessage: String = "",
-    override val showDialog: Boolean = false,
-    override val onShowDialog: IShowDialogCallback? = null,
-    override val onHideDialog: () -> Unit = { },
-    override val onConfirm: () -> Unit = { },
-    override val onCancel: () -> Unit = { }
-): IDialogUIState
+    val messageDialogState: MessageDialogState = MessageDialogState()
+)

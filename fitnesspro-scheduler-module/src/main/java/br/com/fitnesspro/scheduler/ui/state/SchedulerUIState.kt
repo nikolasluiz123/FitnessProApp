@@ -1,6 +1,7 @@
 package br.com.fitnesspro.scheduler.ui.state
 
 import br.com.fitnesspro.core.extensions.yearMonthNow
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.decorator.SchedulerDecorator
 import br.com.fitnesspro.to.TOSchedulerConfig
@@ -14,4 +15,5 @@ data class SchedulerUIState(
     val selectedYearMonth: YearMonth = yearMonthNow(),
     val onSelectYearMonth: (newYearMonth: YearMonth) -> Unit = { },
     val isVisibleFabRecurrentScheduler: Boolean = false,
+    val messageDialogState: MessageDialogState = MessageDialogState()
 )

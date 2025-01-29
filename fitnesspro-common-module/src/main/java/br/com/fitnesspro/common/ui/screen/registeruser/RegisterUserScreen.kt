@@ -136,14 +136,7 @@ fun RegisterUserScreen(
         ) {
             val (tabRowRef, horizontalPagerRef) = createRefs()
 
-            FitnessProMessageDialog(
-                type = state.dialogType,
-                show = state.showDialog,
-                onDismissRequest = { state.onHideDialog() },
-                message = state.dialogMessage,
-                onConfirm = state.onConfirm,
-                onCancel = state.onCancel
-            )
+            FitnessProMessageDialog(state = state.messageDialogState)
 
             val pagerState = rememberPagerState(pageCount = state.tabState::tabsSize)
 

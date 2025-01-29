@@ -47,6 +47,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.buttons.fab.FitnessProFloatingActionButton
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonConfig
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.dateNow
@@ -154,6 +155,8 @@ fun SchedulerScreen(
                 .fillMaxSize()
         ) {
             val (headerRef, daysGridRef) = createRefs()
+
+            FitnessProMessageDialog(state = state.messageDialogState)
 
             SchedulerHeader(
                 selectedYearMonth = state.selectedYearMonth,

@@ -3,21 +3,22 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 import android.content.Context
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
 import br.com.fitnesspro.compose.components.fields.state.DayWeeksSelectorField
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
+import br.com.fitnesspro.core.callback.showConfirmationDialog
+import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.core.extensions.parseToLocalTime
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumCompromiseType.FIRST
 import br.com.fitnesspro.model.enums.EnumCompromiseType.RECURRENT
@@ -51,7 +52,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -64,7 +64,7 @@ class CompromiseViewModel @Inject constructor(
     private val confirmationSchedulerUseCase: ConfirmationSchedulerUseCase,
     private val inactivateSchedulerUseCase: InactivateSchedulerUseCase,
     savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<CompromiseUIState> = MutableStateFlow(CompromiseUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -74,6 +74,12 @@ class CompromiseViewModel @Inject constructor(
     init {
         initialUIStateLoad()
         loadUIStateWithDatabaseInfos()
+    }
+
+    override fun onShowError(throwable: Throwable) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
+            message = context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
+        )
     }
 
     private fun initialUIStateLoad() {
@@ -89,29 +95,47 @@ class CompromiseViewModel @Inject constructor(
                 hourStart = initializeHourStartTimePickerField(),
                 hourEnd = initializeHourEndTimePickerField(),
                 observation = initializeObservationField(),
-                dayWeeksSelectorField = DayWeeksSelectorField(
-                    onSelect = {
-                        _uiState.value = _uiState.value.copy(
-                            recurrentConfig = _uiState.value.recurrentConfig.copy(
-                                dayWeeks = _uiState.value.dayWeeksSelectorField.selected.toList()
-                            )
-                        )
-                    }
-                ),
+                messageDialogState = initializeMessageDialogState(),
+                dayWeeksSelectorField = initializeDayWeeksSelectorField(),
                 recurrent = args.recurrent,
-                onShowDialog = { type, message, onConfirm, onCancel ->
-                    _uiState.value = _uiState.value.copy(
-                        dialogType = type,
-                        showDialog = true,
-                        dialogMessage = message,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                },
-                onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
                 toScheduler = _uiState.value.toScheduler.copy(scheduledDate = args.date)
             )
         }
+    }
+
+    private fun initializeDayWeeksSelectorField(): DayWeeksSelectorField {
+        return DayWeeksSelectorField(
+            onSelect = {
+                _uiState.value = _uiState.value.copy(
+                    recurrentConfig = _uiState.value.recurrentConfig.copy(
+                        dayWeeks = _uiState.value.dayWeeksSelectorField.selected.toList()
+                    )
+                )
+            }
+        )
+    }
+
+    private fun initializeMessageDialogState(): MessageDialogState {
+        return MessageDialogState(
+            onShowDialog = { type, message, onConfirm, onCancel ->
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        dialogType = type,
+                        dialogMessage = message,
+                        showDialog = true,
+                        onConfirm = onConfirm,
+                        onCancel = onCancel
+                    )
+                )
+            },
+            onHideDialog = {
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        showDialog = false
+                    )
+                )
+            }
+        )
     }
 
     private fun initializeObservationField(): TextField {
@@ -368,7 +392,7 @@ class CompromiseViewModel @Inject constructor(
     }
 
     private fun loadUIStateWithDatabaseInfos() {
-        viewModelScope.launch {
+        launch {
             val toPerson = userRepository.getAuthenticatedTOPerson()!!
             val userType = toPerson.toUser?.type!!
             val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
@@ -531,7 +555,7 @@ class CompromiseViewModel @Inject constructor(
     }
 
     fun saveCompromise(onSuccess: (EnumSchedulerType) -> Unit) {
-        viewModelScope.launch {
+        launch {
             val enumSchedulerType = getSchedulerType()
 
             val validationResults = saveCompromiseUseCase.execute(
@@ -553,13 +577,7 @@ class CompromiseViewModel @Inject constructor(
         val dialogValidations = validationResults.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {
-            _uiState.value.onShowDialog?.onShow(
-                type = EnumDialogType.ERROR,
-                message = dialogValidations.message,
-                onConfirm = { _uiState.value.onHideDialog.invoke() },
-                onCancel = { _uiState.value.onHideDialog.invoke() }
-            )
-
+            _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(dialogValidations.message)
             return
         }
 
@@ -622,12 +640,7 @@ class CompromiseViewModel @Inject constructor(
                 }
 
                 DAY_OF_WEEKS -> {
-                    _uiState.value.onShowDialog?.onShow(
-                        type = EnumDialogType.ERROR,
-                        message = it.message,
-                        onConfirm = { _uiState.value.onHideDialog.invoke() },
-                        onCancel = { _uiState.value.onHideDialog.invoke() }
-                    )
+                    _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(it.message)
                 }
             }
         }
@@ -647,34 +660,25 @@ class CompromiseViewModel @Inject constructor(
         val state = _uiState.value
         val toScheduler = state.toScheduler
 
-        state.onShowDialog?.onShow(
-            type = EnumDialogType.CONFIRMATION,
+        _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
             message = context.getString(
                 R.string.compromise_screen_dialog_inactivation_message,
                 toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
                 toScheduler.start!!.format(EnumDateTimePatterns.TIME),
                 toScheduler.end!!.format(EnumDateTimePatterns.TIME)
-            ),
-            onConfirm = {
-                viewModelScope.launch {
-                    val result = inactivateSchedulerUseCase(toScheduler)
+            )
+        ) {
+            launch {
+                val validationError = inactivateSchedulerUseCase(toScheduler)
 
-                    if (result != null) {
-                        state.onShowDialog.onShow(
-                            type = EnumDialogType.ERROR,
-                            message = result.message,
-                            onConfirm = { },
-                            onCancel = { }
-                        )
-                    } else {
-                        initializeEditionInfos()
-                        onSuccess()
-                    }
-
+                if (validationError != null) {
+                    _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(validationError.message)
+                } else {
+                    initializeEditionInfos()
+                    onSuccess()
                 }
-            },
-            onCancel = { }
-        )
+            }
+        }
     }
 
     fun onScheduleConfirmClick(onSuccess: () -> Unit) {
@@ -697,27 +701,19 @@ class CompromiseViewModel @Inject constructor(
             )
         }
 
-        state.onShowDialog?.onShow(
-            type = EnumDialogType.CONFIRMATION,
-            message = message,
-            onConfirm = {
-                viewModelScope.launch {
-                    val result = confirmationSchedulerUseCase(toScheduler)
+        _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
+            message = message
+        ) {
+            launch {
+                val validationError = confirmationSchedulerUseCase(toScheduler)
 
-                    if (result != null) {
-                        state.onShowDialog.onShow(
-                            type = EnumDialogType.ERROR,
-                            message = result.message,
-                            onConfirm = { },
-                            onCancel = { }
-                        )
-                    } else {
-                        initializeEditionInfos()
-                        onSuccess()
-                    }
+                if (validationError != null) {
+                    _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(validationError.message)
+                } else {
+                    initializeEditionInfos()
+                    onSuccess()
                 }
-            },
-            onCancel = { }
-        )
+            }
+        }
     }
 }

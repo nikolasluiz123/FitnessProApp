@@ -96,4 +96,5 @@
     <string name="register_user_screen_label_user_type">Tipo de Usuário *</string>
     <string name="register_user_screen_title_authentication_service">Novo Usuário</string>
     <string name="login_google_unknown_error">Ocorreu um erro desconhecido e não foi possível realizar a autenticação com o Google.</string>
+    <string name="unknown_error_message">Ocorreu um erro inesperado, se o erro persistir contate o suporte.</string>
 </resources>

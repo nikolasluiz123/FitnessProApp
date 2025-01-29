@@ -24,3 +24,21 @@ fun IShowDialogCallback.showErrorDialog(message: String) {
         onCancel = { }
     )
 }
+
+fun IShowDialogCallback.showConfirmationDialog(message: String, onConfirm: () -> Unit) {
+    this.onShow(
+        type = EnumDialogType.CONFIRMATION,
+        message = message,
+        onConfirm = onConfirm,
+        onCancel = { }
+    )
+}
+
+fun IShowDialogCallback.showInformationDialog(message: String) {
+    this.onShow(
+        type = EnumDialogType.INFORMATION,
+        message = message,
+        onConfirm = { },
+        onCancel = { }
+    )
+}

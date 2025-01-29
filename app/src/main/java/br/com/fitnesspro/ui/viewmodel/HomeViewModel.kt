@@ -1,11 +1,13 @@
 package br.com.fitnesspro.ui.viewmodel
 
 import android.content.Context
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.core.enums.EnumDialogType
+import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
+import br.com.fitnesspro.core.callback.showConfirmationDialog
+import br.com.fitnesspro.core.callback.showErrorDialog
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.ui.state.HomeUIState
@@ -21,13 +23,19 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userRepository: UserRepository
-) : ViewModel() {
+) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<HomeUIState> = MutableStateFlow(HomeUIState())
     val uiState get() = _uiState.asStateFlow()
 
     init {
         initialUIStateLoad()
+    }
+
+    override fun onShowError(throwable: Throwable) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
+            message = context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
+        )
     }
 
     private fun initialUIStateLoad() {
@@ -43,33 +51,44 @@ class HomeViewModel @Inject constructor(
                     isEnabledWorkoutButton = true,
                     isEnabledNutritionButton = false,
                     isEnabledMoneyButton = false,
-                    onShowDialog = { type, message, onConfirm, onCancel ->
-                        _uiState.value = _uiState.value.copy(
-                            dialogType = type,
-                            showDialog = true,
-                            dialogMessage = message,
-                            onConfirm = onConfirm,
-                            onCancel = onCancel
-                        )
-                    },
-                    onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
+                    messageDialogState = initializeMessageDialogState()
                 )
             }
         }
     }
 
-    fun logout(onSuccess: () -> Unit) {
-        _uiState.value.onShowDialog?.onShow(
-            type = EnumDialogType.CONFIRMATION,
-            message = context.getString(R.string.home_screen_dialog_logout_message),
-            onConfirm = {
-                viewModelScope.launch {
-                    userRepository.logout()
-                    onSuccess()
-                }
+    private fun initializeMessageDialogState(): MessageDialogState {
+        return MessageDialogState(
+            onShowDialog = { type, message, onConfirm, onCancel ->
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        dialogType = type,
+                        dialogMessage = message,
+                        showDialog = true,
+                        onConfirm = onConfirm,
+                        onCancel = onCancel
+                    )
+                )
             },
-            onCancel = { }
+            onHideDialog = {
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        showDialog = false
+                    )
+                )
+            }
         )
+    }
+
+    fun logout(onSuccess: () -> Unit) {
+        _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
+            message = context.getString(R.string.home_screen_dialog_logout_message)
+        ) {
+            launch {
+                userRepository.logout()
+                onSuccess()
+            }
+        }
     }
 
     private fun getTitle(toPerson: TOPerson): String {

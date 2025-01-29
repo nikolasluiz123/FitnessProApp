@@ -1,32 +1,35 @@
 package br.com.fitnesspro.scheduler.ui.viewmodel
 
+import android.content.Context
 import androidx.core.text.isDigitsOnly
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields
 import br.com.fitnesspro.compose.components.fields.state.SwitchButtonField
 import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.core.enums.EnumDialogType
+import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.toIntOrNull
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.scheduler.ui.state.SchedulerConfigUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SchedulerConfigViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val userRepository: UserRepository,
     private val schedulerConfigRepository: SchedulerConfigRepository,
     private val schedulerConfigUseCase: SaveSchedulerConfigUseCase
-): ViewModel() {
+) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<SchedulerConfigUIState> = MutableStateFlow(SchedulerConfigUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -36,6 +39,12 @@ class SchedulerConfigViewModel @Inject constructor(
         loadUIStateWithDatabaseInfos()
     }
 
+    override fun onShowError(throwable: Throwable) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
+            message = context.getString(R.string.unknown_error_message)
+        )
+    }
+
     private fun initialUIStateLoad() {
         _uiState.update { state ->
             state.copy(
@@ -43,14 +52,13 @@ class SchedulerConfigViewModel @Inject constructor(
                 notification = initializeNotificationSwitchField(),
                 minEventDensity = initializeMinEventDensityTextField(),
                 maxEventDensity = initializeMaxEventDensityTextField(),
-                onShowDialog = initializeOnShowDialog(),
-                onHideDialog = initializeOnHideDialog(),
+                messageDialogState = initializeMessageDialogState(),
             )
         }
     }
 
     private fun loadUIStateWithDatabaseInfos() {
-        viewModelScope.launch {
+        launch {
             val toPerson = userRepository.getAuthenticatedTOPerson()!!
             val toConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(toPerson.id!!)!!
 
@@ -73,20 +81,27 @@ class SchedulerConfigViewModel @Inject constructor(
         }
     }
 
-    private fun initializeOnHideDialog(): () -> Unit = {
-        _uiState.value = _uiState.value.copy(showDialog = false)
-    }
-
-    private fun initializeOnShowDialog(): (EnumDialogType, String, () -> Unit, () -> Unit) -> Unit {
-        return { type, message, onConfirm, onCancel ->
-            _uiState.value = _uiState.value.copy(
-                dialogType = type,
-                showDialog = true,
-                dialogMessage = message,
-                onConfirm = onConfirm,
-                onCancel = onCancel
-            )
-        }
+    private fun initializeMessageDialogState(): MessageDialogState {
+        return MessageDialogState(
+            onShowDialog = { type, message, onConfirm, onCancel ->
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        dialogType = type,
+                        dialogMessage = message,
+                        showDialog = true,
+                        onConfirm = onConfirm,
+                        onCancel = onCancel
+                    )
+                )
+            },
+            onHideDialog = {
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        showDialog = false
+                    )
+                )
+            }
+        )
     }
 
     private fun initializeMaxEventDensityTextField(): TextField {
@@ -138,7 +153,7 @@ class SchedulerConfigViewModel @Inject constructor(
     }
 
     fun save(onSuccess: () -> Unit) {
-        viewModelScope.launch {
+        launch {
             val validationResults = schedulerConfigUseCase.saveConfig(
                 personId = _uiState.value.toConfig.personId!!,
                 toSchedulerConfig = _uiState.value.toConfig
@@ -156,13 +171,7 @@ class SchedulerConfigViewModel @Inject constructor(
         val dialogValidations = validationResults.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {
-            _uiState.value.onShowDialog?.onShow(
-                type = EnumDialogType.ERROR,
-                message = dialogValidations.message,
-                onConfirm = { _uiState.value.onHideDialog.invoke() },
-                onCancel = { _uiState.value.onHideDialog.invoke() }
-            )
-
+            _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(dialogValidations.message)
             return
         }
 

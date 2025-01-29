@@ -210,14 +210,7 @@ fun CompromiseScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            FitnessProMessageDialog(
-                type = state.dialogType,
-                show = state.showDialog,
-                onDismissRequest = state.onHideDialog,
-                message = state.dialogMessage,
-                onConfirm = state.onConfirm,
-                onCancel = state.onCancel
-            )
+            FitnessProMessageDialog(state = state.messageDialogState)
 
             when (state.userType) {
                 EnumUserType.PERSONAL_TRAINER -> {

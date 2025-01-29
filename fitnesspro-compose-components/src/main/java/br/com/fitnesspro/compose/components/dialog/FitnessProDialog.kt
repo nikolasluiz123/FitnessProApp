@@ -55,10 +55,24 @@ import br.com.fitnesspro.core.enums.EnumDialogType.CONFIRMATION
 import br.com.fitnesspro.core.enums.EnumDialogType.ERROR
 import br.com.fitnesspro.core.enums.EnumDialogType.INFORMATION
 import br.com.fitnesspro.core.menu.ITupleListItem
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.theme.DialogTitleTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_800
 import kotlinx.coroutines.flow.flowOf
+
+
+@Composable
+fun FitnessProMessageDialog(state: MessageDialogState) {
+    FitnessProMessageDialog(
+        type = state.dialogType,
+        show = state.showDialog,
+        onDismissRequest = state.onHideDialog,
+        message = state.dialogMessage,
+        onConfirm = state.onConfirm,
+        onCancel = state.onCancel
+    )
+}
 
 /**
  * Dialog genérica para exibir qualquer mensagem necessária de acordo com as regras da tela

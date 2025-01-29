@@ -2,9 +2,7 @@ package br.com.fitnesspro.scheduler.ui.state
 
 import br.com.fitnesspro.compose.components.fields.state.SwitchButtonField
 import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.core.callback.IShowDialogCallback
-import br.com.fitnesspro.core.enums.EnumDialogType
-import br.com.fitnesspro.core.state.IDialogUIState
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOSchedulerConfig
 
@@ -15,11 +13,5 @@ data class SchedulerConfigUIState(
     val maxEventDensity: TextField = TextField(),
     val userType: EnumUserType? = null,
     val toConfig: TOSchedulerConfig = TOSchedulerConfig(),
-    override val dialogType: EnumDialogType = EnumDialogType.ERROR,
-    override val dialogMessage: String = "",
-    override val showDialog: Boolean = false,
-    override val onShowDialog: IShowDialogCallback? = null,
-    override val onHideDialog: () -> Unit = {},
-    override val onConfirm: () -> Unit = {},
-    override val onCancel: () -> Unit = {}
-): IDialogUIState
+    val messageDialogState: MessageDialogState = MessageDialogState()
+)
