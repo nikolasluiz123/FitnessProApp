@@ -193,8 +193,4 @@ class UserRepository(
         userDAO.logoutAll()
         defaultAuthenticationService.logout()
     }
-
-    companion object {
-        private const val TAG = "UserRepository"
-    }
 }

@@ -154,8 +154,7 @@ fun ProfessionalSchedulerConfigScreen(state: SchedulerConfigUIState) {
         val (
             generalRef, labeledCheckboxAlarmRef, labeledCheckboxNotificationRef,
             eventDensityRef, eventDensityExplanationRef, eventDensityMinRef, eventDensityMaxRef,
-            workTimeRef, workTimeExplanationRef, workTimeStartRef, workTimeEndRef,
-            breakTimeRef, breakTimeExplanationRef, breakTimeStartRef, breakTimeEndRef
+            workTimeRef, workTimeExplanationRef, breakTimeRef, breakTimeExplanationRef
         ) = createRefs()
 
         Text(
