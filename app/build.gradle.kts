@@ -71,6 +71,7 @@ dependencies {
     implementation(project(":fitnesspro-common-module"))
     implementation(project(":fitnesspro-scheduler-module"))
     implementation(project(":fitnesspro-workout-module"))
+    implementation(project(":fitnesspro-firebase-api"))
 
     implementation(libs.java.faker)
 

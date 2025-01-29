@@ -34,17 +34,21 @@ import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_600
 import br.com.fitnesspro.core.theme.LabelTextStyle
+import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.ui.bottomsheet.workout.BottomSheetWorkout
 import br.com.fitnesspro.ui.screen.home.callbacks.OnLogoutClick
 import br.com.fitnesspro.ui.screen.home.callbacks.OnNavigateToAccountInformation
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_ACCOUNT_BUTTON
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_MONEY
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_NUTRITION
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_SCHEDULER
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_WORKOUT
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_LOGOUT_BUTTON
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_NOTIFICATIONS_BUTTON
 import br.com.fitnesspro.ui.state.HomeUIState
 import br.com.fitnesspro.ui.viewmodel.HomeViewModel
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun HomeScreen(
@@ -155,7 +159,10 @@ fun HomeScreen(
                     iconResId = br.com.fitnesspro.core.R.drawable.ic_calendar_32dp,
                     label = stringResource(R.string.home_screen_label_btn_scheduler),
                     enabled = state.isEnabledSchedulerButton,
-                    onClick = onNavigateToSchedule
+                    onClick = {
+                        Firebase.analytics.logButtonClick(HOME_SCREEN_BUTTON_SCHEDULER)
+                        onNavigateToSchedule()
+                    }
                 )
 
                 SquaredButton(
@@ -174,7 +181,10 @@ fun HomeScreen(
                     iconResId = br.com.fitnesspro.core.R.drawable.ic_dumbbell_32dp,
                     label = stringResource(R.string.home_screen_label_btn_workout),
                     enabled = state.isEnabledWorkoutButton,
-                    onClick = { openedBottomSheetWorkout = true }
+                    onClick = {
+                        Firebase.analytics.logButtonClick(HOME_SCREEN_BUTTON_WORKOUT)
+                        openedBottomSheetWorkout = true
+                    }
                 )
 
                 if (openedBottomSheetWorkout) {
@@ -189,7 +199,7 @@ fun HomeScreen(
 
                 SquaredButton(
                     modifier = Modifier
-                        .testTag(EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_NUTRITION.name)
+                        .testTag(HOME_SCREEN_BUTTON_NUTRITION.name)
                         .padding(8.dp)
                         .constrainAs(btnNutritionRef) {
                             start.linkTo(parent.start)
@@ -202,7 +212,10 @@ fun HomeScreen(
                         },
                     iconResId = br.com.fitnesspro.core.R.drawable.ic_flatware_32dp,
                     label = stringResource(R.string.home_screen_label_btn_nutrition),
-                    enabled = state.isEnabledNutritionButton
+                    enabled = state.isEnabledNutritionButton,
+                    onClick = {
+                        Firebase.analytics.logButtonClick(HOME_SCREEN_BUTTON_NUTRITION)
+                    }
                 )
 
                 SquaredButton(
@@ -219,7 +232,10 @@ fun HomeScreen(
                         },
                     iconResId = br.com.fitnesspro.core.R.drawable.ic_money_32dp,
                     label = stringResource(R.string.home_screen_label_btn_money),
-                    enabled = state.isEnabledMoneyButton
+                    enabled = state.isEnabledMoneyButton,
+                    onClick = {
+                        Firebase.analytics.logButtonClick(HOME_SCREEN_BUTTON_MONEY)
+                    }
                 )
             }
 

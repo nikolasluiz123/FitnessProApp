@@ -7,7 +7,10 @@ import br.com.fitnesspro.R
 import br.com.fitnesspro.common.ui.enums.EnumBottomSheetsTestTags.BOTTOM_SHEET_NUTRITION
 import br.com.fitnesspro.compose.components.bottomsheet.BottomSheet
 import br.com.fitnesspro.core.R.drawable
+import br.com.fitnesspro.firebase.api.analytics.logBottomSheetItemClick
 import br.com.fitnesspro.model.enums.EnumUserType
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun BottomSheetNutrition(
@@ -71,6 +74,7 @@ fun BottomSheetNutrition(
         items = items,
         onDismissRequest = onDismissRequest,
         onItemClickListener = {
+            Firebase.analytics.logBottomSheetItemClick(it)
             onItemClickListener.onExecute(it)
             onDismissRequest()
         }
