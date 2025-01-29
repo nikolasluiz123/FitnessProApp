@@ -1,4 +1,4 @@
-package br.com.fitnesspro.common.usecase.login
+package br.com.fitnesspro.common.usecase.login.enums
 
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields

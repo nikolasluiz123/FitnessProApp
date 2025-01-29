@@ -5,14 +5,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import br.com.fitnesspro.common.ui.bottomsheet.registeruser.OnBottomSheetRegisterUserItemClick
+import br.com.fitnesspro.common.ui.bottomsheet.registeruser.OnNavigateToRegisterUser
 import br.com.fitnesspro.common.ui.viewmodel.LoginViewModel
 import br.com.fitnesspro.common.ui.screen.login.LoginScreen
 
 const val loginScreenRoute = "login"
 
 fun NavGraphBuilder.loginScreen(
-    onBottomSheetRegisterUserItemClick: OnBottomSheetRegisterUserItemClick,
+    onNavigateToRegisterUser: OnNavigateToRegisterUser,
     onNavigateToHome: () -> Unit,
     onNavigateToMockScreen: () -> Unit
 ) {
@@ -21,7 +21,7 @@ fun NavGraphBuilder.loginScreen(
 
         LoginScreen(
             viewModel = loginViewModel,
-            onBottomSheetRegisterUserItemClick = onBottomSheetRegisterUserItemClick,
+            onNavigateToRegisterUser = onNavigateToRegisterUser,
             onNavigateToHome = onNavigateToHome,
             onNavigateToMockScreen = onNavigateToMockScreen
         )

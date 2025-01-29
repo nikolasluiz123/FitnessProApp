@@ -92,4 +92,8 @@
     <string name="register_academy_screen_inactivate_success_message">Horário removido com sucesso</string>
     <string name="register_academy_screen_message_inactivate_academy">Tem certeza de que deseja remover este horário? Os agendamentos e treinos associados também serão removidos.</string>
     <string name="validation_msg_firebase_auth_error">Ocorreu um erro ao realizar a autenticação com o Firebase. Algumas funcionalidades podem não funcionar.</string>
+    <string name="register_user_screen_message_register_user_authenticated_with_service">Você realizou sua autenticação através de um serviço externo, para que o acesso ao app possa ser feito de forma offline, preencha os campos obrigatórios, salve as informações e retorne para a tela de login para autenticar novamente.</string>
+    <string name="register_user_screen_label_user_type">Tipo de Usuário *</string>
+    <string name="register_user_screen_title_authentication_service">Novo Usuário</string>
+    <string name="login_google_unknown_error">Ocorreu um erro desconhecido e não foi possível realizar a autenticação com o Google.</string>
 </resources>

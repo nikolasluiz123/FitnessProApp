@@ -26,8 +26,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.BottomSheetRegisterUser
-import br.com.fitnesspro.common.ui.bottomsheet.registeruser.OnBottomSheetRegisterUserItemClick
+import br.com.fitnesspro.common.ui.bottomsheet.registeruser.OnNavigateToRegisterUser
+import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginClick
+import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginWithGoogle
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_EMAIL_FIELD
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_LOGIN_BUTTON
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_PASSWORD_FIELD
@@ -52,7 +54,7 @@ import br.com.fitnesspro.core.theme.LabelTextStyle
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    onBottomSheetRegisterUserItemClick: OnBottomSheetRegisterUserItemClick,
+    onNavigateToRegisterUser: OnNavigateToRegisterUser,
     onNavigateToHome: () -> Unit,
     onNavigateToMockScreen: () -> Unit
 ) {
@@ -60,10 +62,11 @@ fun LoginScreen(
 
     LoginScreen(
         state = state,
-        onBottomSheetRegisterUserItemClick = onBottomSheetRegisterUserItemClick,
+        onNavigateToRegisterUser = onNavigateToRegisterUser,
         onLoginClick = viewModel::login,
         onNavigateToHome = onNavigateToHome,
-        onNavigateToMockScreen = onNavigateToMockScreen
+        onNavigateToMockScreen = onNavigateToMockScreen,
+        onLoginWithGoogleClick = viewModel::loginWithGoogle
     )
 }
 
@@ -71,10 +74,11 @@ fun LoginScreen(
 @Composable
 fun LoginScreen(
     state: LoginUIState = LoginUIState(),
-    onBottomSheetRegisterUserItemClick: OnBottomSheetRegisterUserItemClick? = null,
+    onNavigateToRegisterUser: OnNavigateToRegisterUser? = null,
     onLoginClick: OnLoginClick? = null,
     onNavigateToHome: () -> Unit = { },
-    onNavigateToMockScreen: () -> Unit = { }
+    onNavigateToMockScreen: () -> Unit = { },
+    onLoginWithGoogleClick: OnLoginWithGoogle? = null
 ) {
     Scaffold(
         topBar = {
@@ -222,7 +226,29 @@ fun LoginScreen(
                                 start.linkTo(parent.start)
                                 top.linkTo(loginButtonRef.bottom)
                             }
-                            .padding(end = 8.dp, top = 8.dp)
+                            .padding(end = 8.dp, top = 8.dp),
+                        onClick = {
+                            state.onToggleLoading()
+
+                            onLoginWithGoogleClick?.onExecute(
+                                onUserNotExistsLocal = {
+                                    state.onToggleLoading()
+
+                                    onNavigateToRegisterUser?.onNavigate(
+                                        args = RegisterUserScreenArgs(
+                                            toPersonAuthService = it
+                                        )
+                                    )
+                                },
+                                onSuccess = {
+                                    state.onToggleLoading()
+                                    onNavigateToHome()
+                                },
+                                onFailure = {
+                                    state.onToggleLoading()
+                                }
+                            )
+                        }
                     )
 
                     RoundedFacebookButton(
@@ -238,7 +264,7 @@ fun LoginScreen(
                     if (openBottomSheet) {
                         BottomSheetRegisterUser(
                             onDismissRequest = { openBottomSheet = false },
-                            onItemClickListener = onBottomSheetRegisterUserItemClick
+                            onItemClickListener = onNavigateToRegisterUser
                         )
                     }
                 }

@@ -11,6 +11,7 @@ import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAcademyItemCli
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAddAcademy
 import br.com.fitnesspro.common.ui.viewmodel.RegisterUserViewModel
 import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
+import br.com.fitnesspro.to.TOPerson
 import com.google.gson.GsonBuilder
 
 internal const val registerUserScreenRoute = "registerUser"
@@ -41,4 +42,5 @@ fun NavController.navigateToRegisterUserScreen(args: RegisterUserScreenArgs, nav
 
 class RegisterUserScreenArgs(
     val context: EnumOptionsBottomSheetRegisterUser? = null,
+    val toPersonAuthService: TOPerson? = null
 )

@@ -25,6 +25,9 @@ abstract class UserDAO: BaseDAO() {
     @Query("select * from user where id = :id")
     abstract suspend fun findById(id: String): User?
 
+    @Query("select * from user where email = :email")
+    abstract suspend fun findByEmail(email: String): User?
+
     @Query("""
               select user.* 
               from user

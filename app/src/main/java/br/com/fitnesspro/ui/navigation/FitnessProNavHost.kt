@@ -33,7 +33,7 @@ fun FitnessProNavHost(
     ) {
 
         loginScreen(
-            onBottomSheetRegisterUserItemClick = navController::navigateToRegisterUserScreen,
+            onNavigateToRegisterUser = navController::navigateToRegisterUserScreen,
             onNavigateToHome = {
                 navController.navigateToHomeScreen(
                     navOptions = navOptions {

@@ -3,12 +3,14 @@ package br.com.fitnesspro.common.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.common.usecase.login.EnumLoginValidationTypes
-import br.com.fitnesspro.common.usecase.login.EnumValidatedLoginFields
-import br.com.fitnesspro.common.usecase.login.LoginUseCase
+import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
+import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
+import br.com.fitnesspro.common.usecase.login.enums.EnumLoginValidationTypes
+import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.validation.FieldValidationError
+import br.com.fitnesspro.to.TOPerson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,8 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase,
-    private val userRepository: UserRepository
+    private val defaultLoginUseCase: DefaultLoginUseCase,
+    private val googleLoginUseCase: GoogleLoginUseCase,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<br.com.fitnesspro.common.ui.state.LoginUIState> = MutableStateFlow(
@@ -85,7 +88,7 @@ class LoginViewModel @Inject constructor(
             val username = _uiState.value.email.value
             val password = _uiState.value.password.value
 
-            val validationsResult = loginUseCase.execute(username, password)
+            val validationsResult = defaultLoginUseCase.execute(username, password)
 
             if (validationsResult.isEmpty()) {
                 onSuccess()
@@ -96,6 +99,33 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun loginWithGoogle(onUserNotExistsLocal: (TOPerson) -> Unit, onSuccess: () -> Unit, onFailure: () -> Unit) {
+        viewModelScope.launch {
+            val googleAuthResult = googleLoginUseCase()
+
+            when {
+                googleAuthResult.success.not() -> {
+                    _uiState.value.onShowDialog?.onShow(
+                        type = EnumDialogType.ERROR,
+                        message = googleAuthResult.errorMessage!!,
+                        onConfirm = { },
+                        onCancel = { }
+                    )
+
+                    onFailure()
+                }
+
+                googleAuthResult.userExists -> {
+                    onSuccess()
+                }
+
+                else -> {
+                    onUserNotExistsLocal(googleAuthResult.toPerson!!)
+                }
+            }
+        }
+    }
+
     private fun showValidationMessages(validationsResult: List<FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>>) {
         val dialogValidations = validationsResult.firstOrNull { it.field == null }
 
@@ -103,8 +133,8 @@ class LoginViewModel @Inject constructor(
             _uiState.value.onShowDialog?.onShow(
                 type = EnumDialogType.ERROR,
                 message = dialogValidations.message,
-                onConfirm = { _uiState.value.onHideDialog.invoke() },
-                onCancel = { _uiState.value.onHideDialog.invoke() }
+                onConfirm = { },
+                onCancel = { }
             )
 
             return

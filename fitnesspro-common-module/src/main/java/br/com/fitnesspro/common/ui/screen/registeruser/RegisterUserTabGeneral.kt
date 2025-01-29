@@ -21,10 +21,12 @@ import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScr
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_NAME
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_PASSWORD
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_PHONE
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_USER_TYPE
 import br.com.fitnesspro.common.ui.state.RegisterUserUIState
 import br.com.fitnesspro.compose.components.fields.DatePickerOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
+import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
 import br.com.fitnesspro.compose.components.fields.transformation.PhoneVisualTransformation
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPhoneKeyboardOptions
@@ -43,7 +45,23 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
             .fillMaxSize()
             .verticalScroll(scrollState)
     ) {
-        val (nameRef, emailRef, passwordRef, birthDayDatePickerRef, phoneRef) = createRefs()
+        val (nameRef, emailRef, passwordRef, birthDayDatePickerRef, phoneRef, userTypeRef) = createRefs()
+
+        if (state.isRegisterServiceAuth) {
+            DefaultExposedDropdownMenu(
+                field = state.userType,
+                labelResId = R.string.register_user_screen_label_user_type,
+                modifier = Modifier
+                    .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_USER_TYPE.name)
+                    .constrainAs(userTypeRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+
+                        width = Dimension.fillToConstraints
+                    }
+            )
+        }
 
         OutlinedTextFieldValidation(
             field = state.name,
@@ -51,8 +69,10 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
             modifier = Modifier
                 .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_NAME.name)
                 .constrainAs(nameRef) {
+                    val constraintTop = if (state.isRegisterServiceAuth) userTypeRef.bottom else parent.top
+
                     start.linkTo(parent.start)
-                    top.linkTo(parent.top)
+                    top.linkTo(constraintTop)
                     end.linkTo(parent.end)
 
                     width = Dimension.fillToConstraints
@@ -150,6 +170,21 @@ private fun RegisterUserTabGeneralProfessionalPreview() {
             RegisterUserTabGeneral(
                 state = RegisterUserUIState(
                     isVisibleFieldPhone = true
+                ),
+                onDone = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun RegisterUserTabGeneralAuthenticatedServicePreview() {
+    FitnessProTheme {
+        Surface {
+            RegisterUserTabGeneral(
+                state = RegisterUserUIState(
+                    isRegisterServiceAuth = true
                 ),
                 onDone = {}
             )

@@ -44,6 +44,8 @@ firebaseBom = "33.8.0"
 gmsVersion = "4.4.2"
 crashlyticsPluginVersion = "3.0.2"
 perfPluginVersion = "1.4.2"
+googlePlayAuthVersion = "21.3.0"
+googleIdVersion = "1.1.1"
 
 [libraries]
 splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
@@ -56,6 +58,7 @@ service-logs = { group = "com.squareup.okhttp3", name = "logging-interceptor", v
 
 google-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 
+google-play-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googlePlayAuthVersion" }
 google-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "googleCredentials" }
 google-credentials-play-services = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "googleCredentials" }
 google-id = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleId" }

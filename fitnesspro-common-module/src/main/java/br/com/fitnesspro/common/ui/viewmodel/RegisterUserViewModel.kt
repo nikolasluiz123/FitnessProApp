@@ -18,12 +18,15 @@ import br.com.fitnesspro.common.ui.state.RegisterUserUIState
 import br.com.fitnesspro.common.usecase.person.EnumPersonValidationTypes
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
+import br.com.fitnesspro.compose.components.fields.menu.MenuItem
 import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
+import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
+import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.parseToLocalDate
@@ -56,18 +59,96 @@ class RegisterUserViewModel @Inject constructor(
         jsonArgs?.fromJsonNavParamToArgs(RegisterUserScreenArgs::class.java)?.let { args ->
             initialLoadUIState(args)
             loadUIStateWithAuthenticatedPerson(args)
+            loadUIStateWithPersonAuthService(args)
+
+            showDialogRegisterUserAuthenticatedWithService(args)
         }
     }
 
+    private fun initialLoadUIState(args: RegisterUserScreenArgs) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                title = getTitle(context = args.context, toPersonAuthenticated = null),
+                context = args.context,
+                tabState = TabState(
+                    tabs = getTabsWithDefaultState(),
+                    onSelectTab = { selectedTab ->
+                        _uiState.value = _uiState.value.copy(
+                            tabState = _uiState.value.tabState.copy(
+                                tabs = getTabListWithSelectedTab(selectedTab)
+                            )
+                        )
+                    }
+                ),
+                isVisibleFieldPhone = isVisibleFieldPhone(context = args.context, toPerson = null),
+                name = initializeNameTextField(),
+                email = initializeEmailTextField(),
+                password = initializePasswordTextField(),
+                birthDate = initializeBirthDatePickerField(),
+                phone = initializePhoneTextField(),
+                userType = initializeUserTypeDropDownMenu(),
+                onShowDialog = { type, message, onConfirm, onCancel ->
+                    _uiState.value = _uiState.value.copy(
+                        dialogType = type,
+                        showDialog = true,
+                        dialogMessage = message,
+                        onConfirm = onConfirm,
+                        onCancel = onCancel
+                    )
+                },
+                onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
+            )
+        }
+    }
+
+    private fun initializeUserTypeDropDownMenu(): DropDownTextField<EnumUserType> {
+        val items = EnumUserType.entries.map {
+            MenuItem(
+                value = it,
+                label = it.getLabel(context)!!
+            )
+        }
+
+        return DropDownTextField(
+            dataList = items,
+            dataListFiltered = items.toMutableList(),
+            onDropDownDismissRequest = {
+                _uiState.value = _uiState.value.copy(
+                    userType = _uiState.value.userType.copy(expanded = false)
+                )
+            },
+            onDropDownExpandedChange = {
+                _uiState.value = _uiState.value.copy(
+                    userType = _uiState.value.userType.copy(expanded = it)
+                )
+            },
+            onDataListItemClick = {
+                _uiState.value = _uiState.value.copy(
+                    userType = _uiState.value.userType.copy(
+                        value = it.value.getLabel(context)!!,
+                        expanded = false,
+                        errorMessage = ""
+                    ),
+                    toPerson = _uiState.value.toPerson.copy(
+                        toUser = _uiState.value.toPerson.toUser?.copy(type = it.value)
+                    )
+                )
+            },
+            onChange = {
+                // TODO - Talvez o filtro
+            }
+        )
+    }
+
     private fun loadUIStateWithAuthenticatedPerson(args: RegisterUserScreenArgs) = viewModelScope.launch {
-        if (args.context == null) {
+        if (args.context == null && args.toPersonAuthService == null) {
             val authenticatedTOPerson = userRepository.getAuthenticatedTOPerson()
             authenticatedTOPerson?.toUser?.password = null
 
             authenticatedTOPerson?.let { toPerson ->
                 _uiState.update {
                     it.copy(
-                        title = getTitle(context = null, toPerson = toPerson),
+                        title = getTitle(context = null, toPersonAuthenticated = toPerson),
                         subtitle = toPerson.name!!,
                         toPerson = toPerson,
                         academies = getAcademiesFromAuthenticatedPerson(toPerson.id!!),
@@ -87,6 +168,33 @@ class RegisterUserViewModel @Inject constructor(
         }
     }
 
+    private fun loadUIStateWithPersonAuthService(args: RegisterUserScreenArgs) {
+        args.toPersonAuthService?.let {  toPerson ->
+            _uiState.update {
+                it.copy(
+                    title = getTitle(authenticationService = true),
+                    toPerson = toPerson,
+                    isVisibleFieldPhone = isVisibleFieldPhone(context = null, toPerson = toPerson),
+                    name = it.name.copy(value = toPerson.name!!),
+                    email = it.email.copy(value = toPerson.toUser?.email!!),
+                    phone = it.phone.copy(value = toPerson.phone ?: ""),
+                    isRegisterServiceAuth = true
+                )
+            }
+        }
+    }
+
+    private fun showDialogRegisterUserAuthenticatedWithService(args: RegisterUserScreenArgs) {
+        if (args.toPersonAuthService != null) {
+            _uiState.value.onShowDialog?.onShow(
+                type = EnumDialogType.INFORMATION,
+                message = context.getString(R.string.register_user_screen_message_register_user_authenticated_with_service),
+                onConfirm = { },
+                onCancel = { }
+            )
+        }
+    }
+
     private suspend fun getAcademiesFromAuthenticatedPerson(personId: String): List<AcademyGroupDecorator> {
         return academyRepository.getAcademiesFromPerson(personId)
     }
@@ -98,41 +206,6 @@ class RegisterUserViewModel @Inject constructor(
                     academies = getAcademiesFromAuthenticatedPerson(personId)
                 )
             }
-        }
-    }
-
-    private fun initialLoadUIState(args: RegisterUserScreenArgs) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                title = getTitle(context = args.context, toPerson = null),
-                context = args.context,
-                tabState = TabState(
-                    tabs = getTabsWithDefaultState(),
-                    onSelectTab = { selectedTab ->
-                        _uiState.value = _uiState.value.copy(
-                            tabState = _uiState.value.tabState.copy(
-                                tabs = getTabListWithSelectedTab(selectedTab)
-                            )
-                        )
-                    }
-                ),
-                isVisibleFieldPhone = isVisibleFieldPhone(context = args.context, toPerson = null),
-                name = initializeNameTextField(),
-                email = initializeEmailTextField(),
-                password = initializePasswordTextField(),
-                birthDate = initializeBirthDatePickerField(),
-                phone = initializePhoneTextField(),
-                onShowDialog = { type, message, onConfirm, onCancel ->
-                    _uiState.value = _uiState.value.copy(
-                        dialogType = type,
-                        showDialog = true,
-                        dialogMessage = message,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                },
-                onHideDialog = { _uiState.value = _uiState.value.copy(showDialog = false) },
-            )
         }
     }
 
@@ -246,20 +319,33 @@ class RegisterUserViewModel @Inject constructor(
     /**
      * Função utilizada para recuperar o titulo que deve ser exibido na barra superior.
      */
-    private fun getTitle(context: EnumOptionsBottomSheetRegisterUser?, toPerson: TOPerson?): String {
-        return if (toPerson != null) {
-            when(toPerson.toUser?.type!!) {
-                EnumUserType.ACADEMY_MEMBER -> this.context.getString(R.string.register_user_screen_title_academy_member)
-                EnumUserType.PERSONAL_TRAINER -> this.context.getString(R.string.register_user_screen_title_personal_trainer)
-                EnumUserType.NUTRITIONIST -> this.context.getString(R.string.register_user_screen_title_nutritionist)
+    private fun getTitle(
+        context: EnumOptionsBottomSheetRegisterUser? = null,
+        toPersonAuthenticated: TOPerson? = null,
+        authenticationService: Boolean = false
+    ): String {
+        return when {
+            toPersonAuthenticated != null -> {
+                when(toPersonAuthenticated.toUser?.type!!) {
+                    EnumUserType.ACADEMY_MEMBER -> this.context.getString(R.string.register_user_screen_title_academy_member)
+                    EnumUserType.PERSONAL_TRAINER -> this.context.getString(R.string.register_user_screen_title_personal_trainer)
+                    EnumUserType.NUTRITIONIST -> this.context.getString(R.string.register_user_screen_title_nutritionist)
+                }
             }
-        } else {
-            when (context) {
-                EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER -> this.context.getString(R.string.register_user_screen_title_new_academy_member)
-                EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER -> this.context.getString(R.string.register_user_screen_title_new_personal_trainer)
-                EnumOptionsBottomSheetRegisterUser.NUTRITIONIST -> this.context.getString(R.string.register_user_screen_title_new_nutritionist)
-                else -> ""
+
+            context != null -> {
+                when (context) {
+                    EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER -> this.context.getString(R.string.register_user_screen_title_new_academy_member)
+                    EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER -> this.context.getString(R.string.register_user_screen_title_new_personal_trainer)
+                    EnumOptionsBottomSheetRegisterUser.NUTRITIONIST -> this.context.getString(R.string.register_user_screen_title_new_nutritionist)
+                }
             }
+
+            authenticationService -> {
+                this.context.getString(R.string.register_user_screen_title_authentication_service)
+            }
+
+            else -> ""
         }
     }
 
@@ -284,7 +370,7 @@ class RegisterUserViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                title = getTitle(context = _uiState.value.context, toPerson = toPerson),
+                title = getTitle(context = _uiState.value.context, toPersonAuthenticated = toPerson),
                 subtitle = toPerson.name!!,
                 toPerson = toPerson,
                 tabState = _uiState.value.tabState.copy(

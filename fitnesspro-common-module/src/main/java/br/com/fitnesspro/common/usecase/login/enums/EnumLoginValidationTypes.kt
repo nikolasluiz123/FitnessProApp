@@ -1,4 +1,4 @@
-package br.com.fitnesspro.common.usecase.login
+package br.com.fitnesspro.common.usecase.login.enums
 
 enum class EnumLoginValidationTypes {
     REQUIRED_EMAIL,

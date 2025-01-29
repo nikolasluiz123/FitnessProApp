@@ -18,7 +18,7 @@ import br.com.fitnesspro.core.R.drawable
 @Composable
 fun BottomSheetRegisterUser(
     onDismissRequest: () -> Unit,
-    onItemClickListener: OnBottomSheetRegisterUserItemClick?
+    onItemClickListener: OnNavigateToRegisterUser?
 ) {
     val items = listOf(
         BottomSheetRegisterUserItem(

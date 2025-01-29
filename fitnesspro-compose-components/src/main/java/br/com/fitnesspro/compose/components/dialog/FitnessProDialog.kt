@@ -51,6 +51,9 @@ import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedList
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG_TITLE
 import br.com.fitnesspro.compose.components.filter.SimpleFilter
 import br.com.fitnesspro.core.enums.EnumDialogType
+import br.com.fitnesspro.core.enums.EnumDialogType.CONFIRMATION
+import br.com.fitnesspro.core.enums.EnumDialogType.ERROR
+import br.com.fitnesspro.core.enums.EnumDialogType.INFORMATION
 import br.com.fitnesspro.core.menu.ITupleListItem
 import br.com.fitnesspro.core.theme.DialogTitleTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -103,7 +106,7 @@ fun FitnessProMessageDialog(
             },
             confirmButton = {
                 when (type) {
-                    EnumDialogType.ERROR -> {
+                    ERROR, INFORMATION -> {
                         DialogTextButton(
                             modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_OK_BUTTON.name),
                             labelResId = R.string.label_ok,
@@ -112,7 +115,7 @@ fun FitnessProMessageDialog(
                         )
                     }
 
-                    EnumDialogType.CONFIRMATION -> {
+                    CONFIRMATION -> {
                         DialogTextButton(
                             modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_CONFIRM_BUTTON.name),
                             labelResId =
@@ -125,11 +128,7 @@ fun FitnessProMessageDialog(
             },
             dismissButton = {
                 when (type) {
-                    EnumDialogType.ERROR -> {
-                        // Dialog do tipo Error não tem botão negativo.
-                    }
-
-                    EnumDialogType.CONFIRMATION -> {
+                    CONFIRMATION -> {
                         DialogTextButton(
                             modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_CANCEL_BUTTON.name),
                             labelResId = R.string.label_cancel,
@@ -137,6 +136,8 @@ fun FitnessProMessageDialog(
                             onConfirm = onCancel
                         )
                     }
+
+                    ERROR, INFORMATION -> {}
                 }
             },
             containerColor = MaterialTheme.colorScheme.background,
@@ -310,7 +311,7 @@ private fun FitnessProDialogMessageErrorPreview() {
     FitnessProTheme {
         Surface {
             FitnessProMessageDialog(
-                type = EnumDialogType.ERROR,
+                type = ERROR,
                 show = true,
                 onDismissRequest = { },
                 message = "Mensagem de erro"
@@ -325,10 +326,25 @@ private fun FitnessProDialogMessageConfirmationPreview() {
     FitnessProTheme {
         Surface {
             FitnessProMessageDialog(
-                type = EnumDialogType.CONFIRMATION,
+                type = CONFIRMATION,
                 show = true,
                 onDismissRequest = { },
                 message = "Mensagem de confirmação"
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun FitnessProDialogMessageInformationPreview() {
+    FitnessProTheme {
+        Surface {
+            FitnessProMessageDialog(
+                type = INFORMATION,
+                show = true,
+                onDismissRequest = { },
+                message = "Mensagem de informação"
             )
         }
     }

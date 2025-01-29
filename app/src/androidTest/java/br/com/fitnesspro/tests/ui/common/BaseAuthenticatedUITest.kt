@@ -2,7 +2,7 @@ package br.com.fitnesspro.tests.ui.common
 
 import android.util.Log
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeBatchUseCase
-import br.com.fitnesspro.common.usecase.login.LoginUseCase
+import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
 import br.com.fitnesspro.common.usecase.person.SavePersonBatchUseCase
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.model.enums.EnumUserType.ACADEMY_MEMBER
@@ -25,7 +25,7 @@ abstract class BaseAuthenticatedUITest: BaseUITests() {
     lateinit var savePersonUseCase: SavePersonBatchUseCase
 
     @Inject
-    lateinit var loginUseCase: LoginUseCase
+    lateinit var defaultLoginUseCase: DefaultLoginUseCase
 
     @Inject
     lateinit var savePersonAcademyTimeUseCase: SavePersonAcademyTimeBatchUseCase
@@ -161,7 +161,7 @@ abstract class BaseAuthenticatedUITest: BaseUITests() {
     }
 
     protected suspend fun authenticatePersonal() {
-        val result = loginUseCase.execute(PERSONAL_EMAIL, DEFAULT_PASSWORD)
+        val result = defaultLoginUseCase.execute(PERSONAL_EMAIL, DEFAULT_PASSWORD)
 
         if (result.isNotEmpty()) {
             Log.e(getTag(), "Personal Authentication Error: ${result.map { it.validationType }}")
@@ -169,7 +169,7 @@ abstract class BaseAuthenticatedUITest: BaseUITests() {
     }
 
     protected  suspend fun authenticateNutritionist() {
-        val result = loginUseCase.execute(NUTRITIONIST_EMAIL, DEFAULT_PASSWORD)
+        val result = defaultLoginUseCase.execute(NUTRITIONIST_EMAIL, DEFAULT_PASSWORD)
 
         if (result.isNotEmpty()) {
             Log.e(getTag(), "Nutritionist Authentication Error: ${result.map { it.validationType }}")
@@ -177,7 +177,7 @@ abstract class BaseAuthenticatedUITest: BaseUITests() {
     }
 
     protected  suspend fun authenticateMember() {
-        val result = loginUseCase.execute(MEMBER_EMAIL, DEFAULT_PASSWORD)
+        val result = defaultLoginUseCase.execute(MEMBER_EMAIL, DEFAULT_PASSWORD)
 
         if (result.isNotEmpty()) {
             Log.e(getTag(), "Member Authentication Error: ${result.map { it.validationType }}")

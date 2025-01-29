@@ -5,6 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.room.Transaction
 import br.com.fitnesspro.firebase.api.authentication.DefaultAuthenticationService
+import br.com.fitnesspro.firebase.api.authentication.GoogleAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.enums.EnumUserType
@@ -13,6 +14,7 @@ import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
 import br.com.fitnesspro.tuple.PersonTuple
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
@@ -20,7 +22,8 @@ import kotlinx.coroutines.withContext
 class UserRepository(
     private val personDAO: PersonDAO,
     private val userDAO: UserDAO,
-    private val defaultAuthenticationService: DefaultAuthenticationService
+    private val defaultAuthenticationService: DefaultAuthenticationService,
+    private val googleAuthenticationService: GoogleAuthenticationService
 ) {
 
     @Transaction
@@ -89,6 +92,10 @@ class UserRepository(
         )
     }
 
+    suspend fun signInWithGoogle(): AuthResult? = withContext(IO) {
+        googleAuthenticationService.signIn()
+    }
+
     suspend fun getTOPersonById(personId: String): TOPerson = withContext(IO) {
         personDAO.findPersonById(personId).getTOPerson()!!
     }
@@ -104,6 +111,10 @@ class UserRepository(
 
     suspend fun findUserById(userId: String): User? = withContext(IO) {
         userDAO.findById(userId)
+    }
+
+    suspend fun findUserByEmail(email: String): User? = withContext(IO) {
+        userDAO.findByEmail(email)
     }
 
     suspend fun findPersonById(personId: String): Person = withContext(IO) {

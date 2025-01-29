@@ -3,12 +3,14 @@ package br.com.fitnesspro.common.usecase.login
 import android.content.Context
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.common.usecase.login.EnumValidatedLoginFields.EMAIL
-import br.com.fitnesspro.common.usecase.login.EnumValidatedLoginFields.PASSWORD
+import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.EMAIL
+import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.PASSWORD
+import br.com.fitnesspro.common.usecase.login.enums.EnumLoginValidationTypes
+import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
 import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.core.validation.FieldValidationError
 
-class LoginUseCase(
+class DefaultLoginUseCase(
     private val context: Context,
     private val userRepository: UserRepository,
     private val passwordHasher: IPasswordHasher

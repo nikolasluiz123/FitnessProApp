@@ -5,7 +5,8 @@ import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeBatchUseCase
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeUseCase
-import br.com.fitnesspro.common.usecase.login.LoginUseCase
+import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
+import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
 import br.com.fitnesspro.common.usecase.person.SavePersonBatchUseCase
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
@@ -67,8 +68,8 @@ class SingletonCommonUseCaseModule {
         @ApplicationContext context: Context,
         userRepository: UserRepository,
         passwordHasher: IPasswordHasher
-    ): LoginUseCase {
-        return LoginUseCase(
+    ): DefaultLoginUseCase {
+        return DefaultLoginUseCase(
             context = context,
             userRepository = userRepository,
             passwordHasher = passwordHasher
@@ -87,6 +88,17 @@ class SingletonCommonUseCaseModule {
             userRepository = userRepository,
             saveSchedulerConfigUseCase = saveSchedulerConfigUseCase,
             passwordHasher = passwordHasher
+        )
+    }
+
+    @Provides
+    fun provideGoogleLoginUseCase(
+        @ApplicationContext context: Context,
+        userRepository: UserRepository,
+    ): GoogleLoginUseCase {
+        return GoogleLoginUseCase(
+            context = context,
+            userRepository = userRepository
         )
     }
 }

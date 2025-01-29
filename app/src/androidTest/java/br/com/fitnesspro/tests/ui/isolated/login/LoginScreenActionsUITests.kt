@@ -57,7 +57,7 @@ class LoginScreenActionsUITests: BaseAuthenticatedUITest() {
 
     override fun NavGraphBuilder.testNavGraph(navController: NavHostController) {
         loginScreen(
-            onBottomSheetRegisterUserItemClick = navController::navigateToRegisterUserScreen,
+            onNavigateToRegisterUser = navController::navigateToRegisterUserScreen,
             onNavigateToHome = {
                 navController.navigateToHomeScreen(
                     navOptions = navOptions {
