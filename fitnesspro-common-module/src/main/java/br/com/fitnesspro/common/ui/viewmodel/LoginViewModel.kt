@@ -9,7 +9,9 @@ import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
 import br.com.fitnesspro.common.usecase.login.enums.EnumLoginValidationTypes
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
 import br.com.fitnesspro.compose.components.fields.state.TextField
+import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
+import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOPerson
@@ -116,11 +118,17 @@ class LoginViewModel @Inject constructor(
             val validationsResult = defaultLoginUseCase.execute(username, password)
 
             if (validationsResult.isEmpty()) {
-                onSuccess()
+                if (!context.isNetworkAvailable()) {
+                    _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
+                        message = context.getString(R.string.validation_msg_firebase_auth_network_error),
+                        onConfirm = onSuccess
+                    )
+                } else {
+                    onSuccess()
+                }
             } else {
                 showValidationMessages(validationsResult)
             }
-
         }
     }
 

@@ -1,6 +1,5 @@
 package br.com.fitnesspro.common.repository
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.room.Transaction
@@ -33,23 +32,16 @@ class UserRepository(
         val existentUser = userDAO.findById(user.id)
 
         if (existentUser == null) {
-            registerFirebaseUser(user.email!!, user.password!!)
+            defaultAuthenticationService.register(
+                email = user.email!!,
+                password = user.password!!
+            )
         } else {
             defaultAuthenticationService.updateUserInfos(user)
         }
 
         userDAO.save(user)
         personDAO.save(person)
-    }
-
-    private fun registerFirebaseUser(email: String, password: String) {
-        defaultAuthenticationService.register(
-            email = email,
-            password = password,
-            onFailure = {
-                Log.e(TAG, it.stackTraceToString())
-            }
-        )
     }
 
     @Transaction
@@ -69,27 +61,15 @@ class UserRepository(
         userDAO.hasUserWithCredentials(email, password)
     }
 
-    suspend fun authenticate(
-        email: String,
-        password: String,
-        onFailure: (Exception) -> Unit = { }
-    ) = withContext(IO) {
+    suspend fun authenticate(email: String, password: String): Unit = withContext(IO) {
         userDAO.authenticate(email, password)
 
-        defaultAuthenticationService.authenticate(
-            email = email,
-            password = password,
-            onFailure = {
-                val userExistsOnlyLocal = it is FirebaseAuthInvalidCredentialsException
-
-                if (userExistsOnlyLocal) {
-                    registerFirebaseUser(email, password)
-                } else {
-                    Log.e(TAG, it.stackTraceToString())
-                    onFailure(it)
-                }
-            }
-        )
+        try {
+            defaultAuthenticationService.authenticate(email, password)
+        } catch (ex: FirebaseAuthInvalidCredentialsException) {
+            defaultAuthenticationService.register(email, password)
+            defaultAuthenticationService.authenticate(email, password)
+        }
     }
 
     suspend fun signInWithGoogle(): AuthResult? = withContext(IO) {

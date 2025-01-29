@@ -14,21 +14,23 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class GoogleAuthenticationService(private val context: Context) {
 
-    suspend fun signIn(): AuthResult? {
+    suspend fun signIn(): AuthResult? = withContext(IO) {
         val googleCredential = getGoogleCredential()
 
         if (googleCredential is CustomCredential && googleCredential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
             val token = GoogleIdTokenCredential.createFrom(googleCredential.data)
             val firebaseCredential = GoogleAuthProvider.getCredential(token.idToken, null)
 
-            return Firebase.auth.signInWithCredential(firebaseCredential).await()
+            Firebase.auth.signInWithCredential(firebaseCredential).await()
         }
 
-        return null
+        null
     }
 
     private suspend fun getGoogleCredential(): Credential? {

@@ -3,10 +3,10 @@ package br.com.fitnesspro.common.usecase.login
 import android.content.Context
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.EMAIL
-import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.PASSWORD
 import br.com.fitnesspro.common.usecase.login.enums.EnumLoginValidationTypes
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
+import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.EMAIL
+import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.PASSWORD
 import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.core.validation.FieldValidationError
 
@@ -28,16 +28,7 @@ class DefaultLoginUseCase(
 
             userRepository.authenticate(
                 email = email!!,
-                password = hashedPassword,
-                onFailure = {
-                    validationsResults.add(
-                        FieldValidationError(
-                            validationType = EnumLoginValidationTypes.FIREBASE_AUTH_ERROR,
-                            message = context.getString(R.string.validation_msg_firebase_auth_error),
-                            field = null
-                        )
-                    )
-                }
+                password = hashedPassword
             )
         }
 

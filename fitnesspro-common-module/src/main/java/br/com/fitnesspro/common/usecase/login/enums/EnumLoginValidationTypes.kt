@@ -4,5 +4,4 @@ enum class EnumLoginValidationTypes {
     REQUIRED_EMAIL,
     REQUIRED_PASSWORD,
     INVALID_CREDENTIALS,
-    FIREBASE_AUTH_ERROR
 }
