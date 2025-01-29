@@ -5,8 +5,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.enums.EnumBottomSheetsTestTags.BOTTOM_SHEET_REGISTER_USER
+import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.compose.components.bottomsheet.BottomSheet
 import br.com.fitnesspro.core.R.drawable
+import br.com.fitnesspro.firebase.api.analytics.logBottomSheetItemClick
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 
 /**
  * BottomSheet para registrar um usuário possibilitando a escolha
@@ -46,11 +50,8 @@ fun BottomSheetRegisterUser(
         items = items,
         onDismissRequest = onDismissRequest,
         onItemClickListener = {
-            onItemClickListener?.onNavigate(
-                br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs(
-                    context = it
-                )
-            )
+            Firebase.analytics.logBottomSheetItemClick(it)
+            onItemClickListener?.onNavigate(RegisterUserScreenArgs(context = it))
             onDismissRequest()
         }
     )

@@ -43,6 +43,7 @@ import br.com.fitnesspro.core.theme.GREY_800
 import br.com.fitnesspro.core.theme.LabelFontWeightMediumTextStyle
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
+import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnSaveSchedulerConfigClick
@@ -60,6 +61,8 @@ import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfig
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTestTags.SCHEDULER_CONFIG_SCREEN_MIN_DENSITY_FIELD
 import br.com.fitnesspro.scheduler.ui.state.SchedulerConfigUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerConfigViewModel
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -100,6 +103,7 @@ fun SchedulerConfigScreen(
             FloatingActionButtonSave(
                 modifier = Modifier.testTag(SCHEDULER_CONFIG_SCREEN_FAB_SAVE.name),
                 onClick = {
+                    Firebase.analytics.logButtonClick(SCHEDULER_CONFIG_SCREEN_FAB_SAVE)
                     onSaveClick?.onExecute {
                         showSuccessMessage(
                             coroutineScope = coroutineScope,

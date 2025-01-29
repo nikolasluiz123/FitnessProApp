@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +32,8 @@ import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginClick
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginWithGoogle
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_EMAIL_FIELD
+import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_FACEBOOK_BUTTON
+import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_GOOGLE_BUTTON
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_LOGIN_BUTTON
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_PASSWORD_FIELD
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_REGISTER_BUTTON
@@ -45,11 +48,15 @@ import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordVali
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
+import br.com.fitnesspro.core.callback.showInformationDialog
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_800
 import br.com.fitnesspro.core.theme.LabelTextStyle
+import br.com.fitnesspro.firebase.api.analytics.logButtonClick
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun LoginScreen(
@@ -80,6 +87,8 @@ fun LoginScreen(
     onNavigateToMockScreen: () -> Unit = { },
     onLoginWithGoogleClick: OnLoginWithGoogle? = null
 ) {
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
@@ -190,6 +199,7 @@ fun LoginScreen(
                             .padding(start = 8.dp),
                         label = stringResource(R.string.login_screen_label_button_login),
                         onClickListener = {
+                            Firebase.analytics.logButtonClick(LOGIN_SCREEN_LOGIN_BUTTON)
                             onLoginClick?.onExecute(onNavigateToHome)
                         }
                     )
@@ -206,7 +216,10 @@ fun LoginScreen(
                                 width = Dimension.fillToConstraints
                             },
                         label = stringResource(R.string.login_screen_label_button_register),
-                        onClickListener = { openBottomSheet = true }
+                        onClickListener = {
+                            Firebase.analytics.logButtonClick(LOGIN_SCREEN_REGISTER_BUTTON)
+                            openBottomSheet = true
+                        }
                     )
 
                     createHorizontalChain(
@@ -217,12 +230,15 @@ fun LoginScreen(
 
                     RoundedGoogleButton(
                         modifier = Modifier
+                            .testTag(LOGIN_SCREEN_GOOGLE_BUTTON.name)
                             .constrainAs(googleButtonRef) {
                                 start.linkTo(parent.start)
                                 top.linkTo(loginButtonRef.bottom)
                             }
                             .padding(end = 8.dp, top = 8.dp),
                         onClick = {
+                            Firebase.analytics.logButtonClick(LOGIN_SCREEN_GOOGLE_BUTTON)
+
                             state.onToggleLoading()
 
                             onLoginWithGoogleClick?.onExecute(
@@ -252,7 +268,14 @@ fun LoginScreen(
                                 end.linkTo(parent.end)
                                 top.linkTo(loginButtonRef.bottom)
                             }
-                            .padding(start = 8.dp, top = 8.dp)
+                            .padding(start = 8.dp, top = 8.dp),
+                        onClick = {
+                            Firebase.analytics.logButtonClick(LOGIN_SCREEN_FACEBOOK_BUTTON)
+
+                            state.messageDialogState.onShowDialog?.showInformationDialog(
+                                message = context.getString(R.string.login_screen_facebook_button_message)
+                            )
+                        }
                     )
 
 

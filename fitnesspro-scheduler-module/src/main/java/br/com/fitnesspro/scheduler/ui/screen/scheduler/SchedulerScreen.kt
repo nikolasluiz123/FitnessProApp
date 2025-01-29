@@ -62,6 +62,7 @@ import br.com.fitnesspro.core.theme.RED_200
 import br.com.fitnesspro.core.theme.RED_400
 import br.com.fitnesspro.core.theme.RED_600
 import br.com.fitnesspro.core.theme.RED_800
+import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnDayClick
@@ -74,6 +75,8 @@ import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreen
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreenTestTags.SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB
 import br.com.fitnesspro.scheduler.ui.state.SchedulerUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerViewModel
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -117,7 +120,10 @@ fun SchedulerScreen(
                 actions = {
                     IconButtonConfig(
                         modifier = Modifier.testTag(SCHEDULER_SCREEN_BUTTON_CONFIG.name),
-                        onClick = onNavigateToConfig
+                        onClick = {
+                            Firebase.analytics.logButtonClick(SCHEDULER_SCREEN_BUTTON_CONFIG)
+                            onNavigateToConfig()
+                        }
                     )
                 }
             )
@@ -133,6 +139,8 @@ fun SchedulerScreen(
                         )
                     },
                     onClick = {
+                        Firebase.analytics.logButtonClick(SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB)
+
                         onNavigateToCompromise?.onExecute(
                             args = br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs(
                                 recurrent = true

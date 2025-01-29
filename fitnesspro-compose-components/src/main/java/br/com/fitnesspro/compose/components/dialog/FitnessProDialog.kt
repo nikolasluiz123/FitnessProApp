@@ -59,6 +59,9 @@ import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.theme.DialogTitleTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_800
+import br.com.fitnesspro.firebase.api.analytics.logButtonClick
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.flowOf
 
 
@@ -125,17 +128,22 @@ fun FitnessProMessageDialog(
                             modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_OK_BUTTON.name),
                             labelResId = R.string.label_ok,
                             onDismissRequest = onDismissRequest,
-                            onConfirm = onConfirm
+                            onClick = {
+                                Firebase.analytics.logButtonClick(FITNESS_PRO_MESSAGE_DIALOG_OK_BUTTON)
+                                onConfirm()
+                            }
                         )
                     }
 
                     CONFIRMATION -> {
                         DialogTextButton(
                             modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_CONFIRM_BUTTON.name),
-                            labelResId =
-                            R.string.label_confirm,
-                            onDismissRequest,
-                            onConfirm
+                            labelResId = R.string.label_confirm,
+                            onDismissRequest = onDismissRequest,
+                            onClick = {
+                                Firebase.analytics.logButtonClick(FITNESS_PRO_MESSAGE_DIALOG_CONFIRM_BUTTON)
+                                onConfirm()
+                            }
                         )
                     }
                 }
@@ -147,7 +155,10 @@ fun FitnessProMessageDialog(
                             modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_CANCEL_BUTTON.name),
                             labelResId = R.string.label_cancel,
                             onDismissRequest = onDismissRequest,
-                            onConfirm = onCancel
+                            onClick = {
+                                Firebase.analytics.logButtonClick(FITNESS_PRO_MESSAGE_DIALOG_CANCEL_BUTTON)
+                                onCancel()
+                            }
                         )
                     }
 
@@ -165,13 +176,13 @@ private fun DialogTextButton(
     modifier: Modifier,
     labelResId: Int,
     onDismissRequest: () -> Unit,
-    onConfirm: () -> Unit
+    onClick: () -> Unit
 ) {
     TextButton(
         modifier = modifier,
         onClick = {
             onDismissRequest()
-            onConfirm()
+            onClick()
         }
     ) {
         Text(text = stringResource(id = labelResId))

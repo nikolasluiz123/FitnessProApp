@@ -31,6 +31,8 @@ import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.firebase.api.analytics.logButtonClick
+import br.com.fitnesspro.firebase.api.analytics.logListItemClick
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumUserType
@@ -46,6 +48,8 @@ import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerDetail
 import br.com.fitnesspro.scheduler.ui.state.SchedulerDetailsUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerDetailsViewModel
 import br.com.fitnesspro.to.TOScheduler
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -88,6 +92,7 @@ fun SchedulerDetailsScreen(
                 FloatingActionButtonAdd(
                     modifier = Modifier.testTag(SCHEDULER_DETAILS_SCREEN_FAB_ADD.name),
                     onClick = {
+                        Firebase.analytics.logButtonClick(SCHEDULER_DETAILS_SCREEN_FAB_ADD)
                         onNavigateToCompromise?.onExecute(
                             args = br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs(
                                 date = state.subtitle.parseToLocalDate(EnumDateTimePatterns.DATE)!!,
@@ -160,6 +165,7 @@ fun SchedulerDetailItem(
             .padding(vertical = 8.dp)
             .testTag(SCHEDULER_DETAILS_SCREEN_ITEM_LIST.name)
             .clickable {
+                Firebase.analytics.logListItemClick(SCHEDULER_DETAILS_SCREEN_ITEM_LIST)
                 onNavigateToCompromise?.onExecute(
                     args = br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs(
                         date = state.subtitle.parseToLocalDate(EnumDateTimePatterns.DATE)!!,

@@ -23,6 +23,10 @@ import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.TAB
 import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.TAB_ROW
 import br.com.fitnesspro.core.theme.GREY_500
 import br.com.fitnesspro.core.theme.TabTitleTextStyle
+import br.com.fitnesspro.firebase.api.analytics.logTabClick
+import br.com.fitnesspro.firebase.api.analytics.logTabScroll
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -55,6 +59,7 @@ fun FitnessProTabRow(
                 modifier = Modifier.testTag(TAB.name),
                 selected = tabToCreate.selected,
                 onClick = {
+                    Firebase.analytics.logTabClick(tabToCreate.enum as Enum<*>)
                     tabState.onSelectTab(tabToCreate)
 
                     coroutineScope.launch {
@@ -105,6 +110,7 @@ fun FitnessProHorizontalPager(
             orientation = Orientation.Horizontal
         )
     ) { index ->
+        Firebase.analytics.logTabScroll(tabState.tabs[index].enum as Enum<*>)
         tabState.onSelectTab(tabState.tabs[index])
         content(index)
     }

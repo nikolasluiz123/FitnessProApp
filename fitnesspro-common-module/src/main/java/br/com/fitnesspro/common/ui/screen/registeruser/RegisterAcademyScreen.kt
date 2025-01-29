@@ -52,7 +52,10 @@ import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.core.theme.ValueTextStyle
+import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.tuple.AcademyTuple
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -98,6 +101,7 @@ fun RegisterAcademyScreen(
                     FloatingActionButtonSave(
                         modifier = Modifier.testTag(REGISTER_ACADEMY_SCREEN_FAB_SAVE.name),
                         onClick = {
+                            Firebase.analytics.logButtonClick(REGISTER_ACADEMY_SCREEN_FAB_SAVE)
                             onSaveAcademyClick?.onExecute(
                                 onSaved = {
                                     showSaveSuccessMessage(coroutineScope, snackbarHostState, context)
@@ -110,6 +114,7 @@ fun RegisterAcademyScreen(
                     IconButtonDelete(
                         modifier = Modifier.testTag(REGISTER_ACADEMY_ACTION_BUTTON_DELETE.name),
                         onClick = {
+                            Firebase.analytics.logButtonClick(REGISTER_ACADEMY_ACTION_BUTTON_DELETE)
                             onInactivateAcademyClick?.onExecute {
                                 showInactivatedSuccessMessage(coroutineScope, snackbarHostState, context)
                             }

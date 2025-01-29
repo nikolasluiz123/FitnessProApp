@@ -53,6 +53,8 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.core.theme.ValueTextStyle
+import br.com.fitnesspro.firebase.api.analytics.logButtonClick
+import br.com.fitnesspro.firebase.api.analytics.logListItemClick
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CANCELLED
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CONFIRMED
 import br.com.fitnesspro.model.enums.EnumUserType
@@ -85,6 +87,8 @@ import br.com.fitnesspro.scheduler.ui.viewmodel.CompromiseViewModel
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.to.TOScheduler
 import br.com.fitnesspro.tuple.PersonTuple
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -145,6 +149,7 @@ fun CompromiseScreen(
                             modifier = Modifier.testTag(COMPROMISE_SCREEN_ACTION_DELETE.name),
                             enabled = state.isEnabledDeleteButton,
                             onClick = {
+                                Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_ACTION_DELETE)
                                 onInactivateCompromiseClick?.onExecute {
                                     coroutineScope.launch {
                                         snackbarHostState.showSnackbar(
@@ -159,7 +164,9 @@ fun CompromiseScreen(
                             modifier = Modifier.testTag(COMPROMISE_SCREEN_ACTION_MESSAGE.name),
                             hasMessagesToRead = state.hasNewMessages,
                             enabled = state.isEnabledMessageButton,
-                            onClick = { }
+                            onClick = {
+                                Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_ACTION_MESSAGE)
+                            }
                         )
 
                         if (state.userType != EnumUserType.ACADEMY_MEMBER) {
@@ -167,6 +174,7 @@ fun CompromiseScreen(
                                 modifier = Modifier.testTag(COMPROMISE_SCREEN_ACTION_SCHEDULE_CONFIRM.name),
                                 enabled = state.isEnabledConfirmButton,
                                 onClick = {
+                                    Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_ACTION_SCHEDULE_CONFIRM)
                                     onScheduleConfirmClick?.onExecute {
                                         coroutineScope.launch {
                                             val message = if (state.toScheduler.situation == CONFIRMED) {
@@ -189,6 +197,7 @@ fun CompromiseScreen(
                         FloatingActionButtonSave(
                             modifier = Modifier.testTag(COMPROMISE_SCREEN_FAB_SAVE.name),
                             onClick = {
+                                Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_FAB_SAVE)
                                 onSaveCompromiseClick?.onExecute {
                                     showSuccessMessage(
                                         enumSchedulerType = it,
@@ -483,7 +492,10 @@ fun DialogListItem(
         Modifier
             .testTag(COMPROMISE_SCREEN_DIALOG_LIST_ITEM.name)
             .fillMaxWidth()
-            .clickable { onItemClick(person) },
+            .clickable {
+                Firebase.analytics.logListItemClick(COMPROMISE_SCREEN_DIALOG_LIST_ITEM)
+                onItemClick(person)
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         val text = if (person.userType == EnumUserType.ACADEMY_MEMBER) {

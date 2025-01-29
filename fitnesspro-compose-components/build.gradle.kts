@@ -40,6 +40,7 @@ android {
 
 dependencies {
     implementation(project(":fitnesspro-core"))
+    implementation(project(":fitnesspro-firebase-api"))
 
     implementation(libs.constraint.layout.compose)
 
@@ -58,6 +59,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

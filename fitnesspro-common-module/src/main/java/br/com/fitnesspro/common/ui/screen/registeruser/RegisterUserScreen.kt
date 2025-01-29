@@ -45,6 +45,9 @@ import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
+import br.com.fitnesspro.firebase.api.analytics.logButtonClick
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -105,6 +108,7 @@ fun RegisterUserScreen(
                         FloatingActionButtonSave(
                             modifier = Modifier.testTag(REGISTER_USER_SCREEN_FAB_SAVE.name),
                             onClick = {
+                                Firebase.analytics.logButtonClick(REGISTER_USER_SCREEN_FAB_SAVE)
                                 onSaveUserClick?.onExecute(
                                     onSaved = {
                                         showSaveSuccessMessage(coroutineScope, snackbarHostState, context)
@@ -116,6 +120,7 @@ fun RegisterUserScreen(
                         FloatingActionButtonAdd(
                             modifier = Modifier.testTag(REGISTER_USER_SCREEN_FAB_ADD.name),
                             onClick = {
+                                Firebase.analytics.logButtonClick(REGISTER_USER_SCREEN_FAB_ADD)
                                 onAddAcademyClick?.onExecute(
                                     args = br.com.fitnesspro.common.ui.navigation.RegisterAcademyScreenArgs(
                                         personId = state.toPerson.id!!,
