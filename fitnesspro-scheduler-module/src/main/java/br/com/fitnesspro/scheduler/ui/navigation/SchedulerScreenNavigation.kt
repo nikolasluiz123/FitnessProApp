@@ -16,7 +16,8 @@ fun NavGraphBuilder.schedulerScreen(
     onBackClick: () -> Unit,
     onDayClick: OnDayClick,
     onNavigateToCompromise: OnNavigateToCompromise,
-    onNavigateToConfig: () -> Unit
+    onNavigateToConfig: () -> Unit,
+    onNavigateToChatHistory: () -> Unit
 ) {
     composable(route = schedulerScreenRoute) {
         val viewModel = hiltViewModel<SchedulerViewModel>()
@@ -26,7 +27,8 @@ fun NavGraphBuilder.schedulerScreen(
             onBackClick = onBackClick,
             onDayClick = onDayClick,
             onNavigateToCompromise = onNavigateToCompromise,
-            onNavigateToConfig = onNavigateToConfig
+            onNavigateToConfig = onNavigateToConfig,
+            onNavigateToChatHistory = onNavigateToChatHistory
         )
     }
 }

@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -49,6 +49,7 @@ import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedList
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG_FILTER
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG_LIST
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG_TITLE
+import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.compose.components.filter.SimpleFilter
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.enums.EnumDialogType.CONFIRMATION
@@ -58,7 +59,9 @@ import br.com.fitnesspro.core.menu.ITupleListItem
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.theme.DialogTitleTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.core.theme.GREY_600
 import br.com.fitnesspro.core.theme.GREY_800
+import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -191,11 +194,30 @@ private fun DialogTextButton(
 
 @Composable
 fun <T : ITupleListItem> FitnessProPagedListDialog(
+    state: PagedDialogListState<T>,
+    simpleFilterPlaceholderResId: Int,
+    emptyMessage: Int,
+    itemLayout: @Composable (T) -> Unit
+) {
+    FitnessProPagedListDialog(
+        dialogTitle = state.dialogTitle,
+        pagingItems = state.dataList.collectAsLazyPagingItems(),
+        onDismissRequest = state.onHide,
+        onSimpleFilterChange = state.onSimpleFilterChange,
+        simpleFilterPlaceholderResId = simpleFilterPlaceholderResId,
+        emptyMessage = emptyMessage,
+        itemLayout = itemLayout
+    )
+}
+
+@Composable
+fun <T : ITupleListItem> FitnessProPagedListDialog(
     dialogTitle: String,
     pagingItems: LazyPagingItems<T>,
     onDismissRequest: () -> Unit = { },
     onSimpleFilterChange: (String) -> Unit  = { },
     simpleFilterPlaceholderResId: Int,
+    emptyMessage: Int,
     itemLayout: @Composable (T) -> Unit
 ) {
     var filterText by remember { mutableStateOf("") }
@@ -212,11 +234,7 @@ fun <T : ITupleListItem> FitnessProPagedListDialog(
                 .testTag(FITNESS_PRO_PAGED_LIST_DIALOG.name)
                 .padding(16.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 Text(
                     text = dialogTitle,
                     style = DialogTitleTextStyle,
@@ -240,12 +258,12 @@ fun <T : ITupleListItem> FitnessProPagedListDialog(
                     expanded = isFilterExpanded,
                     onExpandedChange = { isFilterExpanded = it }
                 ) {
-                    PagedListDialog(pagingItems, itemLayout)
+                    PagedListDialog(pagingItems, emptyMessage, itemLayout)
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                PagedListDialog(pagingItems, itemLayout)
+                PagedListDialog(pagingItems, emptyMessage, itemLayout)
             }
         }
     }
@@ -254,80 +272,96 @@ fun <T : ITupleListItem> FitnessProPagedListDialog(
 @Composable
 private fun <T : ITupleListItem> PagedListDialog(
     pagingItems: LazyPagingItems<T>,
+    emptyMessage: Int,
     itemLayout: @Composable (T) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .testTag(FITNESS_PRO_PAGED_LIST_DIALOG_LIST.name)
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        when (pagingItems.loadState.refresh) {
-            is LoadState.Loading -> {
-                item {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        color = MaterialTheme.colorScheme.primary
-                    )
+    if (pagingItems.itemCount == 0) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(id = emptyMessage),
+                style = LabelTextStyle,
+                color = GREY_600,
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .testTag(FITNESS_PRO_PAGED_LIST_DIALOG_LIST.name)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            when (pagingItems.loadState.refresh) {
+                is LoadState.Loading -> {
+                    item {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
-            }
 
-            is LoadState.Error -> {
-                item {
-                    Text(
-                        text = stringResource(R.string.paged_list_dialog_erros_load_items),
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        textAlign = TextAlign.Center
-                    )
+                is LoadState.Error -> {
+                    item {
+                        Text(
+                            text = stringResource(R.string.paged_list_dialog_erros_load_items),
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
-            }
 
-            is LoadState.NotLoading -> {
-                items(
-                    count = pagingItems.itemCount,
-                    key = pagingItems.itemKey(),
-                    contentType = pagingItems.itemContentType()
-                ) { index ->
-                    pagingItems[index]?.let { item ->
-                        itemLayout(item)
+                is LoadState.NotLoading -> {
+                    items(
+                        count = pagingItems.itemCount,
+                        key = pagingItems.itemKey(),
+                        contentType = pagingItems.itemContentType()
+                    ) { index ->
+                        pagingItems[index]?.let { item ->
+                            itemLayout(item)
+                        }
                     }
                 }
             }
-        }
 
-        when (pagingItems.loadState.append) {
-            is LoadState.Loading -> {
-                item {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        color = MaterialTheme.colorScheme.primary
-                    )
+            when (pagingItems.loadState.append) {
+                is LoadState.Loading -> {
+                    item {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
-            }
 
-            is LoadState.Error -> {
-                item {
-                    Text(
-                        text = stringResource(R.string.paged_list_dialog_erros_load_new_items),
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        textAlign = TextAlign.Center
-                    )
+                is LoadState.Error -> {
+                    item {
+                        Text(
+                            text = stringResource(R.string.paged_list_dialog_erros_load_new_items),
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
-            }
 
-            else -> {}
+                else -> {}
+            }
         }
     }
+
 }
 
 @Preview
@@ -401,6 +435,7 @@ private fun FitnessProDialogPagedListPreview() {
             FitnessProPagedListDialog(
                 dialogTitle = "Lista de Exemplo",
                 pagingItems = flowOf(fakeList).collectAsLazyPagingItems(),
+                emptyMessage = R.string.paged_list_dialog_empty_message,
                 simpleFilterPlaceholderResId = R.string.label_placeholder_example,
                 itemLayout = {
                     Text(text = it.name)

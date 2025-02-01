@@ -99,4 +99,5 @@
     <string name="unknown_error_message">Ocorreu um erro inesperado, se o erro persistir contate o suporte.</string>
     <string name="validation_msg_firebase_auth_network_error">Não foi possível realizar a autenticação com o Firebase pois você não possui conexão com internet. Algumas funcionalidades podem não funcionar, mas você pode utilizar o aplicativo normalmente.</string>
     <string name="login_screen_facebook_button_message">A autenticação com Facebook está em desenvolvimento.</string>
+    <string name="register_user_screen_empty_message_gym_dialog_list">Não existem academias com os filtros aplicados</string>
 </resources>

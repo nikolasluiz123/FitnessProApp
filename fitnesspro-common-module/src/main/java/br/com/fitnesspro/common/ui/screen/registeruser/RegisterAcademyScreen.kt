@@ -146,10 +146,11 @@ fun RegisterAcademyScreen(
                 field = state.academy,
                 fieldLabel = stringResource(R.string.register_user_screen_label_gym),
                 simpleFilterPlaceholderResId = R.string.register_user_screen_simple_filter_placeholder_gym_dialog_list,
+                emptyMessage = R.string.register_user_screen_empty_message_gym_dialog_list,
                 itemLayout = { academyTuple ->
                     DialogListItem(
                         academy = academyTuple,
-                        onItemClick = state.academy.onDataListItemClick
+                        onItemClick = state.academy.dialogListState.onDataListItemClick
                     )
                 },
                 modifier = Modifier

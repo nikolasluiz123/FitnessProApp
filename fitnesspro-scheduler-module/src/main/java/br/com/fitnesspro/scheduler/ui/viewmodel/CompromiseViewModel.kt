@@ -8,6 +8,7 @@ import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
 import br.com.fitnesspro.compose.components.fields.state.DayWeeksSelectorField
+import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
@@ -304,42 +305,50 @@ class CompromiseViewModel @Inject constructor(
 
     private fun initializeMemberPagedDialogListField(): PagedDialogListTextField<PersonTuple> {
         return PagedDialogListTextField(
-            dialogTitle = context.getString(R.string.compromise_screen_label_member_list),
-            onShow = {
-                _uiState.value = _uiState.value.copy(
-                    member = _uiState.value.member.copy(show = true)
-                )
-            },
-            onHide = {
-                _uiState.value = _uiState.value.copy(
-                    member = _uiState.value.member.copy(show = false)
-                )
-            },
+            dialogListState = PagedDialogListState(
+                dialogTitle = context.getString(R.string.compromise_screen_label_member_list),
+                onShow = {
+                    _uiState.value = _uiState.value.copy(
+                        member = _uiState.value.member.copy(
+                            dialogListState = _uiState.value.member.dialogListState.copy(show = true)
+                        )
+                    )
+                },
+                onHide = {
+                    _uiState.value = _uiState.value.copy(
+                        member = _uiState.value.member.copy(
+                            dialogListState = _uiState.value.member.dialogListState.copy(show = false)
+                        )
+                    )
+                },
+                onDataListItemClick = { item ->
+                    _uiState.value = _uiState.value.copy(
+                        member = _uiState.value.member.copy(
+                            value = item.getLabel(),
+                            errorMessage = ""
+                        ),
+                        toScheduler = _uiState.value.toScheduler.copy(
+                            academyMemberName = item.getLabel(),
+                            academyMemberPersonId = item.id,
+                        )
+                    )
+
+                    _uiState.value.member.dialogListState.onHide()
+                },
+                onSimpleFilterChange = { filter ->
+                    _uiState.value = _uiState.value.copy(
+                        member = _uiState.value.member.copy(
+                            dialogListState = _uiState.value.member.dialogListState.copy(
+                                dataList = getListMembers(simpleFilter = filter)
+                            )
+                        )
+                    )
+                },
+            ),
             onChange = { newText ->
                 _uiState.value = _uiState.value.copy(
                     member = _uiState.value.member.copy(
                         value = newText,
-                    )
-                )
-            },
-            onDataListItemClick = { item ->
-                _uiState.value = _uiState.value.copy(
-                    member = _uiState.value.member.copy(
-                        value = item.getLabel(),
-                        errorMessage = ""
-                    ),
-                    toScheduler = _uiState.value.toScheduler.copy(
-                        academyMemberName = item.getLabel(),
-                        academyMemberPersonId = item.id,
-                    )
-                )
-
-                _uiState.value.member.onHide()
-            },
-            onSimpleFilterChange = { filter ->
-                _uiState.value = _uiState.value.copy(
-                    member = _uiState.value.member.copy(
-                        dataList = getListMembers(simpleFilter = filter)
                     )
                 )
             }
@@ -348,43 +357,51 @@ class CompromiseViewModel @Inject constructor(
 
     private fun initializeProfessionalPagedDialogListField(): PagedDialogListTextField<PersonTuple> {
         return PagedDialogListTextField(
-            dialogTitle = context.getString(R.string.compromise_screen_label_professional_list),
-            onShow = {
-                _uiState.value = _uiState.value.copy(
-                    professional = _uiState.value.professional.copy(show = true)
-                )
-            },
-            onHide = {
-                _uiState.value = _uiState.value.copy(
-                    professional = _uiState.value.professional.copy(show = false)
-                )
-            },
+            dialogListState = PagedDialogListState(
+                dialogTitle = context.getString(R.string.compromise_screen_label_professional_list),
+                onShow = {
+                    _uiState.value = _uiState.value.copy(
+                        professional = _uiState.value.professional.copy(
+                            dialogListState = _uiState.value.professional.dialogListState.copy(show = true)
+                        )
+                    )
+                },
+                onHide = {
+                    _uiState.value = _uiState.value.copy(
+                        professional = _uiState.value.professional.copy(
+                            dialogListState = _uiState.value.professional.dialogListState.copy(show = false)
+                        )
+                    )
+                },
+                onDataListItemClick = { item ->
+                    _uiState.value = _uiState.value.copy(
+                        professional = _uiState.value.professional.copy(
+                            value = item.getLabel(),
+                            errorMessage = ""
+                        ),
+                        toScheduler = _uiState.value.toScheduler.copy(
+                            professionalName = item.getLabel(),
+                            professionalPersonId = item.id,
+                            professionalType = item.userType
+                        )
+                    )
+
+                    _uiState.value.professional.dialogListState.onHide()
+                },
+                onSimpleFilterChange = { filter ->
+                    _uiState.value = _uiState.value.copy(
+                        professional = _uiState.value.professional.copy(
+                            dialogListState = _uiState.value.professional.dialogListState.copy(
+                                dataList = getListProfessional(simpleFilter = filter)
+                            )
+                        )
+                    )
+                },
+            ),
             onChange = { newText ->
                 _uiState.value = _uiState.value.copy(
                     professional = _uiState.value.professional.copy(
                         value = newText,
-                    )
-                )
-            },
-            onDataListItemClick = { item ->
-                _uiState.value = _uiState.value.copy(
-                    professional = _uiState.value.professional.copy(
-                        value = item.getLabel(),
-                        errorMessage = ""
-                    ),
-                    toScheduler = _uiState.value.toScheduler.copy(
-                        professionalName = item.getLabel(),
-                        professionalPersonId = item.id,
-                        professionalType = item.userType
-                    )
-                )
-
-                _uiState.value.professional.onHide()
-            },
-            onSimpleFilterChange = { filter ->
-                _uiState.value = _uiState.value.copy(
-                    professional = _uiState.value.professional.copy(
-                        dataList = getListProfessional(simpleFilter = filter)
                     )
                 )
             }
@@ -407,10 +424,14 @@ class CompromiseViewModel @Inject constructor(
                     ),
                     userType = userType,
                     professional = _uiState.value.professional.copy(
-                        dataList = menuItemListProfessional,
+                        dialogListState = _uiState.value.professional.dialogListState.copy(
+                            dataList = menuItemListProfessional
+                        )
                     ),
                     member = _uiState.value.member.copy(
-                        dataList = menuItemListMembers,
+                        dialogListState = _uiState.value.member.dialogListState.copy(
+                            dataList = menuItemListMembers
+                        )
                     ),
                     toScheduler = getToSchedulerWithDefaultInfos(toPerson, args)
                 )
@@ -488,7 +509,8 @@ class CompromiseViewModel @Inject constructor(
 
         return userRepository.getListTOPersonWithUserType(
             types = types,
-            simpleFilter = simpleFilter
+            simpleFilter = simpleFilter,
+            personsForSchedule = true
         ).flow
     }
 
@@ -497,7 +519,8 @@ class CompromiseViewModel @Inject constructor(
 
         return userRepository.getListTOPersonWithUserType(
             types = types,
-            simpleFilter = simpleFilter
+            simpleFilter = simpleFilter,
+            personsForSchedule = true
         ).flow
     }
 

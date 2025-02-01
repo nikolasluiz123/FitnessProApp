@@ -15,6 +15,7 @@ import br.com.fitnesspro.common.usecase.academy.EnumValidatedAcademyFields
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeUseCase
 import br.com.fitnesspro.compose.components.fields.menu.MenuItem
 import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
+import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
 import br.com.fitnesspro.core.callback.showConfirmationDialog
@@ -218,41 +219,49 @@ class RegisterAcademyViewModel @Inject constructor(
 
     private fun initializeAcademyPagedDialogListTextField(): PagedDialogListTextField<AcademyTuple> {
         return PagedDialogListTextField(
-            dialogTitle = context.getString(R.string.register_academy_screen_title_select_academy),
-            onShow = {
-                _uiState.value = _uiState.value.copy(
-                    academy = _uiState.value.academy.copy(show = true)
-                )
-            },
-            onHide = {
-                _uiState.value = _uiState.value.copy(
-                    academy = _uiState.value.academy.copy(show = false)
-                )
-            },
+            dialogListState = PagedDialogListState(
+                dialogTitle = context.getString(R.string.register_academy_screen_title_select_academy),
+                onShow = {
+                    _uiState.value = _uiState.value.copy(
+                        academy = _uiState.value.academy.copy(
+                            dialogListState = _uiState.value.academy.dialogListState.copy(show = true)
+                        )
+                    )
+                },
+                onHide = {
+                    _uiState.value = _uiState.value.copy(
+                        academy = _uiState.value.academy.copy(
+                            dialogListState = _uiState.value.academy.dialogListState.copy(show = false)
+                        )
+                    )
+                },
+                onDataListItemClick = { item ->
+                    _uiState.value = _uiState.value.copy(
+                        academy = _uiState.value.academy.copy(
+                            value = item.getLabel(),
+                            errorMessage = ""
+                        ),
+                        toPersonAcademyTime = _uiState.value.toPersonAcademyTime.copy(
+                            toAcademy = TOAcademy(id = item.id, name = item.name)
+                        )
+                    )
+
+                    _uiState.value.academy.dialogListState.onHide()
+                },
+                onSimpleFilterChange = { filter ->
+                    _uiState.value = _uiState.value.copy(
+                        academy = _uiState.value.academy.copy(
+                            dialogListState = _uiState.value.academy.dialogListState.copy(
+                                dataList = getListAcademies(filter)
+                            )
+                        )
+                    )
+                },
+            ),
             onChange = { newText ->
                 _uiState.value = _uiState.value.copy(
                     academy = _uiState.value.academy.copy(
                         value = newText,
-                    )
-                )
-            },
-            onDataListItemClick = { item ->
-                _uiState.value = _uiState.value.copy(
-                    academy = _uiState.value.academy.copy(
-                        value = item.getLabel(),
-                        errorMessage = ""
-                    ),
-                    toPersonAcademyTime = _uiState.value.toPersonAcademyTime.copy(
-                        toAcademy = TOAcademy(id = item.id, name = item.name)
-                    )
-                )
-
-                _uiState.value.academy.onHide()
-            },
-            onSimpleFilterChange = { filter ->
-                _uiState.value = _uiState.value.copy(
-                    academy = _uiState.value.academy.copy(
-                        dataList = getListAcademies(filter)
                     )
                 )
             }
@@ -280,7 +289,9 @@ class RegisterAcademyViewModel @Inject constructor(
                     subtitle = getSubtitle(toPersonAcademyTime),
                     academy = state.academy.copy(
                         value = toPersonAcademyTime?.toAcademy?.name ?: "",
-                        dataList = menuItemListAcademy,
+                        dialogListState = _uiState.value.academy.dialogListState.copy(
+                            dataList = menuItemListAcademy
+                        )
                     ),
                     dayWeek = state.dayWeek.copy(value = toPersonAcademyTime?.dayOfWeek?.getFirstPartFullDisplayName() ?: ""),
                     start = state.start.copy(value = toPersonAcademyTime?.timeStart?.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS) ?: ""),

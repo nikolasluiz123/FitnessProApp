@@ -47,6 +47,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.buttons.fab.FitnessProFloatingActionButton
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonConfig
+import br.com.fitnesspro.compose.components.buttons.icons.IconButtonMessage
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
@@ -87,7 +88,8 @@ fun SchedulerScreen(
     onBackClick: () -> Unit,
     onDayClick: OnDayClick,
     onNavigateToCompromise: OnNavigateToCompromise,
-    onNavigateToConfig: () -> Unit
+    onNavigateToConfig: () -> Unit,
+    onNavigateToChatHistory: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -97,7 +99,8 @@ fun SchedulerScreen(
         onDayClick = onDayClick,
         onNavigateToCompromise = onNavigateToCompromise,
         onNavigateToConfig = onNavigateToConfig,
-        onUpdateSchedules = viewModel::updateSchedules
+        onUpdateSchedules = viewModel::updateSchedules,
+        onNavigateToChatHistory = onNavigateToChatHistory
     )
 }
 
@@ -109,7 +112,8 @@ fun SchedulerScreen(
     onDayClick: OnDayClick? = null,
     onNavigateToCompromise: OnNavigateToCompromise? = null,
     onNavigateToConfig: () -> Unit = { },
-    onUpdateSchedules: () -> Unit = { }
+    onUpdateSchedules: () -> Unit = { },
+    onNavigateToChatHistory: () -> Unit  = {}
 ) {
     Scaffold(
         topBar = {
@@ -118,6 +122,12 @@ fun SchedulerScreen(
                 showMenuWithLogout = false,
                 onBackClick = onBackClick,
                 actions = {
+                    IconButtonMessage(
+                        iconModifier = Modifier.size(24.dp),
+                        onClick = onNavigateToChatHistory,
+                        iconColor = Color.White
+                    )
+
                     IconButtonConfig(
                         modifier = Modifier.testTag(SCHEDULER_SCREEN_BUTTON_CONFIG.name),
                         onClick = {

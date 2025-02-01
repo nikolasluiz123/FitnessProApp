@@ -30,7 +30,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.paging.compose.collectAsLazyPagingItems
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCalendar
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonSearch
@@ -262,17 +261,19 @@ fun OutlinedTextFieldValidation(
 }
 
 @Composable
-private fun getDefaultOutlinedTextFieldColors() = OutlinedTextFieldDefaults.colors(
-    cursorColor = GREY_800,
-    focusedBorderColor = GREY_700,
-    unfocusedBorderColor = GREY_700,
-    unfocusedLabelColor = GREY_700,
-    focusedLabelColor = GREY_700,
-    focusedTrailingIconColor = GREY_700,
-    unfocusedTrailingIconColor = GREY_700,
-    unfocusedTextColor = GREY_700,
-    focusedTextColor = GREY_700,
-)
+fun getDefaultOutlinedTextFieldColors(): TextFieldColors {
+    return OutlinedTextFieldDefaults.colors(
+        cursorColor = GREY_800,
+        focusedBorderColor = GREY_700,
+        unfocusedBorderColor = GREY_700,
+        unfocusedLabelColor = GREY_700,
+        focusedLabelColor = GREY_700,
+        focusedTrailingIconColor = GREY_700,
+        unfocusedTrailingIconColor = GREY_700,
+        unfocusedTextColor = GREY_700,
+        focusedTextColor = GREY_700,
+    )
+}
 
 @Composable
 fun OutlinedTextFieldPasswordValidation(
@@ -446,6 +447,7 @@ fun <T: ITupleListItem> PagedListDialogOutlinedTextFieldValidation(
     field: PagedDialogListTextField<T>,
     fieldLabel: String,
     simpleFilterPlaceholderResId: Int,
+    emptyMessage: Int,
     itemLayout: @Composable (T) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -456,18 +458,16 @@ fun <T: ITupleListItem> PagedListDialogOutlinedTextFieldValidation(
         trailingIcon = {
             IconButtonSearch(
                 modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),
-                onClick = field.onShow
+                onClick = field.dialogListState.onShow
             )
         }
     )
 
-    if (field.show) {
+    if (field.dialogListState.show) {
         FitnessProPagedListDialog(
-            dialogTitle = field.dialogTitle,
-            pagingItems = field.dataList.collectAsLazyPagingItems(),
-            onDismissRequest = field.onHide,
-            onSimpleFilterChange = field.onSimpleFilterChange,
+            state = field.dialogListState,
             simpleFilterPlaceholderResId = simpleFilterPlaceholderResId,
+            emptyMessage = emptyMessage,
             itemLayout = itemLayout
         )
     }

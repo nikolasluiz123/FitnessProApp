@@ -14,6 +14,7 @@ fun FitnessProIconButton(
     resId: Int,
     iconColor: Color,
     modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
     enabled: Boolean = true,
     contentDescriptionResId: Int? = null,
     onClick: () -> Unit = { }
@@ -28,6 +29,7 @@ fun FitnessProIconButton(
         )
     ) {
         Icon(
+            modifier = iconModifier,
             painter = painterResource(id = resId),
             contentDescription = contentDescriptionResId?.let { stringResource(it) }
         )

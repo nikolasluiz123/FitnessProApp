@@ -12,7 +12,10 @@ import br.com.fitnesspro.common.ui.navigation.navigateToRegisterAcademyScreen
 import br.com.fitnesspro.common.ui.navigation.navigateToRegisterUserScreen
 import br.com.fitnesspro.common.ui.navigation.registerAcademyScreen
 import br.com.fitnesspro.common.ui.navigation.registerUserScreen
+import br.com.fitnesspro.scheduler.ui.navigation.chatHistoryScreen
+import br.com.fitnesspro.scheduler.ui.navigation.chatScreen
 import br.com.fitnesspro.scheduler.ui.navigation.compromiseScreen
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToChatHistoryScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToCompromiseScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToScheduleScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerConfigScreen
@@ -70,7 +73,8 @@ fun FitnessProNavHost(
             onBackClick = navController::popBackStack,
             onDayClick = navController::navigateToSchedulerDetailsScreen,
             onNavigateToCompromise = navController::navigateToCompromiseScreen,
-            onNavigateToConfig = navController::navigateToSchedulerConfigScreen
+            onNavigateToConfig = navController::navigateToSchedulerConfigScreen,
+            onNavigateToChatHistory = navController::navigateToChatHistoryScreen
         )
 
         schedulerDetailsScreen(
@@ -85,6 +89,14 @@ fun FitnessProNavHost(
         mockScreen()
 
         schedulerConfigScreen(
+            onBackClick = navController::popBackStack
+        )
+
+        chatHistoryScreen(
+            onBackClick = navController::popBackStack
+        )
+
+        chatScreen(
             onBackClick = navController::popBackStack
         )
     }

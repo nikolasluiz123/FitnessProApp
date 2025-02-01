@@ -75,7 +75,7 @@
     <string name="scheduler_config_screen_label_break_time_end_time_picker_title">Horário de Fim *</string>
     <string name="scheduler_config_screen_title">Configurações da Agenda</string>
     <string name="scheduler_config_screen_message_success">Configuração da Agenda salva com sucesso</string>
-    <string name="compromise_screen_label_professional_list">Proficionais</string>
+    <string name="compromise_screen_label_professional_list">Profissionais</string>
     <string name="compromise_screen_label_member_list">Membros</string>
     <string name="scheduler_details_empty_message_past_date">Não existem compromissos para esta data. Não é possível incluir novos agendamento para datas passadas.</string>
     <string name="save_compromise_start_hour_require_antecedence">O horário de início deve ser definido com 1 hora de antecedência.</string>
@@ -93,4 +93,17 @@
     <string name="label_cancelado">cancelado</string>
     <string name="label_confirmado">confirmado</string>
     <string name="compromise_screen_label_cancel">Data de Cancelamento</string>
+    <string name="chat_message_date_now">Hoje, %s</string>
+    <string name="chat_message_date_yesterday">Ontem, %s</string>
+    <string name="chat_history_empty_message">Não existem conversas no histórico.</string>
+    <string name="chat_screen_message_input_placeholder">Digite sua mensagem...</string>
+    <string name="chat_history_title">Histórico de Conversas</string>
+    <string name="chat_history_screen_label_professionals_list">Profissionais</string>
+    <string name="chat_history_screen_placeholder_search_members">Buscar por Nome</string>
+    <string name="chat_history_screen_placeholder_search_professionals">Buscar por Nome</string>
+    <string name="chat_history_screen_label_members_list">Membros</string>
+    <string name="chat_history_screen_empty_message_members">Não existem Membros com os filtros aplicados</string>
+    <string name="chat_history_screen_empty_message_professionals">Não existem Profissionais com os filtros aplicados</string>
+    <string name="compromise_screen_empty_message_member_dialog_list">Não existem Membros com os filtros aplicaos</string>
+    <string name="compromise_screen_empty_message_professional_dialog_list">Não existem Profissionais com os filtros aplicados</string>
 </resources>

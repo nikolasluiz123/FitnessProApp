@@ -10,25 +10,16 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_800
 
 @Composable
-fun IconButtonMessage(
+fun IconButtonSendMessage(
     modifier: Modifier = Modifier,
-    iconModifier: Modifier = Modifier,
     iconColor: Color = GREY_800,
     enabled: Boolean = true,
-    contentDescriptionResId: Int? = R.string.label_message,
-    hasMessagesToRead: Boolean = false,
+    contentDescriptionResId: Int? = R.string.label_send_message,
     onClick: () -> Unit = { }
 ) {
-    val resId = if (hasMessagesToRead) {
-        br.com.fitnesspro.core.R.drawable.ic_message_with_notification_32dp
-    } else {
-        br.com.fitnesspro.core.R.drawable.ic_message_32dp
-    }
-
     FitnessProIconButton(
         modifier = modifier,
-        iconModifier = iconModifier,
-        resId = resId,
+        resId = br.com.fitnesspro.core.R.drawable.ic_btn_send_message_32dp,
         iconColor = iconColor,
         enabled = enabled,
         contentDescriptionResId = contentDescriptionResId,
@@ -37,13 +28,12 @@ fun IconButtonMessage(
 }
 
 
-
 @Preview
 @Composable
-fun IconButtonMessagePreview() {
+fun IconButtonSendMessagePreview() {
     FitnessProTheme {
         Surface {
-            IconButtonMessage()
+            IconButtonSendMessage()
         }
     }
 }

@@ -12,6 +12,7 @@ import br.com.fitnesspro.common.ui.navigation.navigateToLoginScreen
 import br.com.fitnesspro.common.ui.navigation.navigateToRegisterAcademyScreen
 import br.com.fitnesspro.common.ui.navigation.navigateToRegisterUserScreen
 import br.com.fitnesspro.common.ui.navigation.registerUserScreen
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToChatHistoryScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToCompromiseScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToScheduleScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerConfigScreen
@@ -66,7 +67,8 @@ class HomeScreenStateUITests: BaseAuthenticatedUITest() {
             onBackClick = navController::popBackStack,
             onDayClick = navController::navigateToSchedulerDetailsScreen,
             onNavigateToCompromise = navController::navigateToCompromiseScreen,
-            onNavigateToConfig = navController::navigateToSchedulerConfigScreen
+            onNavigateToConfig = navController::navigateToSchedulerConfigScreen,
+            onNavigateToChatHistory = navController::navigateToChatHistoryScreen
         )
     }
 

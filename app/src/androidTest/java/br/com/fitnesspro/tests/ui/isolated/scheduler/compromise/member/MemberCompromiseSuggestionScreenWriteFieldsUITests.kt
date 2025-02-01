@@ -11,6 +11,7 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.timeNow
 import br.com.fitnesspro.scheduler.ui.navigation.compromiseScreen
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToChatHistoryScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToCompromiseScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerConfigScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerDetailsScreen
@@ -60,7 +61,8 @@ class MemberCompromiseSuggestionScreenWriteFieldsUITests: BaseAuthenticatedUITes
             onBackClick = navController::popBackStack,
             onDayClick = navController::navigateToSchedulerDetailsScreen,
             onNavigateToCompromise = navController::navigateToCompromiseScreen,
-            onNavigateToConfig = navController::navigateToSchedulerConfigScreen
+            onNavigateToConfig = navController::navigateToSchedulerConfigScreen,
+            onNavigateToChatHistory = navController::navigateToChatHistoryScreen
         )
 
         schedulerDetailsScreen(

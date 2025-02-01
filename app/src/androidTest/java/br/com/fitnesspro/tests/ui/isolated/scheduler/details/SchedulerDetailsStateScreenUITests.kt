@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import br.com.fitnesspro.AndroidTestsActivity
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToChatHistoryScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToCompromiseScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerConfigScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerDetailsScreen
@@ -38,7 +39,8 @@ class SchedulerDetailsStateScreenUITests: BaseAuthenticatedUITest() {
             onBackClick = navController::popBackStack,
             onDayClick = navController::navigateToSchedulerDetailsScreen,
             onNavigateToCompromise = navController::navigateToCompromiseScreen,
-            onNavigateToConfig = navController::navigateToSchedulerConfigScreen
+            onNavigateToConfig = navController::navigateToSchedulerConfigScreen,
+            onNavigateToChatHistory = navController::navigateToChatHistoryScreen
         )
 
         schedulerDetailsScreen(

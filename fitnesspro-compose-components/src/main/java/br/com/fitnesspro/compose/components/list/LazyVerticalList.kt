@@ -36,7 +36,7 @@ import br.com.fitnesspro.core.theme.LabelTextStyle
 @Composable
 fun <T> LazyVerticalList(
     items: List<T>,
-    emptyMessageResId: Int,
+    emptyMessageResId: Int?,
     modifier: Modifier = Modifier,
     verticalArrangementSpace: Dp = 0.dp,
     contentPadding: Dp = 0.dp,
@@ -53,19 +53,21 @@ fun <T> LazyVerticalList(
             }
         }
     } else {
-        Box(
-            modifier = modifier
-                .testTag(EMPTY_STATE.name)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                modifier = Modifier.testTag(EMPTY_STATE_MESSAGE.name),
-                text = stringResource(id = emptyMessageResId),
-                style = LabelTextStyle,
-                color = GREY_600,
-                textAlign = TextAlign.Center
-            )
+        emptyMessageResId?.let { emptyMessage ->
+            Box(
+                modifier = modifier
+                    .testTag(EMPTY_STATE.name)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    modifier = Modifier.testTag(EMPTY_STATE_MESSAGE.name),
+                    text = stringResource(id = emptyMessage),
+                    style = LabelTextStyle,
+                    color = GREY_600,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }

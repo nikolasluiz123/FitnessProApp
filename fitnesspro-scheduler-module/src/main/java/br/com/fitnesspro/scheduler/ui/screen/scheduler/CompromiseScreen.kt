@@ -294,10 +294,11 @@ fun RecurrentCompromise(state: CompromiseUIState) {
             field = state.member,
             fieldLabel = stringResource(R.string.compromise_screen_label_member),
             simpleFilterPlaceholderResId = R.string.compromise_screen_simple_filter_placeholder_member_dialog_list,
+            emptyMessage = R.string.compromise_screen_empty_message_member_dialog_list,
             itemLayout = { personTuple ->
-                DialogListItem(
+                PersonDialogListItem(
                     person = personTuple,
-                    onItemClick = state.member.onDataListItemClick
+                    onItemClick = state.member.dialogListState.onDataListItemClick
                 )
             },
             modifier = Modifier
@@ -424,10 +425,11 @@ fun UniqueCompromise(state: CompromiseUIState) {
             field = state.member,
             fieldLabel = stringResource(R.string.compromise_screen_label_member),
             simpleFilterPlaceholderResId = R.string.compromise_screen_simple_filter_placeholder_member_dialog_list,
+            emptyMessage = R.string.compromise_screen_empty_message_member_dialog_list,
             itemLayout = { personTuple ->
-                DialogListItem(
+                PersonDialogListItem(
                     person = personTuple,
-                    onItemClick = state.member.onDataListItemClick
+                    onItemClick = state.member.dialogListState.onDataListItemClick
                 )
             }
         )
@@ -484,7 +486,7 @@ fun UniqueCompromise(state: CompromiseUIState) {
 }
 
 @Composable
-fun DialogListItem(
+private fun PersonDialogListItem(
     person: PersonTuple,
     onItemClick: (PersonTuple) -> Unit = {}
 ) {
@@ -661,10 +663,11 @@ private fun UniqueCompromiseSuggestionEditable(state: CompromiseUIState) {
             field = state.professional,
             fieldLabel = stringResource(R.string.compromise_screen_label_professional),
             simpleFilterPlaceholderResId = R.string.compromise_screen_simple_filter_placeholder_professional_dialog_list,
+            emptyMessage = R.string.compromise_screen_empty_message_professional_dialog_list,
             itemLayout = { personTuple ->
-                DialogListItem(
+                PersonDialogListItem(
                     person = personTuple,
-                    onItemClick = state.professional.onDataListItemClick
+                    onItemClick = state.professional.dialogListState.onDataListItemClick
                 )
             }
         )
@@ -730,7 +733,7 @@ private fun UniqueCompromiseSuggestionEditable(state: CompromiseUIState) {
 private fun MemberDialogListItemPreview() {
     FitnessProTheme {
         Surface {
-            DialogListItem(
+            PersonDialogListItem(
                 person = PersonTuple(
                     id = "1",
                     name = "Nikolas Luiz Schmitt",

@@ -11,6 +11,7 @@ import br.com.fitnesspro.common.R.string
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProMessageDialogTestTags.FITNESS_PRO_MESSAGE_DIALOG_MESSAGE
 import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_TRAILING_ICON
 import br.com.fitnesspro.scheduler.ui.navigation.compromiseScreen
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToChatHistoryScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToCompromiseScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerConfigScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerDetailsScreen
@@ -68,7 +69,8 @@ class PersonalRecurrentCompromiseScreenWriteFieldsUITests : BaseAuthenticatedUIT
             onBackClick = navController::popBackStack,
             onDayClick = navController::navigateToSchedulerDetailsScreen,
             onNavigateToCompromise = navController::navigateToCompromiseScreen,
-            onNavigateToConfig = navController::navigateToSchedulerConfigScreen
+            onNavigateToConfig = navController::navigateToSchedulerConfigScreen,
+            onNavigateToChatHistory = navController::navigateToChatHistoryScreen
         )
 
         schedulerDetailsScreen(

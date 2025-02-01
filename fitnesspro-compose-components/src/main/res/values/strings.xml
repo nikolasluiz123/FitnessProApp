@@ -28,4 +28,6 @@
     <string name="label_placeholder_example">Buscar por Campo1 ou Campo2</string>
     <string name="paged_list_dialog_erros_load_new_items">Falha ao carregar os novos dados. Por favor, tente novamente.</string>
     <string name="paged_list_dialog_erros_load_items">Falha ao carregar os dados. Por favor, tente novamente.</string>
+    <string name="label_send_message">Enviar Mensagem</string>
+    <string name="paged_list_dialog_empty_message">Sem Registros</string>
 </resources>

@@ -103,7 +103,8 @@ class UserRepository(
 
     fun getListTOPersonWithUserType(
         types: List<EnumUserType>,
-        simpleFilter: String
+        simpleFilter: String,
+        personsForSchedule: Boolean
     ): Pager<Int, PersonTuple> {
         return Pager(
             config = PagingConfig(
@@ -113,7 +114,8 @@ class UserRepository(
             pagingSourceFactory = {
                 personDAO.getPersonsWithUserType(
                     types = types,
-                    simpleFilter = simpleFilter
+                    simpleFilter = simpleFilter,
+                    personsForSchedule = personsForSchedule
                 )
             }
         )
