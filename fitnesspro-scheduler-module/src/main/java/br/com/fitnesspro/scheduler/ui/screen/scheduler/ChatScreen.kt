@@ -12,6 +12,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -27,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonSendMessage
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
@@ -39,11 +40,11 @@ import br.com.fitnesspro.core.theme.GREY_400
 import br.com.fitnesspro.core.theme.GREY_700
 import br.com.fitnesspro.core.theme.GREY_800
 import br.com.fitnesspro.core.theme.ValueTextStyle
+import br.com.fitnesspro.firebase.api.firestore.enums.EnumMessageState.READ
+import br.com.fitnesspro.firebase.api.firestore.enums.EnumMessageState.SENDING
+import br.com.fitnesspro.firebase.api.firestore.enums.EnumMessageState.SENT
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.decorator.MessageDecorator
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumMessageState.READ
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumMessageState.SENDING
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumMessageState.SENT
 import br.com.fitnesspro.scheduler.ui.state.ChatUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.ChatViewModel
 import java.time.LocalDateTime
@@ -57,7 +58,8 @@ fun ChatScreen(
 
     ChatScreen(
         state = state,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onSendMessageClick = viewModel::sendMessage
     )
 }
 
@@ -65,7 +67,8 @@ fun ChatScreen(
 @Composable
 fun ChatScreen(
     state: ChatUIState,
-    onBackClick: () -> Unit = { }
+    onBackClick: () -> Unit = { },
+    onSendMessageClick: () -> Unit = { }
 ) {
     Scaffold(
         topBar = {
@@ -77,7 +80,10 @@ fun ChatScreen(
             )
         },
         bottomBar = {
-            BottomAppBarMessageInput(state = state)
+            BottomAppBarMessageInput(
+                state = state,
+                onSendMessageClick = onSendMessageClick
+            )
         }
     ) { paddingValues ->
         ConstraintLayout(
@@ -85,7 +91,9 @@ fun ChatScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            val (messageListRef, messageInputRef) = createRefs()
+            val (messageListRef) = createRefs()
+
+            FitnessProMessageDialog(state = state.messageDialogState)
 
             LazyVerticalList(
                 modifier = Modifier.constrainAs(messageListRef) {
@@ -97,7 +105,7 @@ fun ChatScreen(
                     height = Dimension.fillToConstraints
                 },
                 items = state.messages,
-                emptyMessageResId = R.string.chat_history_empty_message,
+                emptyMessageResId = null,
             ) { decorator ->
                 ChatMessageItem(item = decorator)
             }
@@ -167,18 +175,21 @@ fun ChatMessageItem(item: MessageDecorator) {
 }
 
 @Composable
-fun BottomAppBarMessageInput(state: ChatUIState) {
+fun BottomAppBarMessageInput(
+    state: ChatUIState,
+    onSendMessageClick: () -> Unit
+) {
     ConstraintLayout(
         Modifier
             .fillMaxWidth()
-            .height(60.dp)
+            .height(80.dp)
             .background(color = GREY_400)
     ) {
         val (inputRef, sendBtnRef) = createRefs()
 
-        OutlinedTextFieldValidation(
+        OutlinedTextField(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(horizontal = 8.dp)
                 .constrainAs(inputRef) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -187,7 +198,8 @@ fun BottomAppBarMessageInput(state: ChatUIState) {
 
                     width = Dimension.fillToConstraints
                 },
-            field = state.messageTextField,
+            value = state.messageTextField.value,
+            onValueChange = state.messageTextField.onChange,
             placeholder = {
                 Text(
                     text = stringResource(R.string.chat_screen_message_input_placeholder),
@@ -217,7 +229,8 @@ fun BottomAppBarMessageInput(state: ChatUIState) {
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom)
                 end.linkTo(parent.end)
-            }
+            },
+            onClick = onSendMessageClick
         )
     }
 }

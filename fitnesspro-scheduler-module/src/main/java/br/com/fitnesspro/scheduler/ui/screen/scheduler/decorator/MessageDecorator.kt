@@ -1,6 +1,6 @@
 package br.com.fitnesspro.scheduler.ui.screen.scheduler.decorator
 
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumMessageState
+import br.com.fitnesspro.firebase.api.firestore.enums.EnumMessageState
 import java.time.LocalDateTime
 
 data class MessageDecorator(

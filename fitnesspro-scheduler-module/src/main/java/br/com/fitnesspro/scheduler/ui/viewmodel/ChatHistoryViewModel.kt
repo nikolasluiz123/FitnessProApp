@@ -7,11 +7,12 @@ import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.fitnesspro.firebase.api.firestore.documents.ChatDocument
+import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.model.enums.EnumUserType.ACADEMY_MEMBER
 import br.com.fitnesspro.model.enums.EnumUserType.NUTRITIONIST
 import br.com.fitnesspro.model.enums.EnumUserType.PERSONAL_TRAINER
 import br.com.fitnesspro.scheduler.R
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.decorator.ChatHistoryDecorator
 import br.com.fitnesspro.scheduler.ui.state.ChatHistoryUIState
 import br.com.fitnesspro.tuple.PersonTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatHistoryViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val firestoreChatRepository: FirestoreChatRepository
 ): FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<ChatHistoryUIState> = MutableStateFlow(ChatHistoryUIState())
@@ -84,7 +86,7 @@ class ChatHistoryViewModel @Inject constructor(
                 )
             },
             onDataListItemClick = { item ->
-                createChat(item.id)
+                startChat(item.id)
                 _uiState.value.membersDialogState.onHide()
             },
             onSimpleFilterChange = { filter ->
@@ -112,7 +114,7 @@ class ChatHistoryViewModel @Inject constructor(
                 )
             },
             onDataListItemClick = { item ->
-                createChat(item.id)
+                startChat(item.id)
                 _uiState.value.professionalsDialogState.onHide()
             },
             onSimpleFilterChange = { filter ->
@@ -142,10 +144,15 @@ class ChatHistoryViewModel @Inject constructor(
         ).flow
     }
 
-    private fun createChat(selectedPersonId: String) {
+    private fun startChat(selectedPersonId: String) {
         launch {
-            val authenticatedPersonId = userRepository.getAuthenticatedTOPerson()?.id!!
+            val authenticatedTOPerson = userRepository.getAuthenticatedTOPerson()!!
+            val selectedTOPerson = userRepository.getTOPersonById(selectedPersonId)
 
+            firestoreChatRepository.startChat(
+                senderPerson = authenticatedTOPerson,
+                receiverPerson = selectedTOPerson
+            )
         }
     }
 
@@ -162,8 +169,8 @@ class ChatHistoryViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getHistoryList(authenticatedPersonId: String): List<ChatHistoryDecorator> {
-        return emptyList()
+    private suspend fun getHistoryList(authenticatedPersonId: String): List<ChatDocument> {
+        return firestoreChatRepository.getChatList(authenticatedPersonId = authenticatedPersonId)
     }
 
     override fun onShowError(throwable: Throwable) {

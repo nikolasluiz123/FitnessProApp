@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.compose.components.LabeledText
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.dialog.FitnessProPagedListDialog
 import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
@@ -39,31 +39,41 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.extensions.toEpochSeconds
+import br.com.fitnesspro.core.extensions.toLocalDate
+import br.com.fitnesspro.core.extensions.toLocalDateTime
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_700
+import br.com.fitnesspro.core.theme.GREY_900
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.core.theme.RED_500
 import br.com.fitnesspro.core.theme.ValueTextStyle
+import br.com.fitnesspro.firebase.api.firestore.documents.ChatDocument
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.enums.EnumUserType.NUTRITIONIST
 import br.com.fitnesspro.model.enums.EnumUserType.PERSONAL_TRAINER
 import br.com.fitnesspro.scheduler.R
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.decorator.ChatHistoryDecorator
+import br.com.fitnesspro.scheduler.ui.navigation.ChatArgs
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnNavigateToChat
 import br.com.fitnesspro.scheduler.ui.state.ChatHistoryUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.ChatHistoryViewModel
 import br.com.fitnesspro.tuple.PersonTuple
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 
 @Composable
 fun ChatHistoryScreen(
     viewModel: ChatHistoryViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateToChat: OnNavigateToChat
 ) {
     val state by viewModel.uiState.collectAsState()
 
     ChatHistoryScreen(
         state = state,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onNavigateToChat = onNavigateToChat
     )
 }
 
@@ -71,7 +81,8 @@ fun ChatHistoryScreen(
 @Composable
 fun ChatHistoryScreen(
     state: ChatHistoryUIState,
-    onBackClick: () -> Unit = { }
+    onBackClick: () -> Unit = { },
+    onNavigateToChat: OnNavigateToChat? = null
 ) {
     val context = LocalContext.current
 
@@ -100,9 +111,13 @@ fun ChatHistoryScreen(
     ) { paddingValues ->
         ConstraintLayout(
             Modifier
-                .padding(paddingValues)
                 .fillMaxSize()
+                .padding(paddingValues)
         ) {
+            val listRef = createRef()
+
+            FitnessProMessageDialog(state = state.messageDialogState)
+
             if (state.membersDialogState.show) {
                 FitnessProPagedListDialog(
                     state = state.membersDialogState,
@@ -130,16 +145,21 @@ fun ChatHistoryScreen(
             }
 
             LazyVerticalList(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .constrainAs(listRef) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    },
                 items = state.history,
                 emptyMessageResId = R.string.chat_history_empty_message,
             ) { decorator ->
                 ChatHistoryItem(
                     context = context,
                     item = decorator,
-                    onClick = {
-
-                    }
+                    onNavigateToChat = onNavigateToChat
                 )
             }
         }
@@ -183,23 +203,23 @@ private fun PersonDialogListItem(
 @Composable
 fun ChatHistoryItem(
     context: Context,
-    item: ChatHistoryDecorator,
-    onClick: (ChatHistoryDecorator) -> Unit = { }
+    item: ChatDocument,
+    onNavigateToChat: OnNavigateToChat? = null
 ) {
     ConstraintLayout(
         Modifier
             .fillMaxWidth()
-            .clickable { onClick(item) }
+            .clickable { onNavigateToChat?.onExecute(ChatArgs(chatId = item.id)) }
     ) {
-        val (userMessageRef, notReadMessagesCount, lastMessageDate, dividerRef) = createRefs()
+        val (userNameRef, lastMessageRef, notReadMessagesCount, lastMessageDate, dividerRef) = createRefs()
 
-        LabeledText(
-            label = item.userName,
-            value = item.lastMessage,
-            maxLinesValue = 1,
+        Text(
+            text = item.receiverPersonName,
+            style = LabelTextStyle,
+            color = GREY_900,
             modifier = Modifier
-                .padding(8.dp)
-                .constrainAs(userMessageRef) {
+                .padding(top = 16.dp, start = 8.dp, end = 8.dp)
+                .constrainAs(userNameRef) {
                     val endConstraint = if (item.notReadMessagesCount > 0) notReadMessagesCount.start else parent.end
 
                     top.linkTo(parent.top)
@@ -210,13 +230,32 @@ fun ChatHistoryItem(
                 }
         )
 
+        item.lastMessage?.let { message ->
+            Text(
+                text = message,
+                style = ValueTextStyle,
+                color = GREY_700,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .constrainAs(lastMessageRef) {
+                        val endConstraint = if (item.notReadMessagesCount > 0) notReadMessagesCount.start else parent.end
+
+                        top.linkTo(userNameRef.bottom, margin = 4.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(endConstraint)
+
+                        width = Dimension.fillToConstraints
+                    }
+            )
+        }
+
         if (item.notReadMessagesCount > 0) {
             Box(
                 modifier = Modifier
                     .size(24.dp)
                     .background(color = RED_500, shape = CircleShape)
                     .constrainAs(notReadMessagesCount) {
-                        top.linkTo(userMessageRef.top, margin = 8.dp)
+                        top.linkTo(userNameRef.top, margin = 8.dp)
                         end.linkTo(parent.end, margin = 8.dp)
                     },
                 contentAlignment = Alignment.Center
@@ -230,20 +269,24 @@ fun ChatHistoryItem(
             }
         }
 
-        Text(
-            text = getFormatedMessageDate(context, item),
-            style = ValueTextStyle,
-            color = GREY_700,
-            modifier = Modifier.constrainAs(lastMessageDate) {
-                top.linkTo(userMessageRef.bottom)
-                end.linkTo(parent.end, margin = 8.dp)
-                bottom.linkTo(parent.bottom, margin = 8.dp)
-            }
-        )
+        item.lastMessageDate?.let { date ->
+            Text(
+                text = getFormatedMessageDate(context, date),
+                style = ValueTextStyle,
+                color = GREY_700,
+                modifier = Modifier.constrainAs(lastMessageDate) {
+                    top.linkTo(userNameRef.bottom)
+                    end.linkTo(parent.end, margin = 8.dp)
+                    bottom.linkTo(parent.bottom, margin = 8.dp)
+                }
+            )
+        }
 
         HorizontalDivider(
             modifier = Modifier.constrainAs(dividerRef) {
-                top.linkTo(lastMessageDate.bottom)
+                val topConstraint = if (item.lastMessageDate != null) lastMessageDate.bottom else userNameRef.bottom
+
+                top.linkTo(topConstraint, margin = 12.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
@@ -253,24 +296,24 @@ fun ChatHistoryItem(
     }
 }
 
-private fun getFormatedMessageDate(context: Context, item: ChatHistoryDecorator): String {
+private fun getFormatedMessageDate(context: Context, date: Long): String {
     return when {
-        item.lastMessageDate.toLocalDate() == dateNow() -> {
+        date.toLocalDate() == dateNow() -> {
             context.getString(
                 R.string.chat_message_date_now,
-                item.lastMessageDate.format(EnumDateTimePatterns.TIME)
+                date.toLocalDateTime().format(EnumDateTimePatterns.TIME)
             )
         }
 
-        item.lastMessageDate.toLocalDate() == dateTimeNow().minusDays(1).toLocalDate() -> {
+        date.toLocalDate() == dateTimeNow().minusDays(1).toLocalDate() -> {
             context.getString(
                 R.string.chat_message_date_yesterday,
-                item.lastMessageDate.format(EnumDateTimePatterns.TIME)
+                date.toLocalDateTime().format(EnumDateTimePatterns.TIME)
             )
         }
 
         else -> {
-            item.lastMessageDate.format(EnumDateTimePatterns.DATE_TIME_SHORT)
+            date.toLocalDateTime().format(EnumDateTimePatterns.DATE_TIME_SHORT)
         }
     }
 }
@@ -282,12 +325,11 @@ private fun ChatHistoryItemPreview() {
         Surface {
             ChatHistoryItem(
                 context = LocalContext.current,
-                item = ChatHistoryDecorator(
-                    id = "1",
-                    userName = "João",
+                item = ChatDocument(
+                    receiverPersonName = "João",
                     notReadMessagesCount = 2,
                     lastMessage = "Olá, tudo bem?",
-                    lastMessageDate = LocalDateTime.now()
+                    lastMessageDate = LocalDateTime.now().toEpochSecond(ZoneOffset.of(ZoneId.systemDefault().id))
                 )
             )
         }
@@ -345,26 +387,23 @@ private fun ChatHistoryScreenPreviewMediumPhone() {
                 state = ChatHistoryUIState(
                     title = "Histórico de Conversas",
                     history = listOf(
-                        ChatHistoryDecorator(
-                            id = "1",
-                            userName = "João",
+                        ChatDocument(
+                            receiverPersonName = "João",
                             notReadMessagesCount = 2,
                             lastMessage = "Olá, tudo bem?",
-                            lastMessageDate = LocalDateTime.now()
+                            lastMessageDate = LocalDateTime.now().toEpochSeconds()
                         ),
-                        ChatHistoryDecorator(
-                            id = "2",
-                            userName = "Maria",
+                        ChatDocument(
+                            receiverPersonName = "Maria",
                             notReadMessagesCount = 0,
                             lastMessage = "Tudo bem, e você?",
-                            lastMessageDate = LocalDateTime.now().minusDays(1)
+                            lastMessageDate = LocalDateTime.now().minusDays(1).toEpochSeconds()
                         ),
-                        ChatHistoryDecorator(
-                            id = "3",
-                            userName = "Pedro",
+                        ChatDocument(
+                            receiverPersonName = "Pedro",
                             notReadMessagesCount = 1,
                             lastMessage = "Estou bem, obrigado!",
-                            lastMessageDate = LocalDateTime.now().minusDays(2)
+                            lastMessageDate = LocalDateTime.now().minusDays(2).toEpochSeconds()
                         )
                     )
                 )
@@ -382,26 +421,23 @@ private fun ChatHistoryScreenSmallPhone() {
                 state = ChatHistoryUIState(
                     title = "Histórico de Conversas",
                     history = listOf(
-                        ChatHistoryDecorator(
-                            id = "1",
-                            userName = "João",
+                        ChatDocument(
+                            receiverPersonName = "João",
                             notReadMessagesCount = 2,
                             lastMessage = "Olá, tudo bem?",
-                            lastMessageDate = LocalDateTime.now()
+                            lastMessageDate = LocalDateTime.now().toEpochSeconds()
                         ),
-                        ChatHistoryDecorator(
-                            id = "2",
-                            userName = "Maria",
+                        ChatDocument(
+                            receiverPersonName = "Maria",
                             notReadMessagesCount = 0,
                             lastMessage = "Tudo bem, e você?",
-                            lastMessageDate = LocalDateTime.now().minusDays(1)
+                            lastMessageDate = LocalDateTime.now().minusDays(1).toEpochSeconds()
                         ),
-                        ChatHistoryDecorator(
-                            id = "3",
-                            userName = "Pedro",
+                        ChatDocument(
+                            receiverPersonName = "Pedro",
                             notReadMessagesCount = 1,
                             lastMessage = "Estou bem, obrigado!",
-                            lastMessageDate = LocalDateTime.now().minusDays(2)
+                            lastMessageDate = LocalDateTime.now().minusDays(2).toEpochSeconds()
                         )
                     )
                 )
@@ -419,26 +455,23 @@ private fun ChatHistoryScreenPreviewTablet() {
                 state = ChatHistoryUIState(
                     title = "Histórico de Conversas",
                     history = listOf(
-                        ChatHistoryDecorator(
-                            id = "1",
-                            userName = "João",
+                        ChatDocument(
+                            receiverPersonName = "João",
                             notReadMessagesCount = 2,
                             lastMessage = "Olá, tudo bem?",
-                            lastMessageDate = LocalDateTime.now()
+                            lastMessageDate = LocalDateTime.now().toEpochSeconds()
                         ),
-                        ChatHistoryDecorator(
-                            id = "2",
-                            userName = "Maria",
+                        ChatDocument(
+                            receiverPersonName = "Maria",
                             notReadMessagesCount = 0,
                             lastMessage = "Tudo bem, e você?",
-                            lastMessageDate = LocalDateTime.now().minusDays(1)
+                            lastMessageDate = LocalDateTime.now().minusDays(1).toEpochSeconds()
                         ),
-                        ChatHistoryDecorator(
-                            id = "3",
-                            userName = "Pedro",
+                        ChatDocument(
+                            receiverPersonName = "Pedro",
                             notReadMessagesCount = 1,
                             lastMessage = "Estou bem, obrigado!",
-                            lastMessageDate = LocalDateTime.now().minusDays(2)
+                            lastMessageDate = LocalDateTime.now().minusDays(2).toEpochSeconds()
                         )
                     )
                 )

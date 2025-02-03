@@ -34,7 +34,4 @@ fun NavController.navigateToChatScreen(args: ChatArgs, navOptions: NavOptions? =
     navigate(route = "$chatScreenRoute?$chatArguments={$json}", navOptions = navOptions)
 }
 
-data class ChatArgs(
-    val chatId: String?,
-    val userDestinationId: String
-)
+data class ChatArgs(val chatId: String)

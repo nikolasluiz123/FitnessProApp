@@ -106,4 +106,5 @@
     <string name="chat_history_screen_empty_message_professionals">Não existem Profissionais com os filtros aplicados</string>
     <string name="compromise_screen_empty_message_member_dialog_list">Não existem Membros com os filtros aplicaos</string>
     <string name="compromise_screen_empty_message_professional_dialog_list">Não existem Profissionais com os filtros aplicados</string>
+    <string name="chat_screen_title">Conversa</string>
 </resources>

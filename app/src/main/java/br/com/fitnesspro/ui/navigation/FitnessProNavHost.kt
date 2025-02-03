@@ -16,6 +16,7 @@ import br.com.fitnesspro.scheduler.ui.navigation.chatHistoryScreen
 import br.com.fitnesspro.scheduler.ui.navigation.chatScreen
 import br.com.fitnesspro.scheduler.ui.navigation.compromiseScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToChatHistoryScreen
+import br.com.fitnesspro.scheduler.ui.navigation.navigateToChatScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToCompromiseScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToScheduleScreen
 import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerConfigScreen
@@ -93,7 +94,8 @@ fun FitnessProNavHost(
         )
 
         chatHistoryScreen(
-            onBackClick = navController::popBackStack
+            onBackClick = navController::popBackStack,
+            onNavigateToChat = navController::navigateToChatScreen
         )
 
         chatScreen(

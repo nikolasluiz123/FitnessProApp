@@ -5,6 +5,7 @@ import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
+import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.ConfirmationSchedulerUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.InactivateSchedulerUseCase
@@ -12,6 +13,7 @@ import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseSuggestionUse
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveRecurrentCompromiseUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveUniqueCompromiseUseCase
+import br.com.fitnesspro.scheduler.usecase.scheduler.SendChatMessageUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -110,4 +112,16 @@ class SingletonSchedulerUseCaseModule {
             schedulerRepository = schedulerRepository,
         )
     }
+
+    @Provides
+    fun provideSendChatMessageUseCase(
+        firestoreChatRepository: FirestoreChatRepository,
+        userRepository: UserRepository
+    ): SendChatMessageUseCase {
+        return SendChatMessageUseCase(
+            firestoreChatRepository = firestoreChatRepository,
+            userRepository = userRepository
+        )
+    }
+
 }

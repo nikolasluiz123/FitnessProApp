@@ -1,4 +1,4 @@
-package br.com.fitnesspro.scheduler.ui.screen.scheduler.enums
+package br.com.fitnesspro.firebase.api.firestore.enums
 
 enum class EnumMessageState {
     SENDING,
