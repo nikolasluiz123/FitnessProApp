@@ -3,6 +3,7 @@ package br.com.fitnesspro.firebase.api.firestore.service
 import br.com.fitnesspro.firebase.api.firestore.documents.ChatDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.MessageDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.PersonDocument
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
@@ -34,11 +35,6 @@ class FirestoreChatService: FirestoreService() {
             transaction.set(senderPersonChatsRef.document(chatSender.id), chatSender)
             transaction.set(receiverPersonChatsRef.document(chatReceiver.id), chatReceiver)
         }.await()
-    }
-
-    suspend fun getChatList(authenticatedPersonId: String): List<ChatDocument> {
-        val chatsPath = getPersonChatsPath(authenticatedPersonId)
-        return db.collection(chatsPath).get().await().map { it.toObject(ChatDocument::class.java) }
     }
 
     suspend fun getPersonNameFromChat(personId: String, chatId: String): String {
@@ -89,6 +85,27 @@ class FirestoreChatService: FirestoreService() {
     suspend fun getChatDocument(personId: String, chatId: String): ChatDocument {
         val chatRef = db.collection(getPersonChatsPath(personId)).document(chatId)
         return chatRef.get().await().toObject(ChatDocument::class.java)!!
+    }
+
+    fun addChatListListener(
+        authenticatedPersonId: String,
+        onSuccess: (List<ChatDocument>) -> Unit,
+        onError: (Exception) -> Unit
+    ): ListenerRegistration {
+        val chatsPath = getPersonChatsPath(authenticatedPersonId)
+        val chatsCollection = db.collection(chatsPath)
+
+        return chatsCollection.addSnapshotListener { value, error ->
+            if (error != null) {
+                onError(error)
+                return@addSnapshotListener
+            }
+
+            if (value != null && !value.isEmpty) {
+                val chats = value.documents.map { it.toObject(ChatDocument::class.java)!! }
+                onSuccess(chats)
+            }
+        }
     }
 
     private fun getChatMessagesPath(personId: String, chatId: String): String {

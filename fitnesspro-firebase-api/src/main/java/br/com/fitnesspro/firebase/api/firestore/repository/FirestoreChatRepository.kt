@@ -5,6 +5,7 @@ import br.com.fitnesspro.firebase.api.firestore.documents.MessageDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.PersonDocument
 import br.com.fitnesspro.firebase.api.firestore.service.FirestoreChatService
 import br.com.fitnesspro.to.TOPerson
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
@@ -12,15 +13,13 @@ class FirestoreChatRepository(
     private val firestoreChatService: FirestoreChatService
 ) {
 
+    private var chatHistoryListener: ListenerRegistration? = null
+
     suspend fun startChat(senderPerson: TOPerson, receiverPerson: TOPerson) = withContext(IO) {
         firestoreChatService.startChat(
             senderPerson = senderPerson.getDocument(),
             receiverPerson = receiverPerson.getDocument()
         )
-    }
-
-    suspend fun getChatList(authenticatedPersonId: String): List<ChatDocument> = withContext(IO) {
-        firestoreChatService.getChatList(authenticatedPersonId)
     }
 
     suspend fun getPersonNameFromChat(personId: String, chatId: String): String = withContext(IO) {
@@ -45,6 +44,22 @@ class FirestoreChatRepository(
 
     suspend fun getChatDocument(personId: String, chatId: String): ChatDocument = withContext(IO) {
         firestoreChatService.getChatDocument(personId, chatId)
+    }
+
+    fun addChatListListener(
+        authenticatedPersonId: String,
+        onSuccess: (List<ChatDocument>) -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        chatHistoryListener = firestoreChatService.addChatListListener(
+            authenticatedPersonId = authenticatedPersonId,
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun removeChatListListener() {
+        chatHistoryListener?.remove()
     }
 
     private fun TOPerson.getDocument(): PersonDocument {

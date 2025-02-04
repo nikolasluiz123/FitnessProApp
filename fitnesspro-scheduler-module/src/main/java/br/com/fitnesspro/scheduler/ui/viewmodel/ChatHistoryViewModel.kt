@@ -7,7 +7,6 @@ import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.state.MessageDialogState
-import br.com.fitnesspro.firebase.api.firestore.documents.ChatDocument
 import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.model.enums.EnumUserType.ACADEMY_MEMBER
 import br.com.fitnesspro.model.enums.EnumUserType.NUTRITIONIST
@@ -36,6 +35,19 @@ class ChatHistoryViewModel @Inject constructor(
     init {
         initialLoadUIState()
         loadUIStateWithDatabaseInfos()
+
+        addChatListListener()
+    }
+
+    override fun onShowError(throwable: Throwable) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
+            message = context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
+        )
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        firestoreChatRepository.removeChatListListener()
     }
 
     private fun initialLoadUIState() {
@@ -162,20 +174,26 @@ class ChatHistoryViewModel @Inject constructor(
 
             _uiState.update {
                 it.copy(
-                    history = getHistoryList(authenticatedPerson.id!!),
                     userType = authenticatedPerson.toUser?.type!!
                 )
             }
         }
     }
 
-    private suspend fun getHistoryList(authenticatedPersonId: String): List<ChatDocument> {
-        return firestoreChatRepository.getChatList(authenticatedPersonId = authenticatedPersonId)
-    }
+    private fun addChatListListener() {
+        launch {
+            val authenticatedPersonId = userRepository.getAuthenticatedTOPerson()?.id!!
 
-    override fun onShowError(throwable: Throwable) {
-        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
-            message = context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
-        )
+            firestoreChatRepository.addChatListListener(
+                authenticatedPersonId = authenticatedPersonId,
+                onSuccess = { chats ->
+                    _uiState.value = _uiState.value.copy(history = chats)
+                },
+                onError = { exception ->
+                    onShowError(exception)
+                    onError(exception)
+                }
+            )
+        }
     }
 }

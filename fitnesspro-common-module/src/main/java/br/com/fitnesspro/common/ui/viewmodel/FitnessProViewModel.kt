@@ -13,8 +13,12 @@ abstract class FitnessProViewModel : ViewModel() {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onShowError(throwable)
+        onError(throwable)
+    }
+
+    protected fun onError(throwable: Throwable) {
         throwable.sendToFirebaseCrashlytics()
-        Log.e(TAG, throwable.stackTraceToString())
+        Log.e(TAG, throwable.message, throwable)
     }
 
     fun launch(block: suspend () -> Unit) = viewModelScope.launch(exceptionHandler) {
