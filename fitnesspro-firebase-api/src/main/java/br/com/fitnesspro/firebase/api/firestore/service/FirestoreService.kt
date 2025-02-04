@@ -9,6 +9,10 @@ abstract class FirestoreService {
 
     protected val db = Firebase.firestore
 
+    /**
+     * Função que retorna o horário do servidor do banco do firestore. Pode ser utilizado em todos os
+     * campos de data para padronizar o valor.
+     */
     protected suspend fun getServerTime(): Long {
         val dummyDocRef = db.collection("serverTime").document("timestamp")
 
@@ -16,7 +20,7 @@ abstract class FirestoreService {
         dummyDocRef.set(data).await()
 
         val snapshot = dummyDocRef.get().await()
-        val serverTimestamp = snapshot.getTimestamp("timestamp")?.toDate()?.time!!
+        val serverTimestamp = snapshot.getTimestamp("timestamp")?.seconds!! * 1000
 
         return serverTimestamp
     }
