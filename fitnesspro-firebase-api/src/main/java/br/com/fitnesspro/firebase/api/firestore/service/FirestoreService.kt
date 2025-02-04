@@ -16,10 +16,8 @@ abstract class FirestoreService {
         dummyDocRef.set(data).await()
 
         val snapshot = dummyDocRef.get().await()
-        val serverTimestamp = snapshot.getTimestamp("timestamp")?.toDate()?.time ?: return 0L
-        val localTimestamp = System.currentTimeMillis()
-        val offset = serverTimestamp - localTimestamp
+        val serverTimestamp = snapshot.getTimestamp("timestamp")?.toDate()?.time!!
 
-        return localTimestamp + offset
+        return serverTimestamp
     }
 }
