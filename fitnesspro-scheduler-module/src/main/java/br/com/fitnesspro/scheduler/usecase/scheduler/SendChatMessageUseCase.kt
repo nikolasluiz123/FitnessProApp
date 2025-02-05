@@ -9,6 +9,8 @@ class SendChatMessageUseCase(
 ) {
 
     suspend operator fun invoke(message: String, chatId: String) {
+        if (message.trim().isEmpty()) return
+
         val person = userRepository.getAuthenticatedTOPerson()!!
         val chat = firestoreChatRepository.getChatDocument(
             personId = person.id!!,
