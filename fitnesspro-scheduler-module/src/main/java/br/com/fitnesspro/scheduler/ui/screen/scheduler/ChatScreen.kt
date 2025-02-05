@@ -108,6 +108,7 @@ fun ChatScreen(
                 },
                 items = state.messages,
                 emptyMessageResId = null,
+                reverseLayout = true
             ) { messageDocument ->
                 ChatMessageItem(item = messageDocument, state = state)
             }

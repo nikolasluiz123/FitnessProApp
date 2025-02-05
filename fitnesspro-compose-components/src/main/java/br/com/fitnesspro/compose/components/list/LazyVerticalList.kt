@@ -40,13 +40,15 @@ fun <T> LazyVerticalList(
     modifier: Modifier = Modifier,
     verticalArrangementSpace: Dp = 0.dp,
     contentPadding: Dp = 0.dp,
+    reverseLayout: Boolean = false,
     itemList: @Composable (T) -> Unit
 ) {
     if (items.isNotEmpty()) {
         LazyColumn(
             modifier = modifier.testTag(LAZY_COLUMN.name),
             verticalArrangement = Arrangement.spacedBy(verticalArrangementSpace),
-            contentPadding = PaddingValues(contentPadding)
+            contentPadding = PaddingValues(contentPadding),
+            reverseLayout = reverseLayout
         ) {
             items(items = items) { item ->
                 itemList(item)

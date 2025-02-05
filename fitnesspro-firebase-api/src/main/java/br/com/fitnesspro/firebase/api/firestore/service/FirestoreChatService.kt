@@ -118,7 +118,7 @@ class FirestoreChatService: FirestoreService() {
     ): ListenerRegistration {
         val messagesPath = getChatMessagesPath(personId, chatId)
         val messagesQuery = db.collection(messagesPath)
-            .orderBy(MessageDocument::date.name, Query.Direction.ASCENDING)
+            .orderBy(MessageDocument::date.name, Query.Direction.DESCENDING)
 
         return messagesQuery.addSnapshotListener { value, error ->
             if (error != null) {
