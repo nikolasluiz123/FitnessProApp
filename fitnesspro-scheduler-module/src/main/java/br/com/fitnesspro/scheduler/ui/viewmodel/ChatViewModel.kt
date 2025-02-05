@@ -135,6 +135,10 @@ class ChatViewModel @Inject constructor(
             val message = _uiState.value.messageTextField.value
 
             sendChatMessageUseCase(message, args.chatId)
+
+            _uiState.value = _uiState.value.copy(
+                messageTextField = _uiState.value.messageTextField.copy(value = "")
+            )
         }
     }
 
