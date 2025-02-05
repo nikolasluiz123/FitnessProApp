@@ -33,6 +33,8 @@ import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.extensions.toEpochSeconds
+import br.com.fitnesspro.core.extensions.toLocalDateTime
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_100
 import br.com.fitnesspro.core.theme.GREY_300
@@ -40,11 +42,11 @@ import br.com.fitnesspro.core.theme.GREY_400
 import br.com.fitnesspro.core.theme.GREY_700
 import br.com.fitnesspro.core.theme.GREY_800
 import br.com.fitnesspro.core.theme.ValueTextStyle
+import br.com.fitnesspro.firebase.api.firestore.documents.MessageDocument
 import br.com.fitnesspro.firebase.api.firestore.enums.EnumMessageState.READ
 import br.com.fitnesspro.firebase.api.firestore.enums.EnumMessageState.SENDING
 import br.com.fitnesspro.firebase.api.firestore.enums.EnumMessageState.SENT
 import br.com.fitnesspro.scheduler.R
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.decorator.MessageDecorator
 import br.com.fitnesspro.scheduler.ui.state.ChatUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.ChatViewModel
 import java.time.LocalDateTime
@@ -106,17 +108,18 @@ fun ChatScreen(
                 },
                 items = state.messages,
                 emptyMessageResId = null,
-            ) { decorator ->
-                ChatMessageItem(item = decorator)
+            ) { messageDocument ->
+                ChatMessageItem(item = messageDocument, state = state)
             }
         }
     }
 }
 
 @Composable
-fun ChatMessageItem(item: MessageDecorator) {
-    val containerColor = if (item.yourMessage) GREY_700 else GREY_300
-    val contentColor = if (item.yourMessage) GREY_300 else GREY_800
+fun ChatMessageItem(item: MessageDocument, state: ChatUIState) {
+    val isSender = item.personSenderId == state.authenticatedPersonId
+    val containerColor = if (isSender) GREY_700 else GREY_300
+    val contentColor = if (isSender) GREY_300 else GREY_800
 
     Card(
         modifier = Modifier
@@ -143,7 +146,7 @@ fun ChatMessageItem(item: MessageDecorator) {
 
                     width = Dimension.fillToConstraints
                 },
-                text = item.message,
+                text = item.text!!,
                 style = ValueTextStyle,
             )
 
@@ -156,16 +159,16 @@ fun ChatMessageItem(item: MessageDecorator) {
                     }
             ) {
                 Text(
-                    text = item.date.format(EnumDateTimePatterns.TIME),
+                    text = item.date!!.toLocalDateTime().format(EnumDateTimePatterns.TIME),
                     style = ValueTextStyle,
                 )
 
-                if (item.yourMessage) {
+                if (isSender) {
                     Icon(
                         modifier = Modifier
                             .padding(start = 8.dp)
                             .size(14.dp),
-                        painter = painterResource(id = getDrawableStateMessage(item)),
+                        painter = painterResource(id = getDrawableStateMessage(item)!!),
                         contentDescription = null,
                     )
                 }
@@ -235,11 +238,12 @@ fun BottomAppBarMessageInput(
     }
 }
 
-private fun getDrawableStateMessage(item: MessageDecorator): Int {
+private fun getDrawableStateMessage(item: MessageDocument): Int? {
     return when (item.state) {
-        SENDING -> R.drawable.ic_sending_24dp
-        SENT -> R.drawable.ic_sent_14dp
-        READ -> R.drawable.ic_read_14dp
+        SENDING.name -> R.drawable.ic_sending_24dp
+        SENT.name -> R.drawable.ic_sent_14dp
+        READ.name -> R.drawable.ic_read_14dp
+        else -> null
     }
 }
 
@@ -247,45 +251,40 @@ private fun getDrawableStateMessage(item: MessageDecorator): Int {
 @Composable
 private fun ChatScreenPreviewMediumPhone() {
     val messages = listOf(
-        MessageDecorator(
-            "1",
-            "Olá! Como você está?",
-            LocalDateTime.now().minusMinutes(10),
-            READ,
-            "user_1",
-            true
+        MessageDocument(
+            id = "1",
+            text = "Olá! Como você está?",
+            personSenderId = "user_1",
+            date = LocalDateTime.now().minusMinutes(10).toEpochSeconds(),
+            state = READ.name,
         ),
-        MessageDecorator(
+        MessageDocument(
             "2",
             "Oi! Estou bem, e você?",
-            LocalDateTime.now().minusMinutes(9),
-            READ,
             "user_2",
-            false
+            LocalDateTime.now().minusMinutes(9).toEpochSeconds(),
+            READ.name,
         ),
-        MessageDecorator(
+        MessageDocument(
             "3",
             "Também estou bem, obrigado por perguntar!",
-            LocalDateTime.now().minusMinutes(8),
-            READ,
             "user_1",
-            true
+            LocalDateTime.now().minusMinutes(8).toEpochSeconds(),
+            READ.name,
         ),
-        MessageDecorator(
+        MessageDocument(
             "4",
             "Que bom! O que você tem feito ultimamente?",
-            LocalDateTime.now().minusMinutes(7),
-            READ,
             "user_2",
-            false
+            LocalDateTime.now().minusMinutes(7).toEpochSeconds(),
+            READ.name,
         ),
-        MessageDecorator(
+        MessageDocument(
             "5",
             "Tenho trabalhado bastante, mas está sendo produtivo!",
-            LocalDateTime.now().minusMinutes(6),
-            SENDING,
             "user_1",
-            true
+            LocalDateTime.now().minusMinutes(6).toEpochSeconds(),
+            SENDING.name,
         )
     )
 
@@ -306,45 +305,40 @@ private fun ChatScreenPreviewMediumPhone() {
 @Composable
 private fun ChatScreenSmallPhone() {
     val messages = listOf(
-        MessageDecorator(
+        MessageDocument(
             "1",
             "Olá! Como você está?",
-            LocalDateTime.now().minusMinutes(10),
-            READ,
             "user_1",
-            true
+            LocalDateTime.now().minusMinutes(10).toEpochSeconds(),
+            READ.name,
         ),
-        MessageDecorator(
+        MessageDocument(
             "2",
             "Oi! Estou bem, e você?",
-            LocalDateTime.now().minusMinutes(9),
-            READ,
             "user_2",
-            false
+            LocalDateTime.now().minusMinutes(9).toEpochSeconds(),
+            READ.name,
         ),
-        MessageDecorator(
+        MessageDocument(
             "3",
             "Também estou bem, obrigado por perguntar!",
-            LocalDateTime.now().minusMinutes(8),
-            READ,
             "user_1",
-            true
+            LocalDateTime.now().minusMinutes(8).toEpochSeconds(),
+            READ.name,
         ),
-        MessageDecorator(
+        MessageDocument(
             "4",
             "Que bom! O que você tem feito ultimamente?",
-            LocalDateTime.now().minusMinutes(7),
-            READ,
             "user_2",
-            false
+            LocalDateTime.now().minusMinutes(7).toEpochSeconds(),
+            READ.name,
         ),
-        MessageDecorator(
+        MessageDocument(
             "5",
             "Tenho trabalhado bastante, mas está sendo produtivo!",
-            LocalDateTime.now().minusMinutes(6),
-            SENT,
             "user_1",
-            true
+            LocalDateTime.now().minusMinutes(6).toEpochSeconds(),
+            SENT.name,
         )
     )
 
@@ -365,45 +359,40 @@ private fun ChatScreenSmallPhone() {
 @Composable
 private fun ChatScreenPreviewTablet() {
     val messages = listOf(
-        MessageDecorator(
+        MessageDocument(
             "1",
             "Olá! Como você está?",
-            LocalDateTime.now().minusMinutes(10),
-            READ,
             "user_1",
-            true
+            LocalDateTime.now().minusMinutes(10).toEpochSeconds(),
+            READ.name,
         ),
-        MessageDecorator(
+        MessageDocument(
             "2",
             "Oi! Estou bem, e você?",
-            LocalDateTime.now().minusMinutes(9),
-            READ,
             "user_2",
-            false
+            LocalDateTime.now().minusMinutes(9).toEpochSeconds(),
+            READ.name,
         ),
-        MessageDecorator(
+        MessageDocument(
             "3",
             "Também estou bem, obrigado por perguntar!",
-            LocalDateTime.now().minusMinutes(8),
-            READ,
             "user_1",
-            true
+            LocalDateTime.now().minusMinutes(8).toEpochSeconds(),
+            READ.name,
         ),
-        MessageDecorator(
+        MessageDocument(
             "4",
             "Que bom! O que você tem feito ultimamente?",
-            LocalDateTime.now().minusMinutes(7),
-            READ,
             "user_2",
-            false
+            LocalDateTime.now().minusMinutes(7).toEpochSeconds(),
+            READ.name,
         ),
-        MessageDecorator(
+        MessageDocument(
             "5",
             "Tenho trabalhado bastante, mas está sendo produtivo!",
-            LocalDateTime.now().minusMinutes(6),
-            READ,
             "user_1",
-            true
+            LocalDateTime.now().minusMinutes(6).toEpochSeconds(),
+            READ.name,
         )
     )
 

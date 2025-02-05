@@ -4,6 +4,7 @@ import br.com.fitnesspro.firebase.api.firestore.documents.ChatDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.MessageDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.PersonDocument
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
@@ -93,9 +94,10 @@ class FirestoreChatService: FirestoreService() {
         onError: (Exception) -> Unit
     ): ListenerRegistration {
         val chatsPath = getPersonChatsPath(authenticatedPersonId)
-        val chatsCollection = db.collection(chatsPath)
+        val chatsQuery = db.collection(chatsPath)
+            .orderBy(ChatDocument::lastMessageDate.name, Query.Direction.DESCENDING)
 
-        return chatsCollection.addSnapshotListener { value, error ->
+        return chatsQuery.addSnapshotListener { value, error ->
             if (error != null) {
                 onError(error)
                 return@addSnapshotListener
@@ -104,6 +106,29 @@ class FirestoreChatService: FirestoreService() {
             if (value != null && !value.isEmpty) {
                 val chats = value.documents.map { it.toObject(ChatDocument::class.java)!! }
                 onSuccess(chats)
+            }
+        }
+    }
+
+    fun addMessagesListListener(
+        personId: String,
+        chatId: String,
+        onSuccess: (List<MessageDocument>) -> Unit,
+        onError: (Exception) -> Unit
+    ): ListenerRegistration {
+        val messagesPath = getChatMessagesPath(personId, chatId)
+        val messagesQuery = db.collection(messagesPath)
+            .orderBy(MessageDocument::date.name, Query.Direction.ASCENDING)
+
+        return messagesQuery.addSnapshotListener { value, error ->
+            if (error != null) {
+                onError(error)
+                return@addSnapshotListener
+            }
+
+            if (value != null && !value.isEmpty) {
+                val messages = value.documents.map { it.toObject(MessageDocument::class.java)!! }
+                onSuccess(messages)
             }
         }
     }

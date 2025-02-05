@@ -14,6 +14,7 @@ class FirestoreChatRepository(
 ) {
 
     private var chatHistoryListener: ListenerRegistration? = null
+    private var messagesListener: ListenerRegistration? = null
 
     suspend fun startChat(senderPerson: TOPerson, receiverPerson: TOPerson) = withContext(IO) {
         firestoreChatService.startChat(
@@ -58,8 +59,26 @@ class FirestoreChatRepository(
         )
     }
 
+    fun addMessagesListListener(
+        personId: String,
+        chatId: String,
+        onSuccess: (List<MessageDocument>) -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        messagesListener = firestoreChatService.addMessagesListListener(
+            personId = personId,
+            chatId = chatId,
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
     fun removeChatListListener() {
         chatHistoryListener?.remove()
+    }
+
+    fun removeMessagesListListener() {
+        messagesListener?.remove()
     }
 
     private fun TOPerson.getDocument(): PersonDocument {
