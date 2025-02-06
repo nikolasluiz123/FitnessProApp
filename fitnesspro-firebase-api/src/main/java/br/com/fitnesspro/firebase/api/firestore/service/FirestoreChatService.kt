@@ -3,8 +3,14 @@ package br.com.fitnesspro.firebase.api.firestore.service
 import br.com.fitnesspro.firebase.api.firestore.documents.ChatDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.MessageDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.PersonDocument
+import br.com.fitnesspro.firebase.api.firestore.enums.EnumMessageState
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Transaction
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
@@ -111,12 +117,12 @@ class FirestoreChatService: FirestoreService() {
     }
 
     fun addMessagesListListener(
-        personId: String,
+        authenticatedPersonId: String,
         chatId: String,
         onSuccess: (List<MessageDocument>) -> Unit,
         onError: (Exception) -> Unit
     ): ListenerRegistration {
-        val messagesPath = getChatMessagesPath(personId, chatId)
+        val messagesPath = getChatMessagesPath(authenticatedPersonId, chatId)
         val messagesQuery = db.collection(messagesPath)
             .orderBy(MessageDocument::date.name, Query.Direction.DESCENDING)
 
@@ -129,6 +135,70 @@ class FirestoreChatService: FirestoreService() {
             if (value != null && !value.isEmpty) {
                 val messages = value.documents.map { it.toObject(MessageDocument::class.java)!! }
                 onSuccess(messages)
+            }
+        }
+    }
+
+    suspend fun addMessagesReadListener(
+        authenticatedPersonId: String,
+        chatId: String,
+        onError: (Exception) -> Unit
+    ): ListenerRegistration {
+        val chatRef = db.collection(getPersonChatsPath(authenticatedPersonId)).document(chatId)
+        val chatDocument = getChatDocument(authenticatedPersonId, chatId)
+        val messagesPath = getChatMessagesPath(chatDocument.receiverPersonId, chatId)
+        val messagesRef = db.collection(messagesPath)
+
+        return messagesRef.addSnapshotListener { value, error ->
+            if (error != null) {
+                onError(error)
+                return@addSnapshotListener
+            }
+
+            if (value != null && !value.isEmpty) {
+                CoroutineScope(IO).launch {
+                    val messages = value.documents.map { it.toObject(MessageDocument::class.java)!! }
+
+                    readMessages(
+                        messages = messages,
+                        messagesDocumentsRef = value.documents.map { it.reference },
+                        chatDocument = chatDocument,
+                        chatDocumentRef = chatRef
+                    )
+                }
+            }
+        }
+    }
+
+    private suspend fun readMessages(
+        messages: List<MessageDocument>,
+        messagesDocumentsRef: List<DocumentReference>,
+        chatDocument: ChatDocument,
+        chatDocumentRef: DocumentReference
+    ) {
+        db.runTransaction { transaction ->
+            transaction.updateMessagesStateRead(messages, messagesDocumentsRef)
+            transaction.updateNotReadMessagesCount(chatDocument, chatDocumentRef)
+        }.await()
+    }
+
+    private fun Transaction.updateNotReadMessagesCount(
+        chatDocument: ChatDocument,
+        chatDocumentRef: DocumentReference
+    ) {
+        chatDocument.notReadMessagesCount = 0
+        set(chatDocumentRef, chatDocument)
+    }
+
+    private fun Transaction.updateMessagesStateRead(
+        messages: List<MessageDocument>,
+        messagesDocuments: List<DocumentReference>
+    ) {
+        messages.forEach { messageDocument ->
+            if (messageDocument.state != EnumMessageState.READ.name) {
+                messageDocument.state = EnumMessageState.READ.name
+                val documentReference = messagesDocuments.first { it.id == messageDocument.id }
+                set(documentReference, messageDocument)
             }
         }
     }

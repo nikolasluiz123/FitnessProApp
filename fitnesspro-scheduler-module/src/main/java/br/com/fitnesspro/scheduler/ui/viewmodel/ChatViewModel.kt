@@ -39,7 +39,7 @@ class ChatViewModel @Inject constructor(
         initialLoadUIState()
         loadUIStateWithDatabaseInfos()
 
-        addMessagesListener()
+        addListeners()
     }
 
     override fun onShowError(throwable: Throwable) {
@@ -110,17 +110,26 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun addMessagesListener() {
+    private fun addListeners() {
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(ChatArgs::class.java)!!
             val authenticatedPersonId = userRepository.getAuthenticatedTOPerson()?.id!!
 
             firestoreChatRepository.addMessagesListListener(
-                personId = authenticatedPersonId,
+                authenticatedPersonId = authenticatedPersonId,
                 chatId = args.chatId,
                 onSuccess = { messages ->
                     _uiState.value = _uiState.value.copy(messages = messages)
                 },
+                onError = { exception ->
+                    onShowError(exception)
+                    onError(exception)
+                }
+            )
+
+            firestoreChatRepository.addMessagesReadListener(
+                authenticatedPersonId = authenticatedPersonId,
+                chatId = args.chatId,
                 onError = { exception ->
                     onShowError(exception)
                     onError(exception)
@@ -145,5 +154,6 @@ class ChatViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         firestoreChatRepository.removeMessagesListListener()
+        firestoreChatRepository.removeMessagesReadListener()
     }
 }
