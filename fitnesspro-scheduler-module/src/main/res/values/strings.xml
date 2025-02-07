@@ -107,4 +107,6 @@
     <string name="compromise_screen_empty_message_member_dialog_list">Não existem Membros com os filtros aplicaos</string>
     <string name="compromise_screen_empty_message_professional_dialog_list">Não existem Profissionais com os filtros aplicados</string>
     <string name="chat_screen_title">Conversa</string>
+    <string name="new_message_chat_channel_name">Notificações do Chat</string>
+    <string name="new_message_chat_channel_description">Notificações das Novas Mensagens do Chat</string>
 </resources>

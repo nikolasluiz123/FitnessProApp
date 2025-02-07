@@ -1,5 +1,8 @@
 package br.com.fitnesspro.ui.screen.home
 
+import android.Manifest
+import android.content.Context
+import android.os.Build
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,12 +13,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -31,9 +36,11 @@ import br.com.fitnesspro.compose.components.buttons.icons.IconButtonLogout
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonNotification
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
+import br.com.fitnesspro.core.extensions.verifyPermissionGranted
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_600
 import br.com.fitnesspro.core.theme.LabelTextStyle
+import br.com.fitnesspro.core.utils.PermissionUtils.requestMultiplePermissionsLauncher
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.ui.bottomsheet.workout.BottomSheetWorkout
 import br.com.fitnesspro.ui.screen.home.callbacks.OnLogoutClick
@@ -77,6 +84,8 @@ fun HomeScreen(
     onLogoutClick: OnLogoutClick? = null,
     onNavigateToLogin: () -> Unit = { }
 ) {
+    val context = LocalContext.current
+
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
@@ -115,6 +124,8 @@ fun HomeScreen(
                 .padding(padding)
         ) {
             val (footerRef, moduleButtonsRef) = createRefs()
+
+            RequestAllPermissions(context)
 
             FitnessProMessageDialog(state = state.messageDialogState)
 
@@ -282,6 +293,25 @@ fun HomeScreen(
                     textAlign = TextAlign.End
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun RequestAllPermissions(context: Context) {
+    val requestPermissionLauncher = requestMultiplePermissionsLauncher()
+
+    LaunchedEffect(Unit) {
+        val permissions = mutableListOf<String>()
+
+        if (!context.verifyPermissionGranted(Manifest.permission.POST_NOTIFICATIONS) &&
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+        ) {
+            permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+        }
+
+        if (permissions.isNotEmpty()) {
+            requestPermissionLauncher.launch(permissions.toTypedArray())
         }
     }
 }

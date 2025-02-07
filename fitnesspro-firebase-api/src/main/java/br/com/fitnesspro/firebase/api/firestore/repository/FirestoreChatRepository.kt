@@ -2,6 +2,7 @@ package br.com.fitnesspro.firebase.api.firestore.repository
 
 import br.com.fitnesspro.firebase.api.firestore.documents.ChatDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.MessageDocument
+import br.com.fitnesspro.firebase.api.firestore.documents.MessageNotificationDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.PersonDocument
 import br.com.fitnesspro.firebase.api.firestore.service.FirestoreChatService
 import br.com.fitnesspro.to.TOPerson
@@ -16,6 +17,7 @@ class FirestoreChatRepository(
     private var chatHistoryListener: ListenerRegistration? = null
     private var messagesListListener: ListenerRegistration? = null
     private var messagesReadListener: ListenerRegistration? = null
+    private var messagesNotificationListener: ListenerRegistration? = null
 
     suspend fun startChat(senderPerson: TOPerson, receiverPerson: TOPerson) = withContext(IO) {
         firestoreChatService.startChat(
@@ -86,6 +88,18 @@ class FirestoreChatRepository(
         )
     }
 
+    fun addMessagesNotificationListener(
+        authenticatedPersonId: String,
+        onSuccess: (List<MessageNotificationDocument>) -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        messagesNotificationListener = firestoreChatService.addMessagesNotificationListener(
+            authenticatedPersonId = authenticatedPersonId,
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
     fun removeChatListListener() {
         chatHistoryListener?.remove()
     }
@@ -96,6 +110,10 @@ class FirestoreChatRepository(
 
     fun removeMessagesReadListener() {
         messagesReadListener?.remove()
+    }
+
+    fun removeMessagesNotificationListener() {
+        messagesNotificationListener?.remove()
     }
 
     private fun TOPerson.getDocument(): PersonDocument {

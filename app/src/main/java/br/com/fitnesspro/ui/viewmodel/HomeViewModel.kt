@@ -8,7 +8,9 @@ import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.model.enums.EnumUserType
+import br.com.fitnesspro.scheduler.notification.NewMessageChatNotification
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.ui.state.HomeUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val firestoreChatRepository: FirestoreChatRepository
 ) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<HomeUIState> = MutableStateFlow(HomeUIState())
@@ -30,6 +33,30 @@ class HomeViewModel @Inject constructor(
 
     init {
         initialUIStateLoad()
+
+        addMessagesNotificationListener()
+    }
+
+    private fun addMessagesNotificationListener() {
+        launch {
+            val authenticatedPersonId = userRepository.getAuthenticatedTOPerson()?.id!!
+
+            firestoreChatRepository.addMessagesNotificationListener(
+                authenticatedPersonId = authenticatedPersonId,
+                onSuccess = { messages ->
+                    NewMessageChatNotification(context, messages).run {
+                        showNotification(
+                            title = context.getString(R.string.new_message_chat_notification_title),
+                            message = context.getString(R.string.new_message_chat_notification_message)
+                        )
+                    }
+                },
+                onError = {
+                    onShowError(it)
+                    onError(it)
+                }
+            )
+        }
     }
 
     override fun onShowError(throwable: Throwable) {
@@ -101,6 +128,11 @@ class HomeViewModel @Inject constructor(
 
     private fun getSubtitle(toPerson: TOPerson): String {
         return toPerson.name!!
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        firestoreChatRepository.removeMessagesNotificationListener()
     }
 
 }

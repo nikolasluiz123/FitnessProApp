@@ -2,6 +2,7 @@ package br.com.fitnesspro.firebase.api.firestore.service
 
 import br.com.fitnesspro.firebase.api.firestore.documents.ChatDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.MessageDocument
+import br.com.fitnesspro.firebase.api.firestore.documents.MessageNotificationDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.PersonDocument
 import br.com.fitnesspro.firebase.api.firestore.enums.EnumMessageState
 import com.google.firebase.firestore.DocumentReference
@@ -54,17 +55,26 @@ class FirestoreChatService: FirestoreService() {
         receiverPersonId: String,
         chatId: String
     ) {
-        val senderChatDocument = db.collection(getPersonChatsPath(senderPersonId)).document(chatId)
-        val receiverChatDocument = db.collection(getPersonChatsPath(receiverPersonId)).document(chatId)
+        val senderChatDocumentRef = db.collection(getPersonChatsPath(senderPersonId)).document(chatId)
+        val receiverChatDocumentRef = db.collection(getPersonChatsPath(receiverPersonId)).document(chatId)
 
         val senderMessagesCollectionRef = db.collection(getChatMessagesPath(senderPersonId, chatId))
         val receiverMessagesCollectionRef = db.collection(getChatMessagesPath(receiverPersonId, chatId))
 
+        val senderPerson = db
+            .collection(PersonDocument.COLLECTION_NAME)
+            .document(senderPersonId)
+            .get().await().toObject(PersonDocument::class.java)!!
+
+        val notificationDocumentRef = db
+            .collection(getPersonNotificationsPath(receiverPersonId))
+            .document(messageDocument.id)
+
         val serverTime = getServerTime()
 
         db.runTransaction { transaction->
-            val senderChat = transaction.get(senderChatDocument).toObject(ChatDocument::class.java)!!
-            val receiverChat = transaction.get(receiverChatDocument).toObject(ChatDocument::class.java)!!
+            val senderChat = transaction.get(senderChatDocumentRef).toObject(ChatDocument::class.java)!!
+            val receiverChat = transaction.get(receiverChatDocumentRef).toObject(ChatDocument::class.java)!!
 
             senderChat.apply {
                 lastMessage = messageDocument.text
@@ -77,8 +87,17 @@ class FirestoreChatService: FirestoreService() {
                 notReadMessagesCount++
             }
 
-            transaction.set(senderChatDocument, senderChat)
-            transaction.set(receiverChatDocument, receiverChat)
+            val messageNotificationDocument = MessageNotificationDocument(
+                id = messageDocument.id,
+                text = messageDocument.text,
+                personReceiverId = receiverPersonId,
+                personSenderName = senderPerson.name!!,
+                date = serverTime
+            )
+
+            transaction.set(senderChatDocumentRef, senderChat)
+            transaction.set(receiverChatDocumentRef, receiverChat)
+            transaction.set(notificationDocumentRef, messageNotificationDocument)
 
             messageDocument.apply {
                 date = serverTime
@@ -146,8 +165,12 @@ class FirestoreChatService: FirestoreService() {
     ): ListenerRegistration {
         val chatRef = db.collection(getPersonChatsPath(authenticatedPersonId)).document(chatId)
         val chatDocument = getChatDocument(authenticatedPersonId, chatId)
+
         val messagesPath = getChatMessagesPath(chatDocument.receiverPersonId, chatId)
         val messagesRef = db.collection(messagesPath)
+
+        val notificationsPath = getPersonNotificationsPath(chatDocument.receiverPersonId)
+        val notificationsRef = db.collection(notificationsPath)
 
         return messagesRef.addSnapshotListener { value, error ->
             if (error != null) {
@@ -158,12 +181,16 @@ class FirestoreChatService: FirestoreService() {
             if (value != null && !value.isEmpty) {
                 CoroutineScope(IO).launch {
                     val messages = value.documents.map { it.toObject(MessageDocument::class.java)!! }
+                    val notifications = notificationsRef
+                        .whereIn(MessageNotificationDocument::id.name, messages.map { it.id })
+                        .get().await().documents.map { it.reference }
 
                     readMessages(
                         messages = messages,
                         messagesDocumentsRef = value.documents.map { it.reference },
                         chatDocument = chatDocument,
-                        chatDocumentRef = chatRef
+                        chatDocumentRef = chatRef,
+                        notifications = notifications
                     )
                 }
             }
@@ -174,10 +201,12 @@ class FirestoreChatService: FirestoreService() {
         messages: List<MessageDocument>,
         messagesDocumentsRef: List<DocumentReference>,
         chatDocument: ChatDocument,
-        chatDocumentRef: DocumentReference
+        chatDocumentRef: DocumentReference,
+        notifications: List<DocumentReference>
     ) {
         db.runTransaction { transaction ->
             transaction.updateMessagesStateRead(messages, messagesDocumentsRef)
+            transaction.deleteNotifications(notifications)
             transaction.updateNotReadMessagesCount(chatDocument, chatDocumentRef)
         }.await()
     }
@@ -201,6 +230,34 @@ class FirestoreChatService: FirestoreService() {
                 set(documentReference, messageDocument)
             }
         }
+    }
+
+    private fun Transaction.deleteNotifications(notifications: List<DocumentReference>) {
+        notifications.forEach(::delete)
+    }
+
+    fun addMessagesNotificationListener(
+        authenticatedPersonId: String,
+        onSuccess: (List<MessageNotificationDocument>) -> Unit,
+        onError: (Exception) -> Unit
+    ): ListenerRegistration {
+        val notificationsPath = getPersonNotificationsPath(authenticatedPersonId)
+
+        return db.collection(notificationsPath).addSnapshotListener { value, error ->
+            if (error != null) {
+                onError(error)
+                return@addSnapshotListener
+            }
+
+            if (value != null && !value.isEmpty) {
+                val messages = value.documents.map { it.toObject(MessageNotificationDocument::class.java)!! }
+                onSuccess(messages)
+            }
+        }
+    }
+
+    private fun getPersonNotificationsPath(personId: String): String {
+        return "${PersonDocument.COLLECTION_NAME}/$personId/${MessageNotificationDocument.COLLECTION_NAME}"
     }
 
     private fun getChatMessagesPath(personId: String, chatId: String): String {
