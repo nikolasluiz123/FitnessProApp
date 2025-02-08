@@ -231,26 +231,6 @@ class FirestoreChatService: FirestoreService() {
         notifications.forEach(::delete)
     }
 
-    fun addMessagesNotificationListener(
-        authenticatedPersonId: String,
-        onSuccess: (List<MessageNotificationDocument>) -> Unit,
-        onError: (Exception) -> Unit
-    ): ListenerRegistration {
-        val notificationsPath = getPersonNotificationsPath(authenticatedPersonId)
-
-        return db.collection(notificationsPath).addSnapshotListener { value, error ->
-            if (error != null) {
-                onError(error)
-                return@addSnapshotListener
-            }
-
-            if (value != null && !value.isEmpty) {
-                val messages = value.documents.map { it.toObject(MessageNotificationDocument::class.java)!! }
-                onSuccess(messages)
-            }
-        }
-    }
-
     private fun getPersonNotificationsPath(personId: String): String {
         return "${PersonDocument.COLLECTION_NAME}/$personId/${MessageNotificationDocument.COLLECTION_NAME}"
     }
