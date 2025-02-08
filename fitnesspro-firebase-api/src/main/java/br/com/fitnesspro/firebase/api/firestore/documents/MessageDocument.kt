@@ -9,7 +9,7 @@ data class MessageDocument(
     val personSenderId: String? = null,
     var date: Long? = null,
     var state: String = EnumMessageState.SENDING.name,
-) {
+): FirestoreDocument() {
 
     companion object {
         const val COLLECTION_NAME = "messages"

@@ -87,6 +87,10 @@ class FirestoreChatService: FirestoreService() {
                 notReadMessagesCount++
             }
 
+            messageDocument.apply {
+                date = serverTime
+            }
+
             val messageNotificationDocument = MessageNotificationDocument(
                 id = messageDocument.id,
                 text = messageDocument.text,
@@ -95,14 +99,10 @@ class FirestoreChatService: FirestoreService() {
                 date = serverTime
             )
 
-            transaction.set(senderChatDocumentRef, senderChat)
-            transaction.set(receiverChatDocumentRef, receiverChat)
+            transaction.update(senderChatDocumentRef, senderChat.toMap())
+            transaction.update(receiverChatDocumentRef, receiverChat.toMap())
+
             transaction.set(notificationDocumentRef, messageNotificationDocument)
-
-            messageDocument.apply {
-                date = serverTime
-            }
-
             transaction.set(senderMessagesCollectionRef.document(messageDocument.id), messageDocument)
             transaction.set(receiverMessagesCollectionRef.document(messageDocument.id), messageDocument)
         }.await()
@@ -188,7 +188,6 @@ class FirestoreChatService: FirestoreService() {
                     readMessages(
                         messages = messages,
                         messagesDocumentsRef = value.documents.map { it.reference },
-                        chatDocument = chatDocument,
                         chatDocumentRef = chatRef,
                         notifications = notifications
                     )
@@ -200,23 +199,18 @@ class FirestoreChatService: FirestoreService() {
     private suspend fun readMessages(
         messages: List<MessageDocument>,
         messagesDocumentsRef: List<DocumentReference>,
-        chatDocument: ChatDocument,
         chatDocumentRef: DocumentReference,
         notifications: List<DocumentReference>
     ) {
         db.runTransaction { transaction ->
             transaction.updateMessagesStateRead(messages, messagesDocumentsRef)
             transaction.deleteNotifications(notifications)
-            transaction.updateNotReadMessagesCount(chatDocument, chatDocumentRef)
+            transaction.updateNotReadMessagesCount(chatDocumentRef)
         }.await()
     }
 
-    private fun Transaction.updateNotReadMessagesCount(
-        chatDocument: ChatDocument,
-        chatDocumentRef: DocumentReference
-    ) {
-        chatDocument.notReadMessagesCount = 0
-        set(chatDocumentRef, chatDocument)
+    private fun Transaction.updateNotReadMessagesCount(chatDocumentRef: DocumentReference) {
+        update(chatDocumentRef, ChatDocument::notReadMessagesCount.name, 0)
     }
 
     private fun Transaction.updateMessagesStateRead(
@@ -225,9 +219,10 @@ class FirestoreChatService: FirestoreService() {
     ) {
         messages.forEach { messageDocument ->
             if (messageDocument.state != EnumMessageState.READ.name) {
-                messageDocument.state = EnumMessageState.READ.name
                 val documentReference = messagesDocuments.first { it.id == messageDocument.id }
-                set(documentReference, messageDocument)
+
+                messageDocument.state = EnumMessageState.READ.name
+                update(documentReference, messageDocument.toMap())
             }
         }
     }

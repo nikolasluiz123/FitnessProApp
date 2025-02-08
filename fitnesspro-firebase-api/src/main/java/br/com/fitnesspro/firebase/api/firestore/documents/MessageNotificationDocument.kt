@@ -6,7 +6,7 @@ data class MessageNotificationDocument(
     val date: Long? = null,
     val personReceiverId: String? = null,
     val personSenderName: String? = null,
-) {
+): FirestoreDocument() {
 
     companion object {
         const val COLLECTION_NAME = "messageNotifications"

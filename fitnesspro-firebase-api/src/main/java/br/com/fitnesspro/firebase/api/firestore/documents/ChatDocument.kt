@@ -7,7 +7,7 @@ data class ChatDocument(
     var lastMessage: String? = null,
     var lastMessageDate: Long? = null,
     var notReadMessagesCount: Int = 0
-) {
+): FirestoreDocument() {
 
     companion object {
         const val COLLECTION_NAME = "chats"
