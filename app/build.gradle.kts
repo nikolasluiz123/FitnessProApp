@@ -74,9 +74,7 @@ dependencies {
     implementation(project(":fitnesspro-firebase-api"))
 
     implementation(libs.java.faker)
-
     implementation(libs.splash)
-
     implementation(libs.data.store)
 
     implementation(libs.google.gson)
@@ -88,7 +86,9 @@ dependencies {
 
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.work)
     ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
 
     implementation(libs.room.paging)
 
@@ -107,6 +107,8 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.performance)
+
+    implementation(libs.work.runtime)
 
     debugImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.ui.tooling)
