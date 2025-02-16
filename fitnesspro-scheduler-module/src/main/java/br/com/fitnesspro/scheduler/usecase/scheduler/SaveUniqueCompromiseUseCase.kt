@@ -9,6 +9,7 @@ import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
 import br.com.fitnesspro.to.TOScheduler
 
@@ -23,7 +24,7 @@ class SaveUniqueCompromiseUseCase(
         val validationResults = validateUniqueCompromise(toScheduler)
 
         if (validationResults.isEmpty()) {
-            schedulerRepository.saveScheduler(toScheduler)
+            schedulerRepository.saveScheduler(toScheduler, EnumSchedulerType.UNIQUE)
         }
 
         return validationResults

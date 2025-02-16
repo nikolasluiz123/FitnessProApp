@@ -10,6 +10,7 @@ import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.INVALID_SITUATION_FOR_CONFIRMATION
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.to.TOScheduler
 
 class ConfirmationSchedulerUseCase(
@@ -17,12 +18,12 @@ class ConfirmationSchedulerUseCase(
     private val schedulerRepository: SchedulerRepository,
 ) {
 
-    suspend operator fun invoke(toScheduler: TOScheduler): ValidationError<EnumCompromiseValidationTypes>? {
+    suspend operator fun invoke(toScheduler: TOScheduler, schedulerType: EnumSchedulerType): ValidationError<EnumCompromiseValidationTypes>? {
         val result = validate(toScheduler)
 
         if (result == null) {
             toScheduler.situation = if (toScheduler.situation == SCHEDULED) CONFIRMED else COMPLETED
-            schedulerRepository.saveScheduler(toScheduler)
+            schedulerRepository.saveScheduler(toScheduler, schedulerType)
         }
 
         return result

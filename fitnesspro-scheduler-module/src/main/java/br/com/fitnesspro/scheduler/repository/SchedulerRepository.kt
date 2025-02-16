@@ -1,6 +1,7 @@
 package br.com.fitnesspro.scheduler.repository
 
 import androidx.room.Transaction
+import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
@@ -9,6 +10,7 @@ import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.model.workout.WorkoutGroup
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOScheduler
 import kotlinx.coroutines.Dispatchers.IO
@@ -21,12 +23,24 @@ class SchedulerRepository(
     private val schedulerDAO: SchedulerDAO,
     private val workoutDAO: WorkoutDAO,
     private val userRepository: UserRepository,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
+    private val schedulerWebClient: SchedulerWebClient
 ) {
 
-    suspend fun saveScheduler(toScheduler: TOScheduler) = withContext(IO) {
+    suspend fun saveScheduler(
+        toScheduler: TOScheduler,
+        schedulerType: EnumSchedulerType
+    ) = withContext(IO) {
         val scheduler = toScheduler.getScheduler()
         schedulerDAO.save(scheduler)
+
+        userRepository.getAuthenticatedTOUser()!!.also { user ->
+            schedulerWebClient.saveScheduler(
+                token = user.serviceToken!!,
+                scheduler = scheduler,
+                schedulerType = schedulerType.name
+            )
+        }
     }
 
     suspend fun getSchedulerList(
@@ -46,10 +60,6 @@ class SchedulerRepository(
 
     suspend fun getTOSchedulerById(id: String): TOScheduler = withContext(IO) {
         schedulerDAO.findSchedulerById(id).getTOScheduler()!!
-    }
-
-    suspend fun findSchedulerById(id: String): Scheduler = withContext(IO) {
-        schedulerDAO.findSchedulerById(id)
     }
 
     suspend fun getHasSchedulerConflict(
@@ -147,5 +157,16 @@ class SchedulerRepository(
         schedulerDAO.saveBatch(schedulers)
         workoutDAO.saveWorkout(workout)
         workoutDAO.saveGroups(workoutGroups)
+
+        userRepository.getAuthenticatedTOUser()!!.also { user ->
+            schedulerWebClient.saveScheduler(
+                token = user.serviceToken!!,
+                scheduler = schedulers.first(),
+                schedulerType = EnumSchedulerType.RECURRENT.name,
+                dateStart = workout.start,
+                dateEnd = workout.end,
+                dayWeeks = workoutGroups.map { it.dayWeek!! }
+            )
+        }
     }
 }

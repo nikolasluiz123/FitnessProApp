@@ -39,7 +39,7 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 
 @Database(
-    version = 9,
+    version = 10,
     entities = [
         User::class, Person::class, Academy::class, PersonAcademyTime::class, PhysicEvaluation::class,
         IngredientPreDefinition::class, MealOptionPreDefinition::class, Diet::class, DayWeekDiet::class, Meal::class,
@@ -57,7 +57,8 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
         AutoMigration(from = 5, to = 6),
         AutoMigration(from = 6, to = 7),
         AutoMigration(from = 7, to = 8),
-        AutoMigration(from = 8, to = 9, spec = AutoMigrationSpec8To9::class)
+        AutoMigration(from = 8, to = 9, spec = AutoMigrationSpec8To9::class),
+        AutoMigration(from = 9, to = 10)
     ]
 )
 @TypeConverters(RoomTypeConverters::class)

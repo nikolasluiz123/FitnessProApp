@@ -25,7 +25,7 @@ class SchedulerWebClient(
     suspend fun saveScheduler(
         token: String,
         scheduler: Scheduler,
-        schedulerType: EnumSchedulerType,
+        schedulerType: String,
         dateStart: LocalDate? = null,
         dateEnd: LocalDate? = null,
         dayWeeks: List<DayOfWeek> = emptyList()
@@ -72,11 +72,13 @@ class SchedulerWebClient(
     }
 
     private fun Scheduler.toSchedulerDTO(
-        schedulerType: EnumSchedulerType,
+        schedulerType: String,
         dateStart: LocalDate?,
         dateEnd: LocalDate?,
         dayWeeks: List<DayOfWeek>
     ): SchedulerDTO {
+        val type = getSchedulerTypeWithName(schedulerType)
+
         return SchedulerDTO(
             id = id,
             active = active,
@@ -89,9 +91,13 @@ class SchedulerWebClient(
             canceledDate = canceledDate,
             compromiseType = getCompromiseType(compromiseType!!),
             observation = observation,
-            type = schedulerType,
-            recurrentConfig = getRecurrentConfigDTO(schedulerType, dateStart, dateEnd, dayWeeks)
+            type = type,
+            recurrentConfig = getRecurrentConfigDTO(type, dateStart, dateEnd, dayWeeks)
         )
+    }
+
+    private fun getSchedulerTypeWithName(schedulerType: String): EnumSchedulerType {
+        return EnumSchedulerType.entries.first { it.name == schedulerType }
     }
 
     private fun getRecurrentConfigDTO(

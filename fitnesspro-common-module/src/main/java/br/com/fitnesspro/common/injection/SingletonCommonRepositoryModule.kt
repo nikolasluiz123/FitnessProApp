@@ -1,10 +1,12 @@
 package br.com.fitnesspro.common.injection
 
+import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
+import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.firebase.api.authentication.DefaultAuthenticationService
-import br.com.fitnesspro.firebase.api.authentication.GoogleAuthenticationService
+import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
+import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
@@ -20,13 +22,15 @@ class SingletonCommonRepositoryModule {
     @Provides
     fun provideUserRepository(
         userDAO: UserDAO,
-        defaultAuthenticationService: DefaultAuthenticationService,
-        googleAuthenticationService: GoogleAuthenticationService
+        firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
+        firebaseGoogleAuthenticationService: FirebaseGoogleAuthenticationService,
+        authenticationWebClient: AuthenticationWebClient
     ): UserRepository {
         return UserRepository(
             userDAO = userDAO,
-            defaultAuthenticationService = defaultAuthenticationService,
-            googleAuthenticationService = googleAuthenticationService
+            firebaseDefaultAuthenticationService = firebaseDefaultAuthenticationService,
+            firebaseGoogleAuthenticationService = firebaseGoogleAuthenticationService,
+            authenticationWebClient = authenticationWebClient
         )
     }
 
@@ -34,19 +38,27 @@ class SingletonCommonRepositoryModule {
     fun providePersonRepository(
         personDAO: PersonDAO,
         userDAO: UserDAO,
-        defaultAuthenticationService: DefaultAuthenticationService
+        firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
+        personWebClient: PersonWebClient
     ): PersonRepository {
         return PersonRepository(
             personDAO = personDAO,
             userDAO = userDAO,
-            defaultAuthenticationService = defaultAuthenticationService
+            firebaseDefaultAuthenticationService = firebaseDefaultAuthenticationService,
+            personWebClient = personWebClient
         )
     }
 
     @Provides
     fun provideAcademyRepository(
-        academyDAO: AcademyDAO
+        academyDAO: AcademyDAO,
+        userDAO: UserDAO,
+        personWebClient: PersonWebClient
     ): AcademyRepository {
-        return AcademyRepository(academyDAO = academyDAO)
+        return AcademyRepository(
+            academyDAO = academyDAO,
+            userDAO = userDAO,
+            personWebClient = personWebClient
+        )
     }
 }

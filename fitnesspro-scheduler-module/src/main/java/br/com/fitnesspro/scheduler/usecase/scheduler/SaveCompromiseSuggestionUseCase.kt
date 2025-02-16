@@ -12,6 +12,7 @@ import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.RECURRENT_SCHEDULER_CONFLICT
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.REQUIRED_PROFESSIONAL
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.PROFESSIONAL
 import br.com.fitnesspro.to.TOScheduler
@@ -28,7 +29,7 @@ class SaveCompromiseSuggestionUseCase(
         val validationResults = validateCompromiseSuggestion(toScheduler)
 
         if (validationResults.isEmpty()) {
-            schedulerRepository.saveScheduler(toScheduler)
+            schedulerRepository.saveScheduler(toScheduler, EnumSchedulerType.SUGGESTION)
         }
 
         return validationResults

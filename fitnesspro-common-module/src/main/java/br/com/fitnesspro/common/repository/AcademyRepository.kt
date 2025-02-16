@@ -2,9 +2,11 @@ package br.com.fitnesspro.common.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDecorator
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
+import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.to.TOAcademy
@@ -15,11 +17,22 @@ import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 
 class AcademyRepository(
-    private val academyDAO: AcademyDAO
+    private val academyDAO: AcademyDAO,
+    private val userDAO: UserDAO,
+    private val personWebClient: PersonWebClient
 ) {
 
     suspend fun savePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
-        academyDAO.saveAcademyTime(toPersonAcademyTime.getPersonAcademyTime())
+        val personAcademyTime = toPersonAcademyTime.getPersonAcademyTime()
+
+        academyDAO.saveAcademyTime(personAcademyTime)
+
+        userDAO.getAuthenticatedUser()!!.also { user ->
+            personWebClient.savePersonAcademyTime(
+                token = user.serviceToken!!,
+                personAcademyTime = personAcademyTime
+            )
+        }
     }
 
     fun getAcademies(simpleFilter: String): Pager<Int, AcademyTuple> {

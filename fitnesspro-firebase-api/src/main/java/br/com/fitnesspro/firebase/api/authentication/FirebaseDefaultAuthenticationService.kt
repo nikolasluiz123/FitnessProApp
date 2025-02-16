@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class DefaultAuthenticationService {
+class FirebaseDefaultAuthenticationService {
 
     suspend fun authenticate(email: String, password: String): AuthResult? = withContext(IO) {
         try {

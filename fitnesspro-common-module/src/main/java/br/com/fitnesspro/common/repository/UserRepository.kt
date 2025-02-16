@@ -1,7 +1,8 @@
 package br.com.fitnesspro.common.repository
 
-import br.com.fitnesspro.firebase.api.authentication.DefaultAuthenticationService
-import br.com.fitnesspro.firebase.api.authentication.GoogleAuthenticationService
+import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
+import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
+import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.to.TOUser
@@ -12,8 +13,9 @@ import kotlinx.coroutines.withContext
 
 class UserRepository(
     private val userDAO: UserDAO,
-    private val defaultAuthenticationService: DefaultAuthenticationService,
-    private val googleAuthenticationService: GoogleAuthenticationService
+    private val firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
+    private val firebaseGoogleAuthenticationService: FirebaseGoogleAuthenticationService,
+    private val authenticationWebClient: AuthenticationWebClient
 ) {
 
     suspend fun hasUserWithEmail(email: String, userId: String?): Boolean = withContext(IO) {
@@ -28,15 +30,22 @@ class UserRepository(
         userDAO.authenticate(email, password)
 
         try {
-            defaultAuthenticationService.authenticate(email, password)
+            firebaseDefaultAuthenticationService.authenticate(email, password)
         } catch (ex: FirebaseAuthInvalidCredentialsException) {
-            defaultAuthenticationService.register(email, password)
-            defaultAuthenticationService.authenticate(email, password)
+            firebaseDefaultAuthenticationService.register(email, password)
+            firebaseDefaultAuthenticationService.authenticate(email, password)
+        }
+
+        authenticationWebClient.authenticate(email, password)?.let { serviceToken ->
+            userDAO.findByEmail(email)!!.also { user ->
+                user.serviceToken = serviceToken
+                userDAO.save(user)
+            }
         }
     }
 
     suspend fun signInWithGoogle(): AuthResult? = withContext(IO) {
-        googleAuthenticationService.signIn()
+        firebaseGoogleAuthenticationService.signIn()
     }
 
     suspend fun getAuthenticatedTOUser(): TOUser? = withContext(IO) {
@@ -58,13 +67,22 @@ class UserRepository(
                 email = email,
                 password = password,
                 type = type,
-                active = active
+                active = active,
+                serviceToken = serviceToken
             )
         }
     }
 
     suspend fun logout() = withContext(IO) {
         userDAO.logoutAll()
-        defaultAuthenticationService.logout()
+        firebaseDefaultAuthenticationService.logout()
+
+        userDAO.getAuthenticatedUser()?.let { user ->
+            authenticationWebClient.logout(
+                token = user.serviceToken!!,
+                email = user.email!!,
+                password = user.password!!
+            )
+        }
     }
 }

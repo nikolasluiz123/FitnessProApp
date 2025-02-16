@@ -3,7 +3,8 @@ package br.com.fitnesspro.common.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.room.Transaction
-import br.com.fitnesspro.firebase.api.authentication.DefaultAuthenticationService
+import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
+import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.enums.EnumUserType
@@ -18,7 +19,8 @@ import kotlinx.coroutines.withContext
 class PersonRepository(
     private val personDAO: PersonDAO,
     private val userDAO: UserDAO,
-    private val defaultAuthenticationService: DefaultAuthenticationService,
+    private val firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
+    private val personWebClient: PersonWebClient
 ) {
     @Transaction
     suspend fun savePerson(toPerson: TOPerson) = withContext(IO) {
@@ -27,16 +29,15 @@ class PersonRepository(
         val existentUser = userDAO.findById(user.id)
 
         if (existentUser == null) {
-            defaultAuthenticationService.register(
-                email = user.email!!,
-                password = user.password!!
-            )
+            firebaseDefaultAuthenticationService.register(user.email!!, user.password!!)
         } else {
-            defaultAuthenticationService.updateUserInfos(user)
+            firebaseDefaultAuthenticationService.updateUserInfos(user)
         }
 
         userDAO.save(user)
         personDAO.save(person)
+
+        personWebClient.savePerson(person, user)
     }
 
     @Transaction
@@ -146,7 +147,8 @@ class PersonRepository(
                 email = email,
                 password = password,
                 type = type,
-                active = active
+                active = active,
+                serviceToken = serviceToken
             )
         }
     }

@@ -692,7 +692,7 @@ class CompromiseViewModel @Inject constructor(
             )
         ) {
             launch {
-                val validationError = inactivateSchedulerUseCase(toScheduler)
+                val validationError = inactivateSchedulerUseCase(toScheduler, getSchedulerType())
 
                 if (validationError != null) {
                     _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(validationError.message)
@@ -728,7 +728,7 @@ class CompromiseViewModel @Inject constructor(
             message = message
         ) {
             launch {
-                val validationError = confirmationSchedulerUseCase(toScheduler)
+                val validationError = confirmationSchedulerUseCase(toScheduler, getSchedulerType())
 
                 if (validationError != null) {
                     _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(validationError.message)

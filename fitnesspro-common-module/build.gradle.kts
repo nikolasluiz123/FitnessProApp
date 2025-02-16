@@ -43,7 +43,8 @@ android {
                     "META-INF/LICENSE.txt",
                     "META-INF/NOTICE.txt",
                     "META-INF/NOTICE.md",
-                    "META-INF/LICENSE-notice.md"
+                    "META-INF/LICENSE-notice.md",
+                    "META-INF/INDEX.LIST"
                 )
             )
         }
@@ -61,6 +62,7 @@ dependencies {
     implementation(project(":fitnesspro-compose-components"))
     implementation(project(":fitnesspro-model"))
     implementation(project(":fitnesspro-local-data-access"))
+    implementation(project(":fitnesspro-service-data-access"))
     implementation(project(":fitnesspro-firebase-api"))
 
     implementation(libs.google.gson)

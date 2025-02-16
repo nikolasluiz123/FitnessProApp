@@ -17,4 +17,6 @@ data class User(
     var active: Boolean = true,
     @ColumnInfo(defaultValue = "0")
     var authenticated: Boolean = false,
+    @ColumnInfo(name = "service_token")
+    var serviceToken: String? = null
 ): BaseModel()

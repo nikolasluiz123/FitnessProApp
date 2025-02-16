@@ -11,6 +11,7 @@ import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.INVALID_SITUATION_FOR_INACTIVATION
+import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.to.TOScheduler
 
 class InactivateSchedulerUseCase(
@@ -18,7 +19,7 @@ class InactivateSchedulerUseCase(
     private val schedulerRepository: SchedulerRepository,
 ) {
 
-    suspend operator fun invoke(toScheduler: TOScheduler): ValidationError<EnumCompromiseValidationTypes>? {
+    suspend operator fun invoke(toScheduler: TOScheduler, schedulerType: EnumSchedulerType): ValidationError<EnumCompromiseValidationTypes>? {
         val result = validate(toScheduler)
 
         if (result == null) {
@@ -27,7 +28,7 @@ class InactivateSchedulerUseCase(
                 canceledDate = dateTimeNow()
                 situation = CANCELLED
 
-                schedulerRepository.saveScheduler(this)
+                schedulerRepository.saveScheduler(this, schedulerType)
             }
         }
 

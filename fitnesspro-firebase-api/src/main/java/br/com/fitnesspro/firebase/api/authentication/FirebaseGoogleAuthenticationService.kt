@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class GoogleAuthenticationService(private val context: Context) {
+class FirebaseGoogleAuthenticationService(private val context: Context) {
 
     suspend fun signIn(): AuthResult? = withContext(IO) {
         val googleCredential = getGoogleCredential()
