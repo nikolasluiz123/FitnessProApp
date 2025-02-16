@@ -1,5 +1,6 @@
 package br.com.fitnesspro.scheduler
 
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.timeNow
@@ -27,6 +28,7 @@ class SaveUniqueCompromiseUseCaseTests: BaseUnitTests() {
 
     private lateinit var schedulerRepository: SchedulerRepository
     private lateinit var userRepository: UserRepository
+    private lateinit var personRepository: PersonRepository
     private lateinit var saveUniqueCompromiseUseCase: SaveUniqueCompromiseUseCase
 
     @BeforeEach
@@ -38,7 +40,8 @@ class SaveUniqueCompromiseUseCaseTests: BaseUnitTests() {
         saveUniqueCompromiseUseCase = SaveUniqueCompromiseUseCase(
             context,
             schedulerRepository,
-            userRepository
+            userRepository,
+            personRepository
         )
     }
 
@@ -204,7 +207,7 @@ class SaveUniqueCompromiseUseCaseTests: BaseUnitTests() {
     }
 
     private fun prepareMockGetTOPersonByIdAcademyMember() {
-        coEvery { userRepository.getTOPersonById(any()) } returns TOPerson(
+        coEvery { personRepository.getTOPersonById(any()) } returns TOPerson(
             toUser = TOUser(type = EnumUserType.ACADEMY_MEMBER)
         )
     }

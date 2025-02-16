@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
-import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
 import br.com.fitnesspro.compose.components.fields.state.DayWeeksSelectorField
@@ -59,7 +59,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CompromiseViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val userRepository: UserRepository,
+    private val personRepository: PersonRepository,
     private val schedulerRepository: SchedulerRepository,
     private val saveCompromiseUseCase: SaveCompromiseUseCase,
     private val confirmationSchedulerUseCase: ConfirmationSchedulerUseCase,
@@ -410,7 +410,7 @@ class CompromiseViewModel @Inject constructor(
 
     private fun loadUIStateWithDatabaseInfos() {
         launch {
-            val toPerson = userRepository.getAuthenticatedTOPerson()!!
+            val toPerson = personRepository.getAuthenticatedTOPerson()!!
             val userType = toPerson.toUser?.type!!
             val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
             val menuItemListProfessional = getListProfessional()
@@ -507,7 +507,7 @@ class CompromiseViewModel @Inject constructor(
     private fun getListProfessional(simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
         val types = listOf(EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST)
 
-        return userRepository.getListTOPersonWithUserType(
+        return personRepository.getListTOPersonWithUserType(
             types = types,
             simpleFilter = simpleFilter,
             personsForSchedule = true
@@ -517,7 +517,7 @@ class CompromiseViewModel @Inject constructor(
     private fun getListMembers(simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
         val types = listOf(EnumUserType.ACADEMY_MEMBER)
 
-        return userRepository.getListTOPersonWithUserType(
+        return personRepository.getListTOPersonWithUserType(
             types = types,
             simpleFilter = simpleFilter,
             personsForSchedule = true

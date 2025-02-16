@@ -1,5 +1,6 @@
 package br.com.fitnesspro.common
 
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
@@ -26,6 +27,7 @@ class SaveSchedulerConfigUseCaseTests: BaseUnitTests() {
 
     private lateinit var schedulerConfigRepository: SchedulerConfigRepository
     private lateinit var userRepository: UserRepository
+    private lateinit var personRepository: PersonRepository
     private lateinit var saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase
 
     @BeforeEach
@@ -38,7 +40,8 @@ class SaveSchedulerConfigUseCaseTests: BaseUnitTests() {
         saveSchedulerConfigUseCase = SaveSchedulerConfigUseCase(
             context,
             schedulerConfigRepository,
-            userRepository
+            userRepository,
+            personRepository
         )
 
     }
@@ -132,13 +135,13 @@ class SaveSchedulerConfigUseCaseTests: BaseUnitTests() {
     }
 
     private fun prepareMockGetTOPersonByIdWithPersonal() {
-        coEvery { userRepository.getTOPersonById(any()) } returns TOPerson(
+        coEvery { personRepository.getTOPersonById(any()) } returns TOPerson(
             toUser = TOUser(type = EnumUserType.PERSONAL_TRAINER)
         )
     }
 
     private fun prepareMockGetTOPersonByIdWithMember() {
-        coEvery { userRepository.getTOPersonById(any()) } returns TOPerson(
+        coEvery { personRepository.getTOPersonById(any()) } returns TOPerson(
             toUser = TOUser(type = EnumUserType.ACADEMY_MEMBER)
         )
     }

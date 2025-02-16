@@ -2,7 +2,7 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
-import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.callback.showErrorDialog
@@ -26,7 +26,7 @@ class ChatViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val firestoreChatRepository: FirestoreChatRepository,
     private val sendChatMessageUseCase: SendChatMessageUseCase,
-    private val userRepository: UserRepository,
+    private val personRepository: PersonRepository,
     savedStateHandle: SavedStateHandle
 ): FitnessProViewModel() {
 
@@ -96,7 +96,7 @@ class ChatViewModel @Inject constructor(
         val args = jsonArgs?.fromJsonNavParamToArgs(ChatArgs::class.java)!!
 
         launch {
-            val authenticatedPersonId = userRepository.getAuthenticatedTOPerson()?.id!!
+            val authenticatedPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
 
             _uiState.update {
                 it.copy(
@@ -113,7 +113,7 @@ class ChatViewModel @Inject constructor(
     private fun addListeners() {
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(ChatArgs::class.java)!!
-            val authenticatedPersonId = userRepository.getAuthenticatedTOPerson()?.id!!
+            val authenticatedPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
 
             firestoreChatRepository.addMessagesListListener(
                 authenticatedPersonId = authenticatedPersonId,

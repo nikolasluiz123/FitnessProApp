@@ -2,7 +2,7 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
-import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
@@ -26,7 +26,7 @@ import javax.inject.Inject
 class SchedulerDetailsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val schedulerRepository: SchedulerRepository,
-    private val userRepository: UserRepository,
+    private val personRepository: PersonRepository,
     savedStateHandle: SavedStateHandle
 ) : FitnessProViewModel() {
 
@@ -62,7 +62,7 @@ class SchedulerDetailsViewModel @Inject constructor(
 
     private fun loadUIStateWithDatabaseInfos() {
         launch {
-            val toPerson = userRepository.getAuthenticatedTOPerson()!!
+            val toPerson = personRepository.getAuthenticatedTOPerson()!!
 
             _uiState.update {
                 it.copy(

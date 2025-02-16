@@ -1,6 +1,7 @@
 package br.com.fitnesspro.scheduler
 
 import br.com.fitnesspro.common.repository.AcademyRepository
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.timeNow
@@ -34,6 +35,7 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
 
     private lateinit var schedulerRepository: SchedulerRepository
     private lateinit var userRepository: UserRepository
+    private lateinit var personRepository: PersonRepository
     private lateinit var academyRepository: AcademyRepository
     private lateinit var saveCompromiseSuggestionUseCase: SaveCompromiseSuggestionUseCase
 
@@ -43,12 +45,14 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
 
         schedulerRepository = mockk(relaxed = true)
         userRepository = mockk(relaxed = true)
+        personRepository = mockk(relaxed = true)
         academyRepository = mockk(relaxed = true)
         saveCompromiseSuggestionUseCase = SaveCompromiseSuggestionUseCase(
             context,
             schedulerRepository,
             userRepository,
-            academyRepository
+            academyRepository,
+            personRepository
         )
     }
 
@@ -222,7 +226,7 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
     }
 
     private fun prepareMockGetTOPersonByIdPersonalTrainer() {
-        coEvery { userRepository.getTOPersonById(any()) } returns TOPerson(
+        coEvery { personRepository.getTOPersonById(any()) } returns TOPerson(
             toUser = TOUser(type = EnumUserType.PERSONAL_TRAINER)
         )
     }

@@ -3,6 +3,7 @@ package br.com.fitnesspro.ui.viewmodel
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.core.callback.showConfirmationDialog
@@ -22,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val personRepository: PersonRepository
 ) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<HomeUIState> = MutableStateFlow(HomeUIState())
@@ -40,7 +42,7 @@ class HomeViewModel @Inject constructor(
 
     private fun initialUIStateLoad() {
         viewModelScope.launch {
-            val toPerson = userRepository.getAuthenticatedTOPerson()!!
+            val toPerson = personRepository.getAuthenticatedTOPerson()!!
 
             _uiState.update { currentState ->
                 currentState.copy(

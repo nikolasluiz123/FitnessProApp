@@ -2,6 +2,7 @@ package br.com.fitnesspro.common.usecase.scheduler
 
 import android.content.Context
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes
@@ -15,7 +16,8 @@ import br.com.fitnesspro.to.TOSchedulerConfig
 class SaveSchedulerConfigUseCase(
     private val context: Context,
     private val schedulerConfigRepository: SchedulerConfigRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val personRepository: PersonRepository
 ) {
 
     suspend fun saveConfig(
@@ -34,7 +36,7 @@ class SaveSchedulerConfigUseCase(
     }
 
     private suspend fun validateSchedulerConfig(config: TOSchedulerConfig): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
-        val userType = userRepository.getTOPersonById(config.personId!!).toUser?.type!!
+        val userType = personRepository.getTOPersonById(config.personId!!).toUser?.type!!
         if (userType == EnumUserType.ACADEMY_MEMBER) return mutableListOf()
 
         val validationResults = mutableListOf(

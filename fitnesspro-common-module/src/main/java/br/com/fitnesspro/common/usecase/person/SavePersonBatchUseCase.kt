@@ -1,6 +1,7 @@
 package br.com.fitnesspro.common.usecase.person
 
 import android.content.Context
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.core.security.HashHelper
@@ -11,11 +12,13 @@ import br.com.fitnesspro.to.TOPerson
 class SavePersonBatchUseCase(
     context: Context,
     userRepository: UserRepository,
+    personRepository: PersonRepository,
     saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase,
     passwordHasher: IPasswordHasher
 ): SavePersonUseCase(
     context = context,
     userRepository = userRepository,
+    personRepository = personRepository,
     saveSchedulerConfigUseCase = saveSchedulerConfigUseCase,
     passwordHasher = passwordHasher
 ) {
@@ -34,7 +37,7 @@ class SavePersonBatchUseCase(
         }
 
         if (validationResults.isEmpty()) {
-            userRepository.savePersonBatch(toPersons)
+            personRepository.savePersonBatch(toPersons)
             saveSchedulerConfigUseCase.createConfigBatch(toPersons.map { it.id!! })
         }
 

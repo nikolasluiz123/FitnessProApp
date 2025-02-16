@@ -3,6 +3,7 @@ package br.com.fitnesspro.common.usecase.person
 import android.content.Context
 import androidx.core.util.PatternsCompat.EMAIL_ADDRESS
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.person.EnumPersonValidationTypes.INVALID_USER_EMAIL
 import br.com.fitnesspro.common.usecase.person.EnumPersonValidationTypes.MAX_LENGTH_PERSON_NAME
@@ -28,6 +29,7 @@ import br.com.fitnesspro.to.TOPerson
 open class SavePersonUseCase(
     private val context: Context,
     protected val userRepository: UserRepository,
+    protected val personRepository: PersonRepository,
     protected val saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase,
     protected val passwordHasher: IPasswordHasher
 ) {
@@ -40,7 +42,7 @@ open class SavePersonUseCase(
         if (validationResults.isEmpty()) {
             toPerson.toUser!!.password = passwordHasher.hashPassword(toPerson.toUser?.password!!)
 
-            userRepository.savePerson(toPerson)
+            personRepository.savePerson(toPerson)
             saveSchedulerConfigUseCase.saveConfig(toPerson.id!!)
         }
 

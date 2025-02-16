@@ -1,6 +1,7 @@
 package br.com.fitnesspro.common.injection
 
 import br.com.fitnesspro.common.repository.AcademyRepository
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.firebase.api.authentication.DefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.GoogleAuthenticationService
@@ -18,16 +19,27 @@ class SingletonCommonRepositoryModule {
 
     @Provides
     fun provideUserRepository(
-        personDAO: PersonDAO,
         userDAO: UserDAO,
         defaultAuthenticationService: DefaultAuthenticationService,
         googleAuthenticationService: GoogleAuthenticationService
     ): UserRepository {
         return UserRepository(
-            personDAO = personDAO,
             userDAO = userDAO,
             defaultAuthenticationService = defaultAuthenticationService,
             googleAuthenticationService = googleAuthenticationService
+        )
+    }
+
+    @Provides
+    fun providePersonRepository(
+        personDAO: PersonDAO,
+        userDAO: UserDAO,
+        defaultAuthenticationService: DefaultAuthenticationService
+    ): PersonRepository {
+        return PersonRepository(
+            personDAO = personDAO,
+            userDAO = userDAO,
+            defaultAuthenticationService = defaultAuthenticationService
         )
     }
 

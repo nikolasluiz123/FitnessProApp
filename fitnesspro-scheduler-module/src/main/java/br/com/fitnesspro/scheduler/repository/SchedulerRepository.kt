@@ -1,6 +1,7 @@
 package br.com.fitnesspro.scheduler.repository
 
 import androidx.room.Transaction
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
@@ -19,7 +20,8 @@ import java.time.YearMonth
 class SchedulerRepository(
     private val schedulerDAO: SchedulerDAO,
     private val workoutDAO: WorkoutDAO,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val personRepository: PersonRepository
 ) {
 
     suspend fun saveScheduler(toScheduler: TOScheduler) = withContext(IO) {
@@ -32,7 +34,7 @@ class SchedulerRepository(
         toPerson: TOPerson? = null,
         scheduledDate: LocalDate? = null
     ): List<TOScheduler> = withContext(IO) {
-        val person = toPerson ?: userRepository.getAuthenticatedTOPerson()!!
+        val person = toPerson ?: personRepository.getAuthenticatedTOPerson()!!
 
         schedulerDAO.getSchedulerList(
             personId = person.id!!,
@@ -70,8 +72,8 @@ class SchedulerRepository(
 
     private suspend fun Scheduler?.getTOScheduler(): TOScheduler? {
         return this?.run {
-            val memberPerson = userRepository.findPersonById(academyMemberPersonId!!)
-            val professionalPerson = userRepository.findPersonById(professionalPersonId!!)
+            val memberPerson = personRepository.findPersonById(academyMemberPersonId!!)
+            val professionalPerson = personRepository.findPersonById(professionalPersonId!!)
             val professionalUser = userRepository.findUserById(professionalPerson.userId!!)!!
 
             TOScheduler(

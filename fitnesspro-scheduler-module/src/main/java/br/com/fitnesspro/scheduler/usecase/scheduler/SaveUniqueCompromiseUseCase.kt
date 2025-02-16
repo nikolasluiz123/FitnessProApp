@@ -1,6 +1,7 @@
 package br.com.fitnesspro.scheduler.usecase.scheduler
 
 import android.content.Context
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
@@ -14,7 +15,8 @@ import br.com.fitnesspro.to.TOScheduler
 class SaveUniqueCompromiseUseCase(
     context: Context,
     schedulerRepository: SchedulerRepository,
-    userRepository: UserRepository
+    userRepository: UserRepository,
+    private val personRepository: PersonRepository
 ): SaveCompromiseCommonUseCase(context, schedulerRepository, userRepository) {
 
     suspend fun saveUniqueCompromise(toScheduler: TOScheduler): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
@@ -49,7 +51,7 @@ class SaveUniqueCompromiseUseCase(
 
         if (requiredFields.any { it == null }) return null
 
-        val member = userRepository.getTOPersonById(scheduler.academyMemberPersonId!!)
+        val member = personRepository.getTOPersonById(scheduler.academyMemberPersonId!!)
 
         val hasConflict = schedulerRepository.getHasSchedulerConflict(
             schedulerId = scheduler.id,

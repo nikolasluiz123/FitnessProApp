@@ -5,6 +5,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.AcademyRepository
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
@@ -45,6 +46,7 @@ class RegisterUserViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val savePersonUseCase: SavePersonUseCase,
     private val userRepository: UserRepository,
+    private val personRepository: PersonRepository,
     private val academyRepository: AcademyRepository,
     savedStateHandle: SavedStateHandle
 ) : FitnessProViewModel() {
@@ -161,7 +163,7 @@ class RegisterUserViewModel @Inject constructor(
 
     private fun loadUIStateWithAuthenticatedPerson(args: RegisterUserScreenArgs) = launch {
         if (args.context == null && args.toPersonAuthService == null) {
-            val authenticatedTOPerson = userRepository.getAuthenticatedTOPerson()
+            val authenticatedTOPerson = personRepository.getAuthenticatedTOPerson()
             authenticatedTOPerson?.toUser?.password = null
 
             authenticatedTOPerson?.let { toPerson ->

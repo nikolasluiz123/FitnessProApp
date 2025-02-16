@@ -1,5 +1,6 @@
 package br.com.fitnesspro.scheduler.injection
 
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
@@ -18,12 +19,14 @@ class SingletonSchedulerRepositoryModule {
     fun provideSchedulerRepository(
         schedulerDAO: SchedulerDAO,
         workoutDAO: WorkoutDAO,
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        personRepository: PersonRepository
     ): SchedulerRepository {
         return SchedulerRepository(
             schedulerDAO = schedulerDAO,
             workoutDAO = workoutDAO,
-            userRepository = userRepository
+            userRepository = userRepository,
+            personRepository = personRepository
         )
     }
 

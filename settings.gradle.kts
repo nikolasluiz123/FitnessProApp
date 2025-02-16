@@ -8,6 +8,7 @@ pluginManagement {
             }
         }
         mavenCentral()
+        mavenLocal()
         gradlePluginPortal()
     }
 }
@@ -16,6 +17,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
 }
 
@@ -25,6 +27,7 @@ include(":fitnesspro-compose-components")
 include(":fitnesspro-core")
 include(":fitnesspro-model")
 include(":fitnesspro-local-data-access")
+include(":fitnesspro-service-data-access")
 include(":fitnesspro-common-module")
 include(":fitnesspro-scheduler-module")
 include(":fitnesspro-workout-module")

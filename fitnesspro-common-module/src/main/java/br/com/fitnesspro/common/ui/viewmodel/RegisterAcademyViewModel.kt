@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.AcademyRepository
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.navigation.RegisterAcademyScreenArgs
 import br.com.fitnesspro.common.ui.state.RegisterAcademyUIState
@@ -46,6 +47,7 @@ import javax.inject.Inject
 class RegisterAcademyViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userRepository: UserRepository,
+    private val personRepository: PersonRepository,
     private val academyRepository: AcademyRepository,
     private val savePersonAcademyTimeUseCase: SavePersonAcademyTimeUseCase,
     savedStateHandle: SavedStateHandle
@@ -276,7 +278,7 @@ class RegisterAcademyViewModel @Inject constructor(
         val args = jsonArgs?.fromJsonNavParamToArgs(RegisterAcademyScreenArgs::class.java)!!
 
         viewModelScope.launch {
-            val toPerson = userRepository.getTOPersonById(personId = args.personId)
+            val toPerson = personRepository.getTOPersonById(personId = args.personId)
             val menuItemListAcademy = getListAcademies()
             val id = args.personAcademyTimeId ?: _uiState.value.toPersonAcademyTime.id
             val toPersonAcademyTime = id?.let {

@@ -2,6 +2,7 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 
 import android.content.Context
 import androidx.paging.PagingData
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class ChatHistoryViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userRepository: UserRepository,
+    private val personRepository: PersonRepository,
     private val firestoreChatRepository: FirestoreChatRepository
 ): FitnessProViewModel() {
 
@@ -141,7 +143,7 @@ class ChatHistoryViewModel @Inject constructor(
     }
 
     private fun getListMembers(filter: String = ""): Flow<PagingData<PersonTuple>> {
-        return userRepository.getListTOPersonWithUserType(
+        return personRepository.getListTOPersonWithUserType(
             types = listOf(ACADEMY_MEMBER),
             simpleFilter = filter,
             personsForSchedule = false
@@ -149,7 +151,7 @@ class ChatHistoryViewModel @Inject constructor(
     }
 
     private fun getListProfessionals(filter: String = ""): Flow<PagingData<PersonTuple>> {
-        return userRepository.getListTOPersonWithUserType(
+        return personRepository.getListTOPersonWithUserType(
             types = listOf(NUTRITIONIST, PERSONAL_TRAINER),
             simpleFilter = filter,
             personsForSchedule = false
@@ -158,8 +160,8 @@ class ChatHistoryViewModel @Inject constructor(
 
     private fun startChat(selectedPersonId: String) {
         launch {
-            val authenticatedTOPerson = userRepository.getAuthenticatedTOPerson()!!
-            val selectedTOPerson = userRepository.getTOPersonById(selectedPersonId)
+            val authenticatedTOPerson = personRepository.getAuthenticatedTOPerson()!!
+            val selectedTOPerson = personRepository.getTOPersonById(selectedPersonId)
 
             firestoreChatRepository.startChat(
                 senderPerson = authenticatedTOPerson,
@@ -170,7 +172,7 @@ class ChatHistoryViewModel @Inject constructor(
 
     private fun loadUIStateWithDatabaseInfos() {
         launch {
-            val authenticatedPerson = userRepository.getAuthenticatedTOPerson()!!
+            val authenticatedPerson = personRepository.getAuthenticatedTOPerson()!!
 
             _uiState.update {
                 it.copy(
@@ -182,7 +184,7 @@ class ChatHistoryViewModel @Inject constructor(
 
     private fun addChatListListener() {
         launch {
-            val authenticatedPersonId = userRepository.getAuthenticatedTOPerson()?.id!!
+            val authenticatedPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
 
             firestoreChatRepository.addChatListListener(
                 authenticatedPersonId = authenticatedPersonId,

@@ -2,6 +2,7 @@ package br.com.fitnesspro.scheduler.injection
 
 import android.content.Context
 import br.com.fitnesspro.common.repository.AcademyRepository
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
@@ -28,12 +29,14 @@ class SingletonSchedulerUseCaseModule {
     fun provideSaveSchedulerUseCase(
         @ApplicationContext context: Context,
         schedulerConfigRepository: SchedulerConfigRepository,
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        personRepository: PersonRepository
     ): SaveSchedulerConfigUseCase {
         return SaveSchedulerConfigUseCase(
             context = context,
             schedulerConfigRepository = schedulerConfigRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            personRepository = personRepository
         )
     }
 
@@ -41,12 +44,14 @@ class SingletonSchedulerUseCaseModule {
     fun provideSaveUniqueCompromiseUseCase(
         @ApplicationContext context: Context,
         schedulerRepository: SchedulerRepository,
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        personRepository: PersonRepository
     ): SaveUniqueCompromiseUseCase {
         return SaveUniqueCompromiseUseCase(
             context = context,
             schedulerRepository = schedulerRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            personRepository = personRepository
         )
     }
 
@@ -54,12 +59,14 @@ class SingletonSchedulerUseCaseModule {
     fun provideSaveRecurrentCompromiseUseCase(
         @ApplicationContext context: Context,
         schedulerRepository: SchedulerRepository,
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        personRepository: PersonRepository
     ): SaveRecurrentCompromiseUseCase {
         return SaveRecurrentCompromiseUseCase(
             context = context,
             schedulerRepository = schedulerRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            personRepository = personRepository
         )
     }
 
@@ -68,13 +75,15 @@ class SingletonSchedulerUseCaseModule {
         @ApplicationContext context: Context,
         schedulerRepository: SchedulerRepository,
         userRepository: UserRepository,
-        academyRepository: AcademyRepository
+        academyRepository: AcademyRepository,
+        personRepository: PersonRepository
     ): SaveCompromiseSuggestionUseCase {
         return SaveCompromiseSuggestionUseCase(
             context = context,
             schedulerRepository = schedulerRepository,
             userRepository = userRepository,
-            academyRepository = academyRepository
+            academyRepository = academyRepository,
+            personRepository = personRepository
         )
     }
 
@@ -116,11 +125,11 @@ class SingletonSchedulerUseCaseModule {
     @Provides
     fun provideSendChatMessageUseCase(
         firestoreChatRepository: FirestoreChatRepository,
-        userRepository: UserRepository
+        personRepository: PersonRepository
     ): SendChatMessageUseCase {
         return SendChatMessageUseCase(
             firestoreChatRepository = firestoreChatRepository,
-            userRepository = userRepository
+            personRepository = personRepository
         )
     }
 

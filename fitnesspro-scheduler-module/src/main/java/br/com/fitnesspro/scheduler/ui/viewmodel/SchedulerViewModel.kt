@@ -1,8 +1,8 @@
 package br.com.fitnesspro.scheduler.ui.viewmodel
 
 import android.content.Context
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
-import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.state.MessageDialogState
@@ -23,7 +23,7 @@ class SchedulerViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val schedulerRepository: SchedulerRepository,
     private val schedulerConfigRepository: SchedulerConfigRepository,
-    private val userRepository: UserRepository,
+    private val personRepository: PersonRepository,
 ) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<SchedulerUIState> = MutableStateFlow(SchedulerUIState())
@@ -56,7 +56,7 @@ class SchedulerViewModel @Inject constructor(
 
     private fun loadUIStateWithDatabaseInfos() {
         launch {
-            val toPerson = userRepository.getAuthenticatedTOPerson()!!
+            val toPerson = personRepository.getAuthenticatedTOPerson()!!
             val userType = toPerson.toUser?.type!!
 
             _uiState.update {

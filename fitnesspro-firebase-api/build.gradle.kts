@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.google.id)
 
     implementation(libs.hilt.android)
+    implementation(project(":fitnesspro-core"))
     ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.core.ktx)

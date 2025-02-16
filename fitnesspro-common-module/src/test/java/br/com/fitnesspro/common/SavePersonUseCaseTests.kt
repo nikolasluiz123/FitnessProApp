@@ -1,5 +1,6 @@
 package br.com.fitnesspro.common
 
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.person.EnumPersonValidationTypes
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
@@ -24,6 +25,7 @@ import java.util.UUID
 class SavePersonUseCaseTests: BaseUnitTests() {
 
     private lateinit var userRepository: UserRepository
+    private lateinit var personRepository: PersonRepository
     private lateinit var saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase
     private lateinit var savePersonUseCase: SavePersonUseCase
     private lateinit var passwordHasher: IPasswordHasher
@@ -39,13 +41,14 @@ class SavePersonUseCaseTests: BaseUnitTests() {
         savePersonUseCase = SavePersonUseCase(
             context,
             userRepository,
+            personRepository,
             saveSchedulerConfigUseCase,
             passwordHasher
         )
 
         val personSlot = slot<TOPerson>()
 
-        coEvery { userRepository.savePerson(capture(personSlot)) } answers {
+        coEvery { personRepository.savePerson(capture(personSlot)) } answers {
             personSlot.captured.id = UUID.randomUUID().toString()
         }
 

@@ -1,6 +1,7 @@
 package br.com.fitnesspro.scheduler.usecase.scheduler
 
 import android.content.Context
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
@@ -18,7 +19,8 @@ import java.time.LocalDate
 class SaveRecurrentCompromiseUseCase(
     context: Context,
     schedulerRepository: SchedulerRepository,
-    userRepository: UserRepository
+    userRepository: UserRepository,
+    private val personRepository: PersonRepository
 ): SaveCompromiseCommonUseCase(context, schedulerRepository, userRepository) {
 
     suspend fun saveRecurrentCompromise(toScheduler: TOScheduler, config: CompromiseRecurrentConfig): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
@@ -32,7 +34,7 @@ class SaveRecurrentCompromiseUseCase(
                 .filter { config.dayWeeks.contains(it.dayOfWeek) }
                 .toList()
 
-            val professional = userRepository.getTOPersonById(toScheduler.professionalPersonId!!)
+            val professional = personRepository.getTOPersonById(toScheduler.professionalPersonId!!)
 
             val schedules = scheduleDates.map {
                 TOScheduler(
@@ -167,7 +169,7 @@ class SaveRecurrentCompromiseUseCase(
     }
 
     private suspend fun validateSchedulerConflictRecurrentCompromise(schedules: List<TOScheduler>): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
-        val member = userRepository.getTOPersonById(schedules.first().academyMemberPersonId!!)
+        val member = personRepository.getTOPersonById(schedules.first().academyMemberPersonId!!)
         val conflicts = schedules.filter { scheduler ->
             schedulerRepository.getHasSchedulerConflict(
                 schedulerId = scheduler.id,

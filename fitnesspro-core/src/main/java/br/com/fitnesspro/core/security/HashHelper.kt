@@ -1,21 +1,22 @@
 package br.com.fitnesspro.core.security
 
-import com.lambdapioneer.argon2kt.Argon2Kt
-import com.lambdapioneer.argon2kt.Argon2Mode
 import java.security.MessageDigest
+import java.util.Base64
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
 
 object HashHelper {
+    private const val PREFIX = "HASHED_"
 
     fun applyHash(value: String): String {
-        val hashResult = Argon2Kt().hash(
-            mode = Argon2Mode.ARGON2_I,
-            password = value.toByteArray(),
-            salt = getSalt(value),
-            tCostInIterations = 5,
-            mCostInKibibyte = 65536
-        )
+        val iterations = 10000
+        val keyLength = 256
+        val spec = PBEKeySpec(value.toCharArray(), getSalt(value), iterations, keyLength)
+        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+        val hash = factory.generateSecret(spec).encoded
+        val hashResult = Base64.getEncoder().encodeToString(hash)
 
-        return hashResult.rawHashAsHexadecimal()
+        return "$PREFIX$hashResult"
     }
 
     private fun getSalt(value: String): ByteArray {

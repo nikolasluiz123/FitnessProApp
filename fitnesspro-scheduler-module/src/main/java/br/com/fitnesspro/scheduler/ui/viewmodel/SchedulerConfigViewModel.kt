@@ -3,8 +3,8 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 import android.content.Context
 import androidx.core.text.isDigitsOnly
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
-import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes
@@ -26,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SchedulerConfigViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val userRepository: UserRepository,
+    private val personRepository: PersonRepository,
     private val schedulerConfigRepository: SchedulerConfigRepository,
     private val schedulerConfigUseCase: SaveSchedulerConfigUseCase
 ) : FitnessProViewModel() {
@@ -59,7 +59,7 @@ class SchedulerConfigViewModel @Inject constructor(
 
     private fun loadUIStateWithDatabaseInfos() {
         launch {
-            val toPerson = userRepository.getAuthenticatedTOPerson()!!
+            val toPerson = personRepository.getAuthenticatedTOPerson()!!
             val toConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(toPerson.id!!)!!
 
             _uiState.value = _uiState.value.copy(
