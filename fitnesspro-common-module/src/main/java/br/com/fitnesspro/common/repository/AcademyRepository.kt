@@ -6,6 +6,7 @@ import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDecorator
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
+import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.PersonAcademyTime
@@ -18,6 +19,7 @@ import java.time.DayOfWeek
 
 class AcademyRepository(
     private val academyDAO: AcademyDAO,
+    private val personAcademyTimeDAO: PersonAcademyTimeDAO,
     private val userDAO: UserDAO,
     private val personWebClient: PersonWebClient
 ) {
@@ -25,7 +27,13 @@ class AcademyRepository(
     suspend fun savePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
         val personAcademyTime = toPersonAcademyTime.getPersonAcademyTime()
 
-        academyDAO.saveAcademyTime(personAcademyTime)
+        if (toPersonAcademyTime.id == null) {
+            personAcademyTimeDAO.insert(personAcademyTime)
+
+            toPersonAcademyTime.id = personAcademyTime.id
+        } else {
+            personAcademyTimeDAO.update(personAcademyTime)
+        }
 
         userDAO.getAuthenticatedUser()!!.also { user ->
             personWebClient.savePersonAcademyTime(
@@ -48,7 +56,7 @@ class AcademyRepository(
     }
 
     suspend fun getConflictPersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime): PersonAcademyTime? = withContext(IO) {
-        academyDAO.getConflictPersonAcademyTime(
+        personAcademyTimeDAO.getConflictPersonAcademyTime(
             personAcademyTimeId = toPersonAcademyTime.id,
             personId = toPersonAcademyTime.personId!!,
             dayOfWeek = toPersonAcademyTime.dayOfWeek!!,
@@ -61,7 +69,7 @@ class AcademyRepository(
         val toAcademyList = academyDAO.getAcademiesFromPerson(personId = personId).map { it.getTOAcademy()!! }
 
         val personAcademyTimes = toAcademyList.flatMap { academy ->
-            academyDAO.getAcademyTimes(personId = personId, academyId = academy.id!!)
+            personAcademyTimeDAO.getAcademyTimes(personId = personId, academyId = academy.id!!)
         }
 
         val groups = toAcademyList.map { toAcademy ->
@@ -85,7 +93,7 @@ class AcademyRepository(
         academyId: String? = null,
         dayOfWeek: DayOfWeek? = null
     ): List<PersonAcademyTime> = withContext(IO) {
-        academyDAO.getAcademyTimes(
+        personAcademyTimeDAO.getAcademyTimes(
             personId = personId,
             academyId = academyId,
             dayOfWeek = dayOfWeek
@@ -93,7 +101,7 @@ class AcademyRepository(
     }
 
     suspend fun getTOPersonAcademyTimeById(personAcademyTimeId: String): TOPersonAcademyTime = withContext(IO) {
-        academyDAO.findPersonAcademyTimeById(personAcademyTimeId).getTOPersonAcademyTime()!!
+        personAcademyTimeDAO.findPersonAcademyTimeById(personAcademyTimeId).getTOPersonAcademyTime()!!
     }
 
     private fun Academy?.getTOAcademy(): TOAcademy? {
@@ -124,7 +132,7 @@ class AcademyRepository(
 
     private suspend fun TOPersonAcademyTime.getPersonAcademyTime(): PersonAcademyTime {
         return if (id != null) {
-            academyDAO.findPersonAcademyTimeById(id!!).copy(
+            personAcademyTimeDAO.findPersonAcademyTimeById(id!!).copy(
                 personId = personId,
                 academyId = toAcademy?.id,
                 timeStart = timeStart,
@@ -133,7 +141,7 @@ class AcademyRepository(
                 active = active
             )
         } else {
-            val model = PersonAcademyTime(
+            PersonAcademyTime(
                 personId = personId,
                 academyId = toAcademy?.id,
                 timeStart = timeStart,
@@ -141,10 +149,6 @@ class AcademyRepository(
                 dayOfWeek = dayOfWeek,
                 active = active
             )
-
-            this.id = model.id
-
-            model
         }
     }
 
@@ -155,6 +159,11 @@ class AcademyRepository(
 
     suspend fun savePersonAcademyTimeBatch(toPersonAcademyTimes: List<TOPersonAcademyTime>) = withContext(IO) {
         val times = toPersonAcademyTimes.map { it.getPersonAcademyTime() }
-        academyDAO.savePersonAcademyTimesBatch(times)
+
+        if (toPersonAcademyTimes.first().id == null) {
+            personAcademyTimeDAO.insertBatch(times)
+        } else {
+            personAcademyTimeDAO.updateBatch(times)
+        }
     }
 }

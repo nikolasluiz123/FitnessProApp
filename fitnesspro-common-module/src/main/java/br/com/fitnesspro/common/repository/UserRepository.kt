@@ -39,7 +39,7 @@ class UserRepository(
         authenticationWebClient.authenticate(email, password)?.let { serviceToken ->
             userDAO.findByEmail(email)!!.also { user ->
                 user.serviceToken = serviceToken
-                userDAO.save(user)
+                userDAO.update(user)
             }
         }
     }

@@ -1,20 +1,13 @@
 package br.com.fitnesspro.local.data.access.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.general.User
 
 @Dao
-abstract class UserDAO: BaseDAO() {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun save(user: User)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun saveBatch(users: List<User>)
+abstract class UserDAO: MaintenanceDAO<User>() {
 
     @Query("select exists(select 1 from user where email = :email and id != :userId)")
     abstract suspend fun hasUserWithEmail(email: String, userId: String?): Boolean

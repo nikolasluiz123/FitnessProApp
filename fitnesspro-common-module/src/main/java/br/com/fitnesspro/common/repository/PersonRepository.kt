@@ -25,7 +25,7 @@ class PersonRepository(
     @Transaction
     suspend fun savePerson(toPerson: TOPerson) = withContext(IO) {
         val user = toPerson.toUser!!.getUser()
-        val person = toPerson.getPerson()
+        val person = toPerson.getPerson(user.id)
         val existentUser = userDAO.findById(user.id)
 
         if (existentUser == null) {
@@ -34,8 +34,16 @@ class PersonRepository(
             firebaseDefaultAuthenticationService.updateUserInfos(user)
         }
 
-        userDAO.save(user)
-        personDAO.save(person)
+        if (toPerson.id == null) {
+            userDAO.insert(user)
+            personDAO.insert(person)
+
+            toPerson.id = person.id
+            toPerson.toUser?.id = user.id
+        } else {
+            userDAO.update(user)
+            personDAO.update(person)
+        }
 
         personWebClient.savePerson(person, user)
     }
@@ -43,10 +51,15 @@ class PersonRepository(
     @Transaction
     suspend fun savePersonBatch(toPersons: List<TOPerson>) = withContext(IO) {
         val users = toPersons.map { it.toUser!!.getUser() }
-        val persons = toPersons.map { it.getPerson() }
+        val persons = toPersons.map { it.getPerson(it.toUser?.id!!) }
 
-        userDAO.saveBatch(users)
-        personDAO.saveBatch(persons)
+        if (toPersons.first().id == null) {
+            userDAO.insertBatch(users)
+            personDAO.insertBatch(persons)
+        } else {
+            userDAO.updateBatch(users)
+            personDAO.updateBatch(persons)
+        }
     }
 
     suspend fun getTOPersonById(personId: String): TOPerson = withContext(IO) {
@@ -82,19 +95,15 @@ class PersonRepository(
         personDAO.findPersonById(personId)
     }
 
-    private suspend fun TOPerson.getPerson(): Person {
+    private suspend fun TOPerson.getPerson(userId: String): Person {
         return if (id == null) {
-            val model = Person(
+            Person(
                 name = name,
                 birthDate = birthDate,
                 phone = phone,
-                userId = toUser?.id,
+                userId = userId,
                 active = active
             )
-
-            this.id = model.id
-
-            model
         } else {
             personDAO.findPersonById(id!!).copy(
                 name = name,
@@ -107,16 +116,12 @@ class PersonRepository(
 
     private suspend fun TOUser.getUser(): User {
         return if (id == null) {
-            val model = User(
+            User(
                 email = email,
                 password = password,
                 type = type,
                 active = active
             )
-
-            this.id = model.id
-
-            model
         } else {
             userDAO.findById(id!!)!!.copy(
                 email = email,

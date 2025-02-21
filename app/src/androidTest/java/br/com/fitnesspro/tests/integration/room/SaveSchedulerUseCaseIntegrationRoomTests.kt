@@ -314,8 +314,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
             ),
         )
 
-        userDAO.saveBatch(users)
-        personDAO.saveBatch(persons)
-        schedulerDAO.saveBatch(schedules)
+        userDAO.insertBatch(users)
+        personDAO.insertBatch(persons)
+        schedulerDAO.insertBatch(schedules)
     }
 }

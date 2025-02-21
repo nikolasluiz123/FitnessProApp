@@ -3,6 +3,7 @@ package br.com.fitnesspro.common.injection
 import android.content.Context
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
+import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeBatchUseCase
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeUseCase
@@ -28,14 +29,16 @@ class SingletonCommonUseCaseModule {
         @ApplicationContext context: Context,
         userRepository: UserRepository,
         personRepository: PersonRepository,
-        saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase
+        saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase,
+        schedulerConfigRepository: SchedulerConfigRepository
     ): SavePersonUseCase {
         return SavePersonUseCase(
             context = context,
             userRepository = userRepository,
             personRepository = personRepository,
             saveSchedulerConfigUseCase = saveSchedulerConfigUseCase,
-            passwordHasher = DefaultPasswordHasher()
+            passwordHasher = DefaultPasswordHasher(),
+            schedulerConfigRepository = schedulerConfigRepository
         )
     }
 
@@ -85,14 +88,16 @@ class SingletonCommonUseCaseModule {
         userRepository: UserRepository,
         personRepository: PersonRepository,
         saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase,
-        passwordHasher: IPasswordHasher
+        passwordHasher: IPasswordHasher,
+        schedulerConfigRepository: SchedulerConfigRepository
     ): SavePersonBatchUseCase {
         return SavePersonBatchUseCase(
             context = context,
             userRepository = userRepository,
             personRepository = personRepository,
             saveSchedulerConfigUseCase = saveSchedulerConfigUseCase,
-            passwordHasher = passwordHasher
+            passwordHasher = passwordHasher,
+            schedulerConfigRepository = schedulerConfigRepository
         )
     }
 

@@ -4,7 +4,6 @@ import android.content.Context
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
-import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MAX_SCHEDULE_DENSITY
@@ -16,7 +15,6 @@ import br.com.fitnesspro.to.TOSchedulerConfig
 class SaveSchedulerConfigUseCase(
     private val context: Context,
     private val schedulerConfigRepository: SchedulerConfigRepository,
-    private val userRepository: UserRepository,
     private val personRepository: PersonRepository
 ) {
 
@@ -24,9 +22,30 @@ class SaveSchedulerConfigUseCase(
         personId: String,
         toSchedulerConfig: TOSchedulerConfig? = null
     ): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
-        val config = toSchedulerConfig ?: TOSchedulerConfig(personId = personId)
+        val personConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(personId)
 
-        val validationResults = validateSchedulerConfig(config)
+        val config = when {
+            personConfig != null && toSchedulerConfig != null -> {
+                personConfig.apply {
+                    alarm = toSchedulerConfig.alarm
+                    notification = toSchedulerConfig.notification
+                    minScheduleDensity = toSchedulerConfig.minScheduleDensity
+                    maxScheduleDensity = toSchedulerConfig.maxScheduleDensity
+                }
+            }
+
+            personConfig == null && toSchedulerConfig == null -> {
+                TOSchedulerConfig(personId = personId)
+            }
+
+            personConfig != null && toSchedulerConfig == null -> {
+                personConfig
+            }
+
+            else -> null
+        }
+
+        val validationResults = validateSchedulerConfig(config!!)
 
         if (validationResults.isEmpty()) {
             schedulerConfigRepository.saveSchedulerConfig(config)

@@ -1,14 +1,10 @@
-package br.com.fitnesspro.local.data.access.dao
+package br.com.fitnesspro.local.data.access.dao.common
 
 import java.util.StringJoiner
 
 abstract class BaseDAO {
 
-    companion object {
-        const val QR_NL = "\r\n"
-    }
-
-    fun StringJoiner.concatElementsForIn(elements: List<Any>, params: MutableList<Any>) {
+    protected fun StringJoiner.concatElementsForIn(elements: List<Any>, params: MutableList<Any>) {
         add("(")
 
         elements.forEachIndexed { index, element ->
@@ -17,5 +13,9 @@ abstract class BaseDAO {
         }
 
         add(")")
+    }
+
+    companion object {
+        const val QR_NL = "\r\n"
     }
 }

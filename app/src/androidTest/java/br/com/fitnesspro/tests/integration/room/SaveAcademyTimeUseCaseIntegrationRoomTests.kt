@@ -3,6 +3,7 @@ package br.com.fitnesspro.tests.integration.room
 import androidx.paging.PagingSource
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
+import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.enums.EnumUserType
@@ -35,6 +36,9 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
 
     @Inject
     lateinit var academyDAO: AcademyDAO
+    
+    @Inject
+    lateinit var personAcademyTimeDAO: PersonAcademyTimeDAO
 
     @Inject
     lateinit var personDAO: PersonDAO
@@ -96,7 +100,7 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
             timeEnd = LocalTime.of(12, 0)
         )
 
-        val conflict = academyDAO.getConflictPersonAcademyTime(
+        val conflict = personAcademyTimeDAO.getConflictPersonAcademyTime(
             personId = academyTime.personId!!,
             personAcademyTimeId = academyTime.id,
             dayOfWeek = academyTime.dayOfWeek!!,
@@ -122,7 +126,7 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
             timeEnd = LocalTime.of(10, 30)
         )
 
-        val conflict = academyDAO.getConflictPersonAcademyTime(
+        val conflict = personAcademyTimeDAO.getConflictPersonAcademyTime(
             personId = academyTime.personId!!,
             personAcademyTimeId = academyTime.id,
             dayOfWeek = academyTime.dayOfWeek!!,
@@ -148,7 +152,7 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
             timeEnd = LocalTime.of(11, 0)
         )
 
-        val conflict = academyDAO.getConflictPersonAcademyTime(
+        val conflict = personAcademyTimeDAO.getConflictPersonAcademyTime(
             personId = academyTime.personId!!,
             personAcademyTimeId = academyTime.id,
             dayOfWeek = academyTime.dayOfWeek!!,
@@ -171,7 +175,7 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
             timeEnd = LocalTime.of(14, 0)
         )
 
-        val conflict = academyDAO.getConflictPersonAcademyTime(
+        val conflict = personAcademyTimeDAO.getConflictPersonAcademyTime(
             personId = academyTime.personId!!,
             personAcademyTimeId = academyTime.id,
             dayOfWeek = academyTime.dayOfWeek!!,
@@ -194,7 +198,7 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
             timeEnd = LocalTime.of(8, 0)
         )
 
-        val conflict = academyDAO.getConflictPersonAcademyTime(
+        val conflict = personAcademyTimeDAO.getConflictPersonAcademyTime(
             personId = academyTime.personId!!,
             personAcademyTimeId = academyTime.id,
             dayOfWeek = academyTime.dayOfWeek!!,
@@ -240,10 +244,9 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
             Academy(id = "4", name = "Academy 4", active = false)
         )
 
-        userDAO.saveBatch(users)
-        personDAO.saveBatch(persons)
-        academyDAO.saveAcademiesBatch(listOf(Academy(id = "1", name = "Academy 1")))
-        academyDAO.saveAcademiesBatch(academies)
+        userDAO.insertBatch(users)
+        personDAO.insertBatch(persons)
+        academyDAO.insertBatch(academies)
 
         val academyTimes = listOf(
             PersonAcademyTime(
@@ -290,7 +293,7 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
             )
         )
 
-        academyDAO.savePersonAcademyTimesBatch(academyTimes)
+        personAcademyTimeDAO.insertBatch(academyTimes)
 
         val personId = "1"
         val personAcademies = academyDAO.getAcademiesFromPerson(personId)
@@ -337,10 +340,10 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
             )
         )
 
-        userDAO.save(user)
-        personDAO.save(person)
-        academyDAO.saveAcademiesBatch(listOf(Academy(id = "1", name = "Academy 1")))
-        academyDAO.savePersonAcademyTimesBatch(academyTimes)
+        userDAO.insert(user)
+        personDAO.insert(person)
+        academyDAO.insertBatch(listOf(Academy(id = "1", name = "Academy 1")))
+        personAcademyTimeDAO.insertBatch(academyTimes)
     }
 
     private suspend fun createSimpleAcademyList() {
@@ -351,7 +354,7 @@ class SaveAcademyTimeUseCaseIntegrationRoomTests {
             Academy(name = "Academy 4", active = false)
         )
 
-        academyDAO.saveAcademiesBatch(academies)
+        academyDAO.insertBatch(academies)
     }
 
     private suspend fun getAcademies(simpleFilter: String = ""): List<AcademyTuple> {

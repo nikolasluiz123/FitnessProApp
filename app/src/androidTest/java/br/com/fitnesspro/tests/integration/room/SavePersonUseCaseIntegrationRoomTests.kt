@@ -52,7 +52,7 @@ class SavePersonUseCaseIntegrationRoomTests {
             type = PERSONAL_TRAINER
         )
 
-        userDAO.save(registredUser)
+        userDAO.insert(registredUser)
 
         val otherUser = User(
             email = email,
@@ -89,7 +89,7 @@ class SavePersonUseCaseIntegrationRoomTests {
             type = PERSONAL_TRAINER
         )
 
-        userDAO.save(registredUser)
+        userDAO.insert(registredUser)
 
         val hasUser = userDAO.hasUserWithCredentials(email, password)
 
@@ -122,7 +122,7 @@ class SavePersonUseCaseIntegrationRoomTests {
             authenticated = false
         )
 
-        userDAO.saveBatch(listOf(userAuthenticated, otherUser))
+        userDAO.insertBatch(listOf(userAuthenticated, otherUser))
         userDAO.authenticate(otherUser.email!!, otherUser.password!!)
 
         userDAO.findById(otherUser.id)!!.authenticated.shouldBeTrue()
@@ -246,7 +246,7 @@ class SavePersonUseCaseIntegrationRoomTests {
             )
         )
 
-        userDAO.saveBatch(users)
-        personDAO.saveBatch(persons)
+        userDAO.insertBatch(users)
+        personDAO.insertBatch(persons)
     }
 }

@@ -6,6 +6,7 @@ import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.workout.Workout
@@ -22,6 +23,7 @@ import java.time.YearMonth
 class SchedulerRepository(
     private val schedulerDAO: SchedulerDAO,
     private val workoutDAO: WorkoutDAO,
+    private val workoutGroupDAO: WorkoutGroupDAO,
     private val userRepository: UserRepository,
     private val personRepository: PersonRepository,
     private val schedulerWebClient: SchedulerWebClient
@@ -32,7 +34,13 @@ class SchedulerRepository(
         schedulerType: EnumSchedulerType
     ) = withContext(IO) {
         val scheduler = toScheduler.getScheduler()
-        schedulerDAO.save(scheduler)
+
+        if (toScheduler.id == null) {
+            schedulerDAO.insert(scheduler)
+            toScheduler.id = scheduler.id
+        } else {
+            schedulerDAO.update(scheduler)
+        }
 
         userRepository.getAuthenticatedTOUser()!!.also { user ->
             schedulerWebClient.saveScheduler(
@@ -107,7 +115,7 @@ class SchedulerRepository(
 
     private suspend fun TOScheduler.getScheduler(): Scheduler {
         return if (id == null) {
-            val model = Scheduler(
+            Scheduler(
                 academyMemberPersonId = academyMemberPersonId,
                 professionalPersonId = professionalPersonId,
                 scheduledDate = scheduledDate,
@@ -119,10 +127,6 @@ class SchedulerRepository(
                 observation = observation,
                 active = active
             )
-
-            this.id = model.id
-
-            model
         } else {
             schedulerDAO.findSchedulerById(id!!).copy(
                 academyMemberPersonId = academyMemberPersonId,
@@ -154,9 +158,9 @@ class SchedulerRepository(
             WorkoutGroup(dayWeek = it, workoutId = workout.id)
         }
 
-        schedulerDAO.saveBatch(schedulers)
-        workoutDAO.saveWorkout(workout)
-        workoutDAO.saveGroups(workoutGroups)
+        schedulerDAO.insertBatch(schedulers)
+        workoutDAO.insert(workout)
+        workoutGroupDAO.insertBatch(workoutGroups)
 
         userRepository.getAuthenticatedTOUser()!!.also { user ->
             schedulerWebClient.saveScheduler(

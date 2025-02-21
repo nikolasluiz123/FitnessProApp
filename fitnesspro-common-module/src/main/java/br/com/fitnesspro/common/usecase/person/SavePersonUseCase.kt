@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.util.PatternsCompat.EMAIL_ADDRESS
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
+import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.person.EnumPersonValidationTypes.INVALID_USER_EMAIL
 import br.com.fitnesspro.common.usecase.person.EnumPersonValidationTypes.MAX_LENGTH_PERSON_NAME
@@ -31,7 +32,8 @@ open class SavePersonUseCase(
     protected val userRepository: UserRepository,
     protected val personRepository: PersonRepository,
     protected val saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase,
-    protected val passwordHasher: IPasswordHasher
+    protected val passwordHasher: IPasswordHasher,
+    protected val schedulerConfigRepository: SchedulerConfigRepository
 ) {
 
     suspend fun execute(toPerson: TOPerson): List<FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>> {

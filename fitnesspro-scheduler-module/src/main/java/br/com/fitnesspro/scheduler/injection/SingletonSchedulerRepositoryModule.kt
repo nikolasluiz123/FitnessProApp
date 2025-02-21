@@ -4,9 +4,10 @@ import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebCli
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
-import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import dagger.Module
 import dagger.Provides
@@ -21,6 +22,7 @@ class SingletonSchedulerRepositoryModule {
     fun provideSchedulerRepository(
         schedulerDAO: SchedulerDAO,
         workoutDAO: WorkoutDAO,
+        workoutGroupDAO: WorkoutGroupDAO,
         userRepository: UserRepository,
         personRepository: PersonRepository,
         schedulerWebClient: SchedulerWebClient
@@ -30,20 +32,21 @@ class SingletonSchedulerRepositoryModule {
             workoutDAO = workoutDAO,
             userRepository = userRepository,
             personRepository = personRepository,
-            schedulerWebClient = schedulerWebClient
+            schedulerWebClient = schedulerWebClient,
+            workoutGroupDAO = workoutGroupDAO
         )
     }
 
     @Provides
     fun provideSchedulerConfigRepository(
         schedulerDAO: SchedulerDAO,
-        userDAO: UserDAO,
+        schedulerConfigDAO: SchedulerConfigDAO,
         schedulerWebClient: SchedulerWebClient
     ): SchedulerConfigRepository {
         return SchedulerConfigRepository(
             schedulerDAO = schedulerDAO,
-            userDAO = userDAO,
-            schedulerWebClient = schedulerWebClient
+            schedulerWebClient = schedulerWebClient,
+            schedulerConfigDAO = schedulerConfigDAO
         )
     }
 

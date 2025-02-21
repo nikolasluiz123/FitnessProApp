@@ -1,6 +1,7 @@
 package br.com.fitnesspro.common
 
 import br.com.fitnesspro.common.repository.PersonRepository
+import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.person.EnumPersonValidationTypes
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
@@ -29,6 +30,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
     private lateinit var saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase
     private lateinit var savePersonUseCase: SavePersonUseCase
     private lateinit var passwordHasher: IPasswordHasher
+    private lateinit var schedulerConfigRepository: SchedulerConfigRepository
 
     @BeforeEach
     override fun setUp() {
@@ -37,13 +39,15 @@ class SavePersonUseCaseTests: BaseUnitTests() {
         userRepository = mockk(relaxed = true)
         saveSchedulerConfigUseCase = mockk(relaxed = true)
         passwordHasher = mockk(relaxed = true)
+        schedulerConfigRepository = mockk(relaxed = true)
 
         savePersonUseCase = SavePersonUseCase(
             context,
             userRepository,
             personRepository,
             saveSchedulerConfigUseCase,
-            passwordHasher
+            passwordHasher,
+            schedulerConfigRepository
         )
 
         val personSlot = slot<TOPerson>()

@@ -43,7 +43,7 @@ abstract class BaseAuthenticatedUITest: BaseUITests() {
 
     private suspend fun saveAcademies(): List<Academy> {
         val academies = listOf(Academy(name = "Academy 1"))
-        academyDAO.saveAcademiesBatch(academies)
+        academyDAO.insertBatch(academies)
         return academies
     }
 

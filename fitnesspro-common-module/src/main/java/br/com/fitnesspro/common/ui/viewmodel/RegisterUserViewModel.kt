@@ -34,6 +34,7 @@ import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,9 +68,17 @@ class RegisterUserViewModel @Inject constructor(
     }
 
     override fun onShowError(throwable: Throwable) {
-        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
-            message = context.getString(R.string.unknown_error_message)
-        )
+        val message = when (throwable) {
+            is FirebaseAuthUserCollisionException -> {
+                context.getString(R.string.firebase_user_collision_error_message)
+            }
+
+            else -> {
+                context.getString(R.string.unknown_error_message)
+            }
+        }
+
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
     }
 
     private fun initialLoadUIState(args: RegisterUserScreenArgs) {

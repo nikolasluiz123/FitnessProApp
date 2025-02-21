@@ -45,14 +45,10 @@ class SchedulerWebClient(
         )
     }
 
-    suspend fun saveSchedulerConfig(
-        token: String,
-        schedulerConfig: SchedulerConfig
-    ) {
+    suspend fun saveSchedulerConfig(schedulerConfig: SchedulerConfig) {
         persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 schedulerService.saveSchedulerConfig(
-                    token = formatToken(token),
                     schedulerConfigDTO = schedulerConfig.toSchedulerConfigDTO()
                 ).getResponseBody()
             }

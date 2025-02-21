@@ -8,6 +8,7 @@ import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
+import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import dagger.Module
@@ -52,13 +53,15 @@ class SingletonCommonRepositoryModule {
     @Provides
     fun provideAcademyRepository(
         academyDAO: AcademyDAO,
+        personAcademyTimeDAO: PersonAcademyTimeDAO,
         userDAO: UserDAO,
         personWebClient: PersonWebClient
     ): AcademyRepository {
         return AcademyRepository(
             academyDAO = academyDAO,
             userDAO = userDAO,
-            personWebClient = personWebClient
+            personWebClient = personWebClient,
+            personAcademyTimeDAO = personAcademyTimeDAO
         )
     }
 }

@@ -1,18 +1,16 @@
 package br.com.fitnesspro.local.data.access.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
-import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.to.TOScheduler
 import java.time.LocalDate
 import java.time.LocalTime
@@ -20,25 +18,7 @@ import java.time.YearMonth
 import java.util.StringJoiner
 
 @Dao
-abstract class SchedulerDAO: BaseDAO() {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun saveConfig(schedulerConfig: SchedulerConfig)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun saveConfigBatch(schedulerConfigs: List<SchedulerConfig>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun save(scheduler: Scheduler)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun saveBatch(schedulers: List<Scheduler>)
-
-    @Query("select * from scheduler_config where id = :id")
-    abstract suspend fun findSchedulerConfigById(id: String): SchedulerConfig
-
-    @Query("select * from scheduler_config where person_id = :personId")
-    abstract suspend fun findSchedulerConfigByPersonId(personId: String): SchedulerConfig?
+abstract class SchedulerDAO: MaintenanceDAO<Scheduler>() {
 
     @Query("select * from scheduler where id = :id")
     abstract suspend fun findSchedulerById(id: String): Scheduler
