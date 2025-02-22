@@ -57,7 +57,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
     suspend fun import() = withContext(IO) {
         userDAO.getAuthenticatedUser()?.serviceToken?.let { token ->
             try {
-                val importFilter = CommonImportFilter(onlyActives = true, lastUpdateDate = getLasSyncDate())
+                val importFilter = CommonImportFilter(onlyActives = false, lastUpdateDate = getLasSyncDate())
                 val pageInfos = ImportPageInfos(pageSize = getPageSize())
 
                 val log = saveRunningLog(importFilter, pageInfos)
