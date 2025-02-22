@@ -3,7 +3,7 @@ package br.com.fitnesspro.model.nutrition.avaliation
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.base.IntegratedModel
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -11,6 +11,9 @@ import java.util.UUID
 data class PhysicEvaluation(
     @PrimaryKey
     override val id: String = UUID.randomUUID().toString(),
+    @ColumnInfo(name = "transmission_date")
+    override var transmissionDate: LocalDateTime? = null,
+
     var date: LocalDateTime? = LocalDateTime.now(),
     var weight: Double? = null,
     var height: Double? = null,
@@ -79,4 +82,4 @@ data class PhysicEvaluation(
     var skinFoldThigh: Double? = null,
     @ColumnInfo(name = "skin_fold_medial_calf")
     var skinFoldMedialCalf: Double? = null,
-): BaseModel()
+): IntegratedModel()

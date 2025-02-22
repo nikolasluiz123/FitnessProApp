@@ -12,6 +12,7 @@ import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import java.time.DayOfWeek
 import java.time.LocalDate
 import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType as EnumCompromiseTypeService
@@ -29,8 +30,8 @@ class SchedulerWebClient(
         dateStart: LocalDate? = null,
         dateEnd: LocalDate? = null,
         dayWeeks: List<DayOfWeek> = emptyList()
-    ) {
-        persistenceServiceErrorHandlingBlock(
+    ): PersistenceServiceResponse {
+        return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 schedulerService.saveScheduler(
                     token = formatToken(token),
@@ -45,11 +46,44 @@ class SchedulerWebClient(
         )
     }
 
-    suspend fun saveSchedulerConfig(schedulerConfig: SchedulerConfig) {
-        persistenceServiceErrorHandlingBlock(
+    suspend fun saveSchedulerBatch(
+        token: String,
+        schedulerList: List<Scheduler>,
+        schedulerType: String,
+    ): PersistenceServiceResponse {
+        return persistenceServiceErrorHandlingBlock(
+            codeBlock = {
+                schedulerService.saveSchedulerBatch(
+                    token = formatToken(token),
+                    schedulerDTOList = schedulerList.map {
+                        it.toSchedulerDTO(
+                            schedulerType = schedulerType,
+                            dateStart = null,
+                            dateEnd = null,
+                            dayWeeks = emptyList(),
+                        )
+                    }
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun saveSchedulerConfig(schedulerConfig: SchedulerConfig): PersistenceServiceResponse {
+        return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 schedulerService.saveSchedulerConfig(
                     schedulerConfigDTO = schedulerConfig.toSchedulerConfigDTO()
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun saveSchedulerConfigBatch(token: String, schedulerConfigList: List<SchedulerConfig>): PersistenceServiceResponse {
+        return persistenceServiceErrorHandlingBlock(
+            codeBlock = {
+                schedulerService.saveSchedulerConfigBatch(
+                    token = token,
+                    schedulerConfigDTOList = schedulerConfigList.map { it.toSchedulerConfigDTO() }
                 ).getResponseBody()
             }
         )

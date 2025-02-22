@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.workout.Exercise
 import java.time.LocalDateTime
 import java.util.UUID
@@ -27,6 +27,8 @@ import java.util.UUID
 data class ExerciseExecution(
     @PrimaryKey
     override val id: String = UUID.randomUUID().toString(),
+    @ColumnInfo(name = "transmission_date")
+    override var transmissionDate: LocalDateTime? = null,
     @ColumnInfo(name = "exercise_id")
     var exerciseId: String? = null,
     var duration: Long? = null,
@@ -36,4 +38,4 @@ data class ExerciseExecution(
     var weight: Double? = null,
     var date: LocalDateTime = LocalDateTime.now(),
     var active: Boolean = true
-): BaseModel()
+): IntegratedModel()

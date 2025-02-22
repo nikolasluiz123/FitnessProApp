@@ -3,7 +3,7 @@ package br.com.fitnesspro.model.scheduler
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import java.time.LocalDate
@@ -15,6 +15,8 @@ import java.util.UUID
 data class Scheduler(
     @PrimaryKey
     override val id: String = UUID.randomUUID().toString(),
+    @ColumnInfo(name = "transmission_date")
+    override var transmissionDate: LocalDateTime? = null,
     @ColumnInfo(name = "academy_member_person_id")
     var academyMemberPersonId: String? = null,
     @ColumnInfo(name = "professional_person_id")
@@ -30,4 +32,4 @@ data class Scheduler(
     var compromiseType: EnumCompromiseType? = null,
     var observation: String? = null,
     var active: Boolean = true
-): BaseModel()
+): IntegratedModel()

@@ -11,6 +11,7 @@ import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.models.general.enums.EnumUserType as EnumUserTypeService
 
 class PersonWebClient(
@@ -18,10 +19,29 @@ class PersonWebClient(
     private val personService: IPersonService
 ): FitnessProWebClient(context) {
 
-    suspend fun savePerson(person: Person, user: User) {
-        persistenceServiceErrorHandlingBlock(
+    suspend fun savePerson(person: Person, user: User): PersistenceServiceResponse {
+        return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 personService.savePerson(personDTO = person.toPersonDTO(user)).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun savePersonBatch(
+        token: String,
+        persons: List<Person>,
+        users: List<User>
+    ): PersistenceServiceResponse {
+        return persistenceServiceErrorHandlingBlock(
+            codeBlock = {
+                val personDTOList = persons.mapIndexed { index, person ->
+                    person.toPersonDTO(users[index])
+                }
+
+                personService.savePersonBatch(
+                    token = formatToken(token),
+                    personDTOList = personDTOList
+                ).getResponseBody()
             }
         )
     }
@@ -29,12 +49,26 @@ class PersonWebClient(
     suspend fun savePersonAcademyTime(
         token: String,
         personAcademyTime: PersonAcademyTime
-    ) {
-        persistenceServiceErrorHandlingBlock(
+    ): PersistenceServiceResponse {
+        return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 personService.savePersonAcademyTime(
                     token = formatToken(token),
                     personAcademyTimeDTO = personAcademyTime.toPersonAcademyTimeDTO()
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun savePersonAcademyTimeBatch(
+        token: String,
+        personAcademyTimeList: List<PersonAcademyTime>
+    ): PersistenceServiceResponse {
+        return persistenceServiceErrorHandlingBlock(
+            codeBlock = {
+                personService.savePersonAcademyTimeBatch(
+                    token = formatToken(token),
+                    personAcademyTimeDTOList = personAcademyTimeList.map { it.toPersonAcademyTimeDTO() }
                 ).getResponseBody()
             }
         )

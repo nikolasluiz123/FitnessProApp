@@ -5,8 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.base.IntegratedModel
 import java.time.DayOfWeek
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
@@ -34,6 +35,8 @@ import java.util.UUID
 data class PersonAcademyTime(
     @PrimaryKey
     override val id: String = UUID.randomUUID().toString(),
+    @ColumnInfo(name = "transmission_date")
+    override var transmissionDate: LocalDateTime? = null,
     @ColumnInfo(name = "person_id")
     var personId: String? = null,
     @ColumnInfo(name = "academy_id")
@@ -45,4 +48,4 @@ data class PersonAcademyTime(
     @ColumnInfo(name = "day_week")
     var dayOfWeek: DayOfWeek? = null,
     var active: Boolean = true,
-): BaseModel()
+): IntegratedModel()

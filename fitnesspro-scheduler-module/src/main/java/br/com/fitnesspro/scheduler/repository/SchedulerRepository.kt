@@ -35,17 +35,75 @@ class SchedulerRepository(
     ) = withContext(IO) {
         val scheduler = toScheduler.getScheduler()
 
+        saveSchedulerLocally(toScheduler, scheduler)
+        saveSchedulerRemote(scheduler, schedulerType)
+    }
+
+    private suspend fun saveSchedulerLocally(
+        toScheduler: TOScheduler,
+        scheduler: Scheduler
+    ) {
         if (toScheduler.id == null) {
             schedulerDAO.insert(scheduler)
             toScheduler.id = scheduler.id
         } else {
             schedulerDAO.update(scheduler)
         }
+    }
 
-        userRepository.getAuthenticatedTOUser()!!.also { user ->
-            schedulerWebClient.saveScheduler(
-                token = user.serviceToken!!,
+    private suspend fun saveSchedulerRemote(
+        scheduler: Scheduler,
+        schedulerType: EnumSchedulerType
+    ) {
+        userRepository.getAuthenticatedTOUser()?.serviceToken?.let { token ->
+            val response = schedulerWebClient.saveScheduler(
+                token = token,
                 scheduler = scheduler,
+                schedulerType = schedulerType.name
+            )
+
+            if (response.success) {
+                schedulerDAO.update(scheduler.copy(transmissionDate = response.transmissionDate))
+            }
+        }
+    }
+
+    suspend fun saveSchedulerBatch(toScheduler: List<TOScheduler>, schedulerType: EnumSchedulerType) = withContext(IO) {
+        saveSchedulerBatchLocally(toScheduler)
+        saveSchedulerBatchRemote(toScheduler, schedulerType)
+    }
+
+    private suspend fun saveSchedulerBatchLocally(toSchedulerList: List<TOScheduler>) {
+        val insertionList = mutableListOf<Scheduler>()
+        val updateList = mutableListOf<Scheduler>()
+
+        toSchedulerList.forEach { toScheduler ->
+            val scheduler = toScheduler.getScheduler()
+
+            if (toScheduler.id == null) {
+                insertionList.add(scheduler)
+            } else {
+                updateList.add(scheduler)
+            }
+        }
+
+        if (insertionList.isNotEmpty()) {
+            schedulerDAO.insertBatch(insertionList)
+        }
+
+        if (updateList.isNotEmpty()) {
+            schedulerDAO.updateBatch(updateList)
+        }
+    }
+
+    private suspend fun saveSchedulerBatchRemote(
+        toScheduler: List<TOScheduler>,
+        schedulerType: EnumSchedulerType
+    ) {
+        userRepository.getAuthenticatedTOUser()?.serviceToken?.let { token ->
+            schedulerWebClient.saveSchedulerBatch(
+                token = token,
+                schedulerList = toScheduler.map { it.getScheduler() },
                 schedulerType = schedulerType.name
             )
         }

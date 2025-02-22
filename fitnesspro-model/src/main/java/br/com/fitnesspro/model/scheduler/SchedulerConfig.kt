@@ -5,8 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.general.Person
+import java.time.LocalDateTime
 import java.util.UUID
 
 
@@ -27,6 +28,8 @@ import java.util.UUID
 data class SchedulerConfig(
     @PrimaryKey
     override val id: String = UUID.randomUUID().toString(),
+    @ColumnInfo(name = "transmission_date")
+    override var transmissionDate: LocalDateTime? = null,
     var alarm: Boolean = false,
     var notification: Boolean = false,
     @ColumnInfo(name = "min_schedule_density")
@@ -35,4 +38,4 @@ data class SchedulerConfig(
     var maxScheduleDensity: Int = 2,
     @ColumnInfo(name = "person_id")
     var personId: String? = null
-): BaseModel()
+): IntegratedModel()

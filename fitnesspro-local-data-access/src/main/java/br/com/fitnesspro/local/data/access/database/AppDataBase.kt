@@ -13,6 +13,7 @@ import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
+import br.com.fitnesspro.local.data.access.dao.SyncHistoryDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
@@ -30,6 +31,7 @@ import br.com.fitnesspro.model.nutrition.diet.predefinition.IngredientPreDefinit
 import br.com.fitnesspro.model.nutrition.diet.predefinition.MealOptionPreDefinition
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
+import br.com.fitnesspro.model.sync.SyncHistory
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
@@ -42,14 +44,14 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 
 @Database(
-    version = 10,
+    version = 11,
     entities = [
         User::class, Person::class, Academy::class, PersonAcademyTime::class, PhysicEvaluation::class,
         IngredientPreDefinition::class, MealOptionPreDefinition::class, Diet::class, DayWeekDiet::class, Meal::class,
         MealOption::class, Ingredient::class, Scheduler::class, SchedulerConfig::class, ExerciseExecution::class,
         VideoExerciseExecution::class, ExercisePreDefinition::class, VideoExercisePreDefinition::class,
         WorkoutGroupPreDefinition::class, Exercise::class, Video::class, VideoExercise::class,
-        Workout::class, WorkoutGroup::class
+        Workout::class, WorkoutGroup::class, SyncHistory::class
     ],
     exportSchema = true,
     autoMigrations = [
@@ -61,7 +63,8 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
         AutoMigration(from = 6, to = 7),
         AutoMigration(from = 7, to = 8),
         AutoMigration(from = 8, to = 9, spec = AutoMigrationSpec8To9::class),
-        AutoMigration(from = 9, to = 10)
+        AutoMigration(from = 9, to = 10),
+        AutoMigration(from = 10, to = 11)
     ]
 )
 @TypeConverters(RoomTypeConverters::class)
@@ -82,6 +85,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun workoutDAO(): WorkoutDAO
 
     abstract fun workoutGroupDAO(): WorkoutGroupDAO
+
+    abstract fun syncHistoryDAO(): SyncHistoryDAO
 
 }
 

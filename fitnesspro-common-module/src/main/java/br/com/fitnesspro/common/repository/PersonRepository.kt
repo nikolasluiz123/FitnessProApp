@@ -26,6 +26,13 @@ class PersonRepository(
     suspend fun savePerson(toPerson: TOPerson) = withContext(IO) {
         val user = toPerson.toUser!!.getUser()
         val person = toPerson.getPerson(user.id)
+
+        saveUserOnFirebase(user)
+        savePersonLocally(toPerson, user, person)
+        savePersonRemote(person, user)
+    }
+
+    private suspend fun saveUserOnFirebase(user: User) {
         val existentUser = userDAO.findById(user.id)
 
         if (existentUser == null) {
@@ -33,7 +40,9 @@ class PersonRepository(
         } else {
             firebaseDefaultAuthenticationService.updateUserInfos(user)
         }
+    }
 
+    private suspend fun savePersonLocally(toPerson: TOPerson, user: User, person: Person) {
         if (toPerson.id == null) {
             userDAO.insert(user)
             personDAO.insert(person)
@@ -44,21 +53,86 @@ class PersonRepository(
             userDAO.update(user)
             personDAO.update(person)
         }
+    }
 
-        personWebClient.savePerson(person, user)
+    private suspend fun savePersonRemote(person: Person, user: User) {
+        val response = personWebClient.savePerson(person, user)
+
+        if (response.success) {
+            userDAO.update(user.copy(transmissionDate = response.transmissionDate))
+            personDAO.update(person.copy(transmissionDate = response.transmissionDate))
+        }
     }
 
     @Transaction
     suspend fun savePersonBatch(toPersons: List<TOPerson>) = withContext(IO) {
-        val users = toPersons.map { it.toUser!!.getUser() }
-        val persons = toPersons.map { it.getPerson(it.toUser?.id!!) }
+        savePersonBatchLocally(toPersons)
+        savePersonBatchRemote(toPersons)
+    }
 
-        if (toPersons.first().id == null) {
-            userDAO.insertBatch(users)
-            personDAO.insertBatch(persons)
-        } else {
-            userDAO.updateBatch(users)
-            personDAO.updateBatch(persons)
+    private suspend fun savePersonBatchLocally(toPersons: List<TOPerson>) {
+        val insertionUserList = mutableListOf<User>()
+        val insertionPersonList = mutableListOf<Person>()
+
+        val updateUserList = mutableListOf<User>()
+        val updatePersonList = mutableListOf<Person>()
+
+        toPersons.forEach { toPerson ->
+            val user = toPerson.toUser!!.getUser()
+            val person = toPerson.getPerson(user.id)
+
+            if (toPerson.id == null) {
+                insertionUserList.add(user)
+                insertionPersonList.add(person)
+            } else {
+                updateUserList.add(user)
+                updatePersonList.add(person)
+            }
+        }
+
+        if (insertionUserList.isNotEmpty()) {
+            userDAO.insertBatch(insertionUserList)
+        }
+
+        if (updateUserList.isNotEmpty()) {
+            userDAO.updateBatch(updateUserList)
+        }
+
+        if (insertionPersonList.isNotEmpty()) {
+            personDAO.insertBatch(insertionPersonList)
+        }
+
+        if (updatePersonList.isNotEmpty()) {
+            personDAO.updateBatch(updatePersonList)
+        }
+    }
+
+    private suspend fun savePersonBatchRemote(toPersons: List<TOPerson>) {
+        userDAO.getAuthenticatedUser()?.serviceToken?.let { token ->
+            val users = mutableListOf<User>()
+            val persons = mutableListOf<Person>()
+
+            toPersons.forEach { toPerson ->
+                val user = toPerson.toUser!!.getUser()
+                val person = toPerson.getPerson(user.id)
+
+                users.add(user)
+                persons.add(person)
+            }
+
+            val response = personWebClient.savePersonBatch(
+                token = token,
+                persons = persons,
+                users = users
+            )
+
+            if (response.success) {
+                val transmittedUsers = users.map { it.copy(transmissionDate = response.transmissionDate) }
+                val transmittedPersons = persons.map { it.copy(transmissionDate = response.transmissionDate) }
+
+                userDAO.updateBatch(transmittedUsers)
+                personDAO.updateBatch(transmittedPersons)
+            }
         }
     }
 

@@ -65,6 +65,8 @@ dependencies {
     implementation(project(":fitnesspro-service-data-access"))
     implementation(project(":fitnesspro-firebase-api"))
 
+    implementation(libs.fitnesspro.shared.communication)
+
     implementation(libs.google.gson)
     implementation(libs.java.faker)
     implementation(libs.constraint.layout.compose)

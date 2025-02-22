@@ -6,6 +6,7 @@ import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
+import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
@@ -39,14 +40,14 @@ class SingletonSchedulerRepositoryModule {
 
     @Provides
     fun provideSchedulerConfigRepository(
-        schedulerDAO: SchedulerDAO,
         schedulerConfigDAO: SchedulerConfigDAO,
-        schedulerWebClient: SchedulerWebClient
+        schedulerWebClient: SchedulerWebClient,
+        userDAO: UserDAO
     ): SchedulerConfigRepository {
         return SchedulerConfigRepository(
-            schedulerDAO = schedulerDAO,
+            schedulerConfigDAO = schedulerConfigDAO,
             schedulerWebClient = schedulerWebClient,
-            schedulerConfigDAO = schedulerConfigDAO
+            userDAO = userDAO
         )
     }
 

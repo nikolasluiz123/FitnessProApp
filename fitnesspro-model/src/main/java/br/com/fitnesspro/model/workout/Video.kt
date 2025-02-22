@@ -3,7 +3,7 @@ package br.com.fitnesspro.model.workout
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.base.IntegratedModel
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -11,11 +11,13 @@ import java.util.UUID
 data class Video(
     @PrimaryKey
     override val id: String = UUID.randomUUID().toString(),
+    @ColumnInfo(name = "transmission_date")
+    override var transmissionDate: LocalDateTime? = null,
     var extension: String? = null,
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     var data: ByteArray? = null,
     var date: LocalDateTime = LocalDateTime.now(),
-) : BaseModel() {
+) : IntegratedModel() {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

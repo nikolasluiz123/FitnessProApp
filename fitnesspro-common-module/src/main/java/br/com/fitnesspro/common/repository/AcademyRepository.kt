@@ -27,19 +27,32 @@ class AcademyRepository(
     suspend fun savePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
         val personAcademyTime = toPersonAcademyTime.getPersonAcademyTime()
 
+        savePersonAcademyTimeLocally(toPersonAcademyTime, personAcademyTime)
+        savePersonAcademyTimeRemote(personAcademyTime)
+    }
+
+    private suspend fun savePersonAcademyTimeLocally(
+        toPersonAcademyTime: TOPersonAcademyTime,
+        personAcademyTime: PersonAcademyTime
+    ) {
         if (toPersonAcademyTime.id == null) {
             personAcademyTimeDAO.insert(personAcademyTime)
-
             toPersonAcademyTime.id = personAcademyTime.id
         } else {
             personAcademyTimeDAO.update(personAcademyTime)
         }
+    }
 
-        userDAO.getAuthenticatedUser()!!.also { user ->
-            personWebClient.savePersonAcademyTime(
-                token = user.serviceToken!!,
+    private suspend fun savePersonAcademyTimeRemote(personAcademyTime: PersonAcademyTime) {
+        userDAO.getAuthenticatedUser()?.serviceToken?.let { token ->
+            val response = personWebClient.savePersonAcademyTime(
+                token = token,
                 personAcademyTime = personAcademyTime
             )
+
+            if (response.success) {
+                personAcademyTimeDAO.update(personAcademyTime.copy(transmissionDate = response.transmissionDate))
+            }
         }
     }
 
@@ -157,13 +170,48 @@ class AcademyRepository(
         savePersonAcademyTime(toPersonAcademyTime)
     }
 
-    suspend fun savePersonAcademyTimeBatch(toPersonAcademyTimes: List<TOPersonAcademyTime>) = withContext(IO) {
-        val times = toPersonAcademyTimes.map { it.getPersonAcademyTime() }
+    suspend fun savePersonAcademyTimeBatch(toPersonAcademyTimeList: List<TOPersonAcademyTime>) = withContext(IO) {
+        savePersonAcademyTimeBatchLocally(toPersonAcademyTimeList)
+        savePersonAcademyTimeBatchRemote(toPersonAcademyTimeList)
+    }
 
-        if (toPersonAcademyTimes.first().id == null) {
-            personAcademyTimeDAO.insertBatch(times)
-        } else {
-            personAcademyTimeDAO.updateBatch(times)
+    private suspend fun savePersonAcademyTimeBatchLocally(toPersonAcademyTimeList: List<TOPersonAcademyTime>) {
+        val insertionList = mutableListOf<PersonAcademyTime>()
+        val updateList = mutableListOf<PersonAcademyTime>()
+
+        toPersonAcademyTimeList.forEach { toPersonAcademyTime ->
+            if (toPersonAcademyTime.id == null) {
+                insertionList.add(toPersonAcademyTime.getPersonAcademyTime())
+            } else {
+                updateList.add(toPersonAcademyTime.getPersonAcademyTime())
+            }
+        }
+
+        if (insertionList.isNotEmpty()) {
+            personAcademyTimeDAO.insertBatch(insertionList)
+        }
+
+        if (updateList.isNotEmpty()) {
+            personAcademyTimeDAO.updateBatch(updateList)
+        }
+    }
+
+    private suspend fun savePersonAcademyTimeBatchRemote(toPersonAcademyTimeList: List<TOPersonAcademyTime>) {
+        userDAO.getAuthenticatedUser()?.serviceToken?.let { token ->
+            val personAcademyTimeList = toPersonAcademyTimeList.map { it.getPersonAcademyTime() }
+
+            val response = personWebClient.savePersonAcademyTimeBatch(
+                token = token,
+                personAcademyTimeList = personAcademyTimeList
+            )
+
+            if (response.success) {
+                personAcademyTimeDAO.updateBatch(
+                    models = personAcademyTimeList.map { 
+                        it.copy(transmissionDate = response.transmissionDate)
+                    }
+                )
+            }
         }
     }
 }

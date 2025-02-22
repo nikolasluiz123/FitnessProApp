@@ -56,4 +56,9 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideWorkoutGroupDao(appDatabase: AppDatabase) = appDatabase.workoutGroupDAO()
+
+    @Provides
+    @Singleton
+    fun provideSyncHistoryDao(appDatabase: AppDatabase) = appDatabase.syncHistoryDAO()
+
 }
