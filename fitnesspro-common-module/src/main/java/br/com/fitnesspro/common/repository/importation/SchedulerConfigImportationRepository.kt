@@ -1,0 +1,47 @@
+package br.com.fitnesspro.common.repository.importation
+
+import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
+import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.repository.importation.common.AbstractImportationRepository
+import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
+import br.com.fitnesspro.model.scheduler.SchedulerConfig
+import br.com.fitnesspro.model.sync.EnumSyncModule
+import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
+
+class SchedulerConfigImportationRepository(
+    private val schedulerConfigDAO: SchedulerConfigDAO,
+    private val webClient: SchedulerWebClient
+): AbstractImportationRepository<SchedulerConfigDTO, SchedulerConfig, SchedulerConfigDAO>() {
+
+    override fun getDescription(): String {
+        return context.getString(R.string.scheduler_config_importation_descrition)
+    }
+
+    override fun getModule() = EnumSyncModule.SCHEDULER
+
+    override suspend fun getImportationData(
+        token: String,
+        filter: CommonImportFilter,
+        pageInfos: ImportPageInfos
+    ): ReadServiceResponse<SchedulerConfigDTO> {
+        return webClient.importSchedulerConfigs(token, filter, pageInfos)
+    }
+
+    override suspend fun hasEntityWithId(id: String): Boolean {
+        return schedulerConfigDAO.hasSchedulerConfigWithId(id)
+    }
+
+    override suspend fun convertDTOToEntity(dto: SchedulerConfigDTO): SchedulerConfig {
+        return SchedulerConfig(
+            id = dto.id!!,
+            alarm = dto.alarm,
+            notification = dto.notification,
+            minScheduleDensity = dto.minScheduleDensity,
+            maxScheduleDensity = dto.maxScheduleDensity,
+            personId = dto.personId
+        )
+    }
+}

@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.constraint.layout.compose)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.work)
     ksp(libs.hilt.compiler)
     implementation(libs.room.paging)
     implementation(libs.androidx.core.ktx)
@@ -82,6 +83,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    implementation(libs.work.runtime)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)

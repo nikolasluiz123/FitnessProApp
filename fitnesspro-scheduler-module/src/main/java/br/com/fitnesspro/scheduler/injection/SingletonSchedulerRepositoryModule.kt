@@ -10,6 +10,7 @@ import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
+import br.com.fitnesspro.scheduler.repository.importation.SchedulerImportationRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,6 +49,17 @@ class SingletonSchedulerRepositoryModule {
             schedulerConfigDAO = schedulerConfigDAO,
             schedulerWebClient = schedulerWebClient,
             userDAO = userDAO
+        )
+    }
+
+    @Provides
+    fun provideSchedulerImportationRepository(
+        schedulerDAO: SchedulerDAO,
+        schedulerWebClient: SchedulerWebClient
+    ): SchedulerImportationRepository {
+        return SchedulerImportationRepository(
+            schedulerDAO = schedulerDAO,
+            webClient = schedulerWebClient
         )
     }
 

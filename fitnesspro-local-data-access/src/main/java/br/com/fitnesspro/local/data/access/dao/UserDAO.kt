@@ -81,4 +81,7 @@ abstract class UserDAO: MaintenanceDAO<User>() {
     @Query("select * from user where authenticated = 1")
     abstract suspend fun getAuthenticatedUser(): User?
 
+    @Query("select exists (select 1 from user where id = :id)")
+    abstract suspend fun hasUserWithId(id: String): Boolean
+
 }

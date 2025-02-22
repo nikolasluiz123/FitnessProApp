@@ -1,15 +1,22 @@
 package br.com.fitnesspro.common.injection
 
+import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
+import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.repository.importation.AcademyImportationRepository
+import br.com.fitnesspro.common.repository.importation.PersonImportationRepository
+import br.com.fitnesspro.common.repository.importation.SchedulerConfigImportationRepository
+import br.com.fitnesspro.common.repository.importation.UserImportationRepository
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
+import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import dagger.Module
 import dagger.Provides
@@ -62,6 +69,48 @@ class SingletonCommonRepositoryModule {
             userDAO = userDAO,
             personWebClient = personWebClient,
             personAcademyTimeDAO = personAcademyTimeDAO
+        )
+    }
+
+    @Provides
+    fun provideUserImportationRepository(
+        personWebClient: PersonWebClient
+    ): UserImportationRepository {
+        return UserImportationRepository(
+            webClient = personWebClient
+        )
+    }
+
+    @Provides
+    fun provideAcademyImportationRepository(
+        academyDAO: AcademyDAO,
+        academyWebClient: AcademyWebClient
+    ): AcademyImportationRepository {
+        return AcademyImportationRepository(
+            academyDAO = academyDAO,
+            academyWebClient = academyWebClient
+        )
+    }
+
+    @Provides
+    fun providePersonImportationRepository(
+        personDAO: PersonDAO,
+        personWebClient: PersonWebClient
+    ): PersonImportationRepository {
+        return PersonImportationRepository(
+            personDAO = personDAO,
+            webClient = personWebClient
+        )
+    }
+
+    @Provides
+    fun provideSchedulerConfigImportationRepository(
+        schedulerConfigDAO: SchedulerConfigDAO,
+        schedulerWebClient: SchedulerWebClient
+    ): SchedulerConfigImportationRepository {
+        return SchedulerConfigImportationRepository(
+            schedulerConfigDAO = schedulerConfigDAO,
+            webClient = schedulerWebClient
         )
     }
 }

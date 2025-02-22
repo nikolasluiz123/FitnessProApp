@@ -14,4 +14,7 @@ abstract class SchedulerConfigDAO: MaintenanceDAO<SchedulerConfig>() {
     @Query("select * from scheduler_config where person_id = :personId")
     abstract suspend fun findSchedulerConfigByPersonId(personId: String): SchedulerConfig?
 
+    @Query("select exists (select 1 from scheduler_config where id = :id)")
+    abstract suspend fun hasSchedulerConfigWithId(id: String): Boolean
+
 }

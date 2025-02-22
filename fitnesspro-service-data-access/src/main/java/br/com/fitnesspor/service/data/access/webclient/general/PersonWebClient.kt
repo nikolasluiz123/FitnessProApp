@@ -11,7 +11,10 @@ import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import br.com.fitnesspro.models.general.enums.EnumUserType as EnumUserTypeService
 
 class PersonWebClient(
@@ -74,6 +77,38 @@ class PersonWebClient(
         )
     }
 
+    suspend fun importUsers(
+        token: String,
+        filter: CommonImportFilter,
+        pageInfos: ImportPageInfos
+    ): ReadServiceResponse<UserDTO> {
+        return readServiceErrorHandlingBlock(
+            codeBlock = {
+                personService.importUsers(
+                    token = formatToken(token),
+                    filter = filter,
+                    pageInfos = pageInfos
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun importPersons(
+        token: String,
+        filter: CommonImportFilter,
+        pageInfos: ImportPageInfos
+    ): ReadServiceResponse<PersonDTO> {
+        return readServiceErrorHandlingBlock(
+            codeBlock = {
+                personService.importPersons(
+                    token = formatToken(token),
+                    filter = filter,
+                    pageInfos = pageInfos
+                ).getResponseBody()
+            }
+        )
+    }
+
     private fun Person.toPersonDTO(user: User): PersonDTO {
         return PersonDTO(
             id = id,
@@ -96,7 +131,7 @@ class PersonWebClient(
         )
     }
 
-    private fun getUserType(type: EnumUserType): EnumUserTypeService? {
+    private fun getUserType(type: EnumUserType): EnumUserTypeService {
         return when (type) {
             EnumUserType.PERSONAL_TRAINER -> EnumUserTypeService.PERSONAL_TRAINER
             EnumUserType.NUTRITIONIST -> EnumUserTypeService.NUTRITIONIST

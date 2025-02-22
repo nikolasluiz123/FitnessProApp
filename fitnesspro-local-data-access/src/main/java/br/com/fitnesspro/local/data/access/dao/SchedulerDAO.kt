@@ -168,4 +168,7 @@ abstract class SchedulerDAO: MaintenanceDAO<Scheduler>() {
 
     @RawQuery(observedEntities = [Scheduler::class])
     abstract suspend fun executeQuerySchedulerList(query: SupportSQLiteQuery): List<TOScheduler>
+
+    @Query("select exists ( select 1 from scheduler where id = :id )")
+    abstract suspend fun hasSchedulerWithId(id: String): Boolean
 }

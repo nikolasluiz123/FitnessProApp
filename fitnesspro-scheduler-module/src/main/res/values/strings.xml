@@ -111,4 +111,5 @@
     <string name="new_message_chat_channel_description">Notificações das Novas Mensagens do Chat</string>
     <string name="new_message_chat_notification_title">Mensagens</string>
     <string name="new_message_chat_notification_message">Você tem novas mensagens</string>
+    <string name="scheduler_importation_descrition">Importação dos Agendamentos</string>
 </resources>

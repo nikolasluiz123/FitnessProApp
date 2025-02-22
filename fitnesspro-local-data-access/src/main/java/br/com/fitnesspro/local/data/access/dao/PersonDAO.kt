@@ -101,4 +101,7 @@ abstract class PersonDAO: MaintenanceDAO<Person>() {
 
     @RawQuery(observedEntities = [Person::class])
     abstract fun executeQueryPersonsWithUserType(query: SupportSQLiteQuery): PagingSource<Int, PersonTuple>
+
+    @Query("select exists (select 1 from person where id = :id)")
+    abstract suspend fun hasPersonWithId(id: String): Boolean
 }

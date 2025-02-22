@@ -14,7 +14,7 @@ abstract class FitnessProWebClient(private val context: Context) {
 
     protected fun formatToken(token: String) = "Bearer $token"
 
-    suspend fun persistenceServiceErrorHandlingBlock(
+    protected suspend fun persistenceServiceErrorHandlingBlock(
         codeBlock: suspend () -> PersistenceServiceResponse,
         customExceptions: (e: Exception) -> PersistenceServiceResponse = { throw it }
     ): PersistenceServiceResponse {
@@ -39,7 +39,7 @@ abstract class FitnessProWebClient(private val context: Context) {
         }
     }
 
-    suspend fun authenticationServiceErrorHandlingBlock(
+    protected suspend fun authenticationServiceErrorHandlingBlock(
         codeBlock: suspend () -> AuthenticationServiceResponse,
         customExceptions: (e: Exception) -> AuthenticationServiceResponse =  { throw it }
     ): AuthenticationServiceResponse {
@@ -66,7 +66,7 @@ abstract class FitnessProWebClient(private val context: Context) {
         }
     }
 
-    suspend fun <SDO> readServiceErrorHandlingBlock(
+    protected suspend fun <SDO> readServiceErrorHandlingBlock(
         codeBlock: suspend () -> ReadServiceResponse<SDO>,
         customExceptions: (e: Exception) -> ReadServiceResponse<SDO> = { throw it }
     ): ReadServiceResponse<SDO> {
@@ -95,7 +95,7 @@ abstract class FitnessProWebClient(private val context: Context) {
         }
     }
 
-    suspend fun serviceErrorHandlingBlock(
+    protected suspend fun serviceErrorHandlingBlock(
         codeBlock: suspend () -> FitnessProServiceResponse,
         customExceptions: (e: Exception) -> FitnessProServiceResponse = { throw it }
     ): FitnessProServiceResponse {

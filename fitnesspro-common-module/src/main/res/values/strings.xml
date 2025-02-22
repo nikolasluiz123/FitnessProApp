@@ -101,4 +101,8 @@
     <string name="login_screen_facebook_button_message">A autenticação com Facebook está em desenvolvimento.</string>
     <string name="register_user_screen_empty_message_gym_dialog_list">Não existem academias com os filtros aplicados</string>
     <string name="firebase_user_collision_error_message">O e-mail informado já está em uso.</string>
+    <string name="academy_importation_descrition">Importação de Academias</string>
+    <string name="user_importation_descrition">Importação de Usuários</string>
+    <string name="person_importation_descrition">Importação de Pessoas</string>
+    <string name="scheduler_config_importation_descrition">Importação das Configurações da Agenda</string>
 </resources>

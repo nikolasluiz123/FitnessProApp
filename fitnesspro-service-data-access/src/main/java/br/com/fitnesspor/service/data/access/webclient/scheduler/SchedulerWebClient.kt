@@ -12,7 +12,10 @@ import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import java.time.DayOfWeek
 import java.time.LocalDate
 import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType as EnumCompromiseTypeService
@@ -84,6 +87,38 @@ class SchedulerWebClient(
                 schedulerService.saveSchedulerConfigBatch(
                     token = token,
                     schedulerConfigDTOList = schedulerConfigList.map { it.toSchedulerConfigDTO() }
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun importSchedulerConfigs(
+        token: String,
+        filter: CommonImportFilter,
+        pageInfos: ImportPageInfos
+    ): ReadServiceResponse<SchedulerConfigDTO> {
+        return readServiceErrorHandlingBlock(
+            codeBlock = {
+                schedulerService.importScheduleConfigs(
+                    token = formatToken(token),
+                    filter = filter,
+                    pageInfos = pageInfos
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun importSchedulers(
+        token: String,
+        filter: CommonImportFilter,
+        pageInfos: ImportPageInfos
+    ): ReadServiceResponse<SchedulerDTO> {
+        return readServiceErrorHandlingBlock(
+            codeBlock = {
+                schedulerService.importSchedules(
+                    token = formatToken(token),
+                    filter = filter,
+                    pageInfos = pageInfos
                 ).getResponseBody()
             }
         )

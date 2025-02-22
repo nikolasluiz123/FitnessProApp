@@ -69,4 +69,8 @@ abstract class AcademyDAO: MaintenanceDAO<Academy>() {
     """)
     abstract suspend fun getAcademiesFromPerson(personId: String): List<Academy>
 
+    @Query("select exists (select 1 from academy where id = :id)")
+    abstract suspend fun hasAcademyWithId(id: String): Boolean
+
+
 }
