@@ -44,14 +44,14 @@ class PersonRepository(
 
     private suspend fun savePersonLocally(toPerson: TOPerson, user: User, person: Person) {
         if (toPerson.id == null) {
-            userDAO.insert(user)
-            personDAO.insert(person)
+            userDAO.insert(user, user.id, true)
+            personDAO.insert(person, user.id, true)
 
             toPerson.id = person.id
             toPerson.toUser?.id = user.id
         } else {
-            userDAO.update(user)
-            personDAO.update(person)
+            userDAO.update(user, user.id, true)
+            personDAO.update(person, user.id, true)
         }
     }
 
@@ -59,8 +59,16 @@ class PersonRepository(
         val response = personWebClient.savePerson(person, user)
 
         if (response.success) {
-            userDAO.update(user.copy(transmissionDate = response.transmissionDate))
-            personDAO.update(person.copy(transmissionDate = response.transmissionDate))
+            userDAO.update(
+                model = user.copy(transmissionDate = response.transmissionDate),
+                userId = user.id,
+                writeAuditableData = true
+            )
+            personDAO.update(
+                model = person.copy(transmissionDate = response.transmissionDate),
+                userId = user.id,
+                writeAuditableData = true
+            )
         }
     }
 

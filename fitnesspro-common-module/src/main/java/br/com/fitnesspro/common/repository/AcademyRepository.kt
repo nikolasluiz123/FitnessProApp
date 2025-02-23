@@ -35,11 +35,13 @@ class AcademyRepository(
         toPersonAcademyTime: TOPersonAcademyTime,
         personAcademyTime: PersonAcademyTime
     ) {
+        val userId = userDAO.getAuthenticatedUser()?.id!!
+
         if (toPersonAcademyTime.id == null) {
-            personAcademyTimeDAO.insert(personAcademyTime)
+            personAcademyTimeDAO.insert(personAcademyTime, userId, true)
             toPersonAcademyTime.id = personAcademyTime.id
         } else {
-            personAcademyTimeDAO.update(personAcademyTime)
+            personAcademyTimeDAO.update(personAcademyTime, userId, true)
         }
     }
 

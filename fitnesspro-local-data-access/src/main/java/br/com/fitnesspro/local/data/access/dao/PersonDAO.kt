@@ -6,6 +6,8 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.common.BaseDAO.Companion.QR_NL
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
@@ -13,7 +15,7 @@ import br.com.fitnesspro.tuple.PersonTuple
 import java.util.StringJoiner
 
 @Dao
-abstract class PersonDAO: MaintenanceDAO<Person>() {
+abstract class PersonDAO: AuditableMaintenanceDAO<Person>() {
 
     @Query("select * from person where id = :id")
     abstract suspend fun findPersonById(id: String): Person

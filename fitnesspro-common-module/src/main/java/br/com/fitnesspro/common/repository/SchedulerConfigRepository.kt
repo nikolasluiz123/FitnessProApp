@@ -24,11 +24,13 @@ class SchedulerConfigRepository(
         toSchedulerConfig: TOSchedulerConfig,
         schedulerConfig: SchedulerConfig
     ) {
+        val userId = userDAO.getAuthenticatedUser()?.id!!
+
         if (toSchedulerConfig.id == null) {
-            schedulerConfigDAO.insert(schedulerConfig)
+            schedulerConfigDAO.insert(schedulerConfig, userId, true)
             toSchedulerConfig.id = schedulerConfig.id
         } else {
-            schedulerConfigDAO.update(schedulerConfig)
+            schedulerConfigDAO.update(schedulerConfig, userId, true)
         }
     }
 

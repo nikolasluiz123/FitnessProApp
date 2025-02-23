@@ -6,12 +6,14 @@ import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.common.BaseDAO.Companion.QR_NL
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.general.User
 import java.util.StringJoiner
 
 @Dao
-abstract class UserDAO: MaintenanceDAO<User>() {
+abstract class UserDAO: AuditableMaintenanceDAO<User>() {
 
     suspend fun hasUserWithEmail(email: String, userId: String?): Boolean {
         val queryParams = mutableListOf<Any>()

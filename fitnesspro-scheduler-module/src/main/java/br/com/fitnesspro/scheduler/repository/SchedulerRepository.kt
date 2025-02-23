@@ -43,11 +43,13 @@ class SchedulerRepository(
         toScheduler: TOScheduler,
         scheduler: Scheduler
     ) {
+        val userId = userRepository.getAuthenticatedTOUser()?.id!!
+
         if (toScheduler.id == null) {
-            schedulerDAO.insert(scheduler)
+            schedulerDAO.insert(scheduler, userId, true)
             toScheduler.id = scheduler.id
         } else {
-            schedulerDAO.update(scheduler)
+            schedulerDAO.update(scheduler, userId, true)
         }
     }
 
@@ -65,47 +67,6 @@ class SchedulerRepository(
             if (response.success) {
                 schedulerDAO.update(scheduler.copy(transmissionDate = response.transmissionDate))
             }
-        }
-    }
-
-    suspend fun saveSchedulerBatch(toScheduler: List<TOScheduler>, schedulerType: EnumSchedulerType) = withContext(IO) {
-        saveSchedulerBatchLocally(toScheduler)
-        saveSchedulerBatchRemote(toScheduler, schedulerType)
-    }
-
-    private suspend fun saveSchedulerBatchLocally(toSchedulerList: List<TOScheduler>) {
-        val insertionList = mutableListOf<Scheduler>()
-        val updateList = mutableListOf<Scheduler>()
-
-        toSchedulerList.forEach { toScheduler ->
-            val scheduler = toScheduler.getScheduler()
-
-            if (toScheduler.id == null) {
-                insertionList.add(scheduler)
-            } else {
-                updateList.add(scheduler)
-            }
-        }
-
-        if (insertionList.isNotEmpty()) {
-            schedulerDAO.insertBatch(insertionList)
-        }
-
-        if (updateList.isNotEmpty()) {
-            schedulerDAO.updateBatch(updateList)
-        }
-    }
-
-    private suspend fun saveSchedulerBatchRemote(
-        toScheduler: List<TOScheduler>,
-        schedulerType: EnumSchedulerType
-    ) {
-        userRepository.getAuthenticatedTOUser()?.serviceToken?.let { token ->
-            schedulerWebClient.saveSchedulerBatch(
-                token = token,
-                schedulerList = toScheduler.map { it.getScheduler() },
-                schedulerType = schedulerType.name
-            )
         }
     }
 

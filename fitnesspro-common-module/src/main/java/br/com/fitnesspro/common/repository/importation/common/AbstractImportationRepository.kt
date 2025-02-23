@@ -5,8 +5,8 @@ import android.util.Log
 import br.com.fitnesspro.local.data.access.dao.SyncHistoryDAO
 import br.com.fitnesspro.local.data.access.dao.SyncLogDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
-import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
-import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
+import br.com.fitnesspro.model.base.AuditableModel
 import br.com.fitnesspro.model.sync.EnumSyncModule
 import br.com.fitnesspro.model.sync.EnumSyncStatus
 import br.com.fitnesspro.model.sync.EnumSyncType
@@ -21,7 +21,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
-abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO: MaintenanceDAO<MODEL>> {
+abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: AuditableModel, DAO: AuditableMaintenanceDAO<MODEL>> {
 
     @ApplicationContext
     protected lateinit var context: Context

@@ -7,6 +7,8 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.common.BaseDAO.Companion.QR_NL
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumUserType
@@ -18,7 +20,7 @@ import java.time.YearMonth
 import java.util.StringJoiner
 
 @Dao
-abstract class SchedulerDAO: MaintenanceDAO<Scheduler>() {
+abstract class SchedulerDAO: AuditableMaintenanceDAO<Scheduler>() {
 
     @Query("select * from scheduler where id = :id")
     abstract suspend fun findSchedulerById(id: String): Scheduler

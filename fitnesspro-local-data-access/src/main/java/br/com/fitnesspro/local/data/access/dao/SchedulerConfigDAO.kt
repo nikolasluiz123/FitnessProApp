@@ -2,11 +2,12 @@ package br.com.fitnesspro.local.data.access.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 
 @Dao
-abstract class SchedulerConfigDAO: MaintenanceDAO<SchedulerConfig>() {
+abstract class SchedulerConfigDAO: AuditableMaintenanceDAO<SchedulerConfig>() {
 
     @Query("select * from scheduler_config where id = :id")
     abstract suspend fun findSchedulerConfigById(id: String): SchedulerConfig
