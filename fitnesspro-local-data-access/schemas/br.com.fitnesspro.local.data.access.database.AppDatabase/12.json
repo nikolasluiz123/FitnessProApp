@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 12,
-    "identityHash": "65c0343fa94ebc2a16b4171e41fc0a68",
+    "identityHash": "37b0b236220b98cc107db8dfccc15462",
     "entities": [
       {
         "tableName": "user",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `email` TEXT, `password` TEXT, `type` TEXT, `active` INTEGER NOT NULL, `authenticated` INTEGER NOT NULL DEFAULT 0, `service_token` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `email` TEXT, `password` TEXT, `type` TEXT, `active` INTEGER NOT NULL, `authenticated` INTEGER NOT NULL DEFAULT 0, `service_token` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -17,6 +17,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -64,12 +90,54 @@
             "id"
           ]
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_user_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_user_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_user_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_user_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "person",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `name` TEXT, `birth_date` TEXT, `phone` TEXT, `user_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `name` TEXT, `birth_date` TEXT, `phone` TEXT, `user_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -80,6 +148,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -129,6 +223,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_person_user_id` ON `${TABLE_NAME}` (`user_id`)"
+          },
+          {
+            "name": "index_person_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_person_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_person_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_person_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -142,12 +254,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "academy",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `name` TEXT, `address` TEXT, `phone` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `name` TEXT, `address` TEXT, `phone` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -158,6 +292,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -192,12 +352,54 @@
             "id"
           ]
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_academy_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_academy_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_academy_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_academy_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "person_academy_time",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `person_id` TEXT, `academy_id` TEXT, `time_start` TEXT, `time_end` TEXT, `day_week` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`academy_id`) REFERENCES `academy`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `person_id` TEXT, `academy_id` TEXT, `time_start` TEXT, `time_end` TEXT, `day_week` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`academy_id`) REFERENCES `academy`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -208,6 +410,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -272,6 +500,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_person_academy_time_academy_id` ON `${TABLE_NAME}` (`academy_id`)"
+          },
+          {
+            "name": "index_person_academy_time_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_person_academy_time_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_person_academy_time_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_person_academy_time_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -296,12 +542,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "physic_evaluation",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `date` TEXT, `weight` REAL, `height` REAL, `measure_neck` REAL, `measure_shoulders` REAL, `measure_chest` REAL, `measure_abdomen` REAL, `measure_waist` REAL, `measure_arm_relaxed_right` REAL, `measure_arm_relaxed_left` REAL, `measure_arm_contracted_right` REAL, `measure_arm_contracted_left` REAL, `measure_forearm_right` REAL, `measure_forearm_left` REAL, `measure_wrist_right` REAL, `measure_wrist_left` REAL, `measure_hip` REAL, `measure_thigh_right` REAL, `measure_thigh_left` REAL, `measure_calf_right` REAL, `measure_calf_left` REAL, `measure_femur` REAL, `skin_fold_biceps` REAL, `skin_fold_triceps` REAL, `skin_fold_middle_axillary` REAL, `skin_fold_chest` REAL, `skin_fold_abdomen` REAL, `skin_fold_suprailiac` REAL, `skin_fold_subescapularis` REAL, `skin_fold_thigh` REAL, `skin_fold_medial_calf` REAL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `date` TEXT, `weight` REAL, `height` REAL, `measure_neck` REAL, `measure_shoulders` REAL, `measure_chest` REAL, `measure_abdomen` REAL, `measure_waist` REAL, `measure_arm_relaxed_right` REAL, `measure_arm_relaxed_left` REAL, `measure_arm_contracted_right` REAL, `measure_arm_contracted_left` REAL, `measure_forearm_right` REAL, `measure_forearm_left` REAL, `measure_wrist_right` REAL, `measure_wrist_left` REAL, `measure_hip` REAL, `measure_thigh_right` REAL, `measure_thigh_left` REAL, `measure_calf_right` REAL, `measure_calf_left` REAL, `measure_femur` REAL, `skin_fold_biceps` REAL, `skin_fold_triceps` REAL, `skin_fold_middle_axillary` REAL, `skin_fold_chest` REAL, `skin_fold_abdomen` REAL, `skin_fold_suprailiac` REAL, `skin_fold_subescapularis` REAL, `skin_fold_thigh` REAL, `skin_fold_medial_calf` REAL, PRIMARY KEY(`id`), FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -312,6 +580,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -508,12 +802,54 @@
             "id"
           ]
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_physic_evaluation_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_physic_evaluation_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_physic_evaluation_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_physic_evaluation_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "ingredient_pre_definition",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `name` TEXT, `quantity` REAL, `unit` TEXT, `meal_option_pre_definition_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`meal_option_pre_definition_id`) REFERENCES `meal_option_pre_definition`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `name` TEXT, `quantity` REAL, `unit` TEXT, `meal_option_pre_definition_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`meal_option_pre_definition_id`) REFERENCES `meal_option_pre_definition`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -524,6 +860,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -573,6 +935,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ingredient_pre_definition_meal_option_pre_definition_id` ON `${TABLE_NAME}` (`meal_option_pre_definition_id`)"
+          },
+          {
+            "name": "index_ingredient_pre_definition_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ingredient_pre_definition_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_ingredient_pre_definition_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ingredient_pre_definition_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -586,12 +966,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "meal_option_pre_definition",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `name` TEXT, `description` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `name` TEXT, `description` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -602,6 +1004,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -630,12 +1058,54 @@
             "id"
           ]
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_meal_option_pre_definition_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_meal_option_pre_definition_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_meal_option_pre_definition_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_meal_option_pre_definition_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "diet",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `nutritionist_person_id` TEXT, `academy_member_person_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`nutritionist_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`academy_member_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `nutritionist_person_id` TEXT, `academy_member_person_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`nutritionist_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`academy_member_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -646,6 +1116,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -692,6 +1188,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_diet_academy_member_person_id` ON `${TABLE_NAME}` (`academy_member_person_id`)"
+          },
+          {
+            "name": "index_diet_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_diet_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_diet_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_diet_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -716,12 +1230,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "day_week_foods",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `day_week` TEXT, `diet_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`diet_id`) REFERENCES `diet`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `day_week` TEXT, `diet_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`diet_id`) REFERENCES `diet`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -732,6 +1268,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -769,6 +1331,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_day_week_foods_diet_id` ON `${TABLE_NAME}` (`diet_id`)"
+          },
+          {
+            "name": "index_day_week_foods_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_day_week_foods_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_day_week_foods_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_day_week_foods_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -782,12 +1362,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "meal",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `name` TEXT, `time` TEXT, `day_week_diet_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`day_week_diet_id`) REFERENCES `day_week_foods`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `name` TEXT, `time` TEXT, `day_week_diet_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`day_week_diet_id`) REFERENCES `day_week_foods`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -798,6 +1400,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -841,6 +1469,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_meal_day_week_diet_id` ON `${TABLE_NAME}` (`day_week_diet_id`)"
+          },
+          {
+            "name": "index_meal_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_meal_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_meal_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_meal_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -854,12 +1500,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "meal_option",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `name` TEXT, `description` TEXT, `meal_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `name` TEXT, `description` TEXT, `meal_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -870,6 +1538,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -904,12 +1598,54 @@
             "id"
           ]
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_meal_option_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_meal_option_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_meal_option_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_meal_option_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "ingredient",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `name` TEXT, `quantity` REAL, `unit` TEXT, `meal_option_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`meal_option_id`) REFERENCES `meal_option`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `name` TEXT, `quantity` REAL, `unit` TEXT, `meal_option_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`meal_option_id`) REFERENCES `meal_option`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -920,6 +1656,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -969,6 +1731,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ingredient_meal_option_id` ON `${TABLE_NAME}` (`meal_option_id`)"
+          },
+          {
+            "name": "index_ingredient_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ingredient_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_ingredient_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ingredient_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -982,12 +1762,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "scheduler",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `academy_member_person_id` TEXT, `professional_person_id` TEXT, `scheduled_date` TEXT, `start` TEXT, `end` TEXT, `canceled_date` TEXT, `situation` TEXT, `compromise_type` TEXT, `observation` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `academy_member_person_id` TEXT, `professional_person_id` TEXT, `scheduled_date` TEXT, `start` TEXT, `end` TEXT, `canceled_date` TEXT, `situation` TEXT, `compromise_type` TEXT, `observation` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -998,6 +1800,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1068,12 +1896,54 @@
             "id"
           ]
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_scheduler_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scheduler_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_scheduler_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scheduler_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "scheduler_config",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `alarm` INTEGER NOT NULL, `notification` INTEGER NOT NULL, `min_schedule_density` INTEGER NOT NULL, `max_schedule_density` INTEGER NOT NULL, `person_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `alarm` INTEGER NOT NULL, `notification` INTEGER NOT NULL, `min_schedule_density` INTEGER NOT NULL, `max_schedule_density` INTEGER NOT NULL, `person_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1084,6 +1954,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1133,6 +2029,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_scheduler_config_person_id` ON `${TABLE_NAME}` (`person_id`)"
+          },
+          {
+            "name": "index_scheduler_config_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scheduler_config_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_scheduler_config_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scheduler_config_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -1146,12 +2060,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "exercise_execution",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `exercise_id` TEXT, `duration` INTEGER, `repetitions` INTEGER, `set` INTEGER, `rest` INTEGER, `weight` REAL, `date` TEXT NOT NULL, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`exercise_id`) REFERENCES `exercise`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `exercise_id` TEXT, `duration` INTEGER, `repetitions` INTEGER, `set` INTEGER, `rest` INTEGER, `weight` REAL, `date` TEXT NOT NULL, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`exercise_id`) REFERENCES `exercise`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1162,6 +2098,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1229,6 +2191,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_execution_exercise_id` ON `${TABLE_NAME}` (`exercise_id`)"
+          },
+          {
+            "name": "index_exercise_execution_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_execution_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_exercise_execution_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_execution_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -1242,12 +2222,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "video_exercise_execution",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `exercise_execution_id` TEXT, `video_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`exercise_execution_id`) REFERENCES `exercise`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`video_id`) REFERENCES `video`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `exercise_execution_id` TEXT, `video_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`exercise_execution_id`) REFERENCES `exercise`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`video_id`) REFERENCES `video`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1258,6 +2260,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1298,6 +2326,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_execution_video_id` ON `${TABLE_NAME}` (`video_id`)"
+          },
+          {
+            "name": "index_video_exercise_execution_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_execution_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_video_exercise_execution_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_execution_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -1322,12 +2368,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "exercise_pre_definition",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `name` TEXT, `duration` INTEGER, `repetitions` INTEGER, `series` INTEGER, `rest` INTEGER, `personal_trainer_person_id` TEXT, `workout_group_pre_definition_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`personal_trainer_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`workout_group_pre_definition_id`) REFERENCES `workout_pre_definition`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `name` TEXT, `duration` INTEGER, `repetitions` INTEGER, `series` INTEGER, `rest` INTEGER, `personal_trainer_person_id` TEXT, `workout_group_pre_definition_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`personal_trainer_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`workout_group_pre_definition_id`) REFERENCES `workout_pre_definition`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1338,6 +2406,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1414,6 +2508,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_pre_definition_workout_group_pre_definition_id` ON `${TABLE_NAME}` (`workout_group_pre_definition_id`)"
+          },
+          {
+            "name": "index_exercise_pre_definition_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_pre_definition_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_exercise_pre_definition_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_pre_definition_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -1438,12 +2550,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "video_exercise_pre_definition",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `exercise_pre_definition_id` TEXT, `video_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`exercise_pre_definition_id`) REFERENCES `exercise_pre_definition`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`video_id`) REFERENCES `video`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `exercise_pre_definition_id` TEXT, `video_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`exercise_pre_definition_id`) REFERENCES `exercise_pre_definition`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`video_id`) REFERENCES `video`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1454,6 +2588,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1494,6 +2654,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_pre_definition_video_id` ON `${TABLE_NAME}` (`video_id`)"
+          },
+          {
+            "name": "index_video_exercise_pre_definition_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_pre_definition_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_video_exercise_pre_definition_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_pre_definition_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -1518,12 +2696,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "workout_pre_definition",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `name` TEXT, `personal_trainer_person_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `name` TEXT, `personal_trainer_person_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1534,6 +2734,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1562,12 +2788,54 @@
             "id"
           ]
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_workout_pre_definition_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_pre_definition_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_workout_pre_definition_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_pre_definition_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "exercise",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `name` TEXT, `duration` INTEGER, `repetitions` INTEGER, `sets` INTEGER, `rest` INTEGER, `observation` TEXT, `workout_group_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`workout_group_id`) REFERENCES `workout_group`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `name` TEXT, `duration` INTEGER, `repetitions` INTEGER, `sets` INTEGER, `rest` INTEGER, `observation` TEXT, `workout_group_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`workout_group_id`) REFERENCES `workout_group`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1578,6 +2846,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1645,6 +2939,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_workout_group_id` ON `${TABLE_NAME}` (`workout_group_id`)"
+          },
+          {
+            "name": "index_exercise_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_exercise_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -1658,12 +2970,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "video",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `extension` TEXT, `data` BLOB, `date` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `extension` TEXT, `data` BLOB, `date` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1674,6 +3008,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1702,12 +3062,54 @@
             "id"
           ]
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_video_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_video_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "video_exercise",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `exercise_id` TEXT, `video_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`exercise_id`) REFERENCES `exercise`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`video_id`) REFERENCES `video`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `exercise_id` TEXT, `video_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`exercise_id`) REFERENCES `exercise`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`video_id`) REFERENCES `video`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1718,6 +3120,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1758,6 +3186,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_video_id` ON `${TABLE_NAME}` (`video_id`)"
+          },
+          {
+            "name": "index_video_exercise_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_video_exercise_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -1782,12 +3228,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "workout",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `academy_member_person_id` TEXT, `personal_trainer_person_id` TEXT, `start` TEXT, `end` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`academy_member_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`personal_trainer_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `academy_member_person_id` TEXT, `personal_trainer_person_id` TEXT, `start` TEXT, `end` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`academy_member_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`personal_trainer_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1798,6 +3266,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1856,6 +3350,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_personal_trainer_person_id` ON `${TABLE_NAME}` (`personal_trainer_person_id`)"
+          },
+          {
+            "name": "index_workout_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_workout_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -1880,12 +3392,34 @@
             "referencedColumns": [
               "id"
             ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
           }
         ]
       },
       {
         "tableName": "workout_group",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `name` TEXT, `workout_id` TEXT, `day_week` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`workout_id`) REFERENCES `workout`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_date` TEXT, `creation_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `update_date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, `creation_user_id` TEXT, `update_user_id` TEXT, `name` TEXT, `workout_id` TEXT, `day_week` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`workout_id`) REFERENCES `workout`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`creation_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`update_user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1896,6 +3430,32 @@
           {
             "fieldPath": "transmissionDate",
             "columnName": "transmission_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "updateDate",
+            "columnName": "update_date",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "creationUserId",
+            "columnName": "creation_user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updateUserId",
+            "columnName": "update_user_id",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1939,6 +3499,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_group_workout_id` ON `${TABLE_NAME}` (`workout_id`)"
+          },
+          {
+            "name": "index_workout_group_creation_user_id",
+            "unique": false,
+            "columnNames": [
+              "creation_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_group_creation_user_id` ON `${TABLE_NAME}` (`creation_user_id`)"
+          },
+          {
+            "name": "index_workout_group_update_user_id",
+            "unique": false,
+            "columnNames": [
+              "update_user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_group_update_user_id` ON `${TABLE_NAME}` (`update_user_id`)"
           }
         ],
         "foreignKeys": [
@@ -1948,6 +3526,28 @@
             "onUpdate": "NO ACTION",
             "columns": [
               "workout_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "creation_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "update_user_id"
             ],
             "referencedColumns": [
               "id"
@@ -2047,7 +3647,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '65c0343fa94ebc2a16b4171e41fc0a68')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '37b0b236220b98cc107db8dfccc15462')"
     ]
   }
 }

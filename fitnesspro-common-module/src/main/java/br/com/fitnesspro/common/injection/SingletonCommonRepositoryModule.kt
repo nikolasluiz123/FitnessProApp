@@ -7,10 +7,12 @@ import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebCli
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.common.repository.importation.AcademyImportationRepository
-import br.com.fitnesspro.common.repository.importation.PersonImportationRepository
-import br.com.fitnesspro.common.repository.importation.SchedulerConfigImportationRepository
-import br.com.fitnesspro.common.repository.importation.UserImportationRepository
+import br.com.fitnesspro.common.repository.sync.exportation.PersonExportationRepository
+import br.com.fitnesspro.common.repository.sync.exportation.SchedulerConfigExportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.AcademyImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.PersonImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.SchedulerConfigImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.UserImportationRepository
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
@@ -111,6 +113,24 @@ class SingletonCommonRepositoryModule {
         return SchedulerConfigImportationRepository(
             schedulerConfigDAO = schedulerConfigDAO,
             webClient = schedulerWebClient
+        )
+    }
+
+    @Provides
+    fun providePersonExportationRepository(
+        personWebClient: PersonWebClient
+    ): PersonExportationRepository {
+        return PersonExportationRepository(
+            personWebClient = personWebClient
+        )
+    }
+
+    @Provides
+    fun provideSchedulerConfigExportationRepository(
+        schedulerWebClient: SchedulerWebClient
+    ): SchedulerConfigExportationRepository {
+        return SchedulerConfigExportationRepository(
+            schedulerWebClient = schedulerWebClient
         )
     }
 }

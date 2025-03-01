@@ -8,8 +8,8 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.BaseDAO.Companion.QR_NL
-import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.common.filters.CommonExportFilter
+import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
@@ -173,4 +173,43 @@ abstract class SchedulerDAO: AuditableMaintenanceDAO<Scheduler>() {
 
     @Query("select exists ( select 1 from scheduler where id = :id )")
     abstract suspend fun hasSchedulerWithId(id: String): Boolean
+
+    suspend fun getExportationData(filter: CommonExportFilter, pageInfos: ExportPageInfos): List<Scheduler> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select * ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from scheduler s ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where (s.creation_user_id = ? or s.update_user_id = ?) ")
+
+            filter.lastUpdateDate?.let {
+                add(" and s.update_date >= ? ")
+                params.add(it.format(EnumDateTimePatterns.DATE_TIME_SQLITE))
+            }
+
+            add(" limit ? offset ? ")
+
+            params.add(filter.authenticatedUserId)
+            params.add(filter.authenticatedUserId)
+            params.add(pageInfos.pageSize)
+            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        return executeQueryExportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery
+    abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Scheduler>
 }

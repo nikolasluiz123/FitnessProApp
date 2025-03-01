@@ -105,4 +105,6 @@
     <string name="user_importation_descrition">Importação de Usuários</string>
     <string name="person_importation_descrition">Importação de Pessoas</string>
     <string name="scheduler_config_importation_descrition">Importação das Configurações da Agenda</string>
+    <string name="sync_module_person">Exportação de Pessoas</string>
+    <string name="sync_module_scheduler_config">Exportação de Configurações de Agendas</string>
 </resources>

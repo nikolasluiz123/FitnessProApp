@@ -6,9 +6,11 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.BaseDAO.Companion.QR_NL
-import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.common.filters.CommonExportFilter
+import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.tuple.PersonTuple
@@ -106,4 +108,43 @@ abstract class PersonDAO: AuditableMaintenanceDAO<Person>() {
 
     @Query("select exists (select 1 from person where id = :id)")
     abstract suspend fun hasPersonWithId(id: String): Boolean
+
+    suspend fun getExportationData(filter: CommonExportFilter, pageInfos: ExportPageInfos): List<Person> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select * ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from person p ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where (p.creation_user_id = ? or p.update_user_id = ?) ")
+
+            filter.lastUpdateDate?.let {
+                add(" and p.update_date >= ? ")
+                params.add(it.format(EnumDateTimePatterns.DATE_TIME_SQLITE))
+            }
+
+            add(" limit ? offset ? ")
+
+            params.add(filter.authenticatedUserId)
+            params.add(filter.authenticatedUserId)
+            params.add(pageInfos.pageSize)
+            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        return executeQueryExportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery
+    abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Person>
 }

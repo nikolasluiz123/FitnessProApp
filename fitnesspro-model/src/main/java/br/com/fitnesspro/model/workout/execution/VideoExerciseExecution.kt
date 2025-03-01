@@ -53,14 +53,14 @@ data class VideoExerciseExecution(
     override val id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "transmission_date")
     override var transmissionDate: LocalDateTime? = null,
-	@ColumnInfo(name = "creation_date")
+	@ColumnInfo(name = "creation_date", defaultValue = "CURRENT_TIMESTAMP")
     override var creationDate: LocalDateTime = dateTimeNow(),
-    @ColumnInfo(name = "update_date")
+    @ColumnInfo(name = "update_date", defaultValue = "CURRENT_TIMESTAMP")
     override var updateDate: LocalDateTime = dateTimeNow(),
     @ColumnInfo(name = "creation_user_id")
-    override var creationUserId: String = "",
+    override var creationUserId: String? = null,
     @ColumnInfo(name = "update_user_id")
-    override var updateUserId: String = "",
+    override var updateUserId: String? = null,
     @ColumnInfo(name = "exercise_execution_id")
     var exerciseExecutionId: String? = null,
     @ColumnInfo(name = "video_id")

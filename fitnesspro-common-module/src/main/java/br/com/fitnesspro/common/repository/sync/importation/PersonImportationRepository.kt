@@ -1,8 +1,8 @@
-package br.com.fitnesspro.common.repository.importation
+package br.com.fitnesspro.common.repository.sync.importation
 
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
-import br.com.fitnesspro.common.repository.importation.common.AbstractImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.sync.EnumSyncModule

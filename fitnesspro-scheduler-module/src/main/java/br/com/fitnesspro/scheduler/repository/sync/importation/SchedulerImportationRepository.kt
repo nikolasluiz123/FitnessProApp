@@ -1,7 +1,7 @@
-package br.com.fitnesspro.scheduler.repository.importation
+package br.com.fitnesspro.scheduler.repository.sync.importation
 
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
-import br.com.fitnesspro.common.repository.importation.common.AbstractImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation

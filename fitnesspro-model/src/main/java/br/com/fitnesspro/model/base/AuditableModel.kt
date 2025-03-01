@@ -5,6 +5,6 @@ import java.time.LocalDateTime
 abstract class AuditableModel: BaseModel() {
     abstract var creationDate: LocalDateTime
     abstract var updateDate: LocalDateTime
-    abstract var creationUserId: String
-    abstract var updateUserId: String
+    abstract var creationUserId: String?
+    abstract var updateUserId: String?
 }
