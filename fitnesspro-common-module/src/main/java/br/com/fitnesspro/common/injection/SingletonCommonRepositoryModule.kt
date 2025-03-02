@@ -37,14 +37,16 @@ class SingletonCommonRepositoryModule {
         userDAO: UserDAO,
         firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
         firebaseGoogleAuthenticationService: FirebaseGoogleAuthenticationService,
-        authenticationWebClient: AuthenticationWebClient
+        authenticationWebClient: AuthenticationWebClient,
+        personRepository: PersonRepository
     ): UserRepository {
         return UserRepository(
             userDAO = userDAO,
             firebaseDefaultAuthenticationService = firebaseDefaultAuthenticationService,
             firebaseGoogleAuthenticationService = firebaseGoogleAuthenticationService,
             authenticationWebClient = authenticationWebClient,
-            context = context
+            context = context,
+            personRepository = personRepository
         )
     }
 

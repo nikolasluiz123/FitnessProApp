@@ -58,7 +58,7 @@ class PersonRepository(
         }
     }
 
-    private suspend fun savePersonRemote(person: Person, user: User) {
+    suspend fun savePersonRemote(person: Person, user: User) {
         val response = personWebClient.savePerson(person, user)
 
         if (response.success) {
@@ -178,6 +178,10 @@ class PersonRepository(
 
     suspend fun findPersonById(personId: String): Person = withContext(IO) {
         personDAO.findPersonById(personId)
+    }
+
+    suspend fun findPersonByUserId(userId: String): Person = withContext(IO) {
+        personDAO.findPersonByUserId(userId)
     }
 
     private suspend fun TOPerson.getPerson(userId: String): Person {
