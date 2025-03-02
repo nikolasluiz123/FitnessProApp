@@ -110,7 +110,7 @@ class UserRepository(
                 password = password,
                 type = type,
                 active = active,
-                serviceToken = serviceToken
+                serviceToken = serviceToken,
             )
         }
     }

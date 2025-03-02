@@ -6,10 +6,10 @@ import androidx.room.Update
 
 abstract class MaintenanceDAO<T: Any>: BaseDAO() {
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insert(model: T)
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertBatch(models: List<T>)
 
     @Update

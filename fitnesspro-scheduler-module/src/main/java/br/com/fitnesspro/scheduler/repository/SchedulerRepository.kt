@@ -1,7 +1,6 @@
 package br.com.fitnesspro.scheduler.repository
 
 import android.content.Context
-import androidx.room.Transaction
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
@@ -9,6 +8,7 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.workout.Workout
@@ -46,13 +46,11 @@ class SchedulerRepository(
         toScheduler: TOScheduler,
         scheduler: Scheduler
     ) {
-        val userId = userRepository.getAuthenticatedTOUser()?.id!!
-
         if (toScheduler.id == null) {
-            schedulerDAO.insert(scheduler, userId, true)
+            schedulerDAO.insert(scheduler)
             toScheduler.id = scheduler.id
         } else {
-            schedulerDAO.update(scheduler, userId, true)
+            schedulerDAO.update(scheduler, true)
         }
     }
 
@@ -68,7 +66,7 @@ class SchedulerRepository(
             )
 
             if (response.success) {
-                schedulerDAO.update(scheduler.copy(transmissionDate = response.transmissionDate))
+                schedulerDAO.update(scheduler.copy(transmissionState = EnumTransmissionState.TRANSMITTED))
             }
         }
     }
@@ -110,6 +108,39 @@ class SchedulerRepository(
         )
     }
 
+
+    suspend fun saveRecurrentScheduler(schedules: List<TOScheduler>) = withContext(IO) {
+        val schedulers = schedules.map { it.getScheduler() }.sortedBy { it.scheduledDate }
+
+        val workout = Workout(
+            academyMemberPersonId = schedules.first().academyMemberPersonId,
+            professionalPersonId = schedules.first().professionalPersonId,
+            start = schedulers.first().scheduledDate,
+            end = schedulers.last().scheduledDate
+        )
+
+        val workoutGroups = schedulers.map { it.scheduledDate!!.dayOfWeek }.distinct().map {
+            WorkoutGroup(dayWeek = it, workoutId = workout.id)
+        }
+
+        runInTransaction {
+            schedulerDAO.insertBatch(schedulers)
+            workoutDAO.insert(workout)
+            workoutGroupDAO.insertBatch(workoutGroups)
+        }
+
+        userRepository.getAuthenticatedTOUser()?.let { user ->
+            schedulerWebClient.saveScheduler(
+                token = user.serviceToken!!,
+                scheduler = schedulers.first(),
+                schedulerType = EnumSchedulerType.RECURRENT.name,
+                dateStart = workout.start,
+                dateEnd = workout.end,
+                dayWeeks = workoutGroups.map { it.dayWeek!! }
+            )
+        }
+    }
+
     private suspend fun Scheduler?.getTOScheduler(): TOScheduler? {
         return this?.run {
             val memberPerson = personRepository.findPersonById(academyMemberPersonId!!)
@@ -130,7 +161,7 @@ class SchedulerRepository(
                 situation = situation,
                 compromiseType = compromiseType,
                 observation = observation,
-                active = active
+                active = active,
             )
         }
     }
@@ -147,7 +178,7 @@ class SchedulerRepository(
                 situation = situation,
                 compromiseType = compromiseType,
                 observation = observation,
-                active = active
+                active = active,
             )
         } else {
             schedulerDAO.findSchedulerById(id!!).copy(
@@ -160,38 +191,7 @@ class SchedulerRepository(
                 situation = situation,
                 compromiseType = compromiseType,
                 observation = observation,
-                active = active
-            )
-        }
-    }
-
-    @Transaction
-    suspend fun saveRecurrentScheduler(schedules: List<TOScheduler>) = withContext(IO) {
-        val schedulers = schedules.map { it.getScheduler() }.sortedBy { it.scheduledDate }
-
-        val workout = Workout(
-            academyMemberPersonId = schedules.first().academyMemberPersonId,
-            professionalPersonId = schedules.first().professionalPersonId,
-            start = schedulers.first().scheduledDate,
-            end = schedulers.last().scheduledDate
-        )
-
-        val workoutGroups = schedulers.map { it.scheduledDate!!.dayOfWeek }.distinct().map {
-            WorkoutGroup(dayWeek = it, workoutId = workout.id)
-        }
-
-        schedulerDAO.insertBatch(schedulers)
-        workoutDAO.insert(workout)
-        workoutGroupDAO.insertBatch(workoutGroups)
-
-        userRepository.getAuthenticatedTOUser()!!.also { user ->
-            schedulerWebClient.saveScheduler(
-                token = user.serviceToken!!,
-                scheduler = schedulers.first(),
-                schedulerType = EnumSchedulerType.RECURRENT.name,
-                dateStart = workout.start,
-                dateEnd = workout.end,
-                dayWeeks = workoutGroups.map { it.dayWeek!! }
+                active = active,
             )
         }
     }

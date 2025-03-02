@@ -21,5 +21,5 @@ data class TOScheduler(
     var situation: EnumSchedulerSituation? = null,
     var compromiseType: EnumCompromiseType? = null,
     var observation: String? = null,
-    var active: Boolean = true
-): BaseTO()
+    var active: Boolean = true,
+): BaseTO

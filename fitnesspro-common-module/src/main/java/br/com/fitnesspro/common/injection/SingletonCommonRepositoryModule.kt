@@ -76,11 +76,10 @@ class SingletonCommonRepositoryModule {
         personWebClient: PersonWebClient
     ): AcademyRepository {
         return AcademyRepository(
+            context = context,
             academyDAO = academyDAO,
-            userDAO = userDAO,
-            personWebClient = personWebClient,
             personAcademyTimeDAO = personAcademyTimeDAO,
-            context = context
+            personWebClient = personWebClient
         )
     }
 

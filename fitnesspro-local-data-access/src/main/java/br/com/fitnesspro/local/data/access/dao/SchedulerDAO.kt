@@ -7,10 +7,10 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.CommonExportFilter
+import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.to.TOScheduler
@@ -20,7 +20,7 @@ import java.time.YearMonth
 import java.util.StringJoiner
 
 @Dao
-abstract class SchedulerDAO: AuditableMaintenanceDAO<Scheduler>() {
+abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
 
     @Query("select * from scheduler where id = :id")
     abstract suspend fun findSchedulerById(id: String): Scheduler
@@ -174,7 +174,7 @@ abstract class SchedulerDAO: AuditableMaintenanceDAO<Scheduler>() {
     @Query("select exists ( select 1 from scheduler where id = :id )")
     abstract suspend fun hasSchedulerWithId(id: String): Boolean
 
-    suspend fun getExportationData(filter: CommonExportFilter, pageInfos: ExportPageInfos): List<Scheduler> {
+    suspend fun getExportationData(pageInfos: ExportPageInfos): List<Scheduler> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -186,17 +186,9 @@ abstract class SchedulerDAO: AuditableMaintenanceDAO<Scheduler>() {
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where (s.creation_user_id = ? or s.update_user_id = ?) ")
-
-            filter.lastUpdateDate?.let {
-                add(" and s.update_date >= ? ")
-                params.add(it.format(EnumDateTimePatterns.DATE_TIME_SQLITE))
-            }
-
+            add(" where s.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
             add(" limit ? offset ? ")
 
-            params.add(filter.authenticatedUserId)
-            params.add(filter.authenticatedUserId)
             params.add(pageInfos.pageSize)
             params.add(pageInfos.pageSize * pageInfos.pageNumber)
         }

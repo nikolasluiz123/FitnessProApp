@@ -3,13 +3,14 @@ package br.com.fitnesspro.model.sync
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import java.time.LocalDateTime
 
-@Entity(tableName = "sync_history")
-data class SyncHistory(
+@Entity(tableName = "importation_history")
+data class ImportationHistory(
     @PrimaryKey
     var module: EnumSyncModule,
 
-    @ColumnInfo(name = "last_sync_date")
-    var lastSyncDate: LocalDateTime? = null
+    @ColumnInfo(name = "date")
+    var date: LocalDateTime? = null
 )

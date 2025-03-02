@@ -1,7 +1,7 @@
 package br.com.fitnesspro.model.base
 
-import java.time.LocalDateTime
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 
-abstract class IntegratedModel: AuditableModel() {
-    abstract var transmissionDate: LocalDateTime?
+interface IntegratedModel: BaseModel {
+    var transmissionState: EnumTransmissionState
 }

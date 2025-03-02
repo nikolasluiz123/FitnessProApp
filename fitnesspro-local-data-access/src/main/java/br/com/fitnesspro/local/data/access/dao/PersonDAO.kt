@@ -6,18 +6,16 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.CommonExportFilter
+import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.tuple.PersonTuple
 import java.util.StringJoiner
 
 @Dao
-abstract class PersonDAO: AuditableMaintenanceDAO<Person>() {
+abstract class PersonDAO: IntegratedMaintenanceDAO<Person>() {
 
     @Query("select * from person where id = :id")
     abstract suspend fun findPersonById(id: String): Person
@@ -109,7 +107,7 @@ abstract class PersonDAO: AuditableMaintenanceDAO<Person>() {
     @Query("select exists (select 1 from person where id = :id)")
     abstract suspend fun hasPersonWithId(id: String): Boolean
 
-    suspend fun getExportationData(filter: CommonExportFilter, pageInfos: ExportPageInfos): List<Person> {
+    suspend fun getExportationData(pageInfos: ExportPageInfos): List<Person> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -121,17 +119,9 @@ abstract class PersonDAO: AuditableMaintenanceDAO<Person>() {
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where (p.creation_user_id = ? or p.update_user_id = ?) ")
-
-            filter.lastUpdateDate?.let {
-                add(" and p.update_date >= ? ")
-                params.add(it.format(EnumDateTimePatterns.DATE_TIME_SQLITE))
-            }
-
+            add(" where p.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
             add(" limit ? offset ? ")
 
-            params.add(filter.authenticatedUserId)
-            params.add(filter.authenticatedUserId)
             params.add(pageInfos.pageSize)
             params.add(pageInfos.pageSize * pageInfos.pageNumber)
         }

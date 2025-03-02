@@ -7,7 +7,7 @@ import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.scheduler.Scheduler
-import br.com.fitnesspro.model.sync.EnumSyncModule
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter

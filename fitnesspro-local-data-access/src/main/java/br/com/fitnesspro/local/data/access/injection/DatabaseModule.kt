@@ -22,7 +22,10 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(context, AppDatabase::class.java, "fitnesspro.db").build()
+        return Room
+            .databaseBuilder(context, AppDatabase::class.java, "fitnesspro.db")
+            .fallbackToDestructiveMigration() // TODO - Remover quando estiver em 'Producao'
+            .build()
     }
 
     @Provides

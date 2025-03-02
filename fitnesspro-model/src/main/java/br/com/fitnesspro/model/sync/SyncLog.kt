@@ -4,6 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.enums.EnumSyncStatus
+import br.com.fitnesspro.model.enums.EnumSyncType
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -28,4 +31,4 @@ data class SyncLog(
 
     @ColumnInfo(name = "process_details", typeAffinity = ColumnInfo.TEXT)
     var processDetails: String? = null,
-): BaseModel()
+): BaseModel

@@ -3,12 +3,10 @@ package br.com.fitnesspro.model.general
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.model.base.IntegratedModel
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import java.time.DayOfWeek
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
@@ -27,42 +25,16 @@ import java.util.UUID
             childColumns = ["academy_id"],
             onDelete = ForeignKey.CASCADE
         ),
-        ForeignKey(
-            entity = User::class,
-            parentColumns = ["id"],
-            childColumns = ["creation_user_id"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = User::class,
-            parentColumns = ["id"],
-            childColumns = ["update_user_id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [
-        Index("person_id"),
-        Index("academy_id"),
-        Index("creation_user_id"),
-        Index("update_user_id")
     ]
 )
 data class PersonAcademyTime(
     @PrimaryKey
     override val id: String = UUID.randomUUID().toString(),
-    @ColumnInfo(name = "transmission_date")
-    override var transmissionDate: LocalDateTime? = null,
-	@ColumnInfo(name = "creation_date", defaultValue = "CURRENT_TIMESTAMP")
-    override var creationDate: LocalDateTime = dateTimeNow(),
-    @ColumnInfo(name = "update_date", defaultValue = "CURRENT_TIMESTAMP")
-    override var updateDate: LocalDateTime = dateTimeNow(),
-    @ColumnInfo(name = "creation_user_id")
-    override var creationUserId: String? = null,
-    @ColumnInfo(name = "update_user_id")
-    override var updateUserId: String? = null,
-    @ColumnInfo(name = "person_id")
+    @ColumnInfo(name = "transmission_state", defaultValue = "PENDING")
+    override var transmissionState: EnumTransmissionState = EnumTransmissionState.PENDING,
+    @ColumnInfo(name = "person_id", index = true)
     var personId: String? = null,
-    @ColumnInfo(name = "academy_id")
+    @ColumnInfo(name = "academy_id", index = true)
     var academyId: String? = null,
     @ColumnInfo(name = "time_start")
     var timeStart: LocalTime? = null,
@@ -71,4 +43,4 @@ data class PersonAcademyTime(
     @ColumnInfo(name = "day_week")
     var dayOfWeek: DayOfWeek? = null,
     var active: Boolean = true,
-): IntegratedModel()
+): IntegratedModel

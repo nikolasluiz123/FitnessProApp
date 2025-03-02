@@ -1,4 +1,4 @@
-package br.com.fitnesspro.model.sync
+package br.com.fitnesspro.model.enums
 
 enum class EnumSyncStatus {
     RUNNING, SUCCESS, ERROR

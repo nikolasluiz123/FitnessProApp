@@ -6,14 +6,14 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.tuple.AcademyTuple
 import java.util.StringJoiner
 
 @Dao
-abstract class AcademyDAO: AuditableMaintenanceDAO<Academy>() {
+abstract class AcademyDAO: MaintenanceDAO<Academy>() {
 
     fun getAcademies(name: String): PagingSource<Int, AcademyTuple> {
         val params = mutableListOf<Any>()

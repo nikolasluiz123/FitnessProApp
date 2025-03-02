@@ -8,5 +8,5 @@ data class TOUser(
     var password: String? = null,
     var type: EnumUserType? = null,
     var active: Boolean = true,
-    var serviceToken: String? = null
-): BaseTO()
+    var serviceToken: String? = null,
+): BaseTO

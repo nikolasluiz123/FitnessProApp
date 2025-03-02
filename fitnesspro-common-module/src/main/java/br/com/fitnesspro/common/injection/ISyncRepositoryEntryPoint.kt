@@ -1,6 +1,6 @@
 package br.com.fitnesspro.common.injection
 
-import br.com.fitnesspro.local.data.access.dao.SyncHistoryDAO
+import br.com.fitnesspro.local.data.access.dao.ImportationHistoryDAO
 import br.com.fitnesspro.local.data.access.dao.SyncLogDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import dagger.hilt.EntryPoint
@@ -11,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface ISyncRepositoryEntryPoint {
 
-    fun getSyncHistoryDAO(): SyncHistoryDAO
+    fun getImportationHistoryDAO(): ImportationHistoryDAO
 
     fun getSyncLogDAO(): SyncLogDAO
 

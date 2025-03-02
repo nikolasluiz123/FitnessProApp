@@ -3,20 +3,20 @@ package br.com.fitnesspro.common.repository.sync.exportation.common
 import android.content.Context
 import android.util.Log
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
-import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.CommonExportFilter
+import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.base.IntegratedModel
-import br.com.fitnesspro.model.sync.EnumSyncType
+import br.com.fitnesspro.model.enums.EnumSyncType
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.sync.SyncLog
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import java.time.LocalDateTime
 
-abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedModel, DAO: AuditableMaintenanceDAO<MODEL>>(context: Context)
+abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedModel, DAO: IntegratedMaintenanceDAO<MODEL>>(context: Context)
     : AbstractSyncRepository<MODEL, DAO>(context) {
 
-    abstract suspend fun getExportationData(filter: CommonExportFilter, pageInfos: ExportPageInfos): List<MODEL>
+    abstract suspend fun getExportationData(pageInfos: ExportPageInfos): List<MODEL>
 
     abstract suspend fun callExportationService(modelList: List<MODEL>, token: String): PersistenceServiceResponse
 
@@ -25,20 +25,21 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
 
         if (user?.serviceToken != null) {
             try {
-                val exportFilter = CommonExportFilter(authenticatedUserId = user.id, lastUpdateDate = getLastSyncDate())
                 val pageInfos = ExportPageInfos(pageSize = getPageSize())
 
-                val log = saveRunningLog(exportFilter, pageInfos)
+                val log = saveRunningLog(pageInfos)
 
                 do {
-                    val models = getExportationData(exportFilter, pageInfos)
+                    val models = getExportationData(pageInfos)
 
                     if (models.isNotEmpty()) {
+                        updateTransmissionState(models, EnumTransmissionState.RUNNING)
+
                         val response = callExportationService(models, user.serviceToken!!)
 
                         if (response.success) {
                             updateLogWithSuccessIteration(log, models, pageInfos)
-                            updateTransmissionDate(models, response.transmissionDate)
+                            updateTransmissionState(models, EnumTransmissionState.TRANSMITTED)
 
                             pageInfos.pageNumber++
                         } else {
@@ -72,14 +73,11 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
         syncLogDAO.update(updatedLog)
     }
 
-    private suspend fun saveRunningLog(filter: CommonExportFilter, pageInfos: ExportPageInfos): SyncLog {
+    private suspend fun saveRunningLog(pageInfos: ExportPageInfos): SyncLog {
         val header = buildString {
             appendLine("=========================================")
             appendLine("           EXPORTATION START          ")
             appendLine("=========================================")
-            appendLine("Filter:")
-            appendLine("  lastUpdateDate: ${filter.lastUpdateDate ?: "N/A"}")
-            appendLine("-----------------------------------------")
             appendLine("PageInfos:")
             appendLine("  pageSize  : ${pageInfos.pageSize}")
             appendLine("  pageNumber: ${pageInfos.pageNumber}")
@@ -89,9 +87,9 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
         return insertRunningLog(header, EnumSyncType.EXPORTATION)
     }
 
-    private suspend fun updateTransmissionDate(models: List<MODEL>, transmissionDate: LocalDateTime?) {
-        models.forEach { it.transmissionDate = transmissionDate }
-        getOperationDAO().updateBatch(models, writeAuditableData = false)
+    private suspend fun updateTransmissionState(models: List<MODEL>, transmissionState: EnumTransmissionState) {
+        models.forEach { it.transmissionState = transmissionState }
+        getOperationDAO().updateBatch(models, writeTransmissionState = false)
     }
 
     companion object {

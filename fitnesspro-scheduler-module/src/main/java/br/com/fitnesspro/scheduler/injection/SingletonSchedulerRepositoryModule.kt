@@ -52,10 +52,9 @@ class SingletonSchedulerRepositoryModule {
         userDAO: UserDAO
     ): SchedulerConfigRepository {
         return SchedulerConfigRepository(
+            context = context,
             schedulerConfigDAO = schedulerConfigDAO,
-            schedulerWebClient = schedulerWebClient,
-            userDAO = userDAO,
-            context = context
+            schedulerWebClient = schedulerWebClient
         )
     }
 

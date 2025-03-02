@@ -3,9 +3,10 @@ package br.com.fitnesspro.common.repository.sync.importation.common
 import android.content.Context
 import android.util.Log
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
-import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
-import br.com.fitnesspro.model.base.AuditableModel
-import br.com.fitnesspro.model.sync.EnumSyncType
+import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
+import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.enums.EnumSyncType
+import br.com.fitnesspro.model.sync.ImportationHistory
 import br.com.fitnesspro.model.sync.SyncLog
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
@@ -13,8 +14,10 @@ import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import java.time.LocalDateTime
 
-abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: AuditableModel, DAO: AuditableMaintenanceDAO<MODEL>>(context: Context)
+abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO: MaintenanceDAO<MODEL>>(context: Context)
     : AbstractSyncRepository<MODEL, DAO>(context) {
+
+    private val importationHistoryDAO = entryPoint.getImportationHistoryDAO()
 
     abstract suspend fun getImportationData(
         token: String,
@@ -29,10 +32,12 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: AuditableModel
     suspend fun import() {
         getAuthenticatedUser()?.serviceToken?.let { token ->
             try {
-                val importFilter = CommonImportFilter(lastUpdateDate = getLastSyncDate())
+                val lastUpdateDate = importationHistoryDAO.getImportationHistory(getModule())?.date
+                val importFilter = CommonImportFilter(lastUpdateDate = lastUpdateDate)
                 val pageInfos = ImportPageInfos(pageSize = getPageSize())
 
                 val log = saveRunningLog(importFilter, pageInfos)
+                insertImportationHistory()
 
                 do {
                     val response = getImportationData(token, importFilter, pageInfos)
@@ -51,6 +56,8 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: AuditableModel
                 } while (response.values.size == pageInfos.pageSize)
 
                 updateLogWithSuccess(log)
+                updateImportationDate()
+
                 Log.d(TAG, log.processDetails!!)
             } catch (exception: Exception) {
                 saveUnknownError(exception, EnumSyncType.IMPORTATION)
@@ -117,6 +124,18 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: AuditableModel
 
         if (updateList.isNotEmpty()) {
             getOperationDAO().updateBatch(updateList)
+        }
+    }
+
+    private suspend fun insertImportationHistory() {
+        val model = ImportationHistory(getModule())
+        importationHistoryDAO.insert(model)
+    }
+
+    private suspend fun updateImportationDate() {
+        importationHistoryDAO.getImportationHistory(getModule())!!.apply {
+            date = LocalDateTime.now()
+            importationHistoryDAO.update(this)
         }
     }
 

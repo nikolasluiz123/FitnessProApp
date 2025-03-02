@@ -4,7 +4,7 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
-import br.com.fitnesspro.local.data.access.dao.UserDAO
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.to.TOSchedulerConfig
 import kotlinx.coroutines.Dispatchers.IO
@@ -13,8 +13,7 @@ import kotlinx.coroutines.withContext
 class SchedulerConfigRepository(
     context: Context,
     private val schedulerConfigDAO: SchedulerConfigDAO,
-    private val schedulerWebClient: SchedulerWebClient,
-    private val userDAO: UserDAO
+    private val schedulerWebClient: SchedulerWebClient
 ): FitnessProRepository(context) {
     suspend fun saveSchedulerConfig(toSchedulerConfig: TOSchedulerConfig) = withContext(IO) {
         val schedulerConfig = toSchedulerConfig.getSchedulerConfig()
@@ -27,13 +26,11 @@ class SchedulerConfigRepository(
         toSchedulerConfig: TOSchedulerConfig,
         schedulerConfig: SchedulerConfig
     ) {
-        val userId = userDAO.findByPersonId(toSchedulerConfig.personId!!).id
-
         if (toSchedulerConfig.id == null) {
-            schedulerConfigDAO.insert(schedulerConfig, userId, true)
+            schedulerConfigDAO.insert(schedulerConfig)
             toSchedulerConfig.id = schedulerConfig.id
         } else {
-            schedulerConfigDAO.update(schedulerConfig, userId, true)
+            schedulerConfigDAO.update(schedulerConfig)
         }
     }
 
@@ -41,7 +38,7 @@ class SchedulerConfigRepository(
         val response = schedulerWebClient.saveSchedulerConfig(schedulerConfig = schedulerConfig)
 
         if (response.success) {
-            schedulerConfigDAO.update(schedulerConfig.copy(transmissionDate = response.transmissionDate))
+            schedulerConfigDAO.update(schedulerConfig.copy(transmissionState = EnumTransmissionState.TRANSMITTED))
         }
     }
 
@@ -106,14 +103,14 @@ class SchedulerConfigRepository(
                 alarm = alarm,
                 notification = notification,
                 minScheduleDensity = minScheduleDensity!!,
-                maxScheduleDensity = maxScheduleDensity!!
+                maxScheduleDensity = maxScheduleDensity!!,
             )
         } else {
             schedulerConfigDAO.findSchedulerConfigById(id!!).copy(
                 alarm = alarm,
                 notification = notification,
                 minScheduleDensity = minScheduleDensity!!,
-                maxScheduleDensity = maxScheduleDensity!!
+                maxScheduleDensity = maxScheduleDensity!!,
             )
         }
     }

@@ -3,26 +3,23 @@ package br.com.fitnesspro.common.repository.sync.common
 import android.content.Context
 import br.com.fitnesspro.common.injection.ISyncRepositoryEntryPoint
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
-import br.com.fitnesspro.local.data.access.dao.SyncHistoryDAO
 import br.com.fitnesspro.local.data.access.dao.SyncLogDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
-import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
-import br.com.fitnesspro.model.base.AuditableModel
-import br.com.fitnesspro.model.sync.EnumSyncModule
-import br.com.fitnesspro.model.sync.EnumSyncStatus
-import br.com.fitnesspro.model.sync.EnumSyncType
+import br.com.fitnesspro.local.data.access.dao.common.BaseDAO
+import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.enums.EnumSyncStatus
+import br.com.fitnesspro.model.enums.EnumSyncType
 import br.com.fitnesspro.model.sync.SyncLog
 import br.com.fitnesspro.shared.communication.responses.IFitnessProServiceResponse
 import dagger.hilt.android.EntryPointAccessors
 import java.time.LocalDateTime
 
-abstract class AbstractSyncRepository<MODEL: AuditableModel, DAO: AuditableMaintenanceDAO<MODEL>>(context: Context): FitnessProRepository(context) {
+abstract class AbstractSyncRepository<MODEL: BaseModel, DAO: BaseDAO>(context: Context): FitnessProRepository(context) {
 
-    private val entryPoint: ISyncRepositoryEntryPoint = EntryPointAccessors.fromApplication(context, ISyncRepositoryEntryPoint::class.java)
+    protected val entryPoint: ISyncRepositoryEntryPoint = EntryPointAccessors.fromApplication(context, ISyncRepositoryEntryPoint::class.java)
 
     protected val userDAO: UserDAO = entryPoint.getUserDAO()
-
-    protected val syncHistoryDAO: SyncHistoryDAO = entryPoint.getSyncHistoryDAO()
 
     protected val syncLogDAO: SyncLogDAO = entryPoint.getSyncLogDAO()
 
@@ -33,10 +30,6 @@ abstract class AbstractSyncRepository<MODEL: AuditableModel, DAO: AuditableMaint
     abstract fun getModule(): EnumSyncModule
 
     open fun getPageSize(): Int = 200
-
-    protected suspend fun getLastSyncDate(): LocalDateTime? {
-        return syncHistoryDAO.getSyncHistory(getModule())?.lastSyncDate
-    }
 
     protected suspend fun insertRunningLog(header: String, syncType: EnumSyncType): SyncLog {
         val log = SyncLog(

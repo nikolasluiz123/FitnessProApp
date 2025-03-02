@@ -4,12 +4,11 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.CommonExportFilter
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumUserType.NUTRITIONIST
 import br.com.fitnesspro.model.enums.EnumUserType.PERSONAL_TRAINER
 import br.com.fitnesspro.model.scheduler.Scheduler
-import br.com.fitnesspro.model.sync.EnumSyncModule
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType.SUGGESTION
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType.UNIQUE
@@ -23,10 +22,9 @@ class SchedulerExportationRepository(
 ): AbstractExportationRepository<SchedulerDTO, Scheduler, SchedulerDAO>(context) {
 
     override suspend fun getExportationData(
-        filter: CommonExportFilter,
         pageInfos: ExportPageInfos
     ): List<Scheduler> {
-        return schedulerDAO.getExportationData(filter, pageInfos)
+        return schedulerDAO.getExportationData(pageInfos)
     }
 
     override fun getOperationDAO(): SchedulerDAO {

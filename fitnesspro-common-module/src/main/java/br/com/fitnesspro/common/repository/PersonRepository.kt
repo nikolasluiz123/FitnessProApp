@@ -9,6 +9,7 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
@@ -47,14 +48,14 @@ class PersonRepository(
 
     private suspend fun savePersonLocally(toPerson: TOPerson, user: User, person: Person) {
         if (toPerson.id == null) {
-            userDAO.insert(user, user.id, true)
-            personDAO.insert(person, user.id, true)
+            userDAO.insert(user)
+            personDAO.insert(person)
 
             toPerson.id = person.id
             toPerson.toUser?.id = user.id
         } else {
-            userDAO.update(user, user.id, true)
-            personDAO.update(person, user.id, true)
+            userDAO.update(user, true)
+            personDAO.update(person,true)
         }
     }
 
@@ -63,14 +64,12 @@ class PersonRepository(
 
         if (response.success) {
             userDAO.update(
-                model = user.copy(transmissionDate = response.transmissionDate),
-                userId = user.id,
-                writeAuditableData = true
+                model = user.copy(transmissionState = EnumTransmissionState.TRANSMITTED),
+                writeTransmissionState = true
             )
             personDAO.update(
-                model = person.copy(transmissionDate = response.transmissionDate),
-                userId = user.id,
-                writeAuditableData = true
+                model = person.copy(transmissionState = EnumTransmissionState.TRANSMITTED),
+                writeTransmissionState = true
             )
         }
     }
@@ -138,8 +137,8 @@ class PersonRepository(
             )
 
             if (response.success) {
-                val transmittedUsers = users.map { it.copy(transmissionDate = response.transmissionDate) }
-                val transmittedPersons = persons.map { it.copy(transmissionDate = response.transmissionDate) }
+                val transmittedUsers = users.map { it.copy(transmissionState = EnumTransmissionState.TRANSMITTED) }
+                val transmittedPersons = persons.map { it.copy(transmissionState = EnumTransmissionState.TRANSMITTED) }
 
                 userDAO.updateBatch(transmittedUsers)
                 personDAO.updateBatch(transmittedPersons)
@@ -191,14 +190,14 @@ class PersonRepository(
                 birthDate = birthDate,
                 phone = phone,
                 userId = userId,
-                active = active
+                active = active,
             )
         } else {
             personDAO.findPersonById(id!!).copy(
                 name = name,
                 birthDate = birthDate,
                 phone = phone,
-                active = active
+                active = active,
             )
         }
     }
@@ -209,14 +208,14 @@ class PersonRepository(
                 email = email,
                 password = password,
                 type = type,
-                active = active
+                active = active,
             )
         } else {
             userDAO.findById(id!!)!!.copy(
                 email = email,
                 password = password,
                 type = type,
-                active = active
+                active = active,
             )
         }
     }
@@ -229,7 +228,7 @@ class PersonRepository(
                 birthDate = birthDate,
                 phone = phone,
                 toUser = userDAO.findByPersonId(id).getTOUser(),
-                active = active
+                active = active,
             )
         }
     }
@@ -242,7 +241,7 @@ class PersonRepository(
                 password = password,
                 type = type,
                 active = active,
-                serviceToken = serviceToken
+                serviceToken = serviceToken,
             )
         }
     }

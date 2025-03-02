@@ -9,7 +9,7 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDecorator
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
-import br.com.fitnesspro.local.data.access.dao.UserDAO
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.to.TOAcademy
@@ -23,7 +23,6 @@ class AcademyRepository(
     context: Context,
     private val academyDAO: AcademyDAO,
     private val personAcademyTimeDAO: PersonAcademyTimeDAO,
-    private val userDAO: UserDAO,
     private val personWebClient: PersonWebClient
 ): FitnessProRepository(context) {
 
@@ -38,13 +37,11 @@ class AcademyRepository(
         toPersonAcademyTime: TOPersonAcademyTime,
         personAcademyTime: PersonAcademyTime
     ) {
-        val userId = getAuthenticatedUser()?.id!!
-
         if (toPersonAcademyTime.id == null) {
-            personAcademyTimeDAO.insert(personAcademyTime, userId, true)
+            personAcademyTimeDAO.insert(personAcademyTime)
             toPersonAcademyTime.id = personAcademyTime.id
         } else {
-            personAcademyTimeDAO.update(personAcademyTime, userId, true)
+            personAcademyTimeDAO.update(personAcademyTime, true)
         }
     }
 
@@ -56,7 +53,7 @@ class AcademyRepository(
             )
 
             if (response.success) {
-                personAcademyTimeDAO.update(personAcademyTime.copy(transmissionDate = response.transmissionDate))
+                personAcademyTimeDAO.update(personAcademyTime.copy(transmissionState = EnumTransmissionState.TRANSMITTED))
             }
         }
     }
@@ -122,54 +119,6 @@ class AcademyRepository(
         personAcademyTimeDAO.findPersonAcademyTimeById(personAcademyTimeId).getTOPersonAcademyTime()!!
     }
 
-    private fun Academy?.getTOAcademy(): TOAcademy? {
-        return this?.run {
-            TOAcademy(
-                id = id,
-                name = name,
-                address = address,
-                phone = phone,
-                active = active
-            )
-        }
-    }
-
-    private suspend fun PersonAcademyTime?.getTOPersonAcademyTime(): TOPersonAcademyTime? {
-        return this?.run {
-            TOPersonAcademyTime(
-                id = id,
-                personId = personId,
-                toAcademy = academyDAO.findAcademyById(academyId!!).getTOAcademy(),
-                timeStart = timeStart,
-                timeEnd = timeEnd,
-                dayOfWeek = dayOfWeek,
-                active = active
-            )
-        }
-    }
-
-    private suspend fun TOPersonAcademyTime.getPersonAcademyTime(): PersonAcademyTime {
-        return if (id != null) {
-            personAcademyTimeDAO.findPersonAcademyTimeById(id!!).copy(
-                personId = personId,
-                academyId = toAcademy?.id,
-                timeStart = timeStart,
-                timeEnd = timeEnd,
-                dayOfWeek = dayOfWeek,
-                active = active
-            )
-        } else {
-            PersonAcademyTime(
-                personId = personId,
-                academyId = toAcademy?.id,
-                timeStart = timeStart,
-                timeEnd = timeEnd,
-                dayOfWeek = dayOfWeek,
-                active = active
-            )
-        }
-    }
-
     suspend fun inactivatePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
         toPersonAcademyTime.active = false
         savePersonAcademyTime(toPersonAcademyTime)
@@ -213,10 +162,59 @@ class AcademyRepository(
             if (response.success) {
                 personAcademyTimeDAO.updateBatch(
                     models = personAcademyTimeList.map { 
-                        it.copy(transmissionDate = response.transmissionDate)
+                        it.copy(transmissionState = EnumTransmissionState.TRANSMITTED)
                     }
                 )
             }
+        }
+    }
+
+
+    private fun Academy?.getTOAcademy(): TOAcademy? {
+        return this?.run {
+            TOAcademy(
+                id = id,
+                name = name,
+                address = address,
+                phone = phone,
+                active = active,
+            )
+        }
+    }
+
+    private suspend fun PersonAcademyTime?.getTOPersonAcademyTime(): TOPersonAcademyTime? {
+        return this?.run {
+            TOPersonAcademyTime(
+                id = id,
+                personId = personId,
+                toAcademy = academyDAO.findAcademyById(academyId!!).getTOAcademy(),
+                timeStart = timeStart,
+                timeEnd = timeEnd,
+                dayOfWeek = dayOfWeek,
+                active = active,
+            )
+        }
+    }
+
+    private suspend fun TOPersonAcademyTime.getPersonAcademyTime(): PersonAcademyTime {
+        return if (id != null) {
+            personAcademyTimeDAO.findPersonAcademyTimeById(id!!).copy(
+                personId = personId,
+                academyId = toAcademy?.id,
+                timeStart = timeStart,
+                timeEnd = timeEnd,
+                dayOfWeek = dayOfWeek,
+                active = active,
+            )
+        } else {
+            PersonAcademyTime(
+                personId = personId,
+                academyId = toAcademy?.id,
+                timeStart = timeStart,
+                timeEnd = timeEnd,
+                dayOfWeek = dayOfWeek,
+                active = active,
+            )
         }
     }
 }

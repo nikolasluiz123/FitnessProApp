@@ -5,14 +5,14 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import java.time.DayOfWeek
 import java.time.LocalTime
 import java.util.StringJoiner
 
 @Dao
-abstract class PersonAcademyTimeDAO: AuditableMaintenanceDAO<PersonAcademyTime>() {
+abstract class PersonAcademyTimeDAO: IntegratedMaintenanceDAO<PersonAcademyTime>() {
 
     @Query("""
         select *

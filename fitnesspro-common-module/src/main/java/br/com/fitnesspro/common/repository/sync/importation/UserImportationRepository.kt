@@ -7,7 +7,7 @@ import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImpor
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.User
-import br.com.fitnesspro.model.sync.EnumSyncModule
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos

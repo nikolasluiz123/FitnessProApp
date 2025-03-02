@@ -8,5 +8,5 @@ data class TOPerson(
     var birthDate: LocalDate? = null,
     var phone: String? = null,
     var toUser: TOUser? = null,
-    var active: Boolean = true
-): BaseTO()
+    var active: Boolean = true,
+): BaseTO

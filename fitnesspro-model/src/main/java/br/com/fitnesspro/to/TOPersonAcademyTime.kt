@@ -10,5 +10,5 @@ data class TOPersonAcademyTime(
     var timeStart: LocalTime? = null,
     var timeEnd: LocalTime? = null,
     var dayOfWeek: DayOfWeek? = null,
-    var active: Boolean = true
-): BaseTO()
+    var active: Boolean = true,
+): BaseTO
