@@ -23,7 +23,7 @@ class FitnessProApplication : Application(), Configuration.Provider {
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
             .setWorkerFactory(hiltWorkerFactory)
-            .setMinimumLoggingLevel(android.util.Log.INFO)
+            .setMinimumLoggingLevel(android.util.Log.VERBOSE)
             .setExecutor(Dispatchers.IO.asExecutor())
             .build()
 
