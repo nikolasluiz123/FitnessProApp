@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter
 
 class LocalTimeTypeAdapter : JsonSerializer<LocalTime>, JsonDeserializer<LocalTime> {
 
-    private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_TIME
+    private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME
 
     override fun serialize(
         src: LocalTime?,

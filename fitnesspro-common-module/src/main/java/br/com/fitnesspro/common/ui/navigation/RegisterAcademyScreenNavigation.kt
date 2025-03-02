@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import br.com.fitnesspro.common.ui.viewmodel.RegisterAcademyViewModel
-import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
+import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.common.ui.screen.registeruser.RegisterAcademyScreen
 import com.google.gson.GsonBuilder
 
@@ -31,7 +31,7 @@ fun NavController.navigateToRegisterAcademyScreen(
     args: RegisterAcademyScreenArgs,
     navOptions: NavOptions? = null
 ) {
-    val json = GsonBuilder().defaultGSonComposeNavigation().toJson(args)
+    val json = GsonBuilder().defaultGSon().toJson(args)
 
     navigate(route = "$registerAcademyScreenRoute?$registerAcademyArguments={$json}", navOptions = navOptions)
 }

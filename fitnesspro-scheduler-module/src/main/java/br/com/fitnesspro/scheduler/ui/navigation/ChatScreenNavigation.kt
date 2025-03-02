@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
+import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.ChatScreen
 import br.com.fitnesspro.scheduler.ui.viewmodel.ChatViewModel
 import com.google.gson.GsonBuilder
@@ -29,7 +29,7 @@ fun NavGraphBuilder.chatScreen(
 }
 
 fun NavController.navigateToChatScreen(args: ChatArgs, navOptions: NavOptions? = null) {
-    val json = GsonBuilder().defaultGSonComposeNavigation().toJson(args)
+    val json = GsonBuilder().defaultGSon().toJson(args)
 
     navigate(route = "$chatScreenRoute?$chatArguments={$json}", navOptions = navOptions)
 }

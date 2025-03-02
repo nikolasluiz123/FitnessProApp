@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
+import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.SchedulerDetailsScreen
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnNavigateToCompromise
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerDetailsViewModel
@@ -32,7 +32,7 @@ fun NavGraphBuilder.schedulerDetailsScreen(
 }
 
 fun NavController.navigateToSchedulerDetailsScreen(args: SchedulerDetailsScreenArgs, navOptions: NavOptions? = null) {
-    val json = GsonBuilder().defaultGSonComposeNavigation().toJson(args)
+    val json = GsonBuilder().defaultGSon().toJson(args)
     navigate(route = "$schedulerDetailsScreenRoute?$schedulerDetailsArguments={$json}", navOptions = navOptions)
 }
 

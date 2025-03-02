@@ -10,7 +10,7 @@ import br.com.fitnesspro.common.ui.screen.registeruser.RegisterUserScreen
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAcademyItemClick
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAddAcademy
 import br.com.fitnesspro.common.ui.viewmodel.RegisterUserViewModel
-import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
+import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.to.TOPerson
 import com.google.gson.GsonBuilder
 
@@ -35,7 +35,7 @@ fun NavGraphBuilder.registerUserScreen(
 }
 
 fun NavController.navigateToRegisterUserScreen(args: RegisterUserScreenArgs, navOptions: NavOptions? = null) {
-    val json = GsonBuilder().defaultGSonComposeNavigation().toJson(args)
+    val json = GsonBuilder().defaultGSon().toJson(args)
 
     navigate(route = "$registerUserScreenRoute?$registerUserArguments={$json}", navOptions = navOptions)
 }

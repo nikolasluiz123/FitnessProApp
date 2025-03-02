@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import br.com.fitnesspro.core.extensions.defaultGSonComposeNavigation
+import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.CompromiseScreen
 import br.com.fitnesspro.scheduler.ui.viewmodel.CompromiseViewModel
 import com.google.gson.GsonBuilder
@@ -33,7 +33,7 @@ fun NavController.navigateToCompromiseScreen(
     args: CompromiseScreenArgs,
     navOptions: NavOptions? = null
 ) {
-    val json = GsonBuilder().defaultGSonComposeNavigation().toJson(args)
+    val json = GsonBuilder().defaultGSon().toJson(args)
 
     navigate(route = "$compromiseScreenRoute?$compromiseArguments={$json}", navOptions = navOptions)
 }

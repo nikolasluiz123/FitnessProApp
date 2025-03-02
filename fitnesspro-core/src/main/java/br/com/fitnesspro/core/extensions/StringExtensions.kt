@@ -47,7 +47,7 @@ fun String.formatJsonNavParam() = this.substring(1, this.length - 1)
  * @return O objeto do tipo especificado.
  * @receiver A string JSON a ser convertida.
  */
-fun <ARG> String.fromJsonNavParamToArgs(clazz: Class<ARG>, gson: Gson = GsonBuilder().defaultGSonComposeNavigation()): ARG {
+fun <ARG> String.fromJsonNavParamToArgs(clazz: Class<ARG>, gson: Gson = GsonBuilder().defaultGSon()): ARG {
     return gson.getAdapter(clazz).fromJson(this.formatJsonNavParam())
 }
 
