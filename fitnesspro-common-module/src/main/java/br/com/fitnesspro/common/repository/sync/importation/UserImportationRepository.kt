@@ -48,7 +48,6 @@ class UserImportationRepository(
             email = dto.email!!,
             password = dto.password!!,
             type = getEnumUserType(dto),
-            authenticated = dto.authenticated,
         )
     }
 

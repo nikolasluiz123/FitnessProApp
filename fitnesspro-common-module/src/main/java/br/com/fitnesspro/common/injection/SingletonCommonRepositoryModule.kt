@@ -33,6 +33,7 @@ class SingletonCommonRepositoryModule {
 
     @Provides
     fun provideUserRepository(
+        @ApplicationContext context: Context,
         userDAO: UserDAO,
         firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
         firebaseGoogleAuthenticationService: FirebaseGoogleAuthenticationService,
@@ -42,12 +43,14 @@ class SingletonCommonRepositoryModule {
             userDAO = userDAO,
             firebaseDefaultAuthenticationService = firebaseDefaultAuthenticationService,
             firebaseGoogleAuthenticationService = firebaseGoogleAuthenticationService,
-            authenticationWebClient = authenticationWebClient
+            authenticationWebClient = authenticationWebClient,
+            context = context
         )
     }
 
     @Provides
     fun providePersonRepository(
+        @ApplicationContext context: Context,
         personDAO: PersonDAO,
         userDAO: UserDAO,
         firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
@@ -57,12 +60,14 @@ class SingletonCommonRepositoryModule {
             personDAO = personDAO,
             userDAO = userDAO,
             firebaseDefaultAuthenticationService = firebaseDefaultAuthenticationService,
-            personWebClient = personWebClient
+            personWebClient = personWebClient,
+            context = context
         )
     }
 
     @Provides
     fun provideAcademyRepository(
+        @ApplicationContext context: Context,
         academyDAO: AcademyDAO,
         personAcademyTimeDAO: PersonAcademyTimeDAO,
         userDAO: UserDAO,
@@ -72,7 +77,8 @@ class SingletonCommonRepositoryModule {
             academyDAO = academyDAO,
             userDAO = userDAO,
             personWebClient = personWebClient,
-            personAcademyTimeDAO = personAcademyTimeDAO
+            personAcademyTimeDAO = personAcademyTimeDAO,
+            context = context
         )
     }
 

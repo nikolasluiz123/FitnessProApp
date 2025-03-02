@@ -27,7 +27,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: AuditableModel
     abstract suspend fun convertDTOToEntity(dto: DTO): MODEL
 
     suspend fun import() {
-        userDAO.getAuthenticatedUser()?.serviceToken?.let { token ->
+        getAuthenticatedUser()?.serviceToken?.let { token ->
             try {
                 val importFilter = CommonImportFilter(lastUpdateDate = getLastSyncDate())
                 val pageInfos = ImportPageInfos(pageSize = getPageSize())

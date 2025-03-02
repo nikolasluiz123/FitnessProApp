@@ -44,8 +44,10 @@ open class SavePersonUseCase(
         if (validationResults.isEmpty()) {
             toPerson.toUser!!.password = passwordHasher.hashPassword(toPerson.toUser?.password!!)
 
-            personRepository.savePerson(toPerson)
-            saveSchedulerConfigUseCase.saveConfig(toPerson.id!!)
+            personRepository.runInTransaction {
+                personRepository.savePerson(toPerson)
+                saveSchedulerConfigUseCase.saveConfig(toPerson.id!!)
+            }
         }
 
         return validationResults

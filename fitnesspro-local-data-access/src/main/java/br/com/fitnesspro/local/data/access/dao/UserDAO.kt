@@ -3,7 +3,6 @@ package br.com.fitnesspro.local.data.access.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
-import androidx.room.Transaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
@@ -65,21 +64,6 @@ abstract class UserDAO: AuditableMaintenanceDAO<User>() {
               where person.id = :personId
     """)
     abstract suspend fun findByPersonId(personId: String): User
-
-    @Query("update user set authenticated = 0 where authenticated = 1")
-    abstract suspend fun logoutAll()
-
-    @Query("update user set authenticated = 1 where email = :email and password = :hashedPassword")
-    abstract suspend fun authenticateWithCredentials(email: String, hashedPassword: String)
-
-    @Transaction
-    open suspend fun authenticate(email: String, hashedPassword: String) {
-        logoutAll()
-        authenticateWithCredentials(email, hashedPassword)
-    }
-
-    @Query("select * from user where authenticated = 1")
-    abstract suspend fun getAuthenticatedUser(): User?
 
     @Query("select exists (select 1 from user where id = :id)")
     abstract suspend fun hasUserWithId(id: String): Boolean

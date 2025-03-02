@@ -66,6 +66,7 @@ dependencies {
     implementation(project(":fitnesspro-firebase-api"))
 
     implementation(libs.fitnesspro.shared.communication)
+    implementation(libs.data.store)
 
     implementation(libs.google.gson)
     implementation(libs.java.faker)
@@ -76,6 +77,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     ksp(libs.dagger.hilt.compiler)
     ksp(libs.androidx.hilt.compiler)
+    implementation(libs.room.ktx)
     implementation(libs.room.paging)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

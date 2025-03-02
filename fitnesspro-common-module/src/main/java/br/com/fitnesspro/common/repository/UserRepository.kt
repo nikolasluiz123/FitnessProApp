@@ -1,6 +1,11 @@
 package br.com.fitnesspro.common.repository
 
+import android.content.Context
+import androidx.datastore.preferences.core.edit
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
+import br.com.fitnesspro.common.repository.common.FitnessProRepository
+import br.com.fitnesspro.core.extensions.PreferencesKey
+import br.com.fitnesspro.core.extensions.dataStore
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.UserDAO
@@ -12,11 +17,12 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
 class UserRepository(
+    context: Context,
     private val userDAO: UserDAO,
     private val firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
     private val firebaseGoogleAuthenticationService: FirebaseGoogleAuthenticationService,
     private val authenticationWebClient: AuthenticationWebClient
-) {
+): FitnessProRepository(context) {
 
     suspend fun hasUserWithEmail(email: String, userId: String?): Boolean = withContext(IO) {
         userDAO.hasUserWithEmail(email, userId)
@@ -27,7 +33,9 @@ class UserRepository(
     }
 
     suspend fun authenticate(email: String, password: String): Unit = withContext(IO) {
-        userDAO.authenticate(email, password)
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKey.USER] = userDAO.findByEmail(email)!!.id
+        }
 
         try {
             firebaseDefaultAuthenticationService.authenticate(email, password)
@@ -49,7 +57,7 @@ class UserRepository(
     }
 
     suspend fun getAuthenticatedTOUser(): TOUser? = withContext(IO) {
-        userDAO.getAuthenticatedUser()?.getTOUser()
+        getAuthenticatedUser()?.getTOUser()
     }
 
     suspend fun findUserById(userId: String): User? = withContext(IO) {
@@ -74,10 +82,13 @@ class UserRepository(
     }
 
     suspend fun logout() = withContext(IO) {
-        userDAO.logoutAll()
+        context.dataStore.edit {
+            it.remove(PreferencesKey.USER)
+        }
+
         firebaseDefaultAuthenticationService.logout()
 
-        userDAO.getAuthenticatedUser()?.let { user ->
+        getAuthenticatedUser()?.let { user ->
             authenticationWebClient.logout(
                 token = user.serviceToken!!,
                 email = user.email!!,

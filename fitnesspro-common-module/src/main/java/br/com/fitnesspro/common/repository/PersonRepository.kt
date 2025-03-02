@@ -1,9 +1,11 @@
 package br.com.fitnesspro.common.repository
 
+import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.room.Transaction
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
+import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
@@ -17,12 +19,13 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
 class PersonRepository(
+    context: Context,
     private val personDAO: PersonDAO,
     private val userDAO: UserDAO,
     private val firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
     private val personWebClient: PersonWebClient
-) {
-    @Transaction
+): FitnessProRepository(context) {
+
     suspend fun savePerson(toPerson: TOPerson) = withContext(IO) {
         val user = toPerson.toUser!!.getUser()
         val person = toPerson.getPerson(user.id)
@@ -116,7 +119,7 @@ class PersonRepository(
     }
 
     private suspend fun savePersonBatchRemote(toPersons: List<TOPerson>) {
-        userDAO.getAuthenticatedUser()?.serviceToken?.let { token ->
+        getAuthenticatedUser()?.serviceToken?.let { token ->
             val users = mutableListOf<User>()
             val persons = mutableListOf<Person>()
 
@@ -149,7 +152,7 @@ class PersonRepository(
     }
 
     suspend fun getAuthenticatedTOPerson(): TOPerson? = withContext(IO) {
-        val toUser = userDAO.getAuthenticatedUser()?.getTOUser() ?: return@withContext null
+        val toUser = getAuthenticatedUser()?.getTOUser() ?: return@withContext null
         personDAO.findPersonByUserId(toUser.id!!).getTOPerson()
     }
 

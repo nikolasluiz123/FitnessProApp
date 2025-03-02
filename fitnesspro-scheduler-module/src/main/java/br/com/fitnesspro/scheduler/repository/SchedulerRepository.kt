@@ -1,9 +1,11 @@
 package br.com.fitnesspro.scheduler.repository
 
+import android.content.Context
 import androidx.room.Transaction
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
@@ -21,13 +23,14 @@ import java.time.LocalTime
 import java.time.YearMonth
 
 class SchedulerRepository(
+    context: Context,
     private val schedulerDAO: SchedulerDAO,
     private val workoutDAO: WorkoutDAO,
     private val workoutGroupDAO: WorkoutGroupDAO,
     private val userRepository: UserRepository,
     private val personRepository: PersonRepository,
     private val schedulerWebClient: SchedulerWebClient
-) {
+): FitnessProRepository(context) {
 
     suspend fun saveScheduler(
         toScheduler: TOScheduler,

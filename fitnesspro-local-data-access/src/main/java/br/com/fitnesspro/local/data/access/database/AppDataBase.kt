@@ -46,7 +46,7 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 
 @Database(
-    version = 12,
+    version = 13,
     entities = [
         User::class, Person::class, Academy::class, PersonAcademyTime::class, PhysicEvaluation::class,
         IngredientPreDefinition::class, MealOptionPreDefinition::class, Diet::class, DayWeekDiet::class, Meal::class,
@@ -67,7 +67,8 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
         AutoMigration(from = 8, to = 9, spec = AutoMigrationSpec8To9::class),
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 10, to = 11),
-        AutoMigration(from = 11, to = 12)
+        AutoMigration(from = 11, to = 12),
+        AutoMigration(from = 12, to = 13, spec = AutoMigrationSpec12To13::class)
     ]
 )
 @TypeConverters(RoomTypeConverters::class)
@@ -104,3 +105,6 @@ class AutoMigrationSpec2To3 : AutoMigrationSpec
 @DeleteColumn("scheduler_config", "start_break_time")
 @DeleteColumn("scheduler_config", "end_break_time")
 class AutoMigrationSpec8To9 : AutoMigrationSpec
+
+@DeleteColumn("user", "authenticated")
+class AutoMigrationSpec12To13 : AutoMigrationSpec

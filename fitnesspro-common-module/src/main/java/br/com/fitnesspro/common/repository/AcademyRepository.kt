@@ -1,9 +1,11 @@
 package br.com.fitnesspro.common.repository
 
+import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDecorator
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
@@ -18,11 +20,12 @@ import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 
 class AcademyRepository(
+    context: Context,
     private val academyDAO: AcademyDAO,
     private val personAcademyTimeDAO: PersonAcademyTimeDAO,
     private val userDAO: UserDAO,
     private val personWebClient: PersonWebClient
-) {
+): FitnessProRepository(context) {
 
     suspend fun savePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
         val personAcademyTime = toPersonAcademyTime.getPersonAcademyTime()
@@ -35,7 +38,7 @@ class AcademyRepository(
         toPersonAcademyTime: TOPersonAcademyTime,
         personAcademyTime: PersonAcademyTime
     ) {
-        val userId = userDAO.getAuthenticatedUser()?.id!!
+        val userId = getAuthenticatedUser()?.id!!
 
         if (toPersonAcademyTime.id == null) {
             personAcademyTimeDAO.insert(personAcademyTime, userId, true)
@@ -46,7 +49,7 @@ class AcademyRepository(
     }
 
     private suspend fun savePersonAcademyTimeRemote(personAcademyTime: PersonAcademyTime) {
-        userDAO.getAuthenticatedUser()?.serviceToken?.let { token ->
+        getAuthenticatedUser()?.serviceToken?.let { token ->
             val response = personWebClient.savePersonAcademyTime(
                 token = token,
                 personAcademyTime = personAcademyTime
@@ -199,7 +202,7 @@ class AcademyRepository(
     }
 
     private suspend fun savePersonAcademyTimeBatchRemote(toPersonAcademyTimeList: List<TOPersonAcademyTime>) {
-        userDAO.getAuthenticatedUser()?.serviceToken?.let { token ->
+        getAuthenticatedUser()?.serviceToken?.let { token ->
             val personAcademyTimeList = toPersonAcademyTimeList.map { it.getPersonAcademyTime() }
 
             val response = personWebClient.savePersonAcademyTimeBatch(

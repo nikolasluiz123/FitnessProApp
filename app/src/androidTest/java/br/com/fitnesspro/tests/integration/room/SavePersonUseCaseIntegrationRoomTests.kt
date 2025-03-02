@@ -107,29 +107,6 @@ class SavePersonUseCaseIntegrationRoomTests {
     }
 
     @Test
-    fun should_logout_authenticated_user_when_another_user_authenticate(): Unit = runBlocking {
-        val userAuthenticated = User(
-            email = "teste@gmail.com",
-            password = "teste123456",
-            type = PERSONAL_TRAINER,
-            authenticated = true
-        )
-
-        val otherUser = User(
-            email = "teste2@gmail.com",
-            password = "teste2123456",
-            type = NUTRITIONIST,
-            authenticated = false
-        )
-
-        userDAO.insertBatch(listOf(userAuthenticated, otherUser))
-        userDAO.authenticate(otherUser.email!!, otherUser.password!!)
-
-        userDAO.findById(otherUser.id)!!.authenticated.shouldBeTrue()
-        userDAO.findById(userAuthenticated.id)!!.authenticated.shouldBeFalse()
-    }
-
-    @Test
     fun should_return_only_active_personal_trainers_when_get_personal_trainers(): Unit = runBlocking {
         savePersonList()
 

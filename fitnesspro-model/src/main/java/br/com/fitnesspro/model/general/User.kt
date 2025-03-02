@@ -49,8 +49,6 @@ data class User(
     var password: String? = null,
     var type: EnumUserType? = null,
     var active: Boolean = true,
-    @ColumnInfo(defaultValue = "0")
-    var authenticated: Boolean = false,
     @ColumnInfo(name = "service_token")
     var serviceToken: String? = null
 ): IntegratedModel()

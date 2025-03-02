@@ -127,7 +127,6 @@ class PersonWebClient(
             password = password,
             active = active,
             type = getUserType(type!!),
-            authenticated = authenticated
         )
     }
 

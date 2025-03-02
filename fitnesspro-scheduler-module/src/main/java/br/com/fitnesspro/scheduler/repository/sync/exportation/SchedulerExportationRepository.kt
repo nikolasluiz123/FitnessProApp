@@ -37,7 +37,7 @@ class SchedulerExportationRepository(
         modelList: List<Scheduler>,
         token: String
     ): PersistenceServiceResponse {
-        val userType = userDAO.getAuthenticatedUser()?.type!!
+        val userType = getAuthenticatedUser()?.type!!
         val schedulerType = if (userType in listOf(PERSONAL_TRAINER, NUTRITIONIST)) UNIQUE else SUGGESTION
 
         return schedulerWebClient.saveSchedulerBatch(token, modelList, schedulerType.name)

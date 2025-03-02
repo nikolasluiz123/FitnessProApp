@@ -25,6 +25,7 @@ class SingletonSchedulerRepositoryModule {
 
     @Provides
     fun provideSchedulerRepository(
+        @ApplicationContext context: Context,
         schedulerDAO: SchedulerDAO,
         workoutDAO: WorkoutDAO,
         workoutGroupDAO: WorkoutGroupDAO,
@@ -38,12 +39,14 @@ class SingletonSchedulerRepositoryModule {
             userRepository = userRepository,
             personRepository = personRepository,
             schedulerWebClient = schedulerWebClient,
-            workoutGroupDAO = workoutGroupDAO
+            workoutGroupDAO = workoutGroupDAO,
+            context = context
         )
     }
 
     @Provides
     fun provideSchedulerConfigRepository(
+        @ApplicationContext context: Context,
         schedulerConfigDAO: SchedulerConfigDAO,
         schedulerWebClient: SchedulerWebClient,
         userDAO: UserDAO
@@ -51,7 +54,8 @@ class SingletonSchedulerRepositoryModule {
         return SchedulerConfigRepository(
             schedulerConfigDAO = schedulerConfigDAO,
             schedulerWebClient = schedulerWebClient,
-            userDAO = userDAO
+            userDAO = userDAO,
+            context = context
         )
     }
 

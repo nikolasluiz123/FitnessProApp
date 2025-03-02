@@ -1,6 +1,8 @@
 package br.com.fitnesspro.common.repository
 
+import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
+import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
@@ -9,10 +11,11 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
 class SchedulerConfigRepository(
+    context: Context,
     private val schedulerConfigDAO: SchedulerConfigDAO,
     private val schedulerWebClient: SchedulerWebClient,
     private val userDAO: UserDAO
-) {
+): FitnessProRepository(context) {
     suspend fun saveSchedulerConfig(toSchedulerConfig: TOSchedulerConfig) = withContext(IO) {
         val schedulerConfig = toSchedulerConfig.getSchedulerConfig()
 
@@ -24,7 +27,7 @@ class SchedulerConfigRepository(
         toSchedulerConfig: TOSchedulerConfig,
         schedulerConfig: SchedulerConfig
     ) {
-        val userId = userDAO.getAuthenticatedUser()?.id!!
+        val userId = userDAO.findByPersonId(toSchedulerConfig.personId!!).id
 
         if (toSchedulerConfig.id == null) {
             schedulerConfigDAO.insert(schedulerConfig, userId, true)
@@ -71,7 +74,7 @@ class SchedulerConfigRepository(
     }
 
     private suspend fun saveSchedulerConfigBatchRemote(toSchedulerConfigs: List<TOSchedulerConfig>) {
-        userDAO.getAuthenticatedUser()?.serviceToken?.let { token ->
+        getAuthenticatedUser()?.serviceToken?.let { token ->
             schedulerWebClient.saveSchedulerConfigBatch(
                 token = token,
                 schedulerConfigList = toSchedulerConfigs.map { it.getSchedulerConfig() }

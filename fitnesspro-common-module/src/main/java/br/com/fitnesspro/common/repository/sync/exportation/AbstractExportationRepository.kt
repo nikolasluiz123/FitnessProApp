@@ -21,7 +21,7 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
     abstract suspend fun callExportationService(modelList: List<MODEL>, token: String): PersistenceServiceResponse
 
     suspend fun export() {
-        userDAO.getAuthenticatedUser()?.let { user ->
+        getAuthenticatedUser()?.let { user ->
             try {
                 val exportFilter = CommonExportFilter(authenticatedUserId = user.id, lastUpdateDate = getLastSyncDate())
                 val pageInfos = ExportPageInfos(pageSize = getPageSize())
