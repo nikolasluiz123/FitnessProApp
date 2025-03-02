@@ -2,7 +2,7 @@ package br.com.fitnesspro.scheduler.repository.sync.exportation
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
-import br.com.fitnesspro.common.repository.sync.exportation.AbstractExportationRepository
+import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.CommonExportFilter
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos

@@ -1,4 +1,4 @@
-package br.com.fitnesspro.common.repository.sync.exportation
+package br.com.fitnesspro.common.repository.sync.exportation.common
 
 import android.content.Context
 import android.util.Log
