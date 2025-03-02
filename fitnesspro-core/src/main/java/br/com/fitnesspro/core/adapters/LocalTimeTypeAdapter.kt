@@ -8,7 +8,6 @@ import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 import java.lang.reflect.Type
 import java.time.LocalTime
-import java.time.OffsetTime
 import java.time.format.DateTimeFormatter
 
 class LocalTimeTypeAdapter : JsonSerializer<LocalTime>, JsonDeserializer<LocalTime> {
@@ -20,7 +19,7 @@ class LocalTimeTypeAdapter : JsonSerializer<LocalTime>, JsonDeserializer<LocalTi
         typeOfSrc: Type?,
         context: JsonSerializationContext?
     ): JsonElement {
-        return JsonPrimitive(src?.atOffset(OffsetTime.now().offset)?.format(formatter))
+        return JsonPrimitive(src?.format(formatter))
     }
 
     override fun deserialize(
@@ -28,6 +27,6 @@ class LocalTimeTypeAdapter : JsonSerializer<LocalTime>, JsonDeserializer<LocalTi
         typeOfT: Type?,
         context: JsonDeserializationContext?
     ): LocalTime {
-        return OffsetTime.parse(json?.asString, formatter).toLocalTime()
+        return LocalTime.parse(json?.asString, formatter)
     }
 }
