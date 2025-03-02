@@ -6,7 +6,6 @@ import androidx.lifecycle.SavedStateHandle
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
-import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.common.ui.navigation.registerUserArguments
@@ -25,7 +24,6 @@ import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.callback.showInformationDialog
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
@@ -46,7 +44,6 @@ import javax.inject.Inject
 class RegisterUserViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val savePersonUseCase: SavePersonUseCase,
-    private val userRepository: UserRepository,
     private val personRepository: PersonRepository,
     private val academyRepository: AcademyRepository,
     savedStateHandle: SavedStateHandle
@@ -185,13 +182,9 @@ class RegisterUserViewModel @Inject constructor(
                         isVisibleFieldPhone = isVisibleFieldPhone(context = null, toPerson = toPerson),
                         name = it.name.copy(value = toPerson.name!!),
                         email = it.email.copy(value = toPerson.toUser?.email!!),
-                        birthDate = it.birthDate.copy(
-                            value = toPerson.birthDate?.format(DATE) ?: ""
-                        ),
+                        birthDate = it.birthDate.copy(value = toPerson.birthDate?.format(DATE_ONLY_NUMBERS) ?: ""),
                         phone = it.phone.copy(value = toPerson.phone ?: ""),
-                        tabState = it.tabState.copy(
-                            tabs = getTabListAllEnabled()
-                        )
+                        tabState = it.tabState.copy(tabs = getTabListAllEnabled())
                     )
                 }
             }
