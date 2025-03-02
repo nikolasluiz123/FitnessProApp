@@ -1,5 +1,6 @@
 package br.com.fitnesspro.common.repository.sync.exportation
 
+import android.content.Context
 import android.util.Log
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
 import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
@@ -10,18 +11,16 @@ import br.com.fitnesspro.model.sync.EnumSyncType
 import br.com.fitnesspro.model.sync.SyncLog
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
-abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedModel, DAO: AuditableMaintenanceDAO<MODEL>>
-    : AbstractSyncRepository<MODEL, DAO>() {
+abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedModel, DAO: AuditableMaintenanceDAO<MODEL>>(context: Context)
+    : AbstractSyncRepository<MODEL, DAO>(context) {
 
     abstract suspend fun getExportationData(filter: CommonExportFilter, pageInfos: ExportPageInfos): List<MODEL>
 
     abstract suspend fun callExportationService(modelList: List<MODEL>, token: String): PersistenceServiceResponse
 
-    suspend fun export() = withContext(IO) {
+    suspend fun export() {
         userDAO.getAuthenticatedUser()?.let { user ->
             try {
                 val exportFilter = CommonExportFilter(authenticatedUserId = user.id, lastUpdateDate = getLastSyncDate())
@@ -90,7 +89,7 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
 
     private suspend fun updateTransmissionDate(models: List<MODEL>, transmissionDate: LocalDateTime?) {
         models.forEach { it.transmissionDate = transmissionDate }
-        operationDAO.updateBatch(models, writeAuditableData = false)
+        getOperationDAO().updateBatch(models, writeAuditableData = false)
     }
 
     companion object {

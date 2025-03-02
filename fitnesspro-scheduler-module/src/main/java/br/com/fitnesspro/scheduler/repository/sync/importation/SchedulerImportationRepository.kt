@@ -1,5 +1,6 @@
 package br.com.fitnesspro.scheduler.repository.sync.importation
 
+import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
@@ -16,9 +17,10 @@ import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType as EnumCompro
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation as EnumSchedulerSituationService
 
 class SchedulerImportationRepository(
+    context: Context,
     private val schedulerDAO: SchedulerDAO,
     private val webClient: SchedulerWebClient
-): AbstractImportationRepository<SchedulerDTO, Scheduler, SchedulerDAO>() {
+): AbstractImportationRepository<SchedulerDTO, Scheduler, SchedulerDAO>(context) {
 
     override fun getDescription(): String {
         return context.getString(R.string.scheduler_importation_descrition)
@@ -36,6 +38,10 @@ class SchedulerImportationRepository(
 
     override suspend fun hasEntityWithId(id: String): Boolean {
         return schedulerDAO.hasSchedulerWithId(id)
+    }
+
+    override fun getOperationDAO(): SchedulerDAO {
+        return schedulerDAO
     }
 
     override suspend fun convertDTOToEntity(dto: SchedulerDTO): Scheduler {

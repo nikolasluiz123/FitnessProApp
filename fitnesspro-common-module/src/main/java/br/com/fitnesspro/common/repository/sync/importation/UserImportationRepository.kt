@@ -1,5 +1,6 @@
 package br.com.fitnesspro.common.repository.sync.importation
 
+import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
@@ -14,8 +15,9 @@ import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import br.com.fitnesspro.models.general.enums.EnumUserType as EnumUserTypeService
 
 class UserImportationRepository(
+    context: Context,
     private val webClient: PersonWebClient
-): AbstractImportationRepository<UserDTO, User, UserDAO>() {
+): AbstractImportationRepository<UserDTO, User, UserDAO>(context) {
 
     override fun getDescription(): String {
         return context.getString(R.string.user_importation_descrition)
@@ -33,6 +35,10 @@ class UserImportationRepository(
 
     override suspend fun hasEntityWithId(id: String): Boolean {
         return userDAO.hasUserWithId(id)
+    }
+
+    override fun getOperationDAO(): UserDAO {
+        return userDAO
     }
 
     override suspend fun convertDTOToEntity(dto: UserDTO): User {

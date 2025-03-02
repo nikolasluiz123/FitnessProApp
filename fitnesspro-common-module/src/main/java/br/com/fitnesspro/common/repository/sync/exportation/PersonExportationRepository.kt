@@ -1,5 +1,6 @@
 package br.com.fitnesspro.common.repository.sync.exportation
 
+import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
@@ -11,14 +12,20 @@ import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 
 class PersonExportationRepository(
+    context: Context,
+    private val personDAO: PersonDAO,
     private val personWebClient: PersonWebClient,
-): AbstractExportationRepository<PersonDTO, Person, PersonDAO>() {
+): AbstractExportationRepository<PersonDTO, Person, PersonDAO>(context) {
 
     override suspend fun getExportationData(
         filter: CommonExportFilter,
         pageInfos: ExportPageInfos
     ): List<Person> {
-        return operationDAO.getExportationData(filter, pageInfos)
+        return personDAO.getExportationData(filter, pageInfos)
+    }
+
+    override fun getOperationDAO(): PersonDAO {
+        return personDAO
     }
 
     override suspend fun callExportationService(

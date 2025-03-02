@@ -1,5 +1,6 @@
 package br.com.fitnesspro.common.repository.sync.exportation
 
+import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
@@ -11,14 +12,20 @@ import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 
 class SchedulerConfigExportationRepository(
+    context: Context,
+    private val schedulerConfigDAO: SchedulerConfigDAO,
     private val schedulerWebClient: SchedulerWebClient
-): AbstractExportationRepository<SchedulerConfigDTO, SchedulerConfig, SchedulerConfigDAO>() {
+): AbstractExportationRepository<SchedulerConfigDTO, SchedulerConfig, SchedulerConfigDAO>(context) {
 
     override suspend fun getExportationData(
         filter: CommonExportFilter,
         pageInfos: ExportPageInfos
     ): List<SchedulerConfig> {
-        return operationDAO.getExportationData(filter, pageInfos)
+        return schedulerConfigDAO.getExportationData(filter, pageInfos)
+    }
+
+    override fun getOperationDAO(): SchedulerConfigDAO {
+        return schedulerConfigDAO
     }
 
     override suspend fun callExportationService(

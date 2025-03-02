@@ -1,5 +1,6 @@
 package br.com.fitnesspro.common.injection
 
+import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
@@ -23,6 +24,7 @@ import br.com.fitnesspro.local.data.access.dao.UserDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
 @Module
@@ -76,61 +78,77 @@ class SingletonCommonRepositoryModule {
 
     @Provides
     fun provideUserImportationRepository(
+        @ApplicationContext context: Context,
         personWebClient: PersonWebClient
     ): UserImportationRepository {
         return UserImportationRepository(
-            webClient = personWebClient
+            webClient = personWebClient,
+            context = context
         )
     }
 
     @Provides
     fun provideAcademyImportationRepository(
+        @ApplicationContext context: Context,
         academyDAO: AcademyDAO,
         academyWebClient: AcademyWebClient
     ): AcademyImportationRepository {
         return AcademyImportationRepository(
             academyDAO = academyDAO,
-            academyWebClient = academyWebClient
+            academyWebClient = academyWebClient,
+            context = context
         )
     }
 
     @Provides
     fun providePersonImportationRepository(
+        @ApplicationContext context: Context,
         personDAO: PersonDAO,
         personWebClient: PersonWebClient
     ): PersonImportationRepository {
         return PersonImportationRepository(
             personDAO = personDAO,
-            webClient = personWebClient
+            webClient = personWebClient,
+            context = context
         )
     }
 
     @Provides
     fun provideSchedulerConfigImportationRepository(
+        @ApplicationContext context: Context,
         schedulerConfigDAO: SchedulerConfigDAO,
         schedulerWebClient: SchedulerWebClient
     ): SchedulerConfigImportationRepository {
         return SchedulerConfigImportationRepository(
             schedulerConfigDAO = schedulerConfigDAO,
-            webClient = schedulerWebClient
+            webClient = schedulerWebClient,
+            context = context
         )
     }
 
     @Provides
     fun providePersonExportationRepository(
+        @ApplicationContext context: Context,
+        personDAO: PersonDAO,
         personWebClient: PersonWebClient
     ): PersonExportationRepository {
         return PersonExportationRepository(
-            personWebClient = personWebClient
+            personWebClient = personWebClient,
+            personDAO = personDAO,
+            context = context
         )
     }
 
     @Provides
     fun provideSchedulerConfigExportationRepository(
-        schedulerWebClient: SchedulerWebClient
+        @ApplicationContext context: Context,
+        schedulerWebClient: SchedulerWebClient,
+        schedulerConfigDAO: SchedulerConfigDAO
     ): SchedulerConfigExportationRepository {
         return SchedulerConfigExportationRepository(
-            schedulerWebClient = schedulerWebClient
+            schedulerWebClient = schedulerWebClient,
+            schedulerConfigDAO = schedulerConfigDAO,
+            context = context
         )
     }
 }

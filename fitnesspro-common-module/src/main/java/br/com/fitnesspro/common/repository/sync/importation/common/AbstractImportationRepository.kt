@@ -1,5 +1,6 @@
 package br.com.fitnesspro.common.repository.sync.importation.common
 
+import android.content.Context
 import android.util.Log
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
 import br.com.fitnesspro.local.data.access.dao.common.AuditableMaintenanceDAO
@@ -10,12 +11,10 @@ import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
-abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: AuditableModel, DAO: AuditableMaintenanceDAO<MODEL>>
-    : AbstractSyncRepository<MODEL, DAO>() {
+abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: AuditableModel, DAO: AuditableMaintenanceDAO<MODEL>>(context: Context)
+    : AbstractSyncRepository<MODEL, DAO>(context) {
 
     abstract suspend fun getImportationData(
         token: String,
@@ -27,7 +26,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: AuditableModel
 
     abstract suspend fun convertDTOToEntity(dto: DTO): MODEL
 
-    suspend fun import() = withContext(IO) {
+    suspend fun import() {
         userDAO.getAuthenticatedUser()?.serviceToken?.let { token ->
             try {
                 val importFilter = CommonImportFilter(lastUpdateDate = getLastSyncDate())
@@ -113,11 +112,11 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: AuditableModel
 
     private suspend fun saveDataLocally(insertionList: List<MODEL>, updateList: List<MODEL>) {
         if (insertionList.isNotEmpty()) {
-            operationDAO.insertBatch(insertionList)
+            getOperationDAO().insertBatch(insertionList)
         }
 
         if (updateList.isNotEmpty()) {
-            operationDAO.updateBatch(updateList)
+            getOperationDAO().updateBatch(updateList)
         }
     }
 

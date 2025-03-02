@@ -1,5 +1,6 @@
 package br.com.fitnesspro.scheduler.injection
 
+import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
@@ -15,6 +16,7 @@ import br.com.fitnesspro.scheduler.repository.sync.importation.SchedulerImportat
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
 @Module
@@ -55,21 +57,27 @@ class SingletonSchedulerRepositoryModule {
 
     @Provides
     fun provideSchedulerImportationRepository(
+        @ApplicationContext context: Context,
         schedulerDAO: SchedulerDAO,
         schedulerWebClient: SchedulerWebClient
     ): SchedulerImportationRepository {
         return SchedulerImportationRepository(
             schedulerDAO = schedulerDAO,
-            webClient = schedulerWebClient
+            webClient = schedulerWebClient,
+            context = context
         )
     }
 
     @Provides
     fun provideSchedulerExportationRepository(
+        @ApplicationContext context: Context,
+        schedulerDAO: SchedulerDAO,
         schedulerWebClient: SchedulerWebClient
     ): SchedulerExportationRepository {
         return SchedulerExportationRepository(
-            schedulerWebClient = schedulerWebClient
+            schedulerWebClient = schedulerWebClient,
+            schedulerDAO = schedulerDAO,
+            context = context
         )
     }
 

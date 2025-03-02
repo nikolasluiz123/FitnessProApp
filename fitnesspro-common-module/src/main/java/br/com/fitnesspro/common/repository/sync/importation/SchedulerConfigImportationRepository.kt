@@ -1,5 +1,6 @@
 package br.com.fitnesspro.common.repository.sync.importation
 
+import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
@@ -12,9 +13,10 @@ import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 
 class SchedulerConfigImportationRepository(
+    context: Context,
     private val schedulerConfigDAO: SchedulerConfigDAO,
     private val webClient: SchedulerWebClient
-): AbstractImportationRepository<SchedulerConfigDTO, SchedulerConfig, SchedulerConfigDAO>() {
+): AbstractImportationRepository<SchedulerConfigDTO, SchedulerConfig, SchedulerConfigDAO>(context) {
 
     override fun getDescription(): String {
         return context.getString(R.string.scheduler_config_importation_descrition)
@@ -32,6 +34,10 @@ class SchedulerConfigImportationRepository(
 
     override suspend fun hasEntityWithId(id: String): Boolean {
         return schedulerConfigDAO.hasSchedulerConfigWithId(id)
+    }
+
+    override fun getOperationDAO(): SchedulerConfigDAO {
+        return schedulerConfigDAO
     }
 
     override suspend fun convertDTOToEntity(dto: SchedulerConfigDTO): SchedulerConfig {

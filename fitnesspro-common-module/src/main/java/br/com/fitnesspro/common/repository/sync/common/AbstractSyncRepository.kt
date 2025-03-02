@@ -1,6 +1,7 @@
 package br.com.fitnesspro.common.repository.sync.common
 
 import android.content.Context
+import br.com.fitnesspro.common.injection.ISyncRepositoryEntryPoint
 import br.com.fitnesspro.local.data.access.dao.SyncHistoryDAO
 import br.com.fitnesspro.local.data.access.dao.SyncLogDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
@@ -11,26 +12,20 @@ import br.com.fitnesspro.model.sync.EnumSyncStatus
 import br.com.fitnesspro.model.sync.EnumSyncType
 import br.com.fitnesspro.model.sync.SyncLog
 import br.com.fitnesspro.shared.communication.responses.IFitnessProServiceResponse
-import dagger.hilt.android.qualifiers.ApplicationContext
-import jakarta.inject.Inject
+import dagger.hilt.android.EntryPointAccessors
 import java.time.LocalDateTime
 
-abstract class AbstractSyncRepository<MODEL: AuditableModel, DAO: AuditableMaintenanceDAO<MODEL>> {
+abstract class AbstractSyncRepository<MODEL: AuditableModel, DAO: AuditableMaintenanceDAO<MODEL>>(val context: Context) {
 
-    @ApplicationContext
-    protected lateinit var context: Context
+    private val entryPoint: ISyncRepositoryEntryPoint = EntryPointAccessors.fromApplication(context, ISyncRepositoryEntryPoint::class.java)
 
-    @Inject
-    lateinit var userDAO: UserDAO
+    protected val userDAO: UserDAO = entryPoint.getUserDAO()
 
-    @Inject
-    lateinit var syncHistoryDAO: SyncHistoryDAO
+    protected val syncHistoryDAO: SyncHistoryDAO = entryPoint.getSyncHistoryDAO()
 
-    @Inject
-    lateinit var syncLogDAO: SyncLogDAO
+    protected val syncLogDAO: SyncLogDAO = entryPoint.getSyncLogDAO()
 
-    @Inject
-    lateinit var operationDAO: DAO
+    abstract fun getOperationDAO(): DAO
 
     abstract fun getDescription(): String
 

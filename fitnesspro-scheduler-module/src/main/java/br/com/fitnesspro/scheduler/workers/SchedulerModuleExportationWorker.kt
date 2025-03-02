@@ -7,23 +7,25 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.core.worker.FitnessProOneTimeCoroutineWorker
 import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
-import br.com.fitnesspro.scheduler.repository.sync.exportation.SchedulerExportationRepository
+import br.com.fitnesspro.scheduler.injection.IScheduleWorkersEntryPoint
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import dagger.hilt.android.EntryPointAccessors
 
 @HiltWorker
 class SchedulerModuleExportationWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
-    private val schedulerExportationRepository: SchedulerExportationRepository
 ) : FitnessProOneTimeCoroutineWorker(context, workerParams) {
+
+    private val entryPoint = EntryPointAccessors.fromApplication(context, IScheduleWorkersEntryPoint::class.java)
 
     override fun onError(e: Exception) {
         e.sendToFirebaseCrashlytics()
     }
 
     override suspend fun onWorkOneTime() {
-        schedulerExportationRepository.export()
+        entryPoint.getSchedulerExportationRepository().export()
     }
 
     override fun getClazz() = javaClass

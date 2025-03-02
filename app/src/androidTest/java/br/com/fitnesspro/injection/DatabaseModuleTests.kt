@@ -55,4 +55,13 @@ class DatabaseModuleTests {
     @Provides
     @Singleton
     fun provideWorkoutGroupDao(appDatabase: AppDatabase) = appDatabase.workoutGroupDAO()
+
+    @Provides
+    @Singleton
+    fun provideSyncHistoryDao(appDatabase: AppDatabase) = appDatabase.syncHistoryDAO()
+
+    @Provides
+    @Singleton
+    fun provideSyncLogDao(appDatabase: AppDatabase) = appDatabase.syncLogDAO()
+
 }
