@@ -12,6 +12,6 @@ import java.time.LocalTime
 fun GsonBuilder.defaultGSon(): Gson {
     return this.registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeTypeAdapter())
         .registerTypeAdapter(LocalDate::class.java, LocalDateTypeAdapter())
-        .registerTypeHierarchyAdapter(LocalTime::class.java, LocalTimeTypeAdapter())
+        .registerTypeAdapter(LocalTime::class.java, LocalTimeTypeAdapter())
         .create()
 }

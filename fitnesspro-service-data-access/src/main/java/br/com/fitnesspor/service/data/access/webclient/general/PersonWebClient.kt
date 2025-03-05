@@ -4,6 +4,7 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.extensions.getResponseBody
 import br.com.fitnesspor.service.data.access.service.general.IPersonService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
+import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.PersonAcademyTime
@@ -15,6 +16,7 @@ import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
+import com.google.gson.GsonBuilder
 import br.com.fitnesspro.models.general.enums.EnumUserType as EnumUserTypeService
 
 class PersonWebClient(
@@ -84,10 +86,12 @@ class PersonWebClient(
     ): ReadServiceResponse<UserDTO> {
         return readServiceErrorHandlingBlock(
             codeBlock = {
+                val gson = GsonBuilder().defaultGSon()
+
                 personService.importUsers(
                     token = formatToken(token),
-                    filter = filter,
-                    pageInfos = pageInfos
+                    filter = gson.toJson(filter),
+                    pageInfos = gson.toJson(pageInfos)
                 ).getResponseBody()
             }
         )
@@ -100,10 +104,12 @@ class PersonWebClient(
     ): ReadServiceResponse<PersonDTO> {
         return readServiceErrorHandlingBlock(
             codeBlock = {
+                val gson = GsonBuilder().defaultGSon()
+
                 personService.importPersons(
                     token = formatToken(token),
-                    filter = filter,
-                    pageInfos = pageInfos
+                    filter = gson.toJson(filter),
+                    pageInfos = gson.toJson(pageInfos)
                 ).getResponseBody()
             }
         )

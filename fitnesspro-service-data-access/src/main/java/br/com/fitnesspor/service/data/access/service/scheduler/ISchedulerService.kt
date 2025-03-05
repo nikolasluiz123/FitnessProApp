@@ -8,12 +8,11 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_EX
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_IMPORT
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
-import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -41,17 +40,17 @@ interface ISchedulerService {
         @Body schedulerConfigDTOList: List<SchedulerConfigDTO>
     ): Response<PersistenceServiceResponse>
 
-    @POST("$SCHEDULER$SCHEDULER_IMPORT")
+    @GET("$SCHEDULER$SCHEDULER_IMPORT")
     suspend fun importSchedules(
         @Header("Authorization") token: String,
-        @Body filter: CommonImportFilter,
-        @Query("pageInfos") pageInfos: ImportPageInfos
+        @Query("filter") filter: String,
+        @Query("pageInfos") pageInfos: String
     ): Response<ReadServiceResponse<SchedulerDTO>>
 
-    @POST("$SCHEDULER$SCHEDULER_CONFIG_IMPORT")
+    @GET("$SCHEDULER$SCHEDULER_CONFIG_IMPORT")
     suspend fun importScheduleConfigs(
         @Header("Authorization") token: String,
-        @Body filter: CommonImportFilter,
-        @Query("pageInfos") pageInfos: ImportPageInfos
+        @Query("filter") filter: String,
+        @Query("pageInfos") pageInfos: String
     ): Response<ReadServiceResponse<SchedulerConfigDTO>>
 }

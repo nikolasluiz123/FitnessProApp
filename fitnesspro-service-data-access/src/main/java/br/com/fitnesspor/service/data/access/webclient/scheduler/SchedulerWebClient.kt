@@ -4,6 +4,7 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.extensions.getResponseBody
 import br.com.fitnesspor.service.data.access.service.scheduler.ISchedulerService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
+import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.scheduler.Scheduler
@@ -16,6 +17,7 @@ import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
+import com.google.gson.GsonBuilder
 import java.time.DayOfWeek
 import java.time.LocalDate
 import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType as EnumCompromiseTypeService
@@ -99,10 +101,12 @@ class SchedulerWebClient(
     ): ReadServiceResponse<SchedulerConfigDTO> {
         return readServiceErrorHandlingBlock(
             codeBlock = {
+                val gson = GsonBuilder().defaultGSon()
+
                 schedulerService.importScheduleConfigs(
                     token = formatToken(token),
-                    filter = filter,
-                    pageInfos = pageInfos
+                    filter = gson.toJson(filter),
+                    pageInfos = gson.toJson(pageInfos)
                 ).getResponseBody()
             }
         )
@@ -115,10 +119,12 @@ class SchedulerWebClient(
     ): ReadServiceResponse<SchedulerDTO> {
         return readServiceErrorHandlingBlock(
             codeBlock = {
+                val gson = GsonBuilder().defaultGSon()
+
                 schedulerService.importSchedules(
                     token = formatToken(token),
-                    filter = filter,
-                    pageInfos = pageInfos
+                    filter = gson.toJson(filter),
+                    pageInfos = gson.toJson(pageInfos)
                 ).getResponseBody()
             }
         )

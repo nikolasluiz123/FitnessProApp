@@ -4,10 +4,12 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.extensions.getResponseBody
 import br.com.fitnesspor.service.data.access.service.general.IAcademyService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
+import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
+import com.google.gson.GsonBuilder
 
 class AcademyWebClient(
     context: Context,
@@ -21,10 +23,12 @@ class AcademyWebClient(
     ): ReadServiceResponse<AcademyDTO> {
         return readServiceErrorHandlingBlock(
             codeBlock = {
+                val gson = GsonBuilder().defaultGSon()
+
                 academyService.importAcademies(
                     token = formatToken(token),
-                    filter = filter,
-                    pageInfos = pageInfos
+                    filter = gson.toJson(filter),
+                    pageInfos = gson.toJson(pageInfos)
                 ).getResponseBody()
             }
         )
