@@ -15,8 +15,9 @@ import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import com.google.gson.GsonBuilder
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -55,8 +56,8 @@ class SchedulerWebClient(
         token: String,
         schedulerList: List<Scheduler>,
         schedulerType: String,
-    ): PersistenceServiceResponse {
-        return persistenceServiceErrorHandlingBlock(
+    ): ExportationServiceResponse {
+        return exportationServiceErrorHandlingBlock(
             codeBlock = {
                 schedulerService.saveSchedulerBatch(
                     token = formatToken(token),
@@ -83,8 +84,8 @@ class SchedulerWebClient(
         )
     }
 
-    suspend fun saveSchedulerConfigBatch(token: String, schedulerConfigList: List<SchedulerConfig>): PersistenceServiceResponse {
-        return persistenceServiceErrorHandlingBlock(
+    suspend fun saveSchedulerConfigBatch(token: String, schedulerConfigList: List<SchedulerConfig>): ExportationServiceResponse {
+        return exportationServiceErrorHandlingBlock(
             codeBlock = {
                 schedulerService.saveSchedulerConfigBatch(
                     token = token,
@@ -98,8 +99,8 @@ class SchedulerWebClient(
         token: String,
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): ReadServiceResponse<SchedulerConfigDTO> {
-        return readServiceErrorHandlingBlock(
+    ): ImportationServiceResponse<SchedulerConfigDTO> {
+        return importationServiceErrorHandlingBlock(
             codeBlock = {
                 val gson = GsonBuilder().defaultGSon()
 
@@ -116,8 +117,8 @@ class SchedulerWebClient(
         token: String,
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): ReadServiceResponse<SchedulerDTO> {
-        return readServiceErrorHandlingBlock(
+    ): ImportationServiceResponse<SchedulerDTO> {
+        return importationServiceErrorHandlingBlock(
             codeBlock = {
                 val gson = GsonBuilder().defaultGSon()
 

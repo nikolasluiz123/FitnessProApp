@@ -6,10 +6,10 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
-import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 
 class SchedulerConfigExportationRepository(
     context: Context,
@@ -30,7 +30,7 @@ class SchedulerConfigExportationRepository(
     override suspend fun callExportationService(
         modelList: List<SchedulerConfig>,
         token: String
-    ): PersistenceServiceResponse {
+    ): ExportationServiceResponse {
         return schedulerWebClient.saveSchedulerConfigBatch(
             token = token,
             schedulerConfigList = modelList

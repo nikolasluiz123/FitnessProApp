@@ -3,6 +3,7 @@ package br.com.fitnesspor.service.data.access.injection
 import br.com.fitnesspor.service.data.access.service.general.IAcademyService
 import br.com.fitnesspor.service.data.access.service.general.IAuthenticationService
 import br.com.fitnesspor.service.data.access.service.general.IPersonService
+import br.com.fitnesspor.service.data.access.service.log.IExecutionLogService
 import br.com.fitnesspor.service.data.access.service.scheduler.ISchedulerService
 import dagger.Module
 import dagger.Provides
@@ -32,6 +33,11 @@ class SingletonServiceModule {
     @Provides
     fun provideSchedulerService(retrofit: Retrofit): ISchedulerService {
         return retrofit.create(ISchedulerService::class.java)
+    }
+
+    @Provides
+    fun provideExecutionLogService(retrofit: Retrofit): IExecutionLogService {
+        return retrofit.create(IExecutionLogService::class.java)
     }
 
 }

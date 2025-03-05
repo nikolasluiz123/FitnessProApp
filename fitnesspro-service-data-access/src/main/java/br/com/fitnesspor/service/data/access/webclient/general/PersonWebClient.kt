@@ -14,8 +14,9 @@ import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import com.google.gson.GsonBuilder
 import br.com.fitnesspro.models.general.enums.EnumUserType as EnumUserTypeService
 
@@ -36,8 +37,8 @@ class PersonWebClient(
         token: String,
         persons: List<Person>,
         users: List<User>
-    ): PersistenceServiceResponse {
-        return persistenceServiceErrorHandlingBlock(
+    ): ExportationServiceResponse {
+        return exportationServiceErrorHandlingBlock(
             codeBlock = {
                 val personDTOList = persons.mapIndexed { index, person ->
                     person.toPersonDTO(users[index])
@@ -68,8 +69,8 @@ class PersonWebClient(
     suspend fun savePersonAcademyTimeBatch(
         token: String,
         personAcademyTimeList: List<PersonAcademyTime>
-    ): PersistenceServiceResponse {
-        return persistenceServiceErrorHandlingBlock(
+    ): ExportationServiceResponse {
+        return exportationServiceErrorHandlingBlock(
             codeBlock = {
                 personService.savePersonAcademyTimeBatch(
                     token = formatToken(token),
@@ -83,8 +84,8 @@ class PersonWebClient(
         token: String,
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): ReadServiceResponse<UserDTO> {
-        return readServiceErrorHandlingBlock(
+    ): ImportationServiceResponse<UserDTO> {
+        return importationServiceErrorHandlingBlock(
             codeBlock = {
                 val gson = GsonBuilder().defaultGSon()
 
@@ -101,8 +102,8 @@ class PersonWebClient(
         token: String,
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): ReadServiceResponse<PersonDTO> {
-        return readServiceErrorHandlingBlock(
+    ): ImportationServiceResponse<PersonDTO> {
+        return importationServiceErrorHandlingBlock(
             codeBlock = {
                 val gson = GsonBuilder().defaultGSon()
 

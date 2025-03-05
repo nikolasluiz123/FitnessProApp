@@ -8,8 +8,9 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_EX
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_IMPORT
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -29,7 +30,7 @@ interface ISchedulerService {
     suspend fun saveSchedulerBatch(
         @Header("Authorization") token: String,
         @Body schedulerDTOList: List<SchedulerDTO>
-    ): Response<PersistenceServiceResponse>
+    ): Response<ExportationServiceResponse>
 
     @POST("$SCHEDULER$SCHEDULER_CONFIG")
     suspend fun saveSchedulerConfig(@Body schedulerConfigDTO: SchedulerConfigDTO): Response<PersistenceServiceResponse>
@@ -38,19 +39,19 @@ interface ISchedulerService {
     suspend fun saveSchedulerConfigBatch(
         @Header("Authorization") token: String,
         @Body schedulerConfigDTOList: List<SchedulerConfigDTO>
-    ): Response<PersistenceServiceResponse>
+    ): Response<ExportationServiceResponse>
 
     @GET("$SCHEDULER$SCHEDULER_IMPORT")
     suspend fun importSchedules(
         @Header("Authorization") token: String,
         @Query("filter") filter: String,
         @Query("pageInfos") pageInfos: String
-    ): Response<ReadServiceResponse<SchedulerDTO>>
+    ): Response<ImportationServiceResponse<SchedulerDTO>>
 
     @GET("$SCHEDULER$SCHEDULER_CONFIG_IMPORT")
     suspend fun importScheduleConfigs(
         @Header("Authorization") token: String,
         @Query("filter") filter: String,
         @Query("pageInfos") pageInfos: String
-    ): Response<ReadServiceResponse<SchedulerConfigDTO>>
+    ): Response<ImportationServiceResponse<SchedulerConfigDTO>>
 }

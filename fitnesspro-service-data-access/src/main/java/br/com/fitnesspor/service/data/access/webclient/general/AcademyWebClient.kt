@@ -8,7 +8,7 @@ import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import com.google.gson.GsonBuilder
 
 class AcademyWebClient(
@@ -20,8 +20,8 @@ class AcademyWebClient(
         token: String,
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): ReadServiceResponse<AcademyDTO> {
-        return readServiceErrorHandlingBlock(
+    ): ImportationServiceResponse<AcademyDTO> {
+        return importationServiceErrorHandlingBlock(
             codeBlock = {
                 val gson = GsonBuilder().defaultGSon()
 

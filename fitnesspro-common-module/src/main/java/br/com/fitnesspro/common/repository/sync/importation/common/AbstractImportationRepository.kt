@@ -11,6 +11,7 @@ import br.com.fitnesspro.model.sync.SyncLog
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import java.time.LocalDateTime
 
@@ -23,7 +24,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
         token: String,
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): ReadServiceResponse<DTO>
+    ): ImportationServiceResponse<DTO>
 
     abstract suspend fun hasEntityWithId(id: String): Boolean
 
@@ -36,29 +37,40 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
                 val importFilter = CommonImportFilter(lastUpdateDate = lastUpdateDate)
                 val pageInfos = ImportPageInfos(pageSize = getPageSize())
 
-                val log = saveRunningLog(importFilter, pageInfos)
+                val localLog = saveLocalRunningLog(importFilter, pageInfos)
                 insertImportationHistory()
 
                 do {
                     val response = getImportationData(token, importFilter, pageInfos)
 
-                    if (response.success) {
-                        val (insertionList, updateList) = executeSegregation(response)
+                    when {
+                        response.success && response.values.isEmpty() -> {
+                            updateLogWithSuccessIteration(localLog, emptyList(), emptyList(), pageInfos)
+                        }
 
-                        saveDataLocally(insertionList, updateList)
+                        response.success -> {
+                            updateRemoteLogWithStartDateTime(response.executionLogId, token)
 
-                        updateLogWithSuccessIteration(log, insertionList, updateList, pageInfos)
+                            val (insertionList, updateList) = executeSegregation(response)
 
-                        pageInfos.pageNumber++
-                    } else {
-                        updateLogWithError(log, response, pageInfos.pageNumber)
+                            saveDataLocally(insertionList, updateList)
+
+                            updateLogWithSuccessIteration(localLog, insertionList, updateList, pageInfos)
+                            pageInfos.pageNumber++
+
+                            updateRemoteLogWithEndDateTime(response.executionLogId, token)
+                        }
+
+                        else -> {
+                            updateLogWithError(localLog, response, pageInfos.pageNumber)
+                        }
                     }
                 } while (response.values.size == pageInfos.pageSize)
 
-                updateLogWithSuccess(log)
+                updateLogWithSuccess(localLog)
                 updateImportationDate()
 
-                Log.d(TAG, log.processDetails!!)
+                Log.d(TAG, localLog.processDetails!!)
             } catch (exception: Exception) {
                 saveUnknownError(exception, EnumSyncType.IMPORTATION)
                 throw exception
@@ -66,7 +78,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
         }
     }
 
-    private suspend fun saveRunningLog(importFilter: CommonImportFilter, pageInfos: ImportPageInfos): SyncLog {
+    private suspend fun saveLocalRunningLog(importFilter: CommonImportFilter, pageInfos: ImportPageInfos): SyncLog {
         val header = buildString {
             appendLine("=========================================")
             appendLine("           IMPORTATION START          ")

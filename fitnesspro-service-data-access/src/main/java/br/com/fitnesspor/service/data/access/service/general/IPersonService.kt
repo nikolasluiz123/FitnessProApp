@@ -10,8 +10,9 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_USER_
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -28,7 +29,7 @@ interface IPersonService {
     suspend fun savePersonBatch(
         @Header("Authorization") token: String,
         @Body personDTOList: List<PersonDTO>
-    ): Response<PersistenceServiceResponse>
+    ): Response<ExportationServiceResponse>
 
     @POST("$PERSON$PERSON_ACADEMY_TIME")
     suspend fun savePersonAcademyTime(
@@ -40,26 +41,26 @@ interface IPersonService {
     suspend fun savePersonAcademyTimeBatch(
         @Header("Authorization") token: String,
         @Body personAcademyTimeDTOList: List<PersonAcademyTimeDTO>
-    ): Response<PersistenceServiceResponse>
+    ): Response<ExportationServiceResponse>
 
     @GET("$PERSON$PERSON_IMPORT")
     suspend fun importPersons(
         @Header("Authorization") token: String,
         @Query("filter") filter: String,
         @Query("pageInfos") pageInfos: String
-    ): Response<ReadServiceResponse<PersonDTO>>
+    ): Response<ImportationServiceResponse<PersonDTO>>
 
     @GET("$PERSON$PERSON_USER_IMPORT")
     suspend fun importUsers(
         @Header("Authorization") token: String,
         @Query("filter") filter: String,
         @Query("pageInfos") pageInfos: String
-    ): Response<ReadServiceResponse<UserDTO>>
+    ): Response<ImportationServiceResponse<UserDTO>>
 
     @GET("$PERSON$PERSON_ACADEMY_TIME_IMPORT")
     suspend fun importPersonAcademyTimes(
         @Header("Authorization") token: String,
         @Query("filter") filter: String,
         @Query("pageInfos") pageInfos: String
-    ): Response<ReadServiceResponse<PersonAcademyTimeDTO>>
+    ): Response<ImportationServiceResponse<PersonAcademyTimeDTO>>
 }

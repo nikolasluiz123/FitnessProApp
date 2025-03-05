@@ -2,7 +2,9 @@ package br.com.fitnesspor.service.data.access.extensions
 
 import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import com.google.gson.GsonBuilder
@@ -14,6 +16,11 @@ fun Response<PersistenceServiceResponse>.getResponseBody(): PersistenceServiceRe
     return this.body() ?: GsonBuilder().defaultGSon().fromJson(this.errorBody()!!.charStream(), type)
 }
 
+fun Response<ExportationServiceResponse>.getResponseBody(): ExportationServiceResponse {
+    val type = object : TypeToken<ExportationServiceResponse>() {}.type
+    return this.body() ?: GsonBuilder().defaultGSon().fromJson(this.errorBody()!!.charStream(), type)
+}
+
 fun Response<AuthenticationServiceResponse>.getResponseBody(): AuthenticationServiceResponse {
     val type = object : TypeToken<AuthenticationServiceResponse>() {}.type
     return this.body() ?: GsonBuilder().defaultGSon().fromJson(this.errorBody()!!.charStream(), type)
@@ -21,6 +28,11 @@ fun Response<AuthenticationServiceResponse>.getResponseBody(): AuthenticationSer
 
 fun <DTO> Response<ReadServiceResponse<DTO>>.getResponseBody(): ReadServiceResponse<DTO> {
     val type = object : TypeToken<ReadServiceResponse<DTO>>() {}.type
+    return this.body() ?: GsonBuilder().defaultGSon().fromJson(this.errorBody()!!.charStream(), type)
+}
+
+fun <DTO> Response<ImportationServiceResponse<DTO>>.getResponseBody(): ImportationServiceResponse<DTO> {
+    val type = object : TypeToken<ImportationServiceResponse<DTO>>() {}.type
     return this.body() ?: GsonBuilder().defaultGSon().fromJson(this.errorBody()!!.charStream(), type)
 }
 

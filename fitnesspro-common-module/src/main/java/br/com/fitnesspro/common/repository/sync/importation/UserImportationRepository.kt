@@ -5,13 +5,13 @@ import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.UserDAO
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.User
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.models.general.enums.EnumUserType as EnumUserTypeService
 
 class UserImportationRepository(
@@ -29,7 +29,7 @@ class UserImportationRepository(
         token: String,
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): ReadServiceResponse<UserDTO> {
+    ): ImportationServiceResponse<UserDTO> {
         return webClient.importUsers(token, filter, pageInfos)
     }
 

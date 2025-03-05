@@ -5,12 +5,12 @@ import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebCli
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
-import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 
 class SchedulerConfigImportationRepository(
     context: Context,
@@ -28,7 +28,7 @@ class SchedulerConfigImportationRepository(
         token: String,
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): ReadServiceResponse<SchedulerConfigDTO> {
+    ): ImportationServiceResponse<SchedulerConfigDTO> {
         return webClient.importSchedulerConfigs(token, filter, pageInfos)
     }
 

@@ -3,6 +3,7 @@ package br.com.fitnesspro.common.repository.sync.common
 import android.content.Context
 import br.com.fitnesspro.common.injection.ISyncRepositoryEntryPoint
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
+import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.local.data.access.dao.SyncLogDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.common.BaseDAO
@@ -22,6 +23,8 @@ abstract class AbstractSyncRepository<MODEL: BaseModel, DAO: BaseDAO>(context: C
     protected val userDAO: UserDAO = entryPoint.getUserDAO()
 
     protected val syncLogDAO: SyncLogDAO = entryPoint.getSyncLogDAO()
+
+    protected val executionLogWebClient = entryPoint.getExecutionLogWebClient()
 
     abstract fun getOperationDAO(): DAO
 
@@ -90,5 +93,31 @@ abstract class AbstractSyncRepository<MODEL: BaseModel, DAO: BaseDAO>(context: C
         )
 
         syncLogDAO.insert(log)
+    }
+
+    protected suspend fun updateRemoteLogWithStartDateTime(
+        logId: String,
+        token: String,
+        clientDateTimeStart: LocalDateTime? = null,
+    ) {
+        executionLogWebClient.updateLogInformation(
+            token = token,
+            logId = logId,
+            clientDateTimeStart = clientDateTimeStart ?: dateTimeNow(),
+            clientDateTimeEnd = null,
+        )
+    }
+
+    protected suspend fun updateRemoteLogWithEndDateTime(
+        logId: String,
+        token: String,
+        clientDateTimeEnd: LocalDateTime? = null
+    ) {
+        executionLogWebClient.updateLogInformation(
+            token = token,
+            logId = logId,
+            clientDateTimeStart = null,
+            clientDateTimeEnd = clientDateTimeEnd ?: dateTimeNow(),
+        )
     }
 }

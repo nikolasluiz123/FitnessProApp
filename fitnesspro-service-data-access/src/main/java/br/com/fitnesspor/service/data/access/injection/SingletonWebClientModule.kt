@@ -4,7 +4,9 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.service.general.IAcademyService
 import br.com.fitnesspor.service.data.access.service.general.IAuthenticationService
 import br.com.fitnesspor.service.data.access.service.general.IPersonService
+import br.com.fitnesspor.service.data.access.service.log.IExecutionLogService
 import br.com.fitnesspor.service.data.access.service.scheduler.ISchedulerService
+import br.com.fitnesspor.service.data.access.webclient.ExecutionLogWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
@@ -60,6 +62,17 @@ class SingletonWebClientModule {
         return SchedulerWebClient(
             context = context,
             schedulerService = schedulerService
+        )
+    }
+
+    @Provides
+    fun provideExecutionLogWebClient(
+        @ApplicationContext context: Context,
+        executionLogService: IExecutionLogService
+    ): ExecutionLogWebClient {
+        return ExecutionLogWebClient(
+            context = context,
+            executionLogService = executionLogService
         )
     }
 }

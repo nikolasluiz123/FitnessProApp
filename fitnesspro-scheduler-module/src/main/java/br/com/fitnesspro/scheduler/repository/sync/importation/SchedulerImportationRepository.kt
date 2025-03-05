@@ -6,13 +6,13 @@ import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImpor
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
-import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType as EnumCompromiseTypeService
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation as EnumSchedulerSituationService
 
@@ -32,7 +32,7 @@ class SchedulerImportationRepository(
         token: String,
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): ReadServiceResponse<SchedulerDTO> {
+    ): ImportationServiceResponse<SchedulerDTO> {
         return webClient.importSchedulers(token, filter, pageInfos)
     }
 

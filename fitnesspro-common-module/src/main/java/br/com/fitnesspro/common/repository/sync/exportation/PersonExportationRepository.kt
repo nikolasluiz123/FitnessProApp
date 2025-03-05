@@ -6,10 +6,10 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
-import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 
 class PersonExportationRepository(
     context: Context,
@@ -30,7 +30,7 @@ class PersonExportationRepository(
     override suspend fun callExportationService(
         modelList: List<Person>,
         token: String
-    ): PersistenceServiceResponse {
+    ): ExportationServiceResponse {
         val userList = modelList.map { userDAO.findById(it.userId!!)!! }
 
         return personWebClient.savePersonBatch(

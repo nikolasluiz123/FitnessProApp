@@ -5,12 +5,12 @@ import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
-import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 
 class AcademyImportationRepository(
     context: Context,
@@ -28,7 +28,7 @@ class AcademyImportationRepository(
         token: String,
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): ReadServiceResponse<AcademyDTO> {
+    ): ImportationServiceResponse<AcademyDTO> {
         return academyWebClient.importAcademies(token, filter, pageInfos)
     }
 
