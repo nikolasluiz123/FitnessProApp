@@ -34,7 +34,7 @@ class SingletonRetrofitModule {
 
         return Retrofit
             .Builder()
-            .baseUrl("http://192.168.155.19:8082/api/v1/")
+            .baseUrl("http://192.168.0.41:8082/api/v1/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
             .build()
