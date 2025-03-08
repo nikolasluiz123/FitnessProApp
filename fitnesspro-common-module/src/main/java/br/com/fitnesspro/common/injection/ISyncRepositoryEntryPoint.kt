@@ -1,6 +1,7 @@
 package br.com.fitnesspro.common.injection
 
 import br.com.fitnesspor.service.data.access.webclient.ExecutionLogWebClient
+import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.local.data.access.dao.ImportationHistoryDAO
 import br.com.fitnesspro.local.data.access.dao.SyncLogDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
@@ -19,4 +20,6 @@ interface ISyncRepositoryEntryPoint {
     fun getUserDAO(): UserDAO
 
     fun getExecutionLogWebClient(): ExecutionLogWebClient
+
+    fun getUserRepository(): UserRepository
 }

@@ -6,29 +6,28 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.ICommonWorkersEntryPoint
-import br.com.fitnesspro.core.worker.FitnessProOneTimeCoroutineWorker
-import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
+import br.com.fitnesspro.common.workers.common.AbstractImportationWorker
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
+import java.time.LocalDateTime
 
 @HiltWorker
 class GeneralModuleImportationWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
-) : FitnessProOneTimeCoroutineWorker(context, workerParams) {
+) : AbstractImportationWorker(context, workerParams) {
 
     private val entryPoint = EntryPointAccessors.fromApplication(context, ICommonWorkersEntryPoint::class.java)
 
-    override fun onError(e: Exception) {
-        e.sendToFirebaseCrashlytics()
+    override suspend fun onImport(serviceToken: String, lastUpdateDate: LocalDateTime?) {
+        entryPoint.getAcademyImportationRepository().import(serviceToken, lastUpdateDate)
+        entryPoint.getUserImportationRepository().import(serviceToken, lastUpdateDate)
+        entryPoint.getPersonImportationRepository().import(serviceToken, lastUpdateDate)
     }
 
-    override suspend fun onWorkOneTime() {
-        entryPoint.getAcademyImportationRepository().import()
-        entryPoint.getUserImportationRepository().import()
-        entryPoint.getPersonImportationRepository().import()
-    }
+    override fun getModule() = EnumSyncModule.GENERAL
 
     override fun getClazz() = javaClass
 

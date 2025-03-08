@@ -93,7 +93,7 @@ class PersonWebClient(
                     token = formatToken(token),
                     filter = gson.toJson(filter),
                     pageInfos = gson.toJson(pageInfos)
-                ).getResponseBody()
+                ).getResponseBody(UserDTO::class.java)
             }
         )
     }
@@ -111,7 +111,7 @@ class PersonWebClient(
                     token = formatToken(token),
                     filter = gson.toJson(filter),
                     pageInfos = gson.toJson(pageInfos)
-                ).getResponseBody()
+                ).getResponseBody(PersonDTO::class.java)
             }
         )
     }

@@ -10,6 +10,7 @@ import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import retrofit2.Response
+import java.lang.reflect.Type
 
 fun Response<PersistenceServiceResponse>.getResponseBody(): PersistenceServiceResponse {
     val type = object : TypeToken<PersistenceServiceResponse>() {}.type
@@ -26,13 +27,13 @@ fun Response<AuthenticationServiceResponse>.getResponseBody(): AuthenticationSer
     return this.body() ?: GsonBuilder().defaultGSon().fromJson(this.errorBody()!!.charStream(), type)
 }
 
-fun <DTO> Response<ReadServiceResponse<DTO>>.getResponseBody(): ReadServiceResponse<DTO> {
-    val type = object : TypeToken<ReadServiceResponse<DTO>>() {}.type
+fun <DTO> Response<ReadServiceResponse<DTO>>.getResponseBody(dtoType: Type): ReadServiceResponse<DTO> {
+    val type = TypeToken.getParameterized(ReadServiceResponse::class.java, dtoType).type
     return this.body() ?: GsonBuilder().defaultGSon().fromJson(this.errorBody()!!.charStream(), type)
 }
 
-fun <DTO> Response<ImportationServiceResponse<DTO>>.getResponseBody(): ImportationServiceResponse<DTO> {
-    val type = object : TypeToken<ImportationServiceResponse<DTO>>() {}.type
+fun <DTO> Response<ImportationServiceResponse<DTO>>.getResponseBody(dtoType: Type): ImportationServiceResponse<DTO> {
+    val type = TypeToken.getParameterized(ImportationServiceResponse::class.java, dtoType).type
     return this.body() ?: GsonBuilder().defaultGSon().fromJson(this.errorBody()!!.charStream(), type)
 }
 

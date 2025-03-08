@@ -4,11 +4,8 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.OneTimeWorkRequestBuilder
-import br.com.fitnesspro.common.workers.GeneralModuleExportationWorker
 import br.com.fitnesspro.common.workers.GeneralModuleImportationWorker
 import br.com.fitnesspro.core.worker.OneTimeWorkerRequester
-import br.com.fitnesspro.scheduler.workers.SchedulerModuleExportationWorker
-import br.com.fitnesspro.scheduler.workers.SchedulerModuleImportationWorker
 import dagger.hilt.android.HiltAndroidApp
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -36,22 +33,22 @@ class FitnessProApplication : Application(), Configuration.Provider {
             builder = OneTimeWorkRequestBuilder<GeneralModuleImportationWorker>()
         ).enqueue()
 
-        OneTimeWorkerRequester(
-            context = this,
-            clazz = GeneralModuleExportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<GeneralModuleExportationWorker>()
-        ).enqueue()
-
-        OneTimeWorkerRequester(
-            context = this,
-            clazz = SchedulerModuleImportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<SchedulerModuleImportationWorker>()
-        ).enqueue()
-
-        OneTimeWorkerRequester(
-            context = this,
-            clazz = SchedulerModuleExportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<SchedulerModuleExportationWorker>()
-        ).enqueue()
+//        OneTimeWorkerRequester(
+//            context = this,
+//            clazz = GeneralModuleExportationWorker::class.java,
+//            builder = OneTimeWorkRequestBuilder<GeneralModuleExportationWorker>()
+//        ).enqueue()
+//
+//        OneTimeWorkerRequester(
+//            context = this,
+//            clazz = SchedulerModuleImportationWorker::class.java,
+//            builder = OneTimeWorkRequestBuilder<SchedulerModuleImportationWorker>()
+//        ).enqueue()
+//
+//        OneTimeWorkerRequester(
+//            context = this,
+//            clazz = SchedulerModuleExportationWorker::class.java,
+//            builder = OneTimeWorkRequestBuilder<SchedulerModuleExportationWorker>()
+//        ).enqueue()
     }
 }

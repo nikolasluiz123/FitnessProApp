@@ -108,7 +108,7 @@ class SchedulerWebClient(
                     token = formatToken(token),
                     filter = gson.toJson(filter),
                     pageInfos = gson.toJson(pageInfos)
-                ).getResponseBody()
+                ).getResponseBody(SchedulerConfigDTO::class.java)
             }
         )
     }
@@ -126,7 +126,7 @@ class SchedulerWebClient(
                     token = formatToken(token),
                     filter = gson.toJson(filter),
                     pageInfos = gson.toJson(pageInfos)
-                ).getResponseBody()
+                ).getResponseBody(SchedulerDTO::class.java)
             }
         )
     }

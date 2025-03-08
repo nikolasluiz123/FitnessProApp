@@ -29,7 +29,7 @@ class AcademyWebClient(
                     token = formatToken(token),
                     filter = gson.toJson(filter),
                     pageInfos = gson.toJson(pageInfos)
-                ).getResponseBody()
+                ).getResponseBody(AcademyDTO::class.java)
             }
         )
     }

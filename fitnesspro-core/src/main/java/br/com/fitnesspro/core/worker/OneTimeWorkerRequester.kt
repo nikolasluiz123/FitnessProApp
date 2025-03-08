@@ -1,7 +1,6 @@
 package br.com.fitnesspro.core.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy.KEEP
 import androidx.work.NetworkType

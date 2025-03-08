@@ -18,13 +18,13 @@ import java.time.LocalDateTime
 
 abstract class AbstractSyncRepository<MODEL: BaseModel, DAO: BaseDAO>(context: Context): FitnessProRepository(context) {
 
-    protected val entryPoint: ISyncRepositoryEntryPoint = EntryPointAccessors.fromApplication(context, ISyncRepositoryEntryPoint::class.java)
+    private val entryPoint: ISyncRepositoryEntryPoint = EntryPointAccessors.fromApplication(context, ISyncRepositoryEntryPoint::class.java)
+
+    private val executionLogWebClient = entryPoint.getExecutionLogWebClient()
 
     protected val userDAO: UserDAO = entryPoint.getUserDAO()
 
     protected val syncLogDAO: SyncLogDAO = entryPoint.getSyncLogDAO()
-
-    protected val executionLogWebClient = entryPoint.getExecutionLogWebClient()
 
     abstract fun getOperationDAO(): DAO
 
@@ -32,7 +32,7 @@ abstract class AbstractSyncRepository<MODEL: BaseModel, DAO: BaseDAO>(context: C
 
     abstract fun getModule(): EnumSyncModule
 
-    open fun getPageSize(): Int = 200
+    open fun getPageSize(): Int = 1000
 
     protected suspend fun insertRunningLog(header: String, syncType: EnumSyncType): SyncLog {
         val log = SyncLog(
