@@ -79,7 +79,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
     private suspend fun saveLocalRunningLog(importFilter: CommonImportFilter, pageInfos: ImportPageInfos): SyncLog {
         val header = buildString {
             appendLine("=========================================")
-            appendLine("           IMPORTATION START          ")
+            appendLine(" IMPORTATION START - MODULE ${getModule().name}         ")
             appendLine("=========================================")
             appendLine("Filter:")
             appendLine("  lastUpdateDate: ${importFilter.lastUpdateDate ?: "N/A"}")
