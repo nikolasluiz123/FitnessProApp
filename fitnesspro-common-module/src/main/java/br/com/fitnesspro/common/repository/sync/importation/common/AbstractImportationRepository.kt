@@ -33,15 +33,14 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
             val importFilter = CommonImportFilter(lastUpdateDate = lastUpdateDate)
             val pageInfos = ImportPageInfos(pageSize = getPageSize())
 
-            val localLog = saveLocalRunningLog(importFilter, pageInfos)
+            val logId = saveLocalRunningLog(importFilter, pageInfos).id
 
             do {
-                Log.i("Teste", "Importando... ")
                 val response = getImportationData(serviceToken, importFilter, pageInfos)
 
                 when {
                     response.success && response.values.isEmpty() -> {
-                        updateLogWithSuccessIteration(localLog, emptyList(), emptyList(), pageInfos)
+                        updateLogWithSuccessIteration(logId, emptyList(), emptyList(), pageInfos)
                     }
 
                     response.success -> {
@@ -51,27 +50,30 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
 
                         saveDataLocally(insertionList, updateList)
 
-                        updateLogWithSuccessIteration(localLog, insertionList, updateList, pageInfos)
+                        updateLogWithSuccessIteration(logId, insertionList, updateList, pageInfos)
                         pageInfos.pageNumber++
 
                         updateRemoteLogWithEndDateTime(response.executionLogId, serviceToken)
                     }
 
                     else -> {
-                        updateLogWithError(localLog, response, pageInfos.pageNumber)
+                        updateLogWithError(logId, response, pageInfos.pageNumber)
                         throw ServiceException(response.error!!)
                     }
                 }
-                Log.i("Teste", "while condition = ${response.values.size} == ${pageInfos.pageSize}")
             } while (response.values.size == pageInfos.pageSize)
 
-            updateLogWithSuccess(localLog)
-
-            Log.d(TAG, localLog.processDetails!!)
+            updateLogWithSuccess(logId)
+            showFinalLocalLog(logId)
         } catch (exception: Exception) {
             saveUnknownError(exception, EnumSyncType.IMPORTATION)
             throw exception
         }
+    }
+
+    private suspend fun showFinalLocalLog(logId: String) {
+        val log = syncLogDAO.findById(logId)
+        Log.d(TAG, log.processDetails!!)
     }
 
     private suspend fun saveLocalRunningLog(importFilter: CommonImportFilter, pageInfos: ImportPageInfos): SyncLog {
@@ -92,11 +94,13 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
     }
 
     private suspend fun updateLogWithSuccessIteration(
-        log: SyncLog,
+        logId: String,
         insertionList: List<MODEL>,
         updateList: List<MODEL>,
         pageInfos: ImportPageInfos,
     ) {
+        val log = syncLogDAO.findById(logId)
+
         val section = buildString {
             appendLine("=========================================")
             appendLine(" EXECUTION ${pageInfos.pageNumber} - SUCCESS ")

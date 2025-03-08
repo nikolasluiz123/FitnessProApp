@@ -48,7 +48,7 @@ abstract class AbstractSyncRepository<MODEL: BaseModel, DAO: BaseDAO>(context: C
         return log
     }
 
-    protected suspend fun updateLogWithError(log: SyncLog, response: IFitnessProServiceResponse, pageNumber: Int) {
+    protected suspend fun updateLogWithError(logId: String, response: IFitnessProServiceResponse, pageNumber: Int) {
         val section = buildString {
             appendLine("=========================================")
             appendLine("       EXECUTION ERROR $pageNumber       ")
@@ -57,6 +57,7 @@ abstract class AbstractSyncRepository<MODEL: BaseModel, DAO: BaseDAO>(context: C
             appendLine("=========================================")
         }
 
+        val log = syncLogDAO.findById(logId)
         val newProcessDetails = log.processDetails.orEmpty() + "\n" + section
 
         val updatedLog = log.copy(
@@ -68,7 +69,8 @@ abstract class AbstractSyncRepository<MODEL: BaseModel, DAO: BaseDAO>(context: C
         syncLogDAO.update(updatedLog)
     }
 
-    protected suspend fun updateLogWithSuccess(log: SyncLog) {
+    protected suspend fun updateLogWithSuccess(logId: String) {
+        val log = syncLogDAO.findById(logId)
         syncLogDAO.update(log.copy(status = EnumSyncStatus.SUCCESS, endDate = LocalDateTime.now()))
     }
 

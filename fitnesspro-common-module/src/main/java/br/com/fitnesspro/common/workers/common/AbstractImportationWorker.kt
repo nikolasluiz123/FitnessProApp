@@ -1,7 +1,6 @@
 package br.com.fitnesspro.common.workers.common
 
 import android.content.Context
-import android.util.Log
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.ISyncRepositoryEntryPoint
 import br.com.fitnesspro.core.worker.FitnessProOneTimeCoroutineWorker
@@ -25,12 +24,8 @@ abstract class AbstractImportationWorker(
     abstract fun getModule(): EnumSyncModule
 
     override suspend fun onWorkOneTime() {
-        Log.i("Teste", "onWorkOneTime ${this.getClazz().simpleName}")
         userRepository.runInTransaction {
             userRepository.getAuthenticatedUser()?.serviceToken?.let { serviceToken ->
-
-                Log.i("Teste", "onWorkOneTime serviceToken = $serviceToken")
-
                 insertImportationHistory()
                 val lastUpdateDate = importationHistoryDAO.getImportationHistory(getModule())?.date
 

@@ -29,7 +29,7 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
             try {
                 val pageInfos = ExportPageInfos(pageSize = getPageSize())
 
-                val log = saveRunningLog(pageInfos)
+                val logId = saveRunningLog(pageInfos).id
 
                 do {
                     val clientDateTimeStart = dateTimeNow()
@@ -52,12 +52,12 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
                         )
 
                         if (response.success) {
-                            updateLogWithSuccessIteration(log, models, pageInfos)
+                            updateLogWithSuccessIteration(logId, models, pageInfos)
                             updateTransmissionState(models, EnumTransmissionState.TRANSMITTED)
 
                             pageInfos.pageNumber++
                         } else {
-                            updateLogWithError(log, response, pageInfos.pageNumber)
+                            updateLogWithError(logId, response, pageInfos.pageNumber)
                         }
 
                         val clientDateTimeEnd = dateTimeNow().minus(callExportationTime)
@@ -70,8 +70,8 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
                     }
                 } while (models.size == pageInfos.pageSize)
 
-                updateLogWithSuccess(log)
-                Log.d(TAG, log.processDetails!!)
+                updateLogWithSuccess(logId)
+                showFinalLocalLog(logId)
             } catch (exception: Exception) {
                 saveUnknownError(exception, EnumSyncType.EXPORTATION)
                 throw exception
@@ -79,7 +79,12 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
         }
     }
 
-    private suspend fun updateLogWithSuccessIteration(log: SyncLog, models: List<MODEL>, pageInfos: ExportPageInfos) {
+    private suspend fun showFinalLocalLog(logId: String) {
+        val log = syncLogDAO.findById(logId)
+        Log.d(TAG, log.processDetails!!)
+    }
+
+    private suspend fun updateLogWithSuccessIteration(logId: String, models: List<MODEL>, pageInfos: ExportPageInfos) {
         val section = buildString {
             appendLine("=========================================")
             appendLine(" EXECUTION ${pageInfos.pageNumber} - SUCCESS ")
@@ -89,6 +94,7 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
             appendLine("=========================================")
         }
 
+        val log = syncLogDAO.findById(logId)
         val newProcessDetails = log.processDetails.orEmpty() + "\n" + section
         val updatedLog = log.copy(processDetails = newProcessDetails)
 

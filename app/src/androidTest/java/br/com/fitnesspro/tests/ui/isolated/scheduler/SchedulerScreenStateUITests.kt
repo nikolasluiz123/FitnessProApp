@@ -147,7 +147,6 @@ class SchedulerScreenStateUITests: BaseAuthenticatedUITest() {
             compromiseType = EnumCompromiseType.FIRST
         )
 
-        Log.i("Teste", "createFirstCompromiseSuggestionMember")
         val result = saveCompromiseUseCase.execute(toScheduler, EnumSchedulerType.SUGGESTION)
 
         if (result.isNotEmpty()) {
