@@ -36,6 +36,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
             val localLog = saveLocalRunningLog(importFilter, pageInfos)
 
             do {
+                Log.i("Teste", "Importando... ")
                 val response = getImportationData(serviceToken, importFilter, pageInfos)
 
                 when {
@@ -61,6 +62,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
                         throw ServiceException(response.error!!)
                     }
                 }
+                Log.i("Teste", "while condition = ${response.values.size} == ${pageInfos.pageSize}")
             } while (response.values.size == pageInfos.pageSize)
 
             updateLogWithSuccess(localLog)
