@@ -121,6 +121,6 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
     }
 
     companion object {
-        private const val TAG = "EXPORTATION"
+        private const val TAG = "VM-EXPORTATION"
     }
 }

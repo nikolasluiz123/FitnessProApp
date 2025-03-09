@@ -2,7 +2,7 @@ package br.com.fitnesspro.core.worker
 
 import android.content.Context
 import androidx.work.Constraints
-import androidx.work.ExistingWorkPolicy.KEEP
+import androidx.work.ExistingWorkPolicy.APPEND_OR_REPLACE
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -22,6 +22,6 @@ class OneTimeWorkerRequester(
         .build()
 
     fun enqueue() {
-        WorkManager.getInstance(context).enqueueUniqueWork(clazz.simpleName, KEEP, request)
+        WorkManager.getInstance(context).enqueueUniqueWork(clazz.simpleName, APPEND_OR_REPLACE, request)
     }
 }
