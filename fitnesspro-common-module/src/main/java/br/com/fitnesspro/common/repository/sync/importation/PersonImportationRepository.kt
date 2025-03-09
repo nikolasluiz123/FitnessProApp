@@ -45,7 +45,7 @@ class PersonImportationRepository(
             id = dto.id!!,
             active = dto.active,
             name = dto.name!!,
-            birthDate = dto.birthDate!!,
+            birthDate = dto.birthDate,
             phone = dto.phone,
             userId = dto.user?.id
         )
