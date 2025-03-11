@@ -13,8 +13,8 @@ import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse

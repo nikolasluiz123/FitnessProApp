@@ -28,17 +28,17 @@ class FitnessProApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
 
-        OneTimeWorkerRequester(
-            context = this,
-            clazz = GeneralModuleImportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<GeneralModuleImportationWorker>()
-        ).enqueue()
-
-        OneTimeWorkerRequester(
-            context = this,
-            clazz = SchedulerModuleImportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<SchedulerModuleImportationWorker>()
-        ).enqueue()
+//        OneTimeWorkerRequester(
+//            context = this,
+//            clazz = GeneralModuleImportationWorker::class.java,
+//            builder = OneTimeWorkRequestBuilder<GeneralModuleImportationWorker>()
+//        ).enqueue()
+//
+//        OneTimeWorkerRequester(
+//            context = this,
+//            clazz = SchedulerModuleImportationWorker::class.java,
+//            builder = OneTimeWorkRequestBuilder<SchedulerModuleImportationWorker>()
+//        ).enqueue()
 
 //        OneTimeWorkerRequester(
 //            context = this,

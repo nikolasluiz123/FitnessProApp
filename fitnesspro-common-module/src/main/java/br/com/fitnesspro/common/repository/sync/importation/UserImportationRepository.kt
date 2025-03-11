@@ -9,8 +9,8 @@ import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.models.general.enums.EnumUserType as EnumUserTypeService
 

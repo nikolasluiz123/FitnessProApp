@@ -8,8 +8,8 @@ import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 
 class PersonImportationRepository(

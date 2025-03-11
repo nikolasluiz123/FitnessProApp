@@ -10,8 +10,8 @@ import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType as EnumCompromiseTypeService
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation as EnumSchedulerSituationService
