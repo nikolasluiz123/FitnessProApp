@@ -1,14 +1,14 @@
 package br.com.fitnesspro.common.repository.sync.importation.common
 
 import android.content.Context
-import android.util.Log
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
 import br.com.fitnesspro.core.exceptions.ServiceException
+import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.base.BaseModel
-import br.com.fitnesspro.model.enums.EnumSyncType
-import br.com.fitnesspro.model.sync.SyncLog
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
@@ -29,92 +29,96 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
     abstract suspend fun convertDTOToEntity(dto: DTO): MODEL
 
     suspend fun import(serviceToken: String, lastUpdateDate: LocalDateTime?) {
-        try {
-            val importFilter = CommonImportFilter(lastUpdateDate = lastUpdateDate)
-            val pageInfos = ImportPageInfos(pageSize = getPageSize())
+        val importFilter = CommonImportFilter(lastUpdateDate = lastUpdateDate)
+        val pageInfos = ImportPageInfos(pageSize = getPageSize())
 
-            val logId = saveLocalRunningLog(importFilter, pageInfos).id
+        val clientStartDateTime = dateTimeNow()
 
-            do {
-                val response = getImportationData(serviceToken, importFilter, pageInfos)
+        do {
+            val response = getImportationData(serviceToken, importFilter, pageInfos)
 
-                when {
-                    response.success && response.values.isEmpty() -> {
-                        updateLogWithSuccessIteration(logId, emptyList(), emptyList(), pageInfos)
-                    }
+            updateLogWithStartRunningInfos(
+                serviceToken = serviceToken,
+                logPackageId = response.executionLogPackageId,
+                logId = response.executionLogId,
+                importFilter = importFilter,
+                pageInfos = pageInfos,
+                clientStartDateTime = clientStartDateTime
+            )
 
-                    response.success -> {
-                        updateRemoteLogWithStartDateTime(response.executionLogId, serviceToken)
-
-                        val (insertionList, updateList) = executeSegregation(response)
-
-                        saveDataLocally(insertionList, updateList)
-
-                        updateLogWithSuccessIteration(logId, insertionList, updateList, pageInfos)
-                        pageInfos.pageNumber++
-
-                        updateRemoteLogWithEndDateTime(response.executionLogId, serviceToken)
-                    }
-
-                    else -> {
-                        updateLogWithError(logId, response, pageInfos.pageNumber)
-                        throw ServiceException(response.error!!)
-                    }
+            when {
+                response.success && response.values.isEmpty() -> {
+                    updateExecutionLogPackageWithSuccessIterationInfos(
+                        logPackageId = response.executionLogPackageId,
+                        insertionList = emptyList(),
+                        updateList = emptyList(),
+                        serviceToken = serviceToken
+                    )
                 }
-            } while (response.values.size == pageInfos.pageSize)
 
-            updateLogWithSuccess(logId)
-            showFinalLocalLog(logId)
-        } catch (exception: Exception) {
-            saveUnknownError(exception, EnumSyncType.IMPORTATION)
-            throw exception
-        }
+                response.success -> {
+                    val (insertionList, updateList) = executeSegregation(response)
+
+                    saveDataLocally(insertionList, updateList)
+
+                    updateExecutionLogPackageWithSuccessIterationInfos(
+                        logPackageId = response.executionLogPackageId,
+                        insertionList = insertionList,
+                        updateList = updateList,
+                        serviceToken = serviceToken
+                    )
+
+                    pageInfos.pageNumber++
+                }
+
+                else -> {
+                    throw ServiceException(response.error!!)
+                }
+            }
+        } while (response.values.size == pageInfos.pageSize)
     }
 
-    private suspend fun showFinalLocalLog(logId: String) {
-        val log = syncLogDAO.findById(logId)
-        Log.d(TAG, log.processDetails!!)
-    }
-
-    private suspend fun saveLocalRunningLog(importFilter: CommonImportFilter, pageInfos: ImportPageInfos): SyncLog {
-        val header = buildString {
-            appendLine("=========================================")
-            appendLine(" IMPORTATION START - ${this@AbstractImportationRepository.javaClass.simpleName}         ")
-            appendLine("=========================================")
-            appendLine("Filter:")
-            appendLine("  lastUpdateDate: ${importFilter.lastUpdateDate ?: "N/A"}")
-            appendLine("-----------------------------------------")
-            appendLine("PageInfos:")
-            appendLine("  pageSize  : ${pageInfos.pageSize}")
-            appendLine("  pageNumber: ${pageInfos.pageNumber}")
-            appendLine("=========================================")
-        }
-
-        return insertRunningLog(header, EnumSyncType.IMPORTATION)
-    }
-
-    private suspend fun updateLogWithSuccessIteration(
+    private suspend fun updateLogWithStartRunningInfos(
+        serviceToken: String,
         logId: String,
+        logPackageId: String,
+        importFilter: CommonImportFilter,
+        pageInfos: ImportPageInfos,
+        clientStartDateTime: LocalDateTime
+    ) {
+        executionLogWebClient.updateLogInformation(
+            token = serviceToken,
+            logId = logId,
+            dto = UpdatableExecutionLogInfosDTO(
+                lastUpdateDate = importFilter.lastUpdateDate,
+                pageSize = pageInfos.pageSize
+            )
+        )
+
+        executionLogWebClient.updateLogPackageInformation(
+            token = serviceToken,
+            logPackageId = logPackageId,
+            dto = UpdatableExecutionLogPackageInfosDTO(
+                clientExecutionStart = clientStartDateTime
+            )
+        )
+    }
+
+    private suspend fun updateExecutionLogPackageWithSuccessIterationInfos(
+        serviceToken: String,
+        logPackageId: String,
         insertionList: List<MODEL>,
         updateList: List<MODEL>,
-        pageInfos: ImportPageInfos,
     ) {
-        val log = syncLogDAO.findById(logId)
-
-        val section = buildString {
-            appendLine("=========================================")
-            appendLine(" EXECUTION ${pageInfos.pageNumber} - SUCCESS ")
-            appendLine("=========================================")
-            appendLine("INSERTED ITEMS  : ${insertionList.size}")
-            appendLine("UPDATED ITEMS   : ${updateList.size}")
-            appendLine("EXECUTION DATE  : ${LocalDateTime.now()}")
-            appendLine("=========================================")
-        }
-
-        val newProcessDetails = log.processDetails.orEmpty() + "\n" + section
-        val updatedLog = log.copy(processDetails = newProcessDetails)
-
-        syncLogDAO.update(updatedLog)
+        executionLogWebClient.updateLogPackageInformation(
+            token = serviceToken,
+            logPackageId = logPackageId,
+            dto = UpdatableExecutionLogPackageInfosDTO(
+                insertedItemsCount = insertionList.size,
+                updatedItemsCount = updateList.size,
+                clientExecutionEnd = dateTimeNow()
+            )
+        )
     }
 
     private suspend fun executeSegregation(response: ReadServiceResponse<DTO>): Pair<List<MODEL>, List<MODEL>> {
@@ -137,9 +141,5 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
         if (updateList.isNotEmpty()) {
             getOperationDAO().updateBatch(updateList)
         }
-    }
-
-    companion object {
-        private const val TAG = "WM-IMPORTATION"
     }
 }

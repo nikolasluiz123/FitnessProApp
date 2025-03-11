@@ -5,8 +5,8 @@ import br.com.fitnesspor.service.data.access.extensions.getResponseBody
 import br.com.fitnesspor.service.data.access.service.log.IExecutionLogService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
-import java.time.LocalDateTime
 
 class ExecutionLogWebClient(
     context: Context,
@@ -16,15 +16,30 @@ class ExecutionLogWebClient(
     suspend fun updateLogInformation(
         token: String,
         logId: String,
-        clientDateTimeStart: LocalDateTime?,
-        clientDateTimeEnd: LocalDateTime?
+        dto: UpdatableExecutionLogInfosDTO
     ): PersistenceServiceResponse {
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 executionLogService.updateExecutionLog(
                     token = formatToken(token),
-                    id = logId,
-                    log = UpdatableExecutionLogInfosDTO(clientDateTimeStart, clientDateTimeEnd)
+                    executionLogId = logId,
+                    dto = dto
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun updateLogPackageInformation(
+        token: String,
+        logPackageId: String,
+        dto: UpdatableExecutionLogPackageInfosDTO,
+    ): PersistenceServiceResponse {
+        return persistenceServiceErrorHandlingBlock(
+            codeBlock = {
+                executionLogService.updateExecutionLogPackage(
+                    token = formatToken(token),
+                    executionLogPackageId = logPackageId,
+                    dto = dto
                 ).getResponseBody()
             }
         )

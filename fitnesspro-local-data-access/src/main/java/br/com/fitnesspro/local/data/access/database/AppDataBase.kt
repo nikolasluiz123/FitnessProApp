@@ -10,7 +10,6 @@ import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
-import br.com.fitnesspro.local.data.access.dao.SyncLogDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
@@ -29,7 +28,6 @@ import br.com.fitnesspro.model.nutrition.diet.predefinition.MealOptionPreDefinit
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.model.sync.ImportationHistory
-import br.com.fitnesspro.model.sync.SyncLog
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
@@ -49,7 +47,7 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
         MealOption::class, Ingredient::class, Scheduler::class, SchedulerConfig::class, ExerciseExecution::class,
         VideoExerciseExecution::class, ExercisePreDefinition::class, VideoExercisePreDefinition::class,
         WorkoutGroupPreDefinition::class, Exercise::class, Video::class, VideoExercise::class,
-        Workout::class, WorkoutGroup::class, ImportationHistory::class, SyncLog::class
+        Workout::class, WorkoutGroup::class, ImportationHistory::class
     ],
     exportSchema = true
 )
@@ -73,7 +71,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun workoutGroupDAO(): WorkoutGroupDAO
 
     abstract fun syncHistoryDAO(): ImportationHistoryDAO
-
-    abstract fun syncLogDAO(): SyncLogDAO
 
 }

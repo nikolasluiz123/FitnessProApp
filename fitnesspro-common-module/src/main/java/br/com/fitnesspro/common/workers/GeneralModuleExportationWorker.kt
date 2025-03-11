@@ -6,8 +6,8 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.ICommonWorkersEntryPoint
-import br.com.fitnesspro.core.worker.FitnessProOneTimeCoroutineWorker
-import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
+import br.com.fitnesspro.common.workers.common.AbstractExportationWorker
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
@@ -16,16 +16,12 @@ import dagger.hilt.android.EntryPointAccessors
 class GeneralModuleExportationWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters
-) : FitnessProOneTimeCoroutineWorker(context, workerParams) {
+) : AbstractExportationWorker(context, workerParams) {
 
     private val entryPoint = EntryPointAccessors.fromApplication(context, ICommonWorkersEntryPoint::class.java)
 
-    override fun onError(e: Exception) {
-        e.sendToFirebaseCrashlytics()
-    }
-
-    override suspend fun onWorkOneTime() {
-        entryPoint.getPersonExportationRepository().export()
+    override suspend fun onExport(serviceToken: String) {
+        entryPoint.getPersonExportationRepository().export(serviceToken)
     }
 
     override fun getClazz() = javaClass
@@ -33,5 +29,7 @@ class GeneralModuleExportationWorker @AssistedInject constructor(
     override fun getOneTimeWorkRequestBuilder(): OneTimeWorkRequest.Builder {
         return OneTimeWorkRequestBuilder<GeneralModuleExportationWorker>()
     }
+
+    override fun getModule() = EnumSyncModule.GENERAL
 
 }

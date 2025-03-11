@@ -64,8 +64,4 @@ class DatabaseModule {
     @Singleton
     fun provideSyncHistoryDao(appDatabase: AppDatabase) = appDatabase.syncHistoryDAO()
 
-    @Provides
-    @Singleton
-    fun provideSyncLogDao(appDatabase: AppDatabase) = appDatabase.syncLogDAO()
-
 }

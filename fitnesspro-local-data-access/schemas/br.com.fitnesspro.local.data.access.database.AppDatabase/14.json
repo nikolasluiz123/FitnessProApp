@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 14,
-    "identityHash": "01468ff2b714a90f8761a29840d0e5be",
+    "identityHash": "c1187431aba546feb7c4a4700471d7f1",
     "entities": [
       {
         "tableName": "user",
@@ -2064,74 +2064,12 @@
         },
         "indices": [],
         "foreignKeys": []
-      },
-      {
-        "tableName": "sync_log",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `module` TEXT, `status` TEXT, `type` TEXT, `description` TEXT, `start_date` TEXT, `end_date` TEXT, `process_details` TEXT, PRIMARY KEY(`id`))",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "module",
-            "columnName": "module",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "status",
-            "columnName": "status",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "type",
-            "columnName": "type",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "description",
-            "columnName": "description",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "startDate",
-            "columnName": "start_date",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "endDate",
-            "columnName": "end_date",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "processDetails",
-            "columnName": "process_details",
-            "affinity": "TEXT",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '01468ff2b714a90f8761a29840d0e5be')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c1187431aba546feb7c4a4700471d7f1')"
     ]
   }
 }

@@ -52,6 +52,7 @@ abstract class FitnessProWebClient(private val context: Context) {
                 is ConnectException -> {
                     ExportationServiceResponse(
                         executionLogId = "",
+                        executionLogPackageId = "",
                         success = false,
                         error = context.getString(R.string.message_connect_exception)
                     )
@@ -59,6 +60,7 @@ abstract class FitnessProWebClient(private val context: Context) {
                 is SocketTimeoutException -> {
                     ExportationServiceResponse(
                         executionLogId = "",
+                        executionLogPackageId = "",
                         success = false,
                         error = context.getString(R.string.message_socket_timeout_exception)
                     )
@@ -135,6 +137,7 @@ abstract class FitnessProWebClient(private val context: Context) {
                 is ConnectException -> {
                     ImportationServiceResponse(
                         executionLogId = "",
+                        executionLogPackageId = "",
                         values = emptyList(),
                         success = false,
                         error = context.getString(R.string.message_connect_exception),
@@ -144,6 +147,7 @@ abstract class FitnessProWebClient(private val context: Context) {
                 is SocketTimeoutException -> {
                     ImportationServiceResponse(
                         executionLogId = "",
+                        executionLogPackageId = "",
                         values = emptyList(),
                         success = false,
                         error = context.getString(R.string.message_socket_timeout_exception),

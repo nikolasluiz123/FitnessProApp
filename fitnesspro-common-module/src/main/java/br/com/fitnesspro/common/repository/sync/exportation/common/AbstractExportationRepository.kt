@@ -1,16 +1,15 @@
 package br.com.fitnesspro.common.repository.sync.exportation.common
 
 import android.content.Context
-import android.util.Log
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.base.IntegratedModel
-import br.com.fitnesspro.model.enums.EnumSyncType
 import br.com.fitnesspro.model.enums.EnumTransmissionState
-import br.com.fitnesspro.model.sync.SyncLog
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import java.time.Duration
 import java.time.LocalDateTime
@@ -22,97 +21,45 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
 
     abstract suspend fun callExportationService(modelList: List<MODEL>, token: String): ExportationServiceResponse
 
-    suspend fun export() {
-        val user = getAuthenticatedUser()
+    suspend fun export(serviceToken: String) {
+        val pageInfos = ExportPageInfos(pageSize = getPageSize())
 
-        if (user?.serviceToken != null) {
-            try {
-                val pageInfos = ExportPageInfos(pageSize = getPageSize())
+        do {
+            val clientDateTimeStart = dateTimeNow()
 
-                val logId = saveRunningLog(pageInfos).id
+            val models = getExportationData(pageInfos)
 
-                do {
-                    val clientDateTimeStart = dateTimeNow()
+            if (models.isNotEmpty()) {
+                updateTransmissionState(models, EnumTransmissionState.RUNNING)
 
-                    val models = getExportationData(pageInfos)
+                val serviceCallExportationStart = dateTimeNow()
+                val response = callExportationService(models, serviceToken)
+                val serviceCallExportationEnd = dateTimeNow()
 
-                    if (models.isNotEmpty()) {
-                        updateTransmissionState(models, EnumTransmissionState.RUNNING)
+                val callExportationTime = Duration.between(serviceCallExportationStart, serviceCallExportationEnd)
 
-                        val serviceCallExportationStart = dateTimeNow()
-                        val response = callExportationService(models, user.serviceToken!!)
-                        val serviceCallExportationEnd = dateTimeNow()
+                updateLogWithStartRunningInfos(
+                    serviceToken = serviceToken,
+                    logPackageId = response.executionLogPackageId,
+                    logId = response.executionLogId,
+                    pageInfos = pageInfos,
+                    clientStartDateTime = clientDateTimeStart
+                )
 
-                        val callExportationTime = Duration.between(serviceCallExportationStart, serviceCallExportationEnd)
+                if (response.success) {
+                    updateTransmissionState(models, EnumTransmissionState.TRANSMITTED)
 
-                        updateRemoteLogWithStartDateTime(
-                            logId = response.executionLogId,
-                            token = user.serviceToken!!,
-                            clientDateTimeStart = clientDateTimeStart
-                        )
+                    updateExecutionLogPackageWithSuccessIterationInfos(
+                        logPackageId = response.executionLogPackageId,
+                        models = models,
+                        serviceToken = serviceToken,
+                        clientExecutionEnd = dateTimeNow().minus(callExportationTime)
+                    )
 
-                        if (response.success) {
-                            updateLogWithSuccessIteration(logId, models, pageInfos)
-                            updateTransmissionState(models, EnumTransmissionState.TRANSMITTED)
-
-                            pageInfos.pageNumber++
-                        } else {
-                            updateLogWithError(logId, response, pageInfos.pageNumber)
-                        }
-
-                        val clientDateTimeEnd = dateTimeNow().minus(callExportationTime)
-
-                        updateRemoteLogWithEndDateTime(
-                            logId = response.executionLogId,
-                            token = user.serviceToken!!,
-                            clientDateTimeEnd = clientDateTimeEnd
-                        )
-                    }
-                } while (models.size == pageInfos.pageSize)
-
-                updateLogWithSuccess(logId)
-                showFinalLocalLog(logId)
-            } catch (exception: Exception) {
-                saveUnknownError(exception, EnumSyncType.EXPORTATION)
-                throw exception
+                    pageInfos.pageNumber++
+                }
             }
-        }
-    }
-
-    private suspend fun showFinalLocalLog(logId: String) {
-        val log = syncLogDAO.findById(logId)
-        Log.d(TAG, log.processDetails!!)
-    }
-
-    private suspend fun updateLogWithSuccessIteration(logId: String, models: List<MODEL>, pageInfos: ExportPageInfos) {
-        val section = buildString {
-            appendLine("=========================================")
-            appendLine(" EXECUTION ${pageInfos.pageNumber} - SUCCESS ")
-            appendLine("=========================================")
-            appendLine("ITEMS           : ${models.size}")
-            appendLine("EXECUTION DATE  : ${LocalDateTime.now()}")
-            appendLine("=========================================")
-        }
-
-        val log = syncLogDAO.findById(logId)
-        val newProcessDetails = log.processDetails.orEmpty() + "\n" + section
-        val updatedLog = log.copy(processDetails = newProcessDetails)
-
-        syncLogDAO.update(updatedLog)
-    }
-
-    private suspend fun saveRunningLog(pageInfos: ExportPageInfos): SyncLog {
-        val header = buildString {
-            appendLine("=========================================")
-            appendLine("           EXPORTATION START          ")
-            appendLine("=========================================")
-            appendLine("PageInfos:")
-            appendLine("  pageSize  : ${pageInfos.pageSize}")
-            appendLine("  pageNumber: ${pageInfos.pageNumber}")
-            appendLine("=========================================")
-        }
-
-        return insertRunningLog(header, EnumSyncType.EXPORTATION)
+        } while (models.size == pageInfos.pageSize)
     }
 
     private suspend fun updateTransmissionState(models: List<MODEL>, transmissionState: EnumTransmissionState) {
@@ -120,7 +67,43 @@ abstract class AbstractExportationRepository<DTO: BaseDTO, MODEL: IntegratedMode
         getOperationDAO().updateBatch(models, writeTransmissionState = false)
     }
 
-    companion object {
-        private const val TAG = "VM-EXPORTATION"
+    private suspend fun updateLogWithStartRunningInfos(
+        serviceToken: String,
+        logId: String,
+        logPackageId: String,
+        pageInfos: ExportPageInfos,
+        clientStartDateTime: LocalDateTime
+    ) {
+        executionLogWebClient.updateLogInformation(
+            token = serviceToken,
+            logId = logId,
+            dto = UpdatableExecutionLogInfosDTO(
+                pageSize = pageInfos.pageSize
+            )
+        )
+
+        executionLogWebClient.updateLogPackageInformation(
+            token = serviceToken,
+            logPackageId = logPackageId,
+            dto = UpdatableExecutionLogPackageInfosDTO(
+                clientExecutionStart = clientStartDateTime
+            )
+        )
+    }
+
+    private suspend fun updateExecutionLogPackageWithSuccessIterationInfos(
+        serviceToken: String,
+        logPackageId: String,
+        models: List<MODEL>,
+        clientExecutionEnd: LocalDateTime
+    ) {
+        executionLogWebClient.updateLogPackageInformation(
+            token = serviceToken,
+            logPackageId = logPackageId,
+            dto = UpdatableExecutionLogPackageInfosDTO(
+                allItemsCount = models.size,
+                clientExecutionEnd = clientExecutionEnd
+            )
+        )
     }
 }
