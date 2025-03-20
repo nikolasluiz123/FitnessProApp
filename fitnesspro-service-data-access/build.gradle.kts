@@ -14,15 +14,19 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        android.buildFeatures.buildConfig = true
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            buildConfigField("String", "FITNESS_PRO_SERVICE_HOST", "\"https://service.fitnessprotec.com/api/v1/\"")
+        }
+
+        debug {
+            buildConfigField("String", "FITNESS_PRO_SERVICE_HOST", "\"https://service.fitnessprotec.com/api/v1/\"")
         }
     }
 

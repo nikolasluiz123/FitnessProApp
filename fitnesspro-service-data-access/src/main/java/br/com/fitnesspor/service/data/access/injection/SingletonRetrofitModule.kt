@@ -3,6 +3,7 @@ package br.com.fitnesspor.service.data.access.injection
 import br.com.fitnesspro.core.adapters.LocalDateTimeTypeAdapter
 import br.com.fitnesspro.core.adapters.LocalDateTypeAdapter
 import br.com.fitnesspro.core.adapters.LocalTimeTypeAdapter
+import br.com.fitnesspro.service.data.access.BuildConfig
 import br.com.fitnesspro.shared.communication.constants.Timeouts
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -34,7 +35,7 @@ class SingletonRetrofitModule {
 
         return Retrofit
             .Builder()
-            .baseUrl("http://192.168.155.19:8082/api/v1/")
+            .baseUrl(BuildConfig.FITNESS_PRO_SERVICE_HOST)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
             .build()
