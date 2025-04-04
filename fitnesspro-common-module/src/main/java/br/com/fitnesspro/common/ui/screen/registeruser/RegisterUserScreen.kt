@@ -3,6 +3,7 @@ package br.com.fitnesspro.common.ui.screen.registeruser
 import android.content.Context
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +40,7 @@ import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.fields.state.TabState
+import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
 import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
 import br.com.fitnesspro.compose.components.tabs.Tab
@@ -139,53 +141,79 @@ fun RegisterUserScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            val (tabRowRef, horizontalPagerRef) = createRefs()
+            val (loadingRef, containerRef) = createRefs()
 
-            FitnessProMessageDialog(state = state.messageDialogState)
-
-            val pagerState = rememberPagerState(pageCount = state.tabState::tabsSize)
-
-            FitnessProTabRow(
-                modifier = Modifier.constrainAs(tabRowRef) {
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                },
-                tabState = state.tabState,
-                coroutineScope = coroutineScope,
-                pagerState = pagerState
-            )
-
-            FitnessProHorizontalPager(
-                modifier = Modifier.constrainAs(horizontalPagerRef) {
-                    start.linkTo(parent.start)
-                    top.linkTo(tabRowRef.bottom)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-
-                    height = Dimension.fillToConstraints
-                },
-                pagerState = pagerState,
-                tabState = state.tabState
-            ) { index ->
-                when (index) {
-                    EnumTabsRegisterUserScreen.GENERAL.index -> {
-                        RegisterUserTabGeneral(
-                            state = state,
-                            onDone = {
-                                onSaveUserClick?.onExecute {
-                                    showSaveSuccessMessage(coroutineScope, snackbarHostState, context)
-                                }
-                            }
-                        )
+            ConstraintLayout(
+                Modifier.fillMaxWidth()
+            ) {
+                FitnessProLinearProgressIndicator(
+                    state.showLoading,
+                    Modifier.constrainAs(loadingRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
                     }
+                )
+            }
 
-                    EnumTabsRegisterUserScreen.ACADEMY.index -> {
-                        RegisterUserTabAcademies(
-                            state = state,
-                            onAcademyItemClick = onAcademyItemClick,
-                            onUpdateAcademies = onUpdateAcademies
-                        )
+            ConstraintLayout(
+                Modifier
+                    .padding(padding)
+                    .constrainAs(containerRef) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(loadingRef.bottom, margin = 8.dp)
+                        bottom.linkTo(parent.bottom)
+                    }
+            ) {
+                val (tabRowRef, horizontalPagerRef) = createRefs()
+
+                FitnessProMessageDialog(state = state.messageDialogState)
+
+                val pagerState = rememberPagerState(pageCount = state.tabState::tabsSize)
+
+                FitnessProTabRow(
+                    modifier = Modifier.constrainAs(tabRowRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                    },
+                    tabState = state.tabState,
+                    coroutineScope = coroutineScope,
+                    pagerState = pagerState
+                )
+
+                FitnessProHorizontalPager(
+                    modifier = Modifier.constrainAs(horizontalPagerRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(tabRowRef.bottom)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+
+                        height = Dimension.fillToConstraints
+                    },
+                    pagerState = pagerState,
+                    tabState = state.tabState
+                ) { index ->
+                    when (index) {
+                        EnumTabsRegisterUserScreen.GENERAL.index -> {
+                            RegisterUserTabGeneral(
+                                state = state,
+                                onDone = {
+                                    onSaveUserClick?.onExecute {
+                                        showSaveSuccessMessage(coroutineScope, snackbarHostState, context)
+                                    }
+                                }
+                            )
+                        }
+
+                        EnumTabsRegisterUserScreen.ACADEMY.index -> {
+                            RegisterUserTabAcademies(
+                                state = state,
+                                onAcademyItemClick = onAcademyItemClick,
+                                onUpdateAcademies = onUpdateAcademies
+                            )
+                        }
                     }
                 }
             }

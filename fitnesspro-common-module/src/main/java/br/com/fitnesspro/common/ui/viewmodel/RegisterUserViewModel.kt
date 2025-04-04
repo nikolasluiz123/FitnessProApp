@@ -100,7 +100,12 @@ class RegisterUserViewModel @Inject constructor(
                 birthDate = initializeBirthDatePickerField(),
                 phone = initializePhoneTextField(),
                 userType = initializeUserTypeDropDownMenu(),
-                messageDialogState = initializeMessageDialogState()
+                messageDialogState = initializeMessageDialogState(),
+                onToggleLoading = {
+                    _uiState.value = _uiState.value.copy(
+                        showLoading = _uiState.value.showLoading.not()
+                    )
+                }
             )
         }
     }
@@ -371,10 +376,12 @@ class RegisterUserViewModel @Inject constructor(
 
     fun saveUser(onSuccess: () -> Unit) {
         launch {
+            _uiState.value.onToggleLoading()
+
             val toPerson = _uiState.value.toPerson
             toPerson.toUser!!.type = getUserTypeFromContext(_uiState.value.context)
 
-            val validationResults = savePersonUseCase.execute(toPerson)
+            val validationResults = savePersonUseCase.execute(toPerson, _uiState.value.isRegisterServiceAuth)
 
             if (validationResults.isEmpty()) {
                 updateInfosAfterSave()
@@ -382,6 +389,8 @@ class RegisterUserViewModel @Inject constructor(
             } else {
                 showValidationMessages(validationResults)
             }
+
+            _uiState.value.onToggleLoading()
         }
     }
 

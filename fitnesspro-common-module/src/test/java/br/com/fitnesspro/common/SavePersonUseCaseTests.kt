@@ -52,7 +52,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
 
         val personSlot = slot<TOPerson>()
 
-        coEvery { personRepository.savePerson(capture(personSlot)) } answers {
+        coEvery { personRepository.savePerson(capture(personSlot), isRegisterServiceAuth) } answers {
             personSlot.captured.id = UUID.randomUUID().toString()
         }
 

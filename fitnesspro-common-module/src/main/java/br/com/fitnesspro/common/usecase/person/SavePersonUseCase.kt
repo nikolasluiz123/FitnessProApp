@@ -36,7 +36,7 @@ open class SavePersonUseCase(
     protected val schedulerConfigRepository: SchedulerConfigRepository
 ) {
 
-    suspend fun execute(toPerson: TOPerson): List<FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>> {
+    suspend fun execute(toPerson: TOPerson, isRegisterServiceAuth: Boolean): List<FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>> {
         val validationResults = mutableListOf<FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>>()
         validationResults.addAll(validateUser(toPerson))
         validationResults.addAll(validatePerson(toPerson))
@@ -45,7 +45,7 @@ open class SavePersonUseCase(
             toPerson.toUser!!.password = passwordHasher.hashPassword(toPerson.toUser?.password!!)
 
             personRepository.runInTransaction {
-                personRepository.savePerson(toPerson)
+                personRepository.savePerson(toPerson, isRegisterServiceAuth)
                 saveSchedulerConfigUseCase.saveConfig(toPerson.id!!)
             }
         }

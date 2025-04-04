@@ -6,6 +6,7 @@ import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
 import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.fields.state.TextField
+import br.com.fitnesspro.core.state.ILoadingUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
@@ -27,4 +28,6 @@ data class RegisterUserUIState(
     val isRegisterServiceAuth: Boolean = false,
     val academies: List<AcademyGroupDecorator> = mutableListOf(),
     val messageDialogState: MessageDialogState = MessageDialogState(),
-)
+    override val showLoading: Boolean = false,
+    override val onToggleLoading: () -> Unit = { },
+): ILoadingUIState

@@ -26,7 +26,7 @@ android {
         }
 
         debug {
-            buildConfigField("String", "FITNESS_PRO_SERVICE_HOST", "\"https://service.fitnessprotec.com/api/v1/\"")
+            buildConfigField("String", "FITNESS_PRO_SERVICE_HOST", "\"http://192.168.0.41:8081/api/v1/\"")
         }
     }
 

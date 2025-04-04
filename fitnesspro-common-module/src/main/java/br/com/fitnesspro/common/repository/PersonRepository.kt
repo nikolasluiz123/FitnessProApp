@@ -27,19 +27,19 @@ class PersonRepository(
     private val personWebClient: PersonWebClient
 ): FitnessProRepository(context) {
 
-    suspend fun savePerson(toPerson: TOPerson) = withContext(IO) {
+    suspend fun savePerson(toPerson: TOPerson, isRegisterServiceAuth: Boolean) = withContext(IO) {
         val user = toPerson.toUser!!.getUser()
         val person = toPerson.getPerson(user.id)
 
-        saveUserOnFirebase(user)
+        saveUserOnFirebase(user, isRegisterServiceAuth)
         savePersonLocally(toPerson, user, person)
         savePersonRemote(person, user)
     }
 
-    private suspend fun saveUserOnFirebase(user: User) {
+    private suspend fun saveUserOnFirebase(user: User, isRegisterServiceAuth: Boolean) {
         val existentUser = userDAO.findById(user.id)
 
-        if (existentUser == null) {
+        if (existentUser == null && !isRegisterServiceAuth) {
             firebaseDefaultAuthenticationService.register(user.email!!, user.password!!)
         } else {
             firebaseDefaultAuthenticationService.updateUserInfos(user)
