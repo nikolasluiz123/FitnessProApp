@@ -124,7 +124,7 @@ fun HomeScreen(
             ConstraintLayout(
                 Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.5f)
+                    .fillMaxHeight(0.6f)
                     .padding(horizontal = 32.dp, vertical = 48.dp)
                     .constrainAs(moduleButtonsRef) {
                         top.linkTo(parent.top)
@@ -289,7 +289,7 @@ fun HomeScreen(
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun HomeScreenPreview() {
     FitnessProTheme {
@@ -308,7 +308,7 @@ private fun HomeScreenPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun HomeScreenDisabledPreview() {
     FitnessProTheme {

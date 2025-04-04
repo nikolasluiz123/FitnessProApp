@@ -75,7 +75,7 @@ fun SquaredButton(
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun SquaredButtonPreview() {
     FitnessProTheme {
@@ -89,7 +89,7 @@ private fun SquaredButtonPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun SquaredButtonDisabledPreview() {
     FitnessProTheme {
