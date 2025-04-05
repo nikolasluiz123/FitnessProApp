@@ -2,6 +2,7 @@ package br.com.fitnesspro.common.usecase.login
 
 import android.content.Context
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.login.enums.EnumLoginValidationTypes
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
@@ -13,7 +14,8 @@ import br.com.fitnesspro.core.validation.FieldValidationError
 class DefaultLoginUseCase(
     private val context: Context,
     private val userRepository: UserRepository,
-    private val passwordHasher: IPasswordHasher
+    private val passwordHasher: IPasswordHasher,
+    private val personRepository: PersonRepository
 ) {
 
     suspend fun execute(email: String?, password: String?): List<FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>> {
@@ -86,7 +88,18 @@ class DefaultLoginUseCase(
 
         val invalidLength = emailTrimmed.length > EMAIL.maxLength || passwordTrimmed.length > PASSWORD.maxLength
         val hashedPassword = passwordHasher.hashPassword(passwordTrimmed)
-        val userNotExists = !userRepository.hasUserWithCredentials(emailTrimmed, hashedPassword)
+        var userNotExists = !userRepository.hasUserWithCredentials(emailTrimmed, hashedPassword)
+        val toPersonRemote = personRepository.findPersonByEmailRemote(emailTrimmed)
+
+        if (userNotExists && toPersonRemote != null) {
+            personRepository.savePerson(
+                toPerson = toPersonRemote,
+                isRegisterServiceAuth = false,
+                forceInsertLocally = true
+            )
+
+            userNotExists = false
+        }
 
         return when {
             invalidLength || userNotExists -> {
