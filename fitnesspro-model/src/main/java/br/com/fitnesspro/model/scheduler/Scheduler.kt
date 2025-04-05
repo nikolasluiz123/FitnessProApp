@@ -33,7 +33,7 @@ import java.util.UUID
 )
 data class Scheduler(
     @PrimaryKey
-    override val id: String = UUID.randomUUID().toString(),
+    override var id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "transmission_state", defaultValue = "PENDING")
     override var transmissionState: EnumTransmissionState = EnumTransmissionState.PENDING,
     @ColumnInfo(name = "academy_member_person_id", index = true)

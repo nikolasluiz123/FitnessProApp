@@ -23,7 +23,7 @@ import java.util.UUID
 )
 data class SchedulerConfig(
     @PrimaryKey
-    override val id: String = UUID.randomUUID().toString(),
+    override var id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "transmission_state", defaultValue = "PENDING")
     override var transmissionState: EnumTransmissionState = EnumTransmissionState.PENDING,
     var alarm: Boolean = false,

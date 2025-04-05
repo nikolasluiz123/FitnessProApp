@@ -2,14 +2,14 @@ package br.com.fitnesspor.service.data.access.webclient.general
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.extensions.getResponseBody
+import br.com.fitnesspor.service.data.access.mappers.toPersonAcademyTimeDTO
+import br.com.fitnesspor.service.data.access.mappers.toPersonDTO
 import br.com.fitnesspor.service.data.access.service.general.IPersonService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
 import br.com.fitnesspro.core.extensions.defaultGSon
-import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.model.general.User
-import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -17,8 +17,8 @@ import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
+import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
 import com.google.gson.GsonBuilder
-import br.com.fitnesspro.models.general.enums.EnumUserType as EnumUserTypeService
 
 class PersonWebClient(
     context: Context,
@@ -116,44 +116,12 @@ class PersonWebClient(
         )
     }
 
-    private fun Person.toPersonDTO(user: User): PersonDTO {
-        return PersonDTO(
-            id = id,
-            name = name,
-            active = active,
-            birthDate = birthDate,
-            phone = phone,
-            user = user.toUserDTO()
+    suspend fun findPersonByEmail(email: String): SingleValueServiceResponse<PersonDTO?> {
+        return singleValueErrorHandlingBlock(
+            codeBlock = {
+                personService.findPersonByEmail(email).getResponseBody(PersonDTO::class.java)
+            }
         )
     }
 
-    private fun User.toUserDTO(): UserDTO {
-        return UserDTO(
-            id = id,
-            email = email,
-            password = password,
-            active = active,
-            type = getUserType(type!!),
-        )
-    }
-
-    private fun getUserType(type: EnumUserType): EnumUserTypeService {
-        return when (type) {
-            EnumUserType.PERSONAL_TRAINER -> EnumUserTypeService.PERSONAL_TRAINER
-            EnumUserType.NUTRITIONIST -> EnumUserTypeService.NUTRITIONIST
-            EnumUserType.ACADEMY_MEMBER -> EnumUserTypeService.ACADEMY_MEMBER
-        }
-    }
-
-    private fun PersonAcademyTime.toPersonAcademyTimeDTO(): PersonAcademyTimeDTO {
-        return PersonAcademyTimeDTO(
-            id = id,
-            personId = personId,
-            academyId = academyId,
-            timeStart = timeStart,
-            timeEnd = timeEnd,
-            dayOfWeek = dayOfWeek,
-            active = active
-        )
-    }
 }

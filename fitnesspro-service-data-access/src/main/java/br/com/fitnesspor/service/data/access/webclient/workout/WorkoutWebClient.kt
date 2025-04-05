@@ -2,12 +2,12 @@ package br.com.fitnesspor.service.data.access.webclient.workout
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.extensions.getResponseBody
+import br.com.fitnesspor.service.data.access.mappers.toWorkoutDTO
+import br.com.fitnesspor.service.data.access.mappers.toWorkoutGroupDTO
 import br.com.fitnesspor.service.data.access.service.workout.IWorkoutService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
 import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.model.workout.WorkoutGroup
-import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
 
 class WorkoutWebClient(
     context: Context,
@@ -33,27 +33,6 @@ class WorkoutWebClient(
                     workoutGroupDTO = workoutGroup.toWorkoutGroupDTO()
                 ).getResponseBody()
             }
-        )
-    }
-
-    private fun Workout.toWorkoutDTO(): WorkoutDTO {
-        return WorkoutDTO(
-            id = id,
-            active = active,
-            academyMemberPersonId = academyMemberPersonId,
-            professionalPersonId = professionalPersonId,
-            dateStart = start,
-            dateEnd = end
-        )
-    }
-
-    private fun WorkoutGroup.toWorkoutGroupDTO(): WorkoutGroupDTO {
-        return WorkoutGroupDTO(
-            id = id,
-            active = active,
-            workoutId = workoutId,
-            dayWeek = dayWeek,
-            name = name
         )
     }
 }

@@ -247,12 +247,8 @@ fun LoginScreen(
                         onClick = {
                             Firebase.analytics.logButtonClick(LOGIN_SCREEN_GOOGLE_BUTTON)
 
-                            state.onToggleLoading()
-
                             onLoginWithGoogleClick?.onExecute(
                                 onUserNotExistsLocal = {
-                                    state.onToggleLoading()
-
                                     onNavigateToRegisterUser?.onNavigate(
                                         args = RegisterUserScreenArgs(
                                             toPersonAuthService = it
@@ -260,11 +256,7 @@ fun LoginScreen(
                                     )
                                 },
                                 onSuccess = {
-                                    state.onToggleLoading()
                                     onNavigateToHome()
-                                },
-                                onFailure = {
-                                    state.onToggleLoading()
                                 }
                             )
                         }

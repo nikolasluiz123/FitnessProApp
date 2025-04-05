@@ -2,13 +2,15 @@ package br.com.fitnesspro.common.usecase.login
 
 import android.content.Context
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
 
 class GoogleLoginUseCase(
     private val context: Context,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val personRepository: PersonRepository
 ) {
 
     suspend operator fun invoke(): GoogleAuthResult {
@@ -23,15 +25,31 @@ class GoogleLoginUseCase(
         )
 
         val userExistsLocal = userRepository.hasUserWithEmail(authResult.user?.email!!, null)
+        val toPersonRemote = personRepository.findPersonByEmailRemote(authResult.user?.email!!)
 
-        if (userExistsLocal) {
-            val user = userRepository.findUserByEmail(authResult.user?.email!!)
-            userRepository.authenticate(user?.email!!, user.password!!)
+        when {
+            userExistsLocal -> {
+                val user = userRepository.findUserByEmail(authResult.user?.email!!)
+                userRepository.authenticate(user?.email!!, user.password!!)
+            }
+
+            toPersonRemote != null -> {
+                personRepository.savePerson(
+                    toPerson = toPersonRemote,
+                    isRegisterServiceAuth = true,
+                    forceInsertLocally = true
+                )
+
+                userRepository.authenticate(
+                    email = toPersonRemote.toUser?.email!!,
+                    toPersonRemote.toUser?.password!!
+                )
+            }
         }
 
         return GoogleAuthResult(
             success = true,
-            userExists = userExistsLocal,
+            userExists = userExistsLocal || toPersonRemote != null,
             toPerson = toPerson,
             errorMessage = null
         )

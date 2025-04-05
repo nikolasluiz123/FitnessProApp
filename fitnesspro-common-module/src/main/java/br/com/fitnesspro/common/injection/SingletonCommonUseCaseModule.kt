@@ -105,10 +105,12 @@ class SingletonCommonUseCaseModule {
     fun provideGoogleLoginUseCase(
         @ApplicationContext context: Context,
         userRepository: UserRepository,
+        personRepository: PersonRepository
     ): GoogleLoginUseCase {
         return GoogleLoginUseCase(
             context = context,
-            userRepository = userRepository
+            userRepository = userRepository,
+            personRepository = personRepository
         )
     }
 }

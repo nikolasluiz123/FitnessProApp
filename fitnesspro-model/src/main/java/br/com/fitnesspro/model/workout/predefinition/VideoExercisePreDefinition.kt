@@ -28,7 +28,7 @@ import java.util.UUID
 )
 data class VideoExercisePreDefinition(
     @PrimaryKey
-    override val id: String = UUID.randomUUID().toString(),
+    override var id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "transmission_state", defaultValue = "PENDING")
     override var transmissionState: EnumTransmissionState = EnumTransmissionState.PENDING,
     @ColumnInfo(name = "exercise_pre_definition_id", index = true)

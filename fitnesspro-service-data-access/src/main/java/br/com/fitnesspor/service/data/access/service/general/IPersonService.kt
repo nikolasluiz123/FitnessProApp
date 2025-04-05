@@ -4,6 +4,7 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_ACADEMY_TIME
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_ACADEMY_TIME_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_ACADEMY_TIME_IMPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_EMAIL
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_USER_IMPORT
@@ -13,11 +14,13 @@ import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
+import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface IPersonService {
@@ -63,4 +66,8 @@ interface IPersonService {
         @Query("filter") filter: String,
         @Query("pageInfos") pageInfos: String
     ): Response<ImportationServiceResponse<PersonAcademyTimeDTO>>
+
+    @GET("$PERSON$PERSON_EMAIL/{email}")
+    suspend fun findPersonByEmail(@Path("email") email: String): Response<SingleValueServiceResponse<PersonDTO?>>
+
 }

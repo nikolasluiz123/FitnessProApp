@@ -10,7 +10,7 @@ import java.util.UUID
 )
 data class Academy(
     @PrimaryKey
-    override val id: String = UUID.randomUUID().toString(),
+    override var id: String = UUID.randomUUID().toString(),
     var name: String? = null,
     var address: String? = null,
     var phone: String? = null,

@@ -9,15 +9,22 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
+import br.com.fitnesspro.mappers.toPerson
+import br.com.fitnesspro.mappers.toTOPerson
+import br.com.fitnesspro.mappers.toTOUser
+import br.com.fitnesspro.mappers.toUser
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
+import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
+import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
 import br.com.fitnesspro.tuple.PersonTuple
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
+import br.com.fitnesspro.models.general.enums.EnumUserType as EnumUserTypeService
 
 class PersonRepository(
     context: Context,
@@ -27,12 +34,16 @@ class PersonRepository(
     private val personWebClient: PersonWebClient
 ): FitnessProRepository(context) {
 
-    suspend fun savePerson(toPerson: TOPerson, isRegisterServiceAuth: Boolean) = withContext(IO) {
-        val user = toPerson.toUser!!.getUser()
-        val person = toPerson.getPerson(user.id)
+    suspend fun savePerson(
+        toPerson: TOPerson,
+        isRegisterServiceAuth: Boolean,
+        forceInsertLocally: Boolean = false
+    ) = withContext(IO) {
+        val user = toPerson.toUser!!.toUser()
+        val person = toPerson.toPerson(user.id)
 
         saveUserOnFirebase(user, isRegisterServiceAuth)
-        savePersonLocally(toPerson, user, person)
+        savePersonLocally(toPerson, user, person, forceInsertLocally)
         savePersonRemote(person, user)
     }
 
@@ -46,8 +57,13 @@ class PersonRepository(
         }
     }
 
-    private suspend fun savePersonLocally(toPerson: TOPerson, user: User, person: Person) {
-        if (toPerson.id == null) {
+    private suspend fun savePersonLocally(
+        toPerson: TOPerson,
+        user: User,
+        person: Person,
+        forceInsert: Boolean
+    ) {
+        if (toPerson.id == null || forceInsert) {
             userDAO.insert(user)
             personDAO.insert(person)
 
@@ -88,8 +104,8 @@ class PersonRepository(
         val updatePersonList = mutableListOf<Person>()
 
         toPersons.forEach { toPerson ->
-            val user = toPerson.toUser!!.getUser()
-            val person = toPerson.getPerson(user.id)
+            val user = toPerson.toUser!!.toUser()
+            val person = toPerson.toPerson(user.id)
 
             if (toPerson.id == null) {
                 insertionUserList.add(user)
@@ -123,8 +139,8 @@ class PersonRepository(
             val persons = mutableListOf<Person>()
 
             toPersons.forEach { toPerson ->
-                val user = toPerson.toUser!!.getUser()
-                val person = toPerson.getPerson(user.id)
+                val user = toPerson.toUser!!.toUser()
+                val person = toPerson.toPerson(user.id)
 
                 users.add(user)
                 persons.add(person)
@@ -147,12 +163,13 @@ class PersonRepository(
     }
 
     suspend fun getTOPersonById(personId: String): TOPerson = withContext(IO) {
-        personDAO.findPersonById(personId).getTOPerson()!!
+        val toUser = getAuthenticatedUser()?.toTOUser()!!
+        personDAO.findPersonById(personId).toTOPerson(toUser)
     }
 
     suspend fun getAuthenticatedTOPerson(): TOPerson? = withContext(IO) {
-        val toUser = getAuthenticatedUser()?.getTOUser() ?: return@withContext null
-        personDAO.findPersonByUserId(toUser.id!!).getTOPerson()
+        val toUser = getAuthenticatedUser()?.toTOUser() ?: return@withContext null
+        personDAO.findPersonByUserId(toUser.id!!).toTOPerson(toUser)
     }
 
     fun getListTOPersonWithUserType(
@@ -183,66 +200,37 @@ class PersonRepository(
         personDAO.findPersonByUserId(userId)
     }
 
-    private suspend fun TOPerson.getPerson(userId: String): Person {
-        return if (id == null) {
-            Person(
-                name = name,
-                birthDate = birthDate,
-                phone = phone,
-                userId = userId,
-                active = active,
-            )
-        } else {
-            personDAO.findPersonById(id!!).copy(
-                name = name,
-                birthDate = birthDate,
-                phone = phone,
-                active = active,
-            )
-        }
+    suspend fun findPersonByEmailRemote(email: String): TOPerson? = withContext(IO) {
+        val response = personWebClient.findPersonByEmail(email)
+        if (response.success) response.value?.toTOPerson() else null
     }
 
-    private suspend fun TOUser.getUser(): User {
-        return if (id == null) {
-            User(
-                email = email,
-                password = password,
-                type = type,
-                active = active,
-            )
-        } else {
-            userDAO.findById(id!!)!!.copy(
-                email = email,
-                password = password,
-                type = type,
-                active = active,
-            )
-        }
+    private fun PersonDTO.toTOPerson(): TOPerson {
+        return TOPerson(
+            id = id,
+            name = name,
+            active = active,
+            birthDate = birthDate,
+            phone = phone,
+            toUser = user?.toTOUser()
+        )
     }
 
-    private suspend fun Person?.getTOPerson(): TOPerson? {
-        return this?.run {
-            TOPerson(
-                id = id,
-                name = name,
-                birthDate = birthDate,
-                phone = phone,
-                toUser = userDAO.findByPersonId(id).getTOUser(),
-                active = active,
-            )
-        }
+    private fun UserDTO.toTOUser(): TOUser {
+        return TOUser(
+            id = id,
+            email = email,
+            password = password,
+            active = active,
+            type = getUserType(type!!),
+        )
     }
 
-    private fun User?.getTOUser(): TOUser? {
-        return this?.run {
-            TOUser(
-                id = id,
-                email = email,
-                password = password,
-                type = type,
-                active = active,
-                serviceToken = serviceToken,
-            )
+    private fun getUserType(type: EnumUserTypeService): EnumUserType {
+        return when (type) {
+            EnumUserTypeService.PERSONAL_TRAINER -> EnumUserType.PERSONAL_TRAINER
+            EnumUserTypeService.NUTRITIONIST -> EnumUserType.NUTRITIONIST
+            EnumUserTypeService.ACADEMY_MEMBER -> EnumUserType.ACADEMY_MEMBER
         }
     }
 }

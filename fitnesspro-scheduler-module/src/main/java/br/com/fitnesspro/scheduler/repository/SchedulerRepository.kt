@@ -8,6 +8,8 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
+import br.com.fitnesspro.mappers.toScheduler
+import br.com.fitnesspro.mappers.toTOScheduler
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
@@ -36,7 +38,7 @@ class SchedulerRepository(
         toScheduler: TOScheduler,
         schedulerType: EnumSchedulerType
     ) = withContext(IO) {
-        val scheduler = toScheduler.getScheduler()
+        val scheduler = toScheduler.toScheduler()
 
         saveSchedulerLocally(toScheduler, scheduler)
         saveSchedulerRemote(scheduler, schedulerType)
@@ -87,7 +89,17 @@ class SchedulerRepository(
     }
 
     suspend fun getTOSchedulerById(id: String): TOScheduler = withContext(IO) {
-        schedulerDAO.findSchedulerById(id).getTOScheduler()!!
+        val scheduler = schedulerDAO.findSchedulerById(id)
+
+        val memberPerson = personRepository.findPersonById(scheduler.academyMemberPersonId!!)
+        val professionalPerson = personRepository.findPersonById(scheduler.professionalPersonId!!)
+        val professionalUser = userRepository.findUserById(professionalPerson.userId!!)!!
+
+        scheduler.toTOScheduler(
+            memberPersonName = memberPerson.name!!,
+            professionalPersonName = professionalPerson.name!!,
+            professionalUserType = professionalUser.type!!
+        )
     }
 
     suspend fun getHasSchedulerConflict(
@@ -110,7 +122,7 @@ class SchedulerRepository(
 
 
     suspend fun saveRecurrentScheduler(schedules: List<TOScheduler>) = withContext(IO) {
-        val schedulers = schedules.map { it.getScheduler() }.sortedBy { it.scheduledDate }
+        val schedulers = schedules.map { it.toScheduler() }.sortedBy { it.scheduledDate }
 
         val workout = Workout(
             academyMemberPersonId = schedules.first().academyMemberPersonId,
@@ -141,58 +153,5 @@ class SchedulerRepository(
         }
     }
 
-    private suspend fun Scheduler?.getTOScheduler(): TOScheduler? {
-        return this?.run {
-            val memberPerson = personRepository.findPersonById(academyMemberPersonId!!)
-            val professionalPerson = personRepository.findPersonById(professionalPersonId!!)
-            val professionalUser = userRepository.findUserById(professionalPerson.userId!!)!!
 
-            TOScheduler(
-                id = id,
-                academyMemberPersonId = academyMemberPersonId,
-                academyMemberName = memberPerson.name,
-                professionalPersonId = professionalPersonId,
-                professionalName = professionalPerson.name,
-                professionalType = professionalUser.type,
-                scheduledDate = scheduledDate,
-                start = start,
-                end = end,
-                canceledDate = canceledDate,
-                situation = situation,
-                compromiseType = compromiseType,
-                observation = observation,
-                active = active,
-            )
-        }
-    }
-
-    private suspend fun TOScheduler.getScheduler(): Scheduler {
-        return if (id == null) {
-            Scheduler(
-                academyMemberPersonId = academyMemberPersonId,
-                professionalPersonId = professionalPersonId,
-                scheduledDate = scheduledDate,
-                start = start,
-                end = end,
-                canceledDate = canceledDate,
-                situation = situation,
-                compromiseType = compromiseType,
-                observation = observation,
-                active = active,
-            )
-        } else {
-            schedulerDAO.findSchedulerById(id!!).copy(
-                academyMemberPersonId = academyMemberPersonId,
-                professionalPersonId = professionalPersonId,
-                scheduledDate = scheduledDate,
-                start = start,
-                end = end,
-                canceledDate = canceledDate,
-                situation = situation,
-                compromiseType = compromiseType,
-                observation = observation,
-                active = active,
-            )
-        }
-    }
 }

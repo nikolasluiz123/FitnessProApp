@@ -7,6 +7,7 @@ import br.com.fitnesspro.shared.communication.responses.FitnessProServiceRespons
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
+import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import retrofit2.Response
@@ -34,6 +35,11 @@ fun <DTO> Response<ReadServiceResponse<DTO>>.getResponseBody(dtoType: Type): Rea
 
 fun <DTO> Response<ImportationServiceResponse<DTO>>.getResponseBody(dtoType: Type): ImportationServiceResponse<DTO> {
     val type = TypeToken.getParameterized(ImportationServiceResponse::class.java, dtoType).type
+    return this.body() ?: GsonBuilder().defaultGSon().fromJson(this.errorBody()!!.charStream(), type)
+}
+
+fun <DTO> Response<SingleValueServiceResponse<DTO>>.getResponseBody(dtoType: Type): SingleValueServiceResponse<DTO> {
+    val type = TypeToken.getParameterized(SingleValueServiceResponse::class.java, dtoType).type
     return this.body() ?: GsonBuilder().defaultGSon().fromJson(this.errorBody()!!.charStream(), type)
 }
 

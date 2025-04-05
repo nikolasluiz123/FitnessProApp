@@ -9,10 +9,11 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDecorator
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
+import br.com.fitnesspro.mappers.toPersonAcademyTime
+import br.com.fitnesspro.mappers.toTOAcademy
+import br.com.fitnesspro.mappers.toTOPersonAcademyTime
 import br.com.fitnesspro.model.enums.EnumTransmissionState
-import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.PersonAcademyTime
-import br.com.fitnesspro.to.TOAcademy
 import br.com.fitnesspro.to.TOPersonAcademyTime
 import br.com.fitnesspro.tuple.AcademyTuple
 import kotlinx.coroutines.Dispatchers.IO
@@ -27,7 +28,7 @@ class AcademyRepository(
 ): FitnessProRepository(context) {
 
     suspend fun savePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
-        val personAcademyTime = toPersonAcademyTime.getPersonAcademyTime()
+        val personAcademyTime = toPersonAcademyTime.toPersonAcademyTime()
 
         savePersonAcademyTimeLocally(toPersonAcademyTime, personAcademyTime)
         savePersonAcademyTimeRemote(personAcademyTime)
@@ -81,7 +82,7 @@ class AcademyRepository(
     }
 
     suspend fun getAcademiesFromPerson(personId: String): List<AcademyGroupDecorator> = withContext(IO) {
-        val toAcademyList = academyDAO.getAcademiesFromPerson(personId = personId).map { it.getTOAcademy()!! }
+        val toAcademyList = academyDAO.getAcademiesFromPerson(personId = personId).map { it.toTOAcademy()!! }
 
         val personAcademyTimes = toAcademyList.flatMap { academy ->
             personAcademyTimeDAO.getAcademyTimes(personId = personId, academyId = academy.id!!)
@@ -89,7 +90,10 @@ class AcademyRepository(
 
         val groups = toAcademyList.map { toAcademy ->
             val academyTimes = personAcademyTimes.filter { it.academyId == toAcademy.id }
-            val items = academyTimes.map { it.getTOPersonAcademyTime()!! }.sortedBy { it.dayOfWeek!!.ordinal }
+            val items = academyTimes.map { academyTime ->
+                val toAcademy = academyDAO.findAcademyById(academyTime.academyId!!).toTOAcademy()
+                academyTime.toTOPersonAcademyTime(toAcademy)
+            }.sortedBy { it.dayOfWeek!!.ordinal }
 
             AcademyGroupDecorator(
                 id = toAcademy.id!!,
@@ -116,7 +120,10 @@ class AcademyRepository(
     }
 
     suspend fun getTOPersonAcademyTimeById(personAcademyTimeId: String): TOPersonAcademyTime = withContext(IO) {
-        personAcademyTimeDAO.findPersonAcademyTimeById(personAcademyTimeId).getTOPersonAcademyTime()!!
+        val personAcademyTime = personAcademyTimeDAO.findPersonAcademyTimeById(personAcademyTimeId)
+        val academy = academyDAO.findAcademyById(personAcademyTime.academyId!!)
+
+        personAcademyTime.toTOPersonAcademyTime(academy.toTOAcademy())
     }
 
     suspend fun inactivatePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
@@ -135,9 +142,9 @@ class AcademyRepository(
 
         toPersonAcademyTimeList.forEach { toPersonAcademyTime ->
             if (toPersonAcademyTime.id == null) {
-                insertionList.add(toPersonAcademyTime.getPersonAcademyTime())
+                insertionList.add(toPersonAcademyTime.toPersonAcademyTime())
             } else {
-                updateList.add(toPersonAcademyTime.getPersonAcademyTime())
+                updateList.add(toPersonAcademyTime.toPersonAcademyTime())
             }
         }
 
@@ -152,7 +159,7 @@ class AcademyRepository(
 
     private suspend fun savePersonAcademyTimeBatchRemote(toPersonAcademyTimeList: List<TOPersonAcademyTime>) {
         getAuthenticatedUser()?.serviceToken?.let { token ->
-            val personAcademyTimeList = toPersonAcademyTimeList.map { it.getPersonAcademyTime() }
+            val personAcademyTimeList = toPersonAcademyTimeList.map { it.toPersonAcademyTime() }
 
             val response = personWebClient.savePersonAcademyTimeBatch(
                 token = token,
@@ -169,52 +176,4 @@ class AcademyRepository(
         }
     }
 
-
-    private fun Academy?.getTOAcademy(): TOAcademy? {
-        return this?.run {
-            TOAcademy(
-                id = id,
-                name = name,
-                address = address,
-                phone = phone,
-                active = active,
-            )
-        }
-    }
-
-    private suspend fun PersonAcademyTime?.getTOPersonAcademyTime(): TOPersonAcademyTime? {
-        return this?.run {
-            TOPersonAcademyTime(
-                id = id,
-                personId = personId,
-                toAcademy = academyDAO.findAcademyById(academyId!!).getTOAcademy(),
-                timeStart = timeStart,
-                timeEnd = timeEnd,
-                dayOfWeek = dayOfWeek,
-                active = active,
-            )
-        }
-    }
-
-    private suspend fun TOPersonAcademyTime.getPersonAcademyTime(): PersonAcademyTime {
-        return if (id != null) {
-            personAcademyTimeDAO.findPersonAcademyTimeById(id!!).copy(
-                personId = personId,
-                academyId = toAcademy?.id,
-                timeStart = timeStart,
-                timeEnd = timeEnd,
-                dayOfWeek = dayOfWeek,
-                active = active,
-            )
-        } else {
-            PersonAcademyTime(
-                personId = personId,
-                academyId = toAcademy?.id,
-                timeStart = timeStart,
-                timeEnd = timeEnd,
-                dayOfWeek = dayOfWeek,
-                active = active,
-            )
-        }
-    }
 }

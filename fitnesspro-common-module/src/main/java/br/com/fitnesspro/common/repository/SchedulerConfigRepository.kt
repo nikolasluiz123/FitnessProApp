@@ -4,6 +4,8 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
+import br.com.fitnesspro.mappers.toSchedulerConfig
+import br.com.fitnesspro.mappers.toTOSchedulerConfig
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.to.TOSchedulerConfig
@@ -16,7 +18,7 @@ class SchedulerConfigRepository(
     private val schedulerWebClient: SchedulerWebClient
 ): FitnessProRepository(context) {
     suspend fun saveSchedulerConfig(toSchedulerConfig: TOSchedulerConfig) = withContext(IO) {
-        val schedulerConfig = toSchedulerConfig.getSchedulerConfig()
+        val schedulerConfig = toSchedulerConfig.toSchedulerConfig()
 
         saveSchedulerConfigLocally(toSchedulerConfig, schedulerConfig)
         saveSchedulerConfigRemote(schedulerConfig)
@@ -52,7 +54,7 @@ class SchedulerConfigRepository(
         val updateList = mutableListOf<SchedulerConfig>()
 
         toSchedulerConfigs.forEach { toSchedulerConfig ->
-            val schedulerConfig = toSchedulerConfig.getSchedulerConfig()
+            val schedulerConfig = toSchedulerConfig.toSchedulerConfig()
 
             if (toSchedulerConfig.id == null) {
                 insertionList.add(schedulerConfig)
@@ -74,44 +76,14 @@ class SchedulerConfigRepository(
         getAuthenticatedUser()?.serviceToken?.let { token ->
             schedulerWebClient.saveSchedulerConfigBatch(
                 token = token,
-                schedulerConfigList = toSchedulerConfigs.map { it.getSchedulerConfig() }
+                schedulerConfigList = toSchedulerConfigs.map { it.toSchedulerConfig() }
             )
         }
     }
 
     suspend fun getTOSchedulerConfigByPersonId(personId: String): TOSchedulerConfig? = withContext(IO) {
-        schedulerConfigDAO.findSchedulerConfigByPersonId(personId).getTOSchedulerConfig()
+        schedulerConfigDAO.findSchedulerConfigByPersonId(personId)?.toTOSchedulerConfig()
     }
 
-    private fun SchedulerConfig?.getTOSchedulerConfig(): TOSchedulerConfig? {
-        return this?.run {
-            TOSchedulerConfig(
-                id = id,
-                personId = personId,
-                alarm = alarm,
-                notification = notification,
-                minScheduleDensity = minScheduleDensity,
-                maxScheduleDensity = maxScheduleDensity,
-            )
-        }
-    }
 
-    private suspend fun TOSchedulerConfig.getSchedulerConfig(): SchedulerConfig {
-        return if (id == null) {
-            SchedulerConfig(
-                personId = personId,
-                alarm = alarm,
-                notification = notification,
-                minScheduleDensity = minScheduleDensity!!,
-                maxScheduleDensity = maxScheduleDensity!!,
-            )
-        } else {
-            schedulerConfigDAO.findSchedulerConfigById(id!!).copy(
-                alarm = alarm,
-                notification = notification,
-                minScheduleDensity = minScheduleDensity!!,
-                maxScheduleDensity = maxScheduleDensity!!,
-            )
-        }
-    }
 }

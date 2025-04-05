@@ -4,6 +4,6 @@ import br.com.fitnesspro.to.TOPerson
 
 fun interface OnLoginWithGoogle {
 
-    fun onExecute(onUserNotExistsLocal: (TOPerson) -> Unit, onSuccess: () -> Unit, onFailure: () -> Unit)
+    fun onExecute(onUserNotExistsLocal: (TOPerson) -> Unit, onSuccess: () -> Unit)
 
 }

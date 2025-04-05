@@ -39,6 +39,10 @@ class LoginViewModel @Inject constructor(
     }
 
     override fun onShowError(throwable: Throwable) {
+        if (_uiState.value.showLoading) {
+            _uiState.value.onToggleLoading()
+        }
+
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
             message = context.getString(R.string.unknown_error_message)
         )
@@ -132,14 +136,15 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun loginWithGoogle(onUserNotExistsLocal: (TOPerson) -> Unit, onSuccess: () -> Unit, onFailure: () -> Unit) {
+    fun loginWithGoogle(onUserNotExistsLocal: (TOPerson) -> Unit, onSuccess: () -> Unit) {
         launch {
+            _uiState.value.onToggleLoading()
+
             val googleAuthResult = googleLoginUseCase()
 
             when {
                 googleAuthResult.success.not() -> {
                     _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(googleAuthResult.errorMessage!!)
-                    onFailure()
                 }
 
                 googleAuthResult.userExists -> {
@@ -150,6 +155,8 @@ class LoginViewModel @Inject constructor(
                     onUserNotExistsLocal(googleAuthResult.toPerson!!)
                 }
             }
+
+            _uiState.value.onToggleLoading()
         }
     }
 

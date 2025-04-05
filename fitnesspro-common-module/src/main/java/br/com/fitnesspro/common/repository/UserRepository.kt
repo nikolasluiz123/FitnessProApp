@@ -10,6 +10,7 @@ import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.UserDAO
+import br.com.fitnesspro.mappers.toTOUser
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
 import br.com.fitnesspro.to.TOUser
@@ -91,7 +92,7 @@ class UserRepository(
     }
 
     suspend fun getAuthenticatedTOUser(): TOUser? = withContext(IO) {
-        getAuthenticatedUser()?.getTOUser()
+        getAuthenticatedUser()?.toTOUser()
     }
 
     suspend fun findUserById(userId: String): User? = withContext(IO) {
@@ -102,18 +103,6 @@ class UserRepository(
         userDAO.findByEmail(email)
     }
 
-    private fun User?.getTOUser(): TOUser? {
-        return this?.run {
-            TOUser(
-                id = id,
-                email = email,
-                password = password,
-                type = type,
-                active = active,
-                serviceToken = serviceToken,
-            )
-        }
-    }
 
     suspend fun logout() = withContext(IO) {
         context.dataStore.edit {

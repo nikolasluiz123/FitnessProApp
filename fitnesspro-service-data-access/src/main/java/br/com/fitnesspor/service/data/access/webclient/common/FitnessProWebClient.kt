@@ -8,6 +8,7 @@ import br.com.fitnesspro.shared.communication.responses.FitnessProServiceRespons
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
+import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
 import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
@@ -97,10 +98,10 @@ abstract class FitnessProWebClient(private val context: Context) {
         }
     }
 
-    protected suspend fun <SDO> readServiceErrorHandlingBlock(
-        codeBlock: suspend () -> ReadServiceResponse<SDO>,
-        customExceptions: (e: Exception) -> ReadServiceResponse<SDO> = { throw it }
-    ): ReadServiceResponse<SDO> {
+    protected suspend fun <DTO> readServiceErrorHandlingBlock(
+        codeBlock: suspend () -> ReadServiceResponse<DTO>,
+        customExceptions: (e: Exception) -> ReadServiceResponse<DTO> = { throw it }
+    ): ReadServiceResponse<DTO> {
         return try {
             codeBlock()
         } catch (exception: Exception) {
@@ -126,10 +127,10 @@ abstract class FitnessProWebClient(private val context: Context) {
         }
     }
 
-    protected suspend fun <SDO> importationServiceErrorHandlingBlock(
-        codeBlock: suspend () -> ImportationServiceResponse<SDO>,
-        customExceptions: (e: Exception) -> ImportationServiceResponse<SDO> = { throw it }
-    ): ImportationServiceResponse<SDO> {
+    protected suspend fun <DTO> importationServiceErrorHandlingBlock(
+        codeBlock: suspend () -> ImportationServiceResponse<DTO>,
+        customExceptions: (e: Exception) -> ImportationServiceResponse<DTO> = { throw it }
+    ): ImportationServiceResponse<DTO> {
         return try {
             codeBlock()
         } catch (exception: Exception) {
@@ -152,6 +153,31 @@ abstract class FitnessProWebClient(private val context: Context) {
                         success = false,
                         error = context.getString(R.string.message_socket_timeout_exception),
                         code = HttpURLConnection.HTTP_UNAVAILABLE
+                    )
+                }
+                else -> customExceptions(exception)
+            }
+        }
+    }
+
+    protected suspend fun <DTO> singleValueErrorHandlingBlock(
+        codeBlock: suspend () -> SingleValueServiceResponse<DTO>,
+        customExceptions: (e: Exception) -> SingleValueServiceResponse<DTO> = { throw it }
+    ): SingleValueServiceResponse<DTO> {
+        return try {
+            codeBlock()
+        } catch (exception: Exception) {
+            when (exception) {
+                is ConnectException -> {
+                    SingleValueServiceResponse<DTO>(
+                        success = false,
+                        error = context.getString(R.string.message_connect_exception)
+                    )
+                }
+                is SocketTimeoutException -> {
+                    SingleValueServiceResponse<DTO>(
+                        success = false,
+                        error = context.getString(R.string.message_socket_timeout_exception)
                     )
                 }
                 else -> customExceptions(exception)
