@@ -36,50 +36,88 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
         val clientStartDateTime = dateTimeNow()
         lateinit var response: ImportationServiceResponse<DTO>
 
-        do {
-            response = getImportationData(serviceToken, importFilter, pageInfos)
+        try {
+            do {
+                response = getImportationData(serviceToken, importFilter, pageInfos)
 
-            updateLogWithStartRunningInfos(
+                updateLogWithStartRunningInfos(
+                    serviceToken = serviceToken,
+                    logPackageId = response.executionLogPackageId,
+                    logId = response.executionLogId,
+                    importFilter = importFilter,
+                    pageInfos = pageInfos,
+                    clientStartDateTime = clientStartDateTime
+                )
+
+                when {
+                    response.success && response.values.isEmpty() -> {
+                        updateExecutionLogPackageWithSuccessIterationInfos(
+                            logPackageId = response.executionLogPackageId,
+                            insertionList = emptyList(),
+                            updateList = emptyList(),
+                            serviceToken = serviceToken
+                        )
+                    }
+
+                    response.success -> {
+                        val (insertionList, updateList) = executeSegregation(response)
+
+                        saveDataLocally(insertionList, updateList)
+
+                        updateExecutionLogPackageWithSuccessIterationInfos(
+                            logPackageId = response.executionLogPackageId,
+                            insertionList = insertionList,
+                            updateList = updateList,
+                            serviceToken = serviceToken
+                        )
+
+                        pageInfos.pageNumber++
+                    }
+
+                    else -> {
+                        throw ServiceException(response.error!!)
+                    }
+                }
+            } while (response.values.size == pageInfos.pageSize)
+
+            updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
+        } catch (ex: Exception) {
+            updateLogPackageWithErrorInfos(
                 serviceToken = serviceToken,
-                logPackageId = response.executionLogPackageId,
                 logId = response.executionLogId,
-                importFilter = importFilter,
-                pageInfos = pageInfos,
+                logPackageId = response.executionLogPackageId,
+                exception = ex,
                 clientStartDateTime = clientStartDateTime
             )
 
-            when {
-                response.success && response.values.isEmpty() -> {
-                    updateExecutionLogPackageWithSuccessIterationInfos(
-                        logPackageId = response.executionLogPackageId,
-                        insertionList = emptyList(),
-                        updateList = emptyList(),
-                        serviceToken = serviceToken
-                    )
-                }
+            throw ex
+        }
+    }
 
-                response.success -> {
-                    val (insertionList, updateList) = executeSegregation(response)
+    private suspend fun updateLogPackageWithErrorInfos(
+        serviceToken: String,
+        logId: String,
+        logPackageId: String,
+        exception: Exception,
+        clientStartDateTime: LocalDateTime
+    ) {
+        executionLogWebClient.updateLogInformation(
+            token = serviceToken,
+            logId = logId,
+            dto = UpdatableExecutionLogInfosDTO(
+                state = EnumExecutionState.ERROR
+            )
+        )
 
-                    saveDataLocally(insertionList, updateList)
-
-                    updateExecutionLogPackageWithSuccessIterationInfos(
-                        logPackageId = response.executionLogPackageId,
-                        insertionList = insertionList,
-                        updateList = updateList,
-                        serviceToken = serviceToken
-                    )
-
-                    pageInfos.pageNumber++
-                }
-
-                else -> {
-                    throw ServiceException(response.error!!)
-                }
-            }
-        } while (response.values.size == pageInfos.pageSize)
-
-        updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
+        executionLogWebClient.updateLogPackageInformation(
+            token = serviceToken,
+            logPackageId = logPackageId,
+            dto = UpdatableExecutionLogPackageInfosDTO(
+                clientExecutionStart = clientStartDateTime,
+                clientExecutionEnd = dateTimeNow(),
+                error = exception.stackTraceToString(),
+            )
+        )
     }
 
     private suspend fun updateLogWithStartRunningInfos(
