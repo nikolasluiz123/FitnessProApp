@@ -9,6 +9,7 @@ import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
@@ -33,9 +34,10 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
         val pageInfos = ImportPageInfos(pageSize = getPageSize())
 
         val clientStartDateTime = dateTimeNow()
+        lateinit var response: ImportationServiceResponse<DTO>
 
         do {
-            val response = getImportationData(serviceToken, importFilter, pageInfos)
+            response = getImportationData(serviceToken, importFilter, pageInfos)
 
             updateLogWithStartRunningInfos(
                 serviceToken = serviceToken,
@@ -76,6 +78,8 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
                 }
             }
         } while (response.values.size == pageInfos.pageSize)
+
+        updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
     }
 
     private suspend fun updateLogWithStartRunningInfos(
@@ -117,6 +121,19 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
                 insertedItemsCount = insertionList.size,
                 updatedItemsCount = updateList.size,
                 clientExecutionEnd = dateTimeNow()
+            )
+        )
+    }
+
+    private suspend fun updateLogWithFinalizationInfos(
+        serviceToken: String,
+        logId: String,
+    ) {
+        executionLogWebClient.updateLogInformation(
+            token = serviceToken,
+            logId = logId,
+            dto = UpdatableExecutionLogInfosDTO(
+                state = EnumExecutionState.FINISHED
             )
         )
     }
