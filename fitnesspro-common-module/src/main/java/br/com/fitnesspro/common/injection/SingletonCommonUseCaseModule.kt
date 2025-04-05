@@ -73,12 +73,14 @@ class SingletonCommonUseCaseModule {
     fun provideLoginUseCase(
         @ApplicationContext context: Context,
         userRepository: UserRepository,
-        passwordHasher: IPasswordHasher
+        passwordHasher: IPasswordHasher,
+        personRepository: PersonRepository
     ): DefaultLoginUseCase {
         return DefaultLoginUseCase(
             context = context,
             userRepository = userRepository,
-            passwordHasher = passwordHasher
+            passwordHasher = passwordHasher,
+            personRepository = personRepository
         )
     }
 

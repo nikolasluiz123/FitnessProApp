@@ -8,14 +8,13 @@ import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 
 class SchedulerConfigExportationRepository(
     context: Context,
     private val schedulerConfigDAO: SchedulerConfigDAO,
     private val schedulerWebClient: SchedulerWebClient
-): AbstractExportationRepository<SchedulerConfigDTO, SchedulerConfig, SchedulerConfigDAO>(context) {
+): AbstractExportationRepository<SchedulerConfig, SchedulerConfigDAO>(context) {
 
     override suspend fun getExportationData(
         pageInfos: ExportPageInfos

@@ -33,11 +33,13 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
         val importFilter = CommonImportFilter(lastUpdateDate = lastUpdateDate)
         val pageInfos = ImportPageInfos(pageSize = getPageSize())
 
-        val clientStartDateTime = dateTimeNow()
         lateinit var response: ImportationServiceResponse<DTO>
+        lateinit var clientStartDateTime: LocalDateTime
 
         try {
             do {
+                clientStartDateTime = dateTimeNow()
+
                 response = getImportationData(serviceToken, importFilter, pageInfos)
 
                 updateLogWithStartRunningInfos(

@@ -8,14 +8,13 @@ import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.Person
-import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 
 class PersonExportationRepository(
     context: Context,
     private val personDAO: PersonDAO,
     private val personWebClient: PersonWebClient,
-): AbstractExportationRepository<PersonDTO, Person, PersonDAO>(context) {
+): AbstractExportationRepository<Person, PersonDAO>(context) {
 
     override suspend fun getExportationData(
         pageInfos: ExportPageInfos

@@ -12,14 +12,13 @@ import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType.SUGGESTION
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType.UNIQUE
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 
 class SchedulerExportationRepository(
     context: Context,
     private val schedulerDAO: SchedulerDAO,
     private val schedulerWebClient: SchedulerWebClient
-): AbstractExportationRepository<SchedulerDTO, Scheduler, SchedulerDAO>(context) {
+): AbstractExportationRepository<Scheduler, SchedulerDAO>(context) {
 
     override suspend fun getExportationData(
         pageInfos: ExportPageInfos
