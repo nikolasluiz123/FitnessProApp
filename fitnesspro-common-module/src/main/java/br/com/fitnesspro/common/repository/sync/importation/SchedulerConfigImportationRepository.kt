@@ -6,6 +6,7 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -47,7 +48,8 @@ class SchedulerConfigImportationRepository(
             notification = dto.notification,
             minScheduleDensity = dto.minScheduleDensity,
             maxScheduleDensity = dto.maxScheduleDensity,
-            personId = dto.personId
+            personId = dto.personId,
+            transmissionState = EnumTransmissionState.TRANSMITTED
         )
     }
 }

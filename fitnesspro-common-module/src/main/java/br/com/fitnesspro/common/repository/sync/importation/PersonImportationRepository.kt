@@ -6,6 +6,7 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -47,7 +48,8 @@ class PersonImportationRepository(
             name = dto.name!!,
             birthDate = dto.birthDate,
             phone = dto.phone,
-            userId = dto.user?.id
+            userId = dto.user?.id,
+            transmissionState = EnumTransmissionState.TRANSMITTED
         )
     }
 }

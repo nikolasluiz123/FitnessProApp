@@ -7,6 +7,7 @@ import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
@@ -56,7 +57,8 @@ class SchedulerImportationRepository(
             situation = getEnumSchedulerSituation(dto.situation!!),
             compromiseType = getEnumCompromiseType(dto.compromiseType!!),
             observation = dto.observation,
-            active = dto.active
+            active = dto.active,
+            transmissionState = EnumTransmissionState.TRANSMITTED
         )
     }
 

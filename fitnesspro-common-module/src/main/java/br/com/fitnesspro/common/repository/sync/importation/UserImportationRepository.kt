@@ -6,6 +6,7 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
@@ -48,6 +49,7 @@ class UserImportationRepository(
             email = dto.email!!,
             password = dto.password!!,
             type = getEnumUserType(dto),
+            transmissionState = EnumTransmissionState.TRANSMITTED
         )
     }
 
