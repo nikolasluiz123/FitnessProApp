@@ -22,6 +22,8 @@ abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: Integr
 
     abstract suspend fun callExportationService(modelList: List<MODEL>, token: String): ExportationServiceResponse
 
+    override fun getPageSize(): Int = 100
+
     suspend fun export(serviceToken: String) {
         val pageInfos = ExportPageInfos(pageSize = getPageSize())
 
