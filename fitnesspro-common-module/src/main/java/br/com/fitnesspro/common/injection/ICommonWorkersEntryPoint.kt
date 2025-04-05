@@ -1,8 +1,10 @@
 package br.com.fitnesspro.common.injection
 
+import br.com.fitnesspro.common.repository.sync.exportation.PersonAcademyTimeExportationRepository
 import br.com.fitnesspro.common.repository.sync.exportation.PersonExportationRepository
 import br.com.fitnesspro.common.repository.sync.exportation.SchedulerConfigExportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.AcademyImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.PersonAcademyTimeImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.PersonImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.SchedulerConfigImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.UserImportationRepository
@@ -20,9 +22,13 @@ interface ICommonWorkersEntryPoint {
 
     fun getPersonImportationRepository(): PersonImportationRepository
 
+    fun getPersonAcademyTimeImportationRepository(): PersonAcademyTimeImportationRepository
+
     fun getSchedulerConfigImportationRepository(): SchedulerConfigImportationRepository
 
     fun getPersonExportationRepository(): PersonExportationRepository
+
+    fun getPersonAcademyTimeExportationRepository(): PersonAcademyTimeExportationRepository
 
     fun getSchedulerConfigExportationRepository(): SchedulerConfigExportationRepository
 

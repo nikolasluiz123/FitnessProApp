@@ -6,6 +6,8 @@ import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import java.time.DayOfWeek
 import java.time.LocalTime
@@ -82,4 +84,38 @@ abstract class PersonAcademyTimeDAO: IntegratedMaintenanceDAO<PersonAcademyTime>
 
     @Query("select * from person_academy_time where id = :id")
     abstract suspend fun findPersonAcademyTimeById(id: String): PersonAcademyTime
+
+    @Query("select exists(select 1 from person_academy_time where id = :personAcademyTimeId)")
+    abstract suspend fun hasPersonAcademyTimeWithId(personAcademyTimeId: String): Boolean
+
+    suspend fun getExportationData(pageInfos: ExportPageInfos): List<PersonAcademyTime> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select * ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from person_academy_time time ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where time.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
+            add(" limit ? offset ? ")
+
+            params.add(pageInfos.pageSize)
+            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        return executeQueryExportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery
+    abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<PersonAcademyTime>
 }

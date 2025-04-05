@@ -22,6 +22,7 @@ class GeneralModuleExportationWorker @AssistedInject constructor(
 
     override suspend fun onExport(serviceToken: String) {
         entryPoint.getPersonExportationRepository().export(serviceToken)
+        entryPoint.getPersonAcademyTimeExportationRepository().export(serviceToken)
     }
 
     override fun getClazz() = javaClass

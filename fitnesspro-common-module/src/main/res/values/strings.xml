@@ -107,4 +107,5 @@
     <string name="scheduler_config_importation_descrition">Importação das Configurações da Agenda</string>
     <string name="sync_module_person">Exportação de Pessoas</string>
     <string name="sync_module_scheduler_config">Exportação de Configurações de Agendas</string>
+    <string name="sync_module_person_academy_time">Exportação de Horários de Academia</string>
 </resources>

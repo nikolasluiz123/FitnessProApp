@@ -10,6 +10,7 @@ import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.model.general.User
+import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -112,6 +113,24 @@ class PersonWebClient(
                     filter = gson.toJson(filter),
                     pageInfos = gson.toJson(pageInfos)
                 ).getResponseBody(PersonDTO::class.java)
+            }
+        )
+    }
+
+    suspend fun importPersonAcademyTime(
+        token: String,
+        filter: CommonImportFilter,
+        pageInfos: ImportPageInfos
+    ): ImportationServiceResponse<PersonAcademyTimeDTO> {
+        return importationServiceErrorHandlingBlock(
+            codeBlock = {
+                val gson = GsonBuilder().defaultGSon()
+
+                personService.importPersonAcademyTimes(
+                    token = formatToken(token),
+                    filter = gson.toJson(filter),
+                    pageInfos = gson.toJson(pageInfos)
+                ).getResponseBody(PersonAcademyTimeDTO::class.java)
             }
         )
     }

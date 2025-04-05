@@ -8,9 +8,11 @@ import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebCli
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.repository.sync.exportation.PersonAcademyTimeExportationRepository
 import br.com.fitnesspro.common.repository.sync.exportation.PersonExportationRepository
 import br.com.fitnesspro.common.repository.sync.exportation.SchedulerConfigExportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.AcademyImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.PersonAcademyTimeImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.PersonImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.SchedulerConfigImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.UserImportationRepository
@@ -72,7 +74,6 @@ class SingletonCommonRepositoryModule {
         @ApplicationContext context: Context,
         academyDAO: AcademyDAO,
         personAcademyTimeDAO: PersonAcademyTimeDAO,
-        userDAO: UserDAO,
         personWebClient: PersonWebClient
     ): AcademyRepository {
         return AcademyRepository(
@@ -121,6 +122,19 @@ class SingletonCommonRepositoryModule {
     }
 
     @Provides
+    fun providePersonAcademyTimeImportationRepository(
+        @ApplicationContext context: Context,
+        personAcademyTimeDAO: PersonAcademyTimeDAO,
+        personWebClient: PersonWebClient
+    ): PersonAcademyTimeImportationRepository {
+        return PersonAcademyTimeImportationRepository(
+            personAcademyTimeDAO = personAcademyTimeDAO,
+            webClient = personWebClient,
+            context = context
+        )
+    }
+
+    @Provides
     fun provideSchedulerConfigImportationRepository(
         @ApplicationContext context: Context,
         schedulerConfigDAO: SchedulerConfigDAO,
@@ -142,6 +156,19 @@ class SingletonCommonRepositoryModule {
         return PersonExportationRepository(
             personWebClient = personWebClient,
             personDAO = personDAO,
+            context = context
+        )
+    }
+
+    @Provides
+    fun providePersonAcademyTimeExportationRepository(
+        @ApplicationContext context: Context,
+        personAcademyTimeDAO: PersonAcademyTimeDAO,
+        personWebClient: PersonWebClient
+    ): PersonAcademyTimeExportationRepository {
+        return PersonAcademyTimeExportationRepository(
+            personAcademyTimeDAO = personAcademyTimeDAO,
+            personWebClient = personWebClient,
             context = context
         )
     }

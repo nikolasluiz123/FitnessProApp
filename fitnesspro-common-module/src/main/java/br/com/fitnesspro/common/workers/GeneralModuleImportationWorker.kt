@@ -25,6 +25,7 @@ class GeneralModuleImportationWorker @AssistedInject constructor(
         entryPoint.getAcademyImportationRepository().import(serviceToken, lastUpdateDate)
         entryPoint.getUserImportationRepository().import(serviceToken, lastUpdateDate)
         entryPoint.getPersonImportationRepository().import(serviceToken, lastUpdateDate)
+        entryPoint.getPersonAcademyTimeImportationRepository().import(serviceToken, lastUpdateDate)
     }
 
     override fun getModule() = EnumSyncModule.GENERAL
