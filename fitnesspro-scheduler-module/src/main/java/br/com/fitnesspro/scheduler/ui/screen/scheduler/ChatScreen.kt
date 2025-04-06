@@ -33,7 +33,6 @@ import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.toEpochSeconds
 import br.com.fitnesspro.core.extensions.toLocalDateTime
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_100
@@ -49,7 +48,6 @@ import br.com.fitnesspro.firebase.api.firestore.enums.EnumMessageState.SENT
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.state.ChatUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.ChatViewModel
-import java.time.LocalDateTime
 
 @Composable
 fun ChatScreen(
@@ -256,35 +254,35 @@ private fun ChatScreenPreviewMediumPhone() {
             id = "1",
             text = "Olá! Como você está?",
             personSenderId = "user_1",
-            date = LocalDateTime.now().minusMinutes(10).toEpochSeconds(),
+            date = 1738551600000,
             state = READ.name,
         ),
         MessageDocument(
             id = "2",
             text = "Oi! Estou bem, e você?",
             personSenderId = "user_2",
-            date = LocalDateTime.now().minusMinutes(9).toEpochSeconds(),
+            date = 1738551600000,
             state = READ.name,
         ),
         MessageDocument(
             id = "3",
             text = "Também estou bem, obrigado por perguntar!",
             personSenderId = "user_1",
-            date = LocalDateTime.now().minusMinutes(8).toEpochSeconds(),
+            date = 1743901821970,
             state = READ.name,
         ),
         MessageDocument(
             id = "4",
             text = "Que bom! O que você tem feito ultimamente?",
             personSenderId = "user_2",
-            date = LocalDateTime.now().minusMinutes(7).toEpochSeconds(),
+            date = 1743901821970,
             state = READ.name,
         ),
         MessageDocument(
             id = "5",
             text = "Tenho trabalhado bastante, mas está sendo produtivo!",
             personSenderId = "user_1",
-            date = LocalDateTime.now().minusMinutes(6).toEpochSeconds(),
+            date = 1743901821970,
             state = SENDING.name,
         )
     )
@@ -310,35 +308,35 @@ private fun ChatScreenSmallPhone() {
             id = "1",
             text = "Olá! Como você está?",
             personSenderId = "user_1",
-            date = LocalDateTime.now().minusMinutes(10).toEpochSeconds(),
+            date = 1743901821970,
             state = READ.name,
         ),
         MessageDocument(
             id = "2",
             text = "Oi! Estou bem, e você?",
             personSenderId = "user_2",
-            date = LocalDateTime.now().minusMinutes(9).toEpochSeconds(),
+            date = 1743901821970,
             state = READ.name,
         ),
         MessageDocument(
             id = "3",
             text = "Também estou bem, obrigado por perguntar!",
             personSenderId = "user_1",
-            date = LocalDateTime.now().minusMinutes(8).toEpochSeconds(),
+            date = 1743901821970,
             state = READ.name,
         ),
         MessageDocument(
             id = "4",
             text = "Que bom! O que você tem feito ultimamente?",
             personSenderId = "user_2",
-            date = LocalDateTime.now().minusMinutes(7).toEpochSeconds(),
+            date = 1743901821970,
             state = READ.name,
         ),
         MessageDocument(
             id = "5",
             text = "Tenho trabalhado bastante, mas está sendo produtivo!",
             personSenderId = "user_1",
-            date = LocalDateTime.now().minusMinutes(6).toEpochSeconds(),
+            date = 1743901821970,
             state = SENT.name,
         )
     )
@@ -364,35 +362,35 @@ private fun ChatScreenPreviewTablet() {
             id = "1",
             text = "Olá! Como você está?",
             personSenderId = "user_1",
-            date = LocalDateTime.now().minusMinutes(10).toEpochSeconds(),
+            date = 1743901821970,
             state = READ.name,
         ),
         MessageDocument(
             id = "2",
             text = "Oi! Estou bem, e você?",
             personSenderId = "user_2",
-            date = LocalDateTime.now().minusMinutes(9).toEpochSeconds(),
+            date = 1743901821970,
             state = READ.name,
         ),
         MessageDocument(
             id = "3",
             text = "Também estou bem, obrigado por perguntar!",
             personSenderId = "user_1",
-            date = LocalDateTime.now().minusMinutes(8).toEpochSeconds(),
+            date = 1743901821970,
             state = READ.name,
         ),
         MessageDocument(
             id = "4",
             text = "Que bom! O que você tem feito ultimamente?",
             personSenderId = "user_2",
-            date = LocalDateTime.now().minusMinutes(7).toEpochSeconds(),
+            date = 1743901821970,
             state = READ.name,
         ),
         MessageDocument(
             id = "5",
             text = "Tenho trabalhado bastante, mas está sendo produtivo!",
             personSenderId = "user_1",
-            date = LocalDateTime.now().minusMinutes(6).toEpochSeconds(),
+            date = 1743901821970,
             state = READ.name,
         )
     )
