@@ -1,5 +1,6 @@
 package br.com.fitnesspro.ui.navigation
 
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -24,6 +25,8 @@ import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerDetailsScree
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerDetailsScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerScreen
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun FitnessProNavHost(
@@ -32,9 +35,14 @@ fun FitnessProNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = loginScreenRoute,
+        startDestination = getStartDestination(),
         modifier = modifier
     ) {
+
+        splashScreen(
+            onNavigateToLogin = navController::navigateToLoginScreen,
+            onNavigateToHome = navController::navigateToHomeScreen
+        )
 
         loginScreen(
             onNavigateToRegisterUser = navController::navigateToRegisterUserScreen,
@@ -101,5 +109,18 @@ fun FitnessProNavHost(
         chatScreen(
             onBackClick = navController::popBackStack
         )
+    }
+}
+
+@Composable
+private fun getStartDestination(): String {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (Firebase.auth.currentUser != null) {
+            homeScreenRoute
+        } else {
+            loginScreenRoute
+        }
+    } else {
+        splashScreenRoute
     }
 }
