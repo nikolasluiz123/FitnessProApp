@@ -28,9 +28,9 @@ import br.com.fitnesspro.ui.navigation.homeScreen
 import br.com.fitnesspro.ui.navigation.homeScreenRoute
 import br.com.fitnesspro.ui.navigation.navigateToHomeScreen
 import br.com.fitnesspro.ui.navigation.navigateToMockScreen
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_SCHEDULER
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_WORKOUT
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_LOGOUT_BUTTON
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_SCHEDULER
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_WORKOUT
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_LOGOUT_BUTTON
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest

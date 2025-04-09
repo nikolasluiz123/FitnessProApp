@@ -13,8 +13,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.GREY_700
-import br.com.fitnesspro.core.theme.GREY_900
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.core.theme.ValueTextStyle
 import java.util.UUID
@@ -33,7 +31,6 @@ fun LabeledText(
             modifier = Modifier.fillMaxWidth(),
             text = label,
             style = LabelTextStyle,
-            color = GREY_900,
             textAlign = textAlign
         )
 
@@ -43,7 +40,6 @@ fun LabeledText(
                 .padding(top = 4.dp),
             text = value,
             style = ValueTextStyle,
-            color = GREY_700,
             maxLines = maxLinesValue,
             overflow = overflowValue,
             textAlign = textAlign
@@ -51,7 +47,7 @@ fun LabeledText(
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 fun LabeledTextPreview() {
     FitnessProTheme {

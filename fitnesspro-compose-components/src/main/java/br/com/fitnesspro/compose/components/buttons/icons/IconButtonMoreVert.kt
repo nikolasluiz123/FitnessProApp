@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,11 +27,21 @@ fun IconButtonMoreVert(onClick: () -> Unit = { }) {
 
 
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-fun IconButtonMoreVertPreview() {
-    FitnessProTheme {
-        Surface {
+fun IconButtonMoreVertPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface(color = MaterialTheme.colorScheme.primary) {
+            IconButtonMoreVert()
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+fun IconButtonMoreVertPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface(color = MaterialTheme.colorScheme.primary) {
             IconButtonMoreVert()
         }
     }

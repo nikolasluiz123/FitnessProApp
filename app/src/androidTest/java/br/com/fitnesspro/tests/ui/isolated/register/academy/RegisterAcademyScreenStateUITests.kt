@@ -42,7 +42,7 @@ import br.com.fitnesspro.tests.ui.extensions.onPosition
 import br.com.fitnesspro.tests.ui.extensions.writeTextField
 import br.com.fitnesspro.ui.navigation.homeScreen
 import br.com.fitnesspro.ui.navigation.homeScreenRoute
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_ACCOUNT_BUTTON
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_ACCOUNT_BUTTON
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import jakarta.inject.Inject

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -26,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.common.R
-import br.com.fitnesspro.common.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAcademyItemClick
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAddAcademy
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnSaveUserClick
@@ -39,11 +39,9 @@ import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
 import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
-import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
@@ -92,7 +90,6 @@ fun RegisterUserScreen(
             SimpleFitnessProTopAppBar(
                 title = state.title!!,
                 subtitle = state.subtitle,
-                showMenuWithLogout = false,
                 onBackClick = onBackClick
             )
         },
@@ -109,6 +106,8 @@ fun RegisterUserScreen(
                     if (state.tabState.selectedTab.enum == EnumTabsRegisterUserScreen.GENERAL) {
                         FloatingActionButtonSave(
                             modifier = Modifier.testTag(REGISTER_USER_SCREEN_FAB_SAVE.name),
+                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
                             onClick = {
                                 Firebase.analytics.logButtonClick(REGISTER_USER_SCREEN_FAB_SAVE)
                                 onSaveUserClick?.onExecute(
@@ -121,6 +120,8 @@ fun RegisterUserScreen(
                     } else {
                         FloatingActionButtonAdd(
                             modifier = Modifier.testTag(REGISTER_USER_SCREEN_FAB_ADD.name),
+                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
                             onClick = {
                                 Firebase.analytics.logButtonClick(REGISTER_USER_SCREEN_FAB_ADD)
                                 onAddAcademyClick?.onExecute(
@@ -158,11 +159,11 @@ fun RegisterUserScreen(
 
             ConstraintLayout(
                 Modifier
-                    .padding(padding)
+                    .fillMaxSize()
                     .constrainAs(containerRef) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                        top.linkTo(loadingRef.bottom, margin = 8.dp)
+                        top.linkTo(loadingRef.bottom)
                         bottom.linkTo(parent.bottom)
                     }
             ) {
@@ -233,61 +234,25 @@ private fun showSaveSuccessMessage(
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun RegisterUserScreenTabGeneralPreview() {
     FitnessProTheme {
         Surface {
             RegisterUserScreen(
-                state = RegisterUserUIState(
-                    title = "Título",
-                    subtitle = "Subtítulo",
-                    context = EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER,
-                    tabState = TabState(
-                        tabs = mutableListOf(
-                            Tab(
-                                enum = EnumTabsRegisterUserScreen.GENERAL,
-                                selected = true,
-                                enabled = true
-                            ),
-                            Tab(
-                                enum = EnumTabsRegisterUserScreen.ACADEMY,
-                                selected = false,
-                                enabled = false
-                            )
-                        )
-                    )
-                )
+                state = registerUserSelectedTabGeneralState
             )
         }
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun RegisterUserScreenTabAcademiesPreview() {
     FitnessProTheme {
         Surface {
             RegisterUserScreen(
-                state = RegisterUserUIState(
-                    title = "Título",
-                    subtitle = "Subtítulo",
-                    context = EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER,
-                    tabState = TabState(
-                        tabs = mutableListOf(
-                            Tab(
-                                enum = EnumTabsRegisterUserScreen.GENERAL,
-                                selected = false,
-                                enabled = true
-                            ),
-                            Tab(
-                                enum = EnumTabsRegisterUserScreen.ACADEMY,
-                                selected = true,
-                                enabled = true
-                            )
-                        )
-                    )
-                )
+                state = registerUserSelectedTabAcademyState
             )
         }
     }

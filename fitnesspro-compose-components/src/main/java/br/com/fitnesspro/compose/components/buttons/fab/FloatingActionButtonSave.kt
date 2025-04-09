@@ -1,6 +1,7 @@
 package br.com.fitnesspro.compose.components.buttons.fab
 
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,12 +23,14 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 @Composable
 fun FloatingActionButtonSave(
     onClick: () -> Unit,
-    iconColor: Color = Color.White,
+    iconColor: Color = MaterialTheme.colorScheme.onPrimary,
+    containerColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
 ) {
     FitnessProFloatingActionButton(
         modifier = modifier,
-        onClick = onClick
+        onClick = onClick,
+        containerColor = containerColor
     ) {
         Icon(
             painter = painterResource(id = drawable.ic_check_24dp),
@@ -39,10 +42,22 @@ fun FloatingActionButtonSave(
 
 
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-fun FloatingActionButtonSavePreview() {
-    FitnessProTheme {
+fun FloatingActionButtonSavePreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            FloatingActionButtonSave(
+                onClick = { }
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+fun FloatingActionButtonSavePreviewLight() {
+    FitnessProTheme(darkTheme = false) {
         Surface {
             FloatingActionButtonSave(
                 onClick = { }

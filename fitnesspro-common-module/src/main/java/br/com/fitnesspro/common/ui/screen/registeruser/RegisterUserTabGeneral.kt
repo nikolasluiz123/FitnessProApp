@@ -149,7 +149,47 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
+@Composable
+private fun RegisterUserTabGeneralPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            RegisterUserTabGeneral(
+                state = RegisterUserUIState(),
+                onDone = {}
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun RegisterUserTabGeneralProfessionalPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            RegisterUserTabGeneral(
+                state = registerUserWithFoneState,
+                onDone = {}
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun RegisterUserTabGeneralAuthenticatedServicePreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            RegisterUserTabGeneral(
+                state = registerUserServiceState,
+                onDone = {}
+            )
+        }
+    }
+}
+
+
+@Preview(device = "id:small_phone")
 @Composable
 private fun RegisterUserTabGeneralPreview() {
     FitnessProTheme {
@@ -162,30 +202,26 @@ private fun RegisterUserTabGeneralPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun RegisterUserTabGeneralProfessionalPreview() {
     FitnessProTheme {
         Surface {
             RegisterUserTabGeneral(
-                state = RegisterUserUIState(
-                    isVisibleFieldPhone = true
-                ),
+                state = registerUserWithFoneState,
                 onDone = {}
             )
         }
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun RegisterUserTabGeneralAuthenticatedServicePreview() {
     FitnessProTheme {
         Surface {
             RegisterUserTabGeneral(
-                state = RegisterUserUIState(
-                    isRegisterServiceAuth = true
-                ),
+                state = registerUserServiceState,
                 onDone = {}
             )
         }

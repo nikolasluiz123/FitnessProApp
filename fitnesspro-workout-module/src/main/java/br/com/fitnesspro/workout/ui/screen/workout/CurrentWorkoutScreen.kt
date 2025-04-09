@@ -35,8 +35,7 @@ fun CurrentWorkoutScreen(
         topBar = {
             SimpleFitnessProTopAppBar(
                 title = state.title!!,
-                subtitle = state.subtitle!!,
-                showMenuWithLogout = false
+                subtitle = state.subtitle!!
             )
         }
     ) { paddingValues ->
@@ -112,7 +111,7 @@ fun CurrentWorkoutItem(decorator: CurrentWorkoutItemDecorator) {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun CurrentWorkoutItemPreview() {
     FitnessProTheme {
@@ -127,7 +126,7 @@ private fun CurrentWorkoutItemPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun CurrentWorkoutScreenPreview() {
     FitnessProTheme {
@@ -156,7 +155,7 @@ private fun CurrentWorkoutScreenPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun CurrentWorkoutScreenEmptyPreview() {
     FitnessProTheme {

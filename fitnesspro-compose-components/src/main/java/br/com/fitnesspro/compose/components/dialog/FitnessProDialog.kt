@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -59,9 +60,8 @@ import br.com.fitnesspro.core.menu.ITupleListItem
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.theme.DialogTitleTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.GREY_600
-import br.com.fitnesspro.core.theme.GREY_800
 import br.com.fitnesspro.core.theme.LabelTextStyle
+import br.com.fitnesspro.core.theme.ValueTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -112,7 +112,7 @@ fun FitnessProMessageDialog(
                 Text(
                     modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_TITLE.name),
                     text = stringResource(type.titleResId),
-                    style = MaterialTheme.typography.headlineMedium
+                    style = DialogTitleTextStyle
                 )
             },
             text = {
@@ -120,7 +120,7 @@ fun FitnessProMessageDialog(
                     Text(
                         modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_MESSAGE.name),
                         text = message,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = ValueTextStyle
                     )
                 }
             },
@@ -168,8 +168,8 @@ fun FitnessProMessageDialog(
                     ERROR, INFORMATION -> {}
                 }
             },
-            containerColor = MaterialTheme.colorScheme.background,
-            textContentColor = MaterialTheme.colorScheme.onBackground,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            textContentColor = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
@@ -183,6 +183,10 @@ private fun DialogTextButton(
 ) {
     TextButton(
         modifier = modifier,
+        colors = ButtonDefaults.textButtonColors(
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+        ),
         onClick = {
             onDismissRequest()
             onClick()
@@ -229,7 +233,7 @@ fun <T : ITupleListItem> FitnessProPagedListDialog(
     ) {
         Surface(
             shape = MaterialTheme.shapes.medium,
-            color = MaterialTheme.colorScheme.background,
+            color = MaterialTheme.colorScheme.surfaceContainer,
             modifier = Modifier
                 .testTag(FITNESS_PRO_PAGED_LIST_DIALOG.name)
                 .padding(16.dp)
@@ -238,7 +242,7 @@ fun <T : ITupleListItem> FitnessProPagedListDialog(
                 Text(
                     text = dialogTitle,
                     style = DialogTitleTextStyle,
-                    color = GREY_800,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
                         .testTag(FITNESS_PRO_PAGED_LIST_DIALOG_TITLE.name)
                         .padding(top = 8.dp, start = 8.dp, end = 8.dp)
@@ -277,13 +281,15 @@ private fun <T : ITupleListItem> PagedListDialog(
 ) {
     if (pagingItems.itemCount == 0) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = stringResource(id = emptyMessage),
                 style = LabelTextStyle,
-                color = GREY_600,
+                color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center
             )
         }
@@ -364,9 +370,91 @@ private fun <T : ITupleListItem> PagedListDialog(
 
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun FitnessProDialogMessageErrorPreview() {
+private fun FitnessProDialogMessageErrorPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            FitnessProMessageDialog(
+                type = ERROR,
+                show = true,
+                onDismissRequest = { },
+                message = "Mensagem de erro"
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun FitnessProDialogMessageConfirmationPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            FitnessProMessageDialog(
+                type = CONFIRMATION,
+                show = true,
+                onDismissRequest = { },
+                message = "Mensagem de confirmação"
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun FitnessProDialogMessageInformationPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            FitnessProMessageDialog(
+                type = INFORMATION,
+                show = true,
+                onDismissRequest = { },
+                message = "Mensagem de informação"
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun FitnessProDialogPagedListPreviewDark() {
+    val fakeList = PagingData.from(
+        listOf(
+            TupleExample(
+                id = "1",
+                name = "Exemplo 1"
+            ),
+            TupleExample(
+                id = "2",
+                name = "Exemplo 2"
+            )
+        ),
+        sourceLoadStates = LoadStates(
+            refresh = LoadState.NotLoading(false),
+            append = LoadState.NotLoading(false),
+            prepend = LoadState.NotLoading(false),
+        )
+    )
+
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            FitnessProPagedListDialog(
+                dialogTitle = "Lista de Exemplo",
+                pagingItems = flowOf(fakeList).collectAsLazyPagingItems(),
+                emptyMessage = R.string.paged_list_dialog_empty_message,
+                simpleFilterPlaceholderResId = R.string.label_placeholder_example,
+                itemLayout = {
+                    Text(text = it.name)
+                }
+            )
+        }
+    }
+}
+
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun FitnessProDialogMessageErrorPreviewLight() {
     FitnessProTheme {
         Surface {
             FitnessProMessageDialog(
@@ -379,9 +467,9 @@ private fun FitnessProDialogMessageErrorPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun FitnessProDialogMessageConfirmationPreview() {
+private fun FitnessProDialogMessageConfirmationPreviewLight() {
     FitnessProTheme {
         Surface {
             FitnessProMessageDialog(
@@ -394,9 +482,9 @@ private fun FitnessProDialogMessageConfirmationPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun FitnessProDialogMessageInformationPreview() {
+private fun FitnessProDialogMessageInformationPreviewLight() {
     FitnessProTheme {
         Surface {
             FitnessProMessageDialog(
@@ -409,9 +497,9 @@ private fun FitnessProDialogMessageInformationPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun FitnessProDialogPagedListPreview() {
+private fun FitnessProDialogPagedListPreviewLight() {
     val fakeList = PagingData.from(
         listOf(
             TupleExample(

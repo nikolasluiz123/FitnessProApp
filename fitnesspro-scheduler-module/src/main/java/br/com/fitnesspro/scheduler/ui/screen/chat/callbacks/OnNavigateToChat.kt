@@ -1,4 +1,4 @@
-package br.com.fitnesspro.scheduler.ui.screen.scheduler.callback
+package br.com.fitnesspro.scheduler.ui.screen.chat.callbacks
 
 import br.com.fitnesspro.scheduler.ui.navigation.ChatArgs
 

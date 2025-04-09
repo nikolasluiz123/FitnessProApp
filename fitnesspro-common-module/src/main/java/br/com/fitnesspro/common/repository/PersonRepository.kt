@@ -6,6 +6,7 @@ import androidx.paging.PagingConfig
 import androidx.room.Transaction
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
+import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
@@ -201,8 +202,12 @@ class PersonRepository(
     }
 
     suspend fun findPersonByEmailRemote(email: String): TOPerson? = withContext(IO) {
-        val response = personWebClient.findPersonByEmail(email)
-        if (response.success) response.value?.toTOPerson() else null
+        if (context.isNetworkAvailable()) {
+            val response =  personWebClient.findPersonByEmail(email)
+            if (response.success) response.value?.toTOPerson() else null
+        } else {
+            null
+        }
     }
 
     private fun PersonDTO.toTOPerson(): TOPerson {

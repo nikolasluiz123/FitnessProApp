@@ -3,17 +3,17 @@ package br.com.fitnesspro.compose.components.buttons
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import br.com.fitnesspro.compose.components.R.*
+import br.com.fitnesspro.compose.components.R.string
 import br.com.fitnesspro.core.R
 import br.com.fitnesspro.core.theme.FitnessProTheme
 
@@ -28,17 +28,22 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 @Composable
 fun RoundedGoogleButton(
     modifier: Modifier = Modifier,
+    colors: IconButtonColors = IconButtonDefaults.iconButtonColors(
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+        disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+    ),
     onClick: () -> Unit = { }
 ) {
     IconButton(
         modifier = modifier.size(48.dp),
         onClick = onClick,
-        colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        colors = colors
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_google),
             contentDescription = stringResource(string.rounded_button_google_content_description),
-            tint = Color.White
         )
     }
 }
@@ -54,35 +59,60 @@ fun RoundedGoogleButton(
 @Composable
 fun RoundedFacebookButton(
     modifier: Modifier = Modifier,
+    colors: IconButtonColors = IconButtonDefaults.iconButtonColors(
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+        disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+    ),
     onClick: () -> Unit = { }
 ) {
     IconButton(
         modifier = modifier.size(48.dp),
         onClick = onClick,
-        colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        colors = colors
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_facebook),
             contentDescription = stringResource(string.rounded_button_facebook_content_description),
-            tint = Color.White
         )
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun RoundedGoogleButtonPreview() {
-    FitnessProTheme {
+private fun RoundedGoogleButtonPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
         Surface {
             RoundedGoogleButton()
         }
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun RoundedFacebookButtonPreview() {
-    FitnessProTheme {
+private fun RoundedFacebookButtonPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            RoundedFacebookButton()
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun RoundedGoogleButtonPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface {
+            RoundedGoogleButton()
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun RoundedFacebookButtonPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
         Surface {
             RoundedFacebookButton()
         }

@@ -41,7 +41,7 @@ fun App(content: @Composable () -> Unit = { LoginScreen() }) {
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview(device = "id:small_phone")
 @Composable
 fun AppPreview() {
     FitnessProTheme {

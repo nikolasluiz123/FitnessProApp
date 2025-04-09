@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimeInput
@@ -21,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -37,9 +40,7 @@ import br.com.fitnesspro.compose.components.dialog.enums.EnumTimePickerInputTest
 import br.com.fitnesspro.compose.components.dialog.enums.EnumTimePickerInputTestTags.TIME_PICKER_INPUT
 import br.com.fitnesspro.core.extensions.timeNow
 import br.com.fitnesspro.core.theme.DialogTitleTextStyle
-import br.com.fitnesspro.core.theme.GREY_200
-import br.com.fitnesspro.core.theme.GREY_300
-import br.com.fitnesspro.core.theme.GREY_800
+import br.com.fitnesspro.core.theme.FitnessProTheme
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -62,6 +63,10 @@ fun FitnessProDatePickerDialog(
             FitnessProTextButton(
                 modifier = Modifier.testTag(DATE_PICKER_DIALOG_BUTTON_CONFIRM.name),
                 label = stringResource(id = R.string.label_confirm),
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                ),
                 onClickListener = {
                     datePickerState.selectedDateMillis?.let {
                         val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
@@ -74,6 +79,10 @@ fun FitnessProDatePickerDialog(
             FitnessProTextButton(
                 modifier = Modifier.testTag(DATE_PICKER_DIALOG_BUTTON_CANCEL.name),
                 label = stringResource(id = R.string.label_cancel),
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                ),
                 onClickListener = onCancel
             )
         }
@@ -108,7 +117,7 @@ fun TimePickerDialog(
     ) {
         Surface(
             shape = RoundedCornerShape(28.dp),
-            color = GREY_200
+            color = MaterialTheme.colorScheme.surfaceContainer
         ) {
             ConstraintLayout(
                 Modifier.padding(16.dp)
@@ -124,7 +133,7 @@ fun TimePickerDialog(
                         },
                     text = title,
                     style = DialogTitleTextStyle,
-                    color = GREY_800
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 TimeInput(
@@ -140,15 +149,14 @@ fun TimePickerDialog(
                         },
                     state = timePickerState,
                     colors = TimePickerDefaults.colors(
-                        timeSelectorSelectedContentColor = GREY_800,
-                        timeSelectorSelectedContainerColor = GREY_200,
-                        timeSelectorUnselectedContainerColor = GREY_300,
-                        periodSelectorBorderColor = GREY_200,
-                        periodSelectorSelectedContentColor = GREY_800,
-                        periodSelectorSelectedContainerColor = GREY_200,
-                        clockDialSelectedContentColor = GREY_300,
-                        clockDialColor = GREY_300
-
+                        timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onSurface,
+                        timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+//                        periodSelectorBorderColor = GREY_200,
+//                        periodSelectorSelectedContentColor = GREY_800,
+//                        periodSelectorSelectedContainerColor = GREY_200,
+//                        clockDialSelectedContentColor = GREY_300,
+//                        clockDialColor = GREY_300
                     )
                 )
 
@@ -165,6 +173,10 @@ fun TimePickerDialog(
                 ) {
                     FitnessProTextButton(
                         modifier = Modifier.testTag(TIME_PICKER_DIALOG_BUTTON_CANCEL.name),
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                        ),
                         label = stringResource(id = R.string.label_cancel),
                         onClickListener = {
                             onDismiss()
@@ -173,6 +185,10 @@ fun TimePickerDialog(
 
                     FitnessProTextButton(
                         modifier = Modifier.testTag(TIME_PICKER_DIALOG_BUTTON_CONFIRM.name),
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                        ),
                         label = stringResource(id = R.string.label_confirm),
                         onClickListener = {
                             onConfirm(LocalTime.of(timePickerState.hour, timePickerState.minute))
@@ -181,6 +197,62 @@ fun TimePickerDialog(
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun FitnessProDatePickerDialogPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            FitnessProDatePickerDialog(
+                onDismissRequest = { },
+                onConfirm = { },
+                onCancel = { }
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun TimePickerDialogPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            TimePickerDialog(
+                title = "Title",
+                onDismiss = { },
+                onConfirm = { }
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun FitnessProDatePickerDialogPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface {
+            FitnessProDatePickerDialog(
+                onDismissRequest = { },
+                onConfirm = { },
+                onCancel = { }
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun TimePickerDialogPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface {
+            TimePickerDialog(
+                title = "Title",
+                onDismiss = { },
+                onConfirm = { }
+            )
         }
     }
 }

@@ -2,6 +2,7 @@ package br.com.fitnesspro.compose.components.buttons
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -10,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.core.theme.ButtonTextStyle
@@ -32,20 +32,23 @@ fun FitnessProButton(
     label: String,
     onClickListener: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    colors: ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+        disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+    )
 ) {
     Button(
         modifier = modifier,
         onClick = onClickListener,
         enabled = enabled,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
+        colors = colors
     ) {
         Text(
             text = label,
             style = ButtonTextStyle,
-            color = Color.White
         )
     }
 }
@@ -69,13 +72,12 @@ fun FitnessProOutlinedButton(
 ) {
     OutlinedButton(
         modifier = modifier,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
         onClick = onClickListener,
         enabled = enabled,
     ) {
         Text(
             text = label,
-            color = MaterialTheme.colorScheme.primary,
             style = ButtonTextStyle
         )
     }
@@ -89,21 +91,23 @@ fun FitnessProTextButton(
     label: String,
     onClickListener: () -> Unit,
     modifier: Modifier = Modifier,
+    colors: ButtonColors = ButtonDefaults.textButtonColors(),
     enabled: Boolean = true
 ) {
     TextButton(
         modifier = modifier,
         onClick = onClickListener,
         enabled = enabled,
+        colors = colors
     ) {
         Text(text = label, style = TextButtonTextStyle)
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun FitnessProButtonPreview() {
-    FitnessProTheme {
+private fun FitnessProButtonPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
         Surface {
             FitnessProButton(
                 label = "Button",
@@ -113,10 +117,10 @@ private fun FitnessProButtonPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun FitnessProOutlinedButtonPreview() {
-    FitnessProTheme {
+private fun FitnessProOutlinedButtonPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
         Surface {
             FitnessProOutlinedButton(
                 label = "Button",
@@ -126,10 +130,50 @@ private fun FitnessProOutlinedButtonPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun FitnessProTextButtonPreview() {
-    FitnessProTheme {
+private fun FitnessProTextButtonPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            FitnessProTextButton(
+                label = "Button",
+                onClickListener = {}
+            )
+        }
+    }
+}
+
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun FitnessProButtonPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface {
+            FitnessProButton(
+                label = "Button",
+                onClickListener = {}
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun FitnessProOutlinedButtonPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface {
+            FitnessProOutlinedButton(
+                label = "Button",
+                onClickListener = {}
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun FitnessProTextButtonPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
         Surface {
             FitnessProTextButton(
                 label = "Button",

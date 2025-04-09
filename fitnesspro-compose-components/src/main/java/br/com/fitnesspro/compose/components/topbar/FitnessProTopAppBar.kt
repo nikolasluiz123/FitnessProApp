@@ -15,7 +15,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonArrowBack
 import br.com.fitnesspro.compose.components.buttons.icons.MenuIconButton
-import br.com.fitnesspro.compose.components.buttons.icons.MenuIconButtonWithDefaultActions
 import br.com.fitnesspro.compose.components.topbar.enums.EnumFitnessProTopAppBarTestTags.FITNESS_PRO_TOP_APP_BAR_NAVIGATE_BACK_BUTTON
 import br.com.fitnesspro.core.theme.FitnessProTheme
 
@@ -29,7 +28,6 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
  * @param menuItems Itens de menu exibidos dentro do MoreOptions.
  * @param colors Cores da barra.
  * @param showNavigationIcon Flag para exibir ícone de navação ou não.
- * @param showMenuWithLogout Flag para exibir o menu com a opção de Logout.
  *
  * @author Nikolas Luiz Schmitt
  */
@@ -42,14 +40,13 @@ fun FitnessProTopAppBar(
     actions: @Composable () -> Unit = { },
     menuItems: @Composable () -> Unit = { },
     colors: TopAppBarColors = TopAppBarDefaults.mediumTopAppBarColors(
-        containerColor = MaterialTheme.colorScheme.secondary,
-        titleContentColor = MaterialTheme.colorScheme.onSecondary,
-        actionIconContentColor = MaterialTheme.colorScheme.onSecondary,
-        navigationIconContentColor = MaterialTheme.colorScheme.onSecondary
+        containerColor = MaterialTheme.colorScheme.primary,
+        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+        actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
     ),
     showNavigationIcon: Boolean = true,
     customNavigationIcon: (@Composable () -> Unit)? = null,
-    showMenuWithLogout: Boolean = true,
     showMenu: Boolean = false,
     windowInsets: WindowInsets = WindowInsets(0.dp),
 ) {
@@ -72,12 +69,7 @@ fun FitnessProTopAppBar(
         actions = {
             actions()
 
-            if (showMenuWithLogout) {
-                MenuIconButtonWithDefaultActions(
-                    onLogoutClick = onLogoutClick,
-                    menuItems = menuItems,
-                )
-            } else if (showMenu) {
+            if (showMenu) {
                 MenuIconButton(menuItems)
             }
         }
@@ -85,7 +77,7 @@ fun FitnessProTopAppBar(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 fun FitnessProTopAppBarPreview() {
     FitnessProTheme {
@@ -94,21 +86,6 @@ fun FitnessProTopAppBarPreview() {
                 title = { Text("Título da Tela") },
                 onBackClick = { },
                 onLogoutClick = { }
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview
-@Composable
-fun FitnessProTopAppBarWithSubtitlePreview() {
-    FitnessProTheme {
-        Surface {
-            SimpleFitnessProTopAppBar(
-                title = "Título da Tela",
-                subtitle = "Subtitulo da Tela",
-                showMenuWithLogout = false
             )
         }
     }

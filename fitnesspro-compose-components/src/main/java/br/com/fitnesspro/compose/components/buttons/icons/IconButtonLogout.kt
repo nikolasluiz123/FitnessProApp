@@ -1,5 +1,6 @@
 package br.com.fitnesspro.compose.components.buttons.icons
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,7 +12,7 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 @Composable
 fun IconButtonLogout(
     modifier: Modifier = Modifier,
-    iconColor: Color = Color.White,
+    iconColor: Color = MaterialTheme.colorScheme.onPrimary,
     enabled: Boolean = true,
     contentDescriptionResId: Int? = R.string.label_logout,
     onClick: () -> Unit = { }
@@ -26,11 +27,21 @@ fun IconButtonLogout(
     )
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun IconButtonLogoutPreview() {
-    FitnessProTheme {
-        Surface {
+private fun IconButtonLogoutPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface(color = MaterialTheme.colorScheme.primary) {
+            IconButtonLogout()
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun IconButtonLogoutPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface(color = MaterialTheme.colorScheme.primary) {
             IconButtonLogout()
         }
     }

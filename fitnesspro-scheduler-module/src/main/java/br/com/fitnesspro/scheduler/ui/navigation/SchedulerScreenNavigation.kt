@@ -7,7 +7,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.SchedulerScreen
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnDayClick
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnNavigateToCompromise
+import br.com.fitnesspro.scheduler.ui.screen.details.callbacks.OnNavigateToCompromise
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerViewModel
 
 const val schedulerScreenRoute = "scheduler"

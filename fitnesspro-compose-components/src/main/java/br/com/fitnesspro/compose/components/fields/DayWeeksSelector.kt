@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -27,8 +28,6 @@ import br.com.fitnesspro.compose.components.fields.enums.EnumDayWeeksSelectorTes
 import br.com.fitnesspro.compose.components.fields.state.DayWeeksSelectorField
 import br.com.fitnesspro.core.extensions.getShortDisplayName
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.GREY_200
-import br.com.fitnesspro.core.theme.GREY_800
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.core.theme.RED_400
 import java.time.DayOfWeek
@@ -77,7 +76,7 @@ private fun DayWeekCell(
     )
 
     val textColor by animateColorAsState(
-        targetValue = if (isSelected) GREY_200 else GREY_800,
+        targetValue = if (isSelected) Color.White else MaterialTheme.colorScheme.onBackground,
         animationSpec = tween(durationMillis = colorAnimationDuration),
         label = "dayWeekCellTextColor"
     )
@@ -106,10 +105,10 @@ private fun DayWeekCell(
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun DayWeeksSelectorPreview() {
-    FitnessProTheme {
+private fun DayWeeksSelectorPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
         Surface {
             DayWeeksSelector(
                 selectorField = DayWeeksSelectorField(
@@ -121,10 +120,40 @@ private fun DayWeeksSelectorPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun DayWeeksSelectorWithSelectedValuesPreview() {
-    FitnessProTheme {
+private fun DayWeeksSelectorWithSelectedValuesPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            DayWeeksSelector(
+                selectorField = DayWeeksSelectorField(
+                    selected = mutableListOf(DayOfWeek.FRIDAY, DayOfWeek.WEDNESDAY),
+                    onSelect = { }
+                )
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun DayWeeksSelectorPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface {
+            DayWeeksSelector(
+                selectorField = DayWeeksSelectorField(
+                    selected = mutableListOf(),
+                    onSelect = { }
+                )
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun DayWeeksSelectorWithSelectedValuesPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
         Surface {
             DayWeeksSelector(
                 selectorField = DayWeeksSelectorField(

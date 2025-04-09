@@ -1,6 +1,6 @@
-package br.com.fitnesspro.scheduler.ui.screen.scheduler.enums
+package br.com.fitnesspro.scheduler.ui.screen.compromisse.enums
 
-enum class EnumCompromiseScreenTestTags {
+enum class EnumCompromiseScreenTags {
     COMPROMISE_SCREEN_PROFESSIONAL_FIELD,
     COMPROMISE_SCREEN_MEMBER_FIELD,
     COMPROMISE_SCREEN_START_DATE_FIELD,

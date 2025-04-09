@@ -22,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -52,8 +53,6 @@ import br.com.fitnesspro.core.extensions.parseToLocalTime
 import br.com.fitnesspro.core.menu.ITupleListItem
 import br.com.fitnesspro.core.theme.FieldErrorTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.GREY_700
-import br.com.fitnesspro.core.theme.GREY_800
 import br.com.fitnesspro.core.theme.InputTextStyle
 import kotlin.properties.Delegates
 
@@ -73,7 +72,7 @@ fun OutlinedTextFieldValidation(
             Icon(
                 modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_ERROR_TRAILING_ICON.name),
                 imageVector = Icons.Default.Warning,
-                contentDescription = "error",
+                contentDescription = LocalContext.current.getString(R.string.outlined_textfield_validation_error_icon_description),
                 tint = MaterialTheme.colorScheme.error
             )
     },
@@ -263,15 +262,16 @@ fun OutlinedTextFieldValidation(
 @Composable
 fun getDefaultOutlinedTextFieldColors(): TextFieldColors {
     return OutlinedTextFieldDefaults.colors(
-        cursorColor = GREY_800,
-        focusedBorderColor = GREY_700,
-        unfocusedBorderColor = GREY_700,
-        unfocusedLabelColor = GREY_700,
-        focusedLabelColor = GREY_700,
-        focusedTrailingIconColor = GREY_700,
-        unfocusedTrailingIconColor = GREY_700,
-        unfocusedTextColor = GREY_700,
-        focusedTextColor = GREY_700,
+        cursorColor = MaterialTheme.colorScheme.secondary,
+        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+        unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+        unfocusedTrailingIconColor = MaterialTheme.colorScheme.secondary,
+        unfocusedTextColor = MaterialTheme.colorScheme.secondary,
+        unfocusedPlaceholderColor = MaterialTheme.colorScheme.secondary,
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
+        focusedLabelColor = MaterialTheme.colorScheme.primary,
+        focusedTrailingIconColor = MaterialTheme.colorScheme.primary,
+        focusedTextColor = MaterialTheme.colorScheme.secondary,
     )
 }
 
@@ -388,7 +388,8 @@ fun TimePickerOutlinedTextFieldValidation(
         modifier = modifier,
         trailingIcon = {
             IconButtonTime(
-                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name)
+                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),
+                iconColor = MaterialTheme.colorScheme.secondary
             ) { field.onTimePickerOpenChange(true) }
         },
         keyboardOptions = KeyboardOptions(
@@ -422,7 +423,8 @@ fun DatePickerOutlinedTextFieldValidation(
         modifier = modifier,
         trailingIcon = {
             IconButtonCalendar(
-                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name)
+                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),
+                iconColor = MaterialTheme.colorScheme.secondary
             ) { field.onDatePickerOpenChange(true) }
         },
         keyboardOptions = KeyboardOptions(
@@ -458,7 +460,8 @@ fun <T: ITupleListItem> PagedListDialogOutlinedTextFieldValidation(
         trailingIcon = {
             IconButtonSearch(
                 modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),
-                onClick = field.dialogListState.onShow
+                onClick = field.dialogListState.onShow,
+                iconColor = MaterialTheme.colorScheme.secondary
             )
         }
     )
@@ -473,10 +476,26 @@ fun <T: ITupleListItem> PagedListDialogOutlinedTextFieldValidation(
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-fun OutlinedTextFieldValidationPreview() {
-    FitnessProTheme {
+fun OutlinedTextFieldValidationEmptyPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            OutlinedTextFieldValidation(
+                label = {
+                    Text("Label")
+                },
+                value = "",
+                onValueChange = { },
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+fun OutlinedTextFieldValidationPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
         Surface {
             OutlinedTextFieldValidation(
                 label = {
@@ -490,10 +509,60 @@ fun OutlinedTextFieldValidationPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-fun OutlinedTextFieldValidationWithoutErrorPreview() {
-    FitnessProTheme {
+fun OutlinedTextFieldValidationWithoutErrorPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            OutlinedTextFieldValidation(
+                label = {
+                    Text("Label")
+                },
+                value = "Valor digitado pelo usuário",
+                onValueChange = { }
+            )
+        }
+    }
+}
+
+
+@Preview(device = "id:small_phone")
+@Composable
+fun OutlinedTextFieldValidationEmptyPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface {
+            OutlinedTextFieldValidation(
+                label = {
+                    Text("Label")
+                },
+                value = "",
+                onValueChange = { },
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+fun OutlinedTextFieldValidationPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface {
+            OutlinedTextFieldValidation(
+                label = {
+                    Text("Label")
+                },
+                value = "Valor digitado pelo usuário",
+                onValueChange = { },
+                error = "Mensagem de erro."
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+fun OutlinedTextFieldValidationWithoutErrorPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
         Surface {
             OutlinedTextFieldValidation(
                 label = {

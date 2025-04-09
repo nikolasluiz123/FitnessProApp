@@ -1,8 +1,6 @@
 package br.com.fitnesspro.compose.components.bottomsheet
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.bottomsheet.interfaces.IBottomSheetItem
 import br.com.fitnesspro.compose.components.bottomsheet.interfaces.IEnumOptionsBottomSheet
 import br.com.fitnesspro.core.theme.BottomSheetItemTextStyle
@@ -46,7 +43,8 @@ fun <T: IEnumOptionsBottomSheet> BottomSheet(
         modifier = modifier,
         onDismissRequest = onDismissRequest,
         sheetState = bottomSheetState,
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         LazyColumn {
             items(items) {
@@ -55,24 +53,22 @@ fun <T: IEnumOptionsBottomSheet> BottomSheet(
                         Text(
                             text = stringResource(id = it.labelResId),
                             style = BottomSheetItemTextStyle,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     },
                     leadingContent = {
                         Icon(
                             painter = painterResource(id = it.iconResId),
                             contentDescription = stringResource(id = it.iconDescriptionResId),
-                            tint = MaterialTheme.colorScheme.onBackground
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     },
-                    colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.background),
+                    colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
                     modifier = Modifier.clickable {
                         onItemClickListener(it.option)
                     }
                 )
             }
         }
-
-        Spacer(modifier = Modifier.size(48.dp))
     }
 }

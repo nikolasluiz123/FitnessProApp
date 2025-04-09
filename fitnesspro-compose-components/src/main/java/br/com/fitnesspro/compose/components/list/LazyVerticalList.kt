@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.list.enums.EnumListTestTags.EMPTY_STATE
 import br.com.fitnesspro.compose.components.list.enums.EnumListTestTags.EMPTY_STATE_MESSAGE
 import br.com.fitnesspro.compose.components.list.enums.EnumListTestTags.LAZY_COLUMN
-import br.com.fitnesspro.core.theme.GREY_600
 import br.com.fitnesspro.core.theme.LabelTextStyle
 
 /**
@@ -66,7 +65,6 @@ fun <T> LazyVerticalList(
                     modifier = Modifier.testTag(EMPTY_STATE_MESSAGE.name),
                     text = stringResource(id = emptyMessage),
                     style = LabelTextStyle,
-                    color = GREY_600,
                     textAlign = TextAlign.Center
                 )
             }

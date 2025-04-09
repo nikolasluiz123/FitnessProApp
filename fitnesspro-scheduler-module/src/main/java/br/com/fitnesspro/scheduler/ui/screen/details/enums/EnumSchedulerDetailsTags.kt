@@ -1,6 +1,6 @@
-package br.com.fitnesspro.scheduler.ui.screen.scheduler.enums
+package br.com.fitnesspro.scheduler.ui.screen.details.enums
 
-enum class EnumSchedulerDetailsTestTags {
+enum class EnumSchedulerDetailsTags {
     SCHEDULER_DETAILS_SCREEN_FAB_ADD,
     SCHEDULER_DETAILS_SCREEN_ITEM_LIST,
     SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_NAME,

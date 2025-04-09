@@ -42,6 +42,8 @@ enum class EnumDateTimePatterns(val pattern: String) {
 
     DATE_TIME_SHORT("dd/MM/yy HH:mm"),
 
+    DAY_MONTH_DATE_TIME_SHORT("dd/MM HH:mm"),
+
     DATE_TIME_SQLITE("yyyy-MM-dd HH:mm"),
 
     DATE_TIME_FILE_NAME("dd_MM_yyyy_HHmmss"),

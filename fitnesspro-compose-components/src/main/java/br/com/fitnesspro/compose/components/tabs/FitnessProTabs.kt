@@ -10,10 +10,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,7 +22,6 @@ import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.HORIZONTAL_PAGER
 import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.TAB
 import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.TAB_ROW
-import br.com.fitnesspro.core.theme.GREY_500
 import br.com.fitnesspro.core.theme.TabTitleTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logTabClick
 import br.com.fitnesspro.firebase.api.analytics.logTabScroll
@@ -48,10 +48,20 @@ fun FitnessProTabRow(
     TabRow(
         modifier = modifier.testTag(TAB_ROW.name),
         selectedTabIndex = tabState.tabs.first { it.selected }.enum.index,
-        containerColor = MaterialTheme.colorScheme.secondary,
-        contentColor = MaterialTheme.colorScheme.onSecondary,
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
         divider = {
-            HorizontalDivider(color = MaterialTheme.colorScheme.onSecondary)
+            HorizontalDivider(color = MaterialTheme.colorScheme.onPrimary)
+        },
+        indicator = { tabPositions ->
+            val selectedIndex = tabState.tabs.first { it.selected }.enum.index
+
+            if (selectedIndex < tabPositions.size) {
+                TabRowDefaults.SecondaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[selectedIndex]),
+                    color = MaterialTheme.colorScheme.inversePrimary
+                )
+            }
         }
     ) {
         tabState.tabs.forEach { tabToCreate ->
@@ -70,7 +80,11 @@ fun FitnessProTabRow(
                     Text(
                         text = stringResource(id = tabToCreate.enum.labelResId),
                         style = TabTitleTextStyle,
-                        color = if (tabToCreate.enabled) Color.White else GREY_500
+                        color = if (tabToCreate.enabled) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+                        }
                     )
                 },
                 enabled = tabToCreate.enabled

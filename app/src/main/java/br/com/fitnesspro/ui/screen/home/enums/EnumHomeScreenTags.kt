@@ -1,6 +1,6 @@
 package br.com.fitnesspro.ui.screen.home.enums
 
-enum class EnumHomeScreenTestTags {
+enum class EnumHomeScreenTags {
     HOME_SCREEN_ACCOUNT_BUTTON,
     HOME_SCREEN_NOTIFICATIONS_BUTTON,
     HOME_SCREEN_LOGOUT_BUTTON,

@@ -7,7 +7,6 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 /**
@@ -116,6 +115,8 @@ fun dateTimeNow(): LocalDateTime = LocalDateTime.now()
 
 fun yearMonthNow(): YearMonth = YearMonth.now()
 
-fun LocalDateTime.toEpochSeconds(): Long {
-    return toEpochSecond(ZoneOffset.of(ZoneId.systemDefault().id))
+fun LocalDateTime.toEpochMillis(): Long {
+    val zoneId = ZoneId.systemDefault()
+    val zoneOffset = zoneId.rules.getOffset(this)
+    return this.toInstant(zoneOffset).toEpochMilli()
 }

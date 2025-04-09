@@ -116,6 +116,8 @@ class LoginViewModel @Inject constructor(
 
     fun login(onSuccess: () -> Unit) {
         launch {
+            _uiState.value.onToggleLoading()
+
             val username = _uiState.value.email.value
             val password = _uiState.value.password.value
 
@@ -133,6 +135,8 @@ class LoginViewModel @Inject constructor(
             } else {
                 showValidationMessages(validationsResult)
             }
+
+            _uiState.value.onToggleLoading()
         }
     }
 

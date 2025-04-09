@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
@@ -36,9 +37,6 @@ import br.com.fitnesspro.compose.components.buttons.enums.EnumSwitchButtonTestTa
 import br.com.fitnesspro.compose.components.fields.state.SwitchButtonField
 import br.com.fitnesspro.core.R
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.GREY_200
-import br.com.fitnesspro.core.theme.GREY_800
-import br.com.fitnesspro.core.theme.GREY_900
 import br.com.fitnesspro.core.theme.LabelTextStyle
 
 @Composable
@@ -46,7 +44,6 @@ fun FitnessProSwitchButton(
     field: SwitchButtonField,
     modifier: Modifier = Modifier
 ) {
-    // Somente com o onCheckedChange nao estava desmarcando o switch
     var checked by remember { mutableStateOf(field.checked) }
 
     Switch(
@@ -70,14 +67,14 @@ fun FitnessProSwitchButton(
 @Composable
 private fun getFitnessProSwitchButtonColors(): SwitchColors {
     return SwitchDefaults.colors(
-        checkedThumbColor = GREY_200,
-        checkedTrackColor = GREY_900,
+        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+        checkedTrackColor = MaterialTheme.colorScheme.primary,
         checkedBorderColor = Color.Transparent,
-        checkedIconColor = GREY_900,
-        uncheckedThumbColor = GREY_900,
-        uncheckedTrackColor = GREY_200,
-        uncheckedBorderColor = GREY_900,
-        uncheckedIconColor = Color.White
+        checkedIconColor = MaterialTheme.colorScheme.primary,
+        uncheckedThumbColor = MaterialTheme.colorScheme.primary,
+        uncheckedTrackColor = MaterialTheme.colorScheme.onPrimary,
+        uncheckedBorderColor = MaterialTheme.colorScheme.primary,
+        uncheckedIconColor = MaterialTheme.colorScheme.onPrimary
     )
 }
 
@@ -118,15 +115,15 @@ fun HorizontalLabeledSwitchButton(
             modifier = Modifier.testTag(HORIZONTAL_LABELED_SWITCH_BUTTON_LABEL.name),
             text = label,
             style = LabelTextStyle,
-            color = GREY_800
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun FitnessProSwitchButtonCheckedPreview() {
-    FitnessProTheme {
+private fun FitnessProSwitchButtonCheckedPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
         Surface {
             FitnessProSwitchButton(
                 field = SwitchButtonField(
@@ -138,10 +135,10 @@ private fun FitnessProSwitchButtonCheckedPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun FitnessProSwitchButtonUncheckedPreview() {
-    FitnessProTheme {
+private fun FitnessProSwitchButtonUncheckedPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
         Surface {
             FitnessProSwitchButton(
                 field = SwitchButtonField(
@@ -153,10 +150,56 @@ private fun FitnessProSwitchButtonUncheckedPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun HorizontalLabeledSwitchButtonCheckedPreview() {
-    FitnessProTheme {
+private fun HorizontalLabeledSwitchButtonCheckedPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            HorizontalLabeledSwitchButton(
+                field = SwitchButtonField(
+                    checked = true,
+                    onCheckedChange = { }
+                ),
+                label = "Label"
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun FitnessProSwitchButtonCheckedPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface {
+            FitnessProSwitchButton(
+                field = SwitchButtonField(
+                    checked = true,
+                    onCheckedChange = { }
+                )
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun FitnessProSwitchButtonUncheckedPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface {
+            FitnessProSwitchButton(
+                field = SwitchButtonField(
+                    checked = false,
+                    onCheckedChange = { }
+                )
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun HorizontalLabeledSwitchButtonCheckedPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
         Surface {
             HorizontalLabeledSwitchButton(
                 field = SwitchButtonField(

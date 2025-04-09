@@ -77,7 +77,7 @@ private val groups = mutableListOf(
     )
 )
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun LazyGroupedVerticalListPreview() {
     FitnessProTheme {
@@ -105,7 +105,7 @@ private fun LazyGroupedVerticalListPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun LazyGroupedVerticalListEmptyPreview() {
     FitnessProTheme {

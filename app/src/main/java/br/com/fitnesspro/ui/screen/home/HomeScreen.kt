@@ -33,19 +33,18 @@ import br.com.fitnesspro.compose.components.buttons.icons.IconButtonNotification
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.GREY_600
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.ui.bottomsheet.workout.BottomSheetWorkout
 import br.com.fitnesspro.ui.screen.home.callbacks.OnLogoutClick
 import br.com.fitnesspro.ui.screen.home.callbacks.OnNavigateToAccountInformation
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_ACCOUNT_BUTTON
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_MONEY
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_NUTRITION
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_SCHEDULER
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_BUTTON_WORKOUT
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_LOGOUT_BUTTON
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTestTags.HOME_SCREEN_NOTIFICATIONS_BUTTON
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_ACCOUNT_BUTTON
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_MONEY
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_NUTRITION
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_SCHEDULER
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_WORKOUT
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_LOGOUT_BUTTON
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_NOTIFICATIONS_BUTTON
 import br.com.fitnesspro.ui.state.HomeUIState
 import br.com.fitnesspro.ui.viewmodel.HomeViewModel
 import com.google.firebase.analytics.ktx.analytics
@@ -99,7 +98,6 @@ fun HomeScreen(
                         }
                     )
                 },
-                showNavigationIcon = true,
                 customNavigationIcon = {
                     IconButtonAccount(
                         modifier = Modifier.testTag(HOME_SCREEN_ACCOUNT_BUTTON.name),
@@ -108,7 +106,6 @@ fun HomeScreen(
                         }
                     )
                 },
-                showMenuWithLogout = false,
             )
         }
     ) { padding ->
@@ -267,7 +264,6 @@ fun HomeScreen(
                     },
                     text = stringResource(R.string.home_screen_company_name),
                     style = LabelTextStyle,
-                    color = GREY_600,
                 )
 
                 Text(
@@ -281,7 +277,6 @@ fun HomeScreen(
                     },
                     text = stringResource(R.string.home_screen_app_version),
                     style = LabelTextStyle,
-                    color = GREY_600,
                     textAlign = TextAlign.End
                 )
             }
@@ -291,18 +286,11 @@ fun HomeScreen(
 
 @Preview(device = "id:small_phone")
 @Composable
-private fun HomeScreenPreview() {
-    FitnessProTheme {
+private fun HomeScreenPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
         Surface {
             HomeScreen(
-                state = HomeUIState(
-                    title = "Membro",
-                    subtitle = "Nikolas Luiz Schmitt",
-                    isEnabledSchedulerButton = true,
-                    isEnabledWorkoutButton = true,
-                    isEnabledNutritionButton = true,
-                    isEnabledMoneyButton = true
-                )
+                state = defaultHomeState
             )
         }
     }
@@ -310,14 +298,35 @@ private fun HomeScreenPreview() {
 
 @Preview(device = "id:small_phone")
 @Composable
-private fun HomeScreenDisabledPreview() {
-    FitnessProTheme {
+private fun HomeScreenDisabledPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
         Surface {
             HomeScreen(
-                state = HomeUIState(
-                    title = "Membro",
-                    subtitle = "Nikolas Luiz Schmitt"
-                )
+                state = disabledHomeState
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun HomeScreenPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface {
+            HomeScreen(
+                state = defaultHomeState
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun HomeScreenDisabledPreviewLight() {
+    FitnessProTheme(darkTheme = false) {
+        Surface {
+            HomeScreen(
+                state = disabledHomeState
             )
         }
     }

@@ -42,7 +42,7 @@ fun MockScreen(
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun MockScreenPreview() {
     FitnessProTheme {

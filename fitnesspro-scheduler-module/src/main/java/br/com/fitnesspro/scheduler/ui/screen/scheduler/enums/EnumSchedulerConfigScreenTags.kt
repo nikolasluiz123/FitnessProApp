@@ -1,6 +1,6 @@
 package br.com.fitnesspro.scheduler.ui.screen.scheduler.enums
 
-enum class EnumSchedulerConfigScreenTestTags {
+enum class EnumSchedulerConfigScreenTags {
     SCHEDULER_CONFIG_SCREEN_LABEL_GENERAL,
     SCHEDULER_CONFIG_SCREEN_LABELED_SWITCH_BUTTON_ALARM,
     SCHEDULER_CONFIG_SCREEN_LABELED_SWITCH_BUTTON_NOTIFICATION,

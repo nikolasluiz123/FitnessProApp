@@ -5,8 +5,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.ChatHistoryScreen
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnNavigateToChat
+import br.com.fitnesspro.scheduler.ui.screen.chat.ChatHistoryScreen
+import br.com.fitnesspro.scheduler.ui.screen.chat.callbacks.OnNavigateToChat
 import br.com.fitnesspro.scheduler.ui.viewmodel.ChatHistoryViewModel
 
 

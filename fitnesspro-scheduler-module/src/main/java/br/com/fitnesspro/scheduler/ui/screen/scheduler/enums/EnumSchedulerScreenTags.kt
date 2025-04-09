@@ -1,6 +1,6 @@
 package br.com.fitnesspro.scheduler.ui.screen.scheduler.enums
 
-enum class EnumSchedulerScreenTestTags {
+enum class EnumSchedulerScreenTags {
     SCHEDULER_SCREEN_BUTTON_CONFIG,
     SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB,
     SCHEDULER_SCREEN_BACK_MONTH_BUTTON,

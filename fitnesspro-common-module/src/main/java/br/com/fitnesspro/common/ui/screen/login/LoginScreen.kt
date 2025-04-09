@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -99,9 +100,6 @@ fun LoginScreen(
         topBar = {
             SimpleFitnessProTopAppBar(
                 title = stringResource(R.string.login_screen_title),
-                showNavigationIcon = false,
-                showMenuWithLogout = false,
-                showMenu = true,
                 menuItems = {
                     DropdownMenuItem(
                         text = {
@@ -113,7 +111,9 @@ fun LoginScreen(
                         },
                         onClick = onNavigateToMockScreen
                     )
-                }
+                },
+                showNavigationIcon = false,
+                showMenu = true
             )
         }
     ) { padding ->
@@ -126,18 +126,16 @@ fun LoginScreen(
 
             RequestAllPermissions(context)
 
-            ConstraintLayout(
-                Modifier.fillMaxWidth()
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .constrainAs(loadingRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                    }
             ) {
-                FitnessProLinearProgressIndicator(
-                    state.showLoading,
-                    Modifier
-                        .constrainAs(loadingRef) {
-                            start.linkTo(parent.start)
-                            top.linkTo(parent.top)
-                            end.linkTo(parent.end)
-                        }
-                )
+                FitnessProLinearProgressIndicator(state.showLoading)
             }
 
             Column(
@@ -311,7 +309,7 @@ private fun RequestAllPermissions(context: Context) {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun LoginScreenPreview() {
     FitnessProTheme {

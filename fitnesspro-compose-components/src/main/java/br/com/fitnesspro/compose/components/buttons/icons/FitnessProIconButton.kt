@@ -3,6 +3,7 @@ package br.com.fitnesspro.compose.components.buttons.icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -12,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 @Composable
 fun FitnessProIconButton(
     resId: Int,
-    iconColor: Color,
+    iconColor: Color = MaterialTheme.colorScheme.onPrimary,
     modifier: Modifier = Modifier,
     iconModifier: Modifier = Modifier,
     enabled: Boolean = true,

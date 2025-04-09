@@ -6,8 +6,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import br.com.fitnesspro.core.extensions.defaultGSon
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.SchedulerDetailsScreen
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnNavigateToCompromise
+import br.com.fitnesspro.scheduler.ui.screen.details.SchedulerDetailsScreen
+import br.com.fitnesspro.scheduler.ui.screen.details.callbacks.OnNavigateToCompromise
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerDetailsViewModel
 import com.google.gson.GsonBuilder
 import java.time.LocalDate

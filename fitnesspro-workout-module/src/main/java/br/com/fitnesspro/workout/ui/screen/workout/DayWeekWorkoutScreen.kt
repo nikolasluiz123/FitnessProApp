@@ -42,8 +42,7 @@ fun DayWeekWorkoutScreen(state: DayWeekWorkoutUIState) {
         topBar = {
             SimpleFitnessProTopAppBar(
                 title = state.title,
-                subtitle = state.subtitle,
-                showMenuWithLogout = false
+                subtitle = state.subtitle
             )
         }
     ) { padding ->
@@ -197,7 +196,7 @@ fun DayWeekWorkoutItem(decorator: DayWeekWorkoutItemDecorator) {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun GroupItemPreview() {
     FitnessProTheme {
@@ -213,7 +212,7 @@ private fun GroupItemPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun DayWeekWorkoutItemPreview() {
     FitnessProTheme {
@@ -233,7 +232,7 @@ private fun DayWeekWorkoutItemPreview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun DayWeekWorkoutItem2Preview() {
     FitnessProTheme {
@@ -253,7 +252,7 @@ private fun DayWeekWorkoutItem2Preview() {
     }
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
 private fun DayWeekWorkoutItem3Preview() {
     FitnessProTheme {
@@ -273,7 +272,7 @@ private fun DayWeekWorkoutItem3Preview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(device = "id:small_phone")
 @Composable
 fun DayWeekWorkoutScreenPreview() {
     FitnessProTheme {

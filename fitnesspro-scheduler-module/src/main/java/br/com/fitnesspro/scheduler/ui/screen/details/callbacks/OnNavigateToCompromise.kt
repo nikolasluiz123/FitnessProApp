@@ -1,4 +1,4 @@
-package br.com.fitnesspro.scheduler.ui.screen.scheduler.callback
+package br.com.fitnesspro.scheduler.ui.screen.details.callbacks
 
 import br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs
 

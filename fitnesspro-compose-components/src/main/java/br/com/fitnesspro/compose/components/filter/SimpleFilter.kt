@@ -2,6 +2,7 @@ package br.com.fitnesspro.compose.components.filter
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
@@ -21,8 +22,6 @@ import br.com.fitnesspro.compose.components.filter.EnumSimpleFilterTestTags.SIMP
 import br.com.fitnesspro.compose.components.filter.EnumSimpleFilterTestTags.SIMPLE_FILTER_SEARCH_BAR_INPUT_FIELD
 import br.com.fitnesspro.compose.components.filter.EnumSimpleFilterTestTags.SIMPLE_FILTER_SEARCH_BAR_INPUT_FIELD_PLACEHOLDER
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.GREY_300
-import br.com.fitnesspro.core.theme.GREY_600
 import br.com.fitnesspro.core.theme.ValueTextStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +39,8 @@ fun SimpleFilter(
     SearchBar(
         modifier = modifier.testTag(SIMPLE_FILTER_SEARCH_BAR.name),
         colors = SearchBarDefaults.colors(
-            containerColor = GREY_300
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            dividerColor = MaterialTheme.colorScheme.onSecondaryContainer,
         ),
         shape = SearchBarDefaults.fullScreenShape,
         inputField = {
@@ -49,15 +49,16 @@ fun SimpleFilter(
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = br.com.fitnesspro.core.R.drawable.ic_search_24dp),
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 },
                 placeholder = {
                     Text(
                         modifier = Modifier.testTag(SIMPLE_FILTER_SEARCH_BAR_INPUT_FIELD_PLACEHOLDER.name),
                         text = stringResource(placeholderResId),
-                        color = GREY_600,
-                        style = ValueTextStyle
+                        style = ValueTextStyle,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 },
                 query = text,
@@ -80,9 +81,26 @@ fun SimpleFilter(
     )
 }
 
-@Preview
+@Preview(device = "id:small_phone")
 @Composable
-private fun SimpleFilterPreview() {
+private fun SimpleFilterPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            SimpleFilter(
+                onSimpleFilterChange = {},
+                placeholderResId = R.string.label_placeholder_example,
+                expanded = false,
+                onExpandedChange = {}
+            ) {
+
+            }
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun SimpleFilterPreviewLight() {
     FitnessProTheme {
         Surface {
             SimpleFilter(
