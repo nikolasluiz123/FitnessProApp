@@ -2,6 +2,7 @@ package br.com.fitnesspor.service.data.access.webclient.common
 
 import android.content.Context
 import br.com.fitnesspro.service.data.access.R
+import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
@@ -17,22 +18,22 @@ abstract class FitnessProWebClient(private val context: Context) {
 
     protected fun formatToken(token: String) = "Bearer $token"
 
-    protected suspend fun persistenceServiceErrorHandlingBlock(
-        codeBlock: suspend () -> PersistenceServiceResponse,
-        customExceptions: (e: Exception) -> PersistenceServiceResponse = { throw it }
-    ): PersistenceServiceResponse {
+    protected suspend fun <DTO: BaseDTO> persistenceServiceErrorHandlingBlock(
+        codeBlock: suspend () -> PersistenceServiceResponse<DTO>,
+        customExceptions: (e: Exception) -> PersistenceServiceResponse<DTO> = { throw it }
+    ): PersistenceServiceResponse<DTO> {
         return try {
             codeBlock()
         } catch (exception: Exception) {
             when (exception) {
                 is ConnectException -> {
-                    PersistenceServiceResponse(
+                    PersistenceServiceResponse<DTO>(
                         success = false,
                         error = context.getString(R.string.message_connect_exception)
                     )
                 }
                 is SocketTimeoutException -> {
-                    PersistenceServiceResponse(
+                    PersistenceServiceResponse<DTO>(
                         success = false,
                         error = context.getString(R.string.message_socket_timeout_exception)
                     )

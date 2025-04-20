@@ -14,8 +14,8 @@ import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType as EnumCompromiseTypeService
-import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation as EnumSchedulerSituationService
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumCompromiseType as EnumCompromiseTypeService
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation as EnumSchedulerSituationService
 
 class SchedulerImportationRepository(
     context: Context,

@@ -4,14 +4,14 @@ import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
-import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
 import java.time.DayOfWeek
 import java.time.LocalDate
-import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType as EnumCompromiseTypeService
-import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation as EnumSchedulerSituationService
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumCompromiseType as EnumCompromiseTypeService
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation as EnumSchedulerSituationService
 
 
 fun SchedulerConfig.toSchedulerConfigDTO(): SchedulerConfigDTO {

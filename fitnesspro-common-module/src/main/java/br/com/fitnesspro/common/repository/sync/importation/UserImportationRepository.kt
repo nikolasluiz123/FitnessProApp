@@ -1,19 +1,18 @@
 package br.com.fitnesspro.common.repository.sync.importation
 
 import android.content.Context
+import br.com.fitnesspor.service.data.access.mappers.getUserType
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.enums.EnumTransmissionState
-import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.models.general.enums.EnumUserType as EnumUserTypeService
 
 class UserImportationRepository(
     context: Context,
@@ -48,16 +47,8 @@ class UserImportationRepository(
             active = dto.active,
             email = dto.email!!,
             password = dto.password!!,
-            type = getEnumUserType(dto),
+            type = getUserType(dto.type!!),
             transmissionState = EnumTransmissionState.TRANSMITTED
         )
-    }
-
-    private fun getEnumUserType(dto: UserDTO): EnumUserType {
-        return when (dto.type!!) {
-            EnumUserTypeService.PERSONAL_TRAINER -> EnumUserType.PERSONAL_TRAINER
-            EnumUserTypeService.NUTRITIONIST -> EnumUserType.NUTRITIONIST
-            EnumUserTypeService.ACADEMY_MEMBER -> EnumUserType.ACADEMY_MEMBER
-        }
     }
 }

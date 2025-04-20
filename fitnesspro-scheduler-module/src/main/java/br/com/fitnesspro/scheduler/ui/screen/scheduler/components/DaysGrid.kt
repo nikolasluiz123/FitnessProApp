@@ -121,7 +121,7 @@ private fun getDayStyle(day: LocalDate, state: SchedulerUIState): DayStyle? {
                 )
             }
 
-            null -> null
+            else -> null
         }
 
     } else {

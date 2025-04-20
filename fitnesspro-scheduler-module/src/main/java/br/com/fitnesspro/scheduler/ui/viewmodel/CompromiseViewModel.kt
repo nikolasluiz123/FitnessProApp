@@ -461,6 +461,10 @@ class CompromiseViewModel @Inject constructor(
                     compromiseType = if (args.recurrent) RECURRENT else FIRST
                 )
             }
+
+            else -> {
+                _uiState.value.toScheduler
+            }
         }
     }
 
@@ -561,6 +565,7 @@ class CompromiseViewModel @Inject constructor(
                     context.getString(R.string.compromise_screen_title_new_sugestion)
                 }
             }
+            else -> ""
         }
     }
 

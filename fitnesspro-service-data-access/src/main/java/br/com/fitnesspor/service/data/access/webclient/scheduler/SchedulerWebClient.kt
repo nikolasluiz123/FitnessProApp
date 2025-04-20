@@ -32,7 +32,7 @@ class SchedulerWebClient(
         dateStart: LocalDate? = null,
         dateEnd: LocalDate? = null,
         dayWeeks: List<DayOfWeek> = emptyList()
-    ): PersistenceServiceResponse {
+    ): PersistenceServiceResponse<SchedulerDTO> {
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 schedulerService.saveScheduler(
@@ -43,7 +43,7 @@ class SchedulerWebClient(
                         dateEnd = dateEnd,
                         dayWeeks = dayWeeks
                     )
-                ).getResponseBody()
+                ).getResponseBody(SchedulerDTO::class.java)
             }
         )
     }
@@ -70,12 +70,12 @@ class SchedulerWebClient(
         )
     }
 
-    suspend fun saveSchedulerConfig(schedulerConfig: SchedulerConfig): PersistenceServiceResponse {
+    suspend fun saveSchedulerConfig(schedulerConfig: SchedulerConfig): PersistenceServiceResponse<SchedulerConfigDTO> {
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 schedulerService.saveSchedulerConfig(
                     schedulerConfigDTO = schedulerConfig.toSchedulerConfigDTO()
-                ).getResponseBody()
+                ).getResponseBody(SchedulerConfigDTO::class.java)
             }
         )
     }

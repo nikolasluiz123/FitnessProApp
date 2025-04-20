@@ -26,10 +26,10 @@ class PersonWebClient(
     private val personService: IPersonService
 ): FitnessProWebClient(context) {
 
-    suspend fun savePerson(person: Person, user: User): PersistenceServiceResponse {
+    suspend fun savePerson(person: Person, user: User): PersistenceServiceResponse<PersonDTO> {
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
-                personService.savePerson(personDTO = person.toPersonDTO(user)).getResponseBody()
+                personService.savePerson(personDTO = person.toPersonDTO(user)).getResponseBody(PersonDTO::class.java)
             }
         )
     }
@@ -56,13 +56,13 @@ class PersonWebClient(
     suspend fun savePersonAcademyTime(
         token: String,
         personAcademyTime: PersonAcademyTime
-    ): PersistenceServiceResponse {
+    ): PersistenceServiceResponse<PersonAcademyTimeDTO> {
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 personService.savePersonAcademyTime(
                     token = formatToken(token),
                     personAcademyTimeDTO = personAcademyTime.toPersonAcademyTimeDTO()
-                ).getResponseBody()
+                ).getResponseBody(PersonAcademyTimeDTO::class.java)
             }
         )
     }

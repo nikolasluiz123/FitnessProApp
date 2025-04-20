@@ -4,6 +4,7 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.extensions.getResponseBody
 import br.com.fitnesspor.service.data.access.service.log.IExecutionLogService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
+import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
@@ -17,14 +18,14 @@ class ExecutionLogWebClient(
         token: String,
         logId: String,
         dto: UpdatableExecutionLogInfosDTO
-    ): PersistenceServiceResponse {
+    ): PersistenceServiceResponse<BaseDTO> {
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 executionLogService.updateExecutionLog(
                     token = formatToken(token),
                     executionLogId = logId,
                     dto = dto
-                ).getResponseBody()
+                ).getResponseBody(BaseDTO::class.java)
             }
         )
     }
@@ -33,14 +34,14 @@ class ExecutionLogWebClient(
         token: String,
         logPackageId: String,
         dto: UpdatableExecutionLogPackageInfosDTO,
-    ): PersistenceServiceResponse {
+    ): PersistenceServiceResponse<BaseDTO> {
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 executionLogService.updateExecutionLogPackage(
                     token = formatToken(token),
                     executionLogPackageId = logPackageId,
                     dto = dto
-                ).getResponseBody()
+                ).getResponseBody(BaseDTO::class.java)
             }
         )
     }

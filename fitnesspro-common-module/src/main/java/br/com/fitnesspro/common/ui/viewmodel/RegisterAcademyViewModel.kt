@@ -317,8 +317,8 @@ class RegisterAcademyViewModel @Inject constructor(
             when (toPerson.toUser?.type!!) {
                 EnumUserType.PERSONAL_TRAINER,
                 EnumUserType.NUTRITIONIST -> context.getString(R.string.register_academy_screen_title_new_work_hour)
-
                 EnumUserType.ACADEMY_MEMBER -> context.getString(R.string.register_academy_screen_title_new_academy_member)
+                else -> ""
             }
         }
     }

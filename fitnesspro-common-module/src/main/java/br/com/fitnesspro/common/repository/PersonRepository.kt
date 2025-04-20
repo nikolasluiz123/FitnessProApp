@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.room.Transaction
+import br.com.fitnesspor.service.data.access.mappers.getUserType
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.core.extensions.isNetworkAvailable
@@ -25,7 +26,6 @@ import br.com.fitnesspro.to.TOUser
 import br.com.fitnesspro.tuple.PersonTuple
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
-import br.com.fitnesspro.models.general.enums.EnumUserType as EnumUserTypeService
 
 class PersonRepository(
     context: Context,
@@ -229,13 +229,5 @@ class PersonRepository(
             active = active,
             type = getUserType(type!!),
         )
-    }
-
-    private fun getUserType(type: EnumUserTypeService): EnumUserType {
-        return when (type) {
-            EnumUserTypeService.PERSONAL_TRAINER -> EnumUserType.PERSONAL_TRAINER
-            EnumUserTypeService.NUTRITIONIST -> EnumUserType.NUTRITIONIST
-            EnumUserTypeService.ACADEMY_MEMBER -> EnumUserType.ACADEMY_MEMBER
-        }
     }
 }

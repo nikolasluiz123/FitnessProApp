@@ -18,23 +18,23 @@ interface IWorkoutService {
     suspend fun saveWorkout(
         @Header("Authorization") token: String,
         @Body workoutDTO: WorkoutDTO
-    ): Response<PersistenceServiceResponse>
+    ): Response<PersistenceServiceResponse<WorkoutDTO>>
 
     @POST("$WORKOUT$WORKOUT_EXPORT")
     suspend fun saveWorkoutBatch(
         @Header("Authorization") token: String,
         @Body workoutDTOList: List<WorkoutDTO>
-    ): Response<PersistenceServiceResponse>
+    ): Response<PersistenceServiceResponse<WorkoutDTO>>
 
     @POST("$WORKOUT$WORKOUT_GROUP")
     suspend fun saveWorkoutGroup(
         @Header("Authorization") token: String,
         @Body workoutGroupDTO: WorkoutGroupDTO
-    ): Response<PersistenceServiceResponse>
+    ): Response<PersistenceServiceResponse<WorkoutGroupDTO>>
 
     @POST("$WORKOUT$WORKOUT_GROUP_EXPORT")
     suspend fun saveWorkoutGroupBatch(
         @Header("Authorization") token: String,
         @Body workoutGroupDTOList: List<WorkoutGroupDTO>
-    ): Response<PersistenceServiceResponse>
+    ): Response<PersistenceServiceResponse<WorkoutGroupDTO>>
 }

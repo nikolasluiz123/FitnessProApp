@@ -11,6 +11,7 @@
     <string name="enum_user_type_personal_trainer">Instrutor</string>
     <string name="enum_user_type_nutritionist">Nutricionista</string>
     <string name="enum_user_type_academy_member">Membro</string>
+    <string name="enum_user_type_administrator">Administrador</string>
 
     <plurals name="enum_unity_grams">
         <item quantity="one">Grama</item>

@@ -26,7 +26,7 @@ import retrofit2.http.Query
 interface IPersonService {
 
     @POST(PERSON)
-    suspend fun savePerson(@Body personDTO: PersonDTO): Response<PersistenceServiceResponse>
+    suspend fun savePerson(@Body personDTO: PersonDTO): Response<PersistenceServiceResponse<PersonDTO>>
 
     @POST("$PERSON$PERSON_EXPORT")
     suspend fun savePersonBatch(
@@ -38,7 +38,7 @@ interface IPersonService {
     suspend fun savePersonAcademyTime(
         @Header("Authorization") token: String,
         @Body personAcademyTimeDTO: PersonAcademyTimeDTO
-    ): Response<PersistenceServiceResponse>
+    ): Response<PersistenceServiceResponse<PersonAcademyTimeDTO>>
 
     @POST("$PERSON$PERSON_ACADEMY_TIME_EXPORT")
     suspend fun savePersonAcademyTimeBatch(
