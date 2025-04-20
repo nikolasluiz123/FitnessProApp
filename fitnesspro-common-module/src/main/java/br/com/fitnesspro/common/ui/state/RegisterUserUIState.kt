@@ -16,7 +16,7 @@ data class RegisterUserUIState(
     val title: String? = null,
     val subtitle: String? = null,
     val context: EnumOptionsBottomSheetRegisterUser? = null,
-    val toPerson: TOPerson = TOPerson(toUser = TOUser()),
+    val toPerson: TOPerson = TOPerson(user = TOUser()),
     val tabState: TabState = TabState(),
     val name: TextField = TextField(),
     val email: TextField = TextField(),

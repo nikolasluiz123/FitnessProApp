@@ -51,7 +51,7 @@ abstract class BaseAuthenticatedUITest: BaseUITests() {
         toPersons = listOf(
             TOPerson(
                 name = "Personal Trainer",
-                toUser = TOUser(
+                user = TOUser(
                     email = PERSONAL_EMAIL,
                     password = DEFAULT_PASSWORD,
                     type = PERSONAL_TRAINER
@@ -59,7 +59,7 @@ abstract class BaseAuthenticatedUITest: BaseUITests() {
             ),
             TOPerson(
                 name = "Nutritionist",
-                toUser = TOUser(
+                user = TOUser(
                     email = NUTRITIONIST_EMAIL,
                     password = DEFAULT_PASSWORD,
                     type = NUTRITIONIST
@@ -67,7 +67,7 @@ abstract class BaseAuthenticatedUITest: BaseUITests() {
             ),
             TOPerson(
                 name = "Academy Member",
-                toUser = TOUser(
+                user = TOUser(
                     email = MEMBER_EMAIL,
                     password = DEFAULT_PASSWORD,
                     type = ACADEMY_MEMBER

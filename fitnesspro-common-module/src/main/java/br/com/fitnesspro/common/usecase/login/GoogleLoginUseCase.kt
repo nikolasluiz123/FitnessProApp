@@ -19,7 +19,7 @@ class GoogleLoginUseCase(
         val toPerson = TOPerson(
             name = authResult.user?.displayName,
             phone = authResult.user?.phoneNumber,
-            toUser = TOUser(
+            user = TOUser(
                 email = authResult.user?.email,
             )
         )
@@ -41,8 +41,8 @@ class GoogleLoginUseCase(
                 )
 
                 userRepository.authenticate(
-                    email = toPersonRemote.toUser?.email!!,
-                    toPersonRemote.toUser?.password!!
+                    email = toPersonRemote.user?.email!!,
+                    toPersonRemote.user?.password!!
                 )
             }
         }

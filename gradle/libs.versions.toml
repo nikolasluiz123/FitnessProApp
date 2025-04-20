@@ -50,6 +50,7 @@ googlePlayAuthVersion = "21.3.0"
 googleIdVersion = "1.1.1"
 workVersion = "2.10.0"
 junit = "1.2.1"
+modelMapperVersion="3.2.2"
 sharedCommunicationVersion = "0.0.1-SNAPSHOT"
 
 [libraries]
@@ -125,6 +126,8 @@ firebase-performance = { group = "com.google.firebase", name = "firebase-perf" }
 
 work-runtime = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workVersion" }
 junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+
+model-mapper = { group = "org.modelmapper", name = "modelmapper", version.ref = "modelMapperVersion"}
 
 fitnesspro-shared-communication = { group = "br.com", name = "fitnesspro-shared-communication", version.ref = "sharedCommunicationVersion" }
 

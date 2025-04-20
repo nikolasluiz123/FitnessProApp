@@ -23,6 +23,9 @@ import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
+import br.com.fitnesspro.mappers.AcademyModelMapper
+import br.com.fitnesspro.mappers.PersonModelMapper
+import br.com.fitnesspro.mappers.SchedulerModelMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,7 +43,8 @@ class SingletonCommonRepositoryModule {
         firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
         firebaseGoogleAuthenticationService: FirebaseGoogleAuthenticationService,
         authenticationWebClient: AuthenticationWebClient,
-        personRepository: PersonRepository
+        personRepository: PersonRepository,
+        personModelMapper: PersonModelMapper
     ): UserRepository {
         return UserRepository(
             userDAO = userDAO,
@@ -48,7 +52,8 @@ class SingletonCommonRepositoryModule {
             firebaseGoogleAuthenticationService = firebaseGoogleAuthenticationService,
             authenticationWebClient = authenticationWebClient,
             context = context,
-            personRepository = personRepository
+            personRepository = personRepository,
+            personModelMapper = personModelMapper
         )
     }
 
@@ -58,14 +63,16 @@ class SingletonCommonRepositoryModule {
         personDAO: PersonDAO,
         userDAO: UserDAO,
         firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
-        personWebClient: PersonWebClient
+        personWebClient: PersonWebClient,
+        personModelMapper: PersonModelMapper
     ): PersonRepository {
         return PersonRepository(
             personDAO = personDAO,
             userDAO = userDAO,
             firebaseDefaultAuthenticationService = firebaseDefaultAuthenticationService,
             personWebClient = personWebClient,
-            context = context
+            context = context,
+            personModelMapper = personModelMapper
         )
     }
 
@@ -74,24 +81,28 @@ class SingletonCommonRepositoryModule {
         @ApplicationContext context: Context,
         academyDAO: AcademyDAO,
         personAcademyTimeDAO: PersonAcademyTimeDAO,
-        personWebClient: PersonWebClient
+        personWebClient: PersonWebClient,
+        academyModelMapper: AcademyModelMapper
     ): AcademyRepository {
         return AcademyRepository(
             context = context,
             academyDAO = academyDAO,
             personAcademyTimeDAO = personAcademyTimeDAO,
-            personWebClient = personWebClient
+            personWebClient = personWebClient,
+            academyModelMapper = academyModelMapper
         )
     }
 
     @Provides
     fun provideUserImportationRepository(
         @ApplicationContext context: Context,
-        personWebClient: PersonWebClient
+        personWebClient: PersonWebClient,
+        personModelMapper: PersonModelMapper
     ): UserImportationRepository {
         return UserImportationRepository(
             webClient = personWebClient,
-            context = context
+            context = context,
+            personModelMapper = personModelMapper
         )
     }
 
@@ -99,12 +110,14 @@ class SingletonCommonRepositoryModule {
     fun provideAcademyImportationRepository(
         @ApplicationContext context: Context,
         academyDAO: AcademyDAO,
-        academyWebClient: AcademyWebClient
+        academyWebClient: AcademyWebClient,
+        academyModelMapper: AcademyModelMapper
     ): AcademyImportationRepository {
         return AcademyImportationRepository(
             academyDAO = academyDAO,
             academyWebClient = academyWebClient,
-            context = context
+            context = context,
+            academyModelMapper = academyModelMapper
         )
     }
 
@@ -112,12 +125,14 @@ class SingletonCommonRepositoryModule {
     fun providePersonImportationRepository(
         @ApplicationContext context: Context,
         personDAO: PersonDAO,
-        personWebClient: PersonWebClient
+        personWebClient: PersonWebClient,
+        personModelMapper: PersonModelMapper
     ): PersonImportationRepository {
         return PersonImportationRepository(
             personDAO = personDAO,
             webClient = personWebClient,
-            context = context
+            context = context,
+            personModelMapper = personModelMapper
         )
     }
 
@@ -125,12 +140,14 @@ class SingletonCommonRepositoryModule {
     fun providePersonAcademyTimeImportationRepository(
         @ApplicationContext context: Context,
         personAcademyTimeDAO: PersonAcademyTimeDAO,
-        personWebClient: PersonWebClient
+        personWebClient: PersonWebClient,
+        academyModelMapper: AcademyModelMapper
     ): PersonAcademyTimeImportationRepository {
         return PersonAcademyTimeImportationRepository(
             personAcademyTimeDAO = personAcademyTimeDAO,
             webClient = personWebClient,
-            context = context
+            context = context,
+            academyModelMapper = academyModelMapper
         )
     }
 
@@ -138,12 +155,14 @@ class SingletonCommonRepositoryModule {
     fun provideSchedulerConfigImportationRepository(
         @ApplicationContext context: Context,
         schedulerConfigDAO: SchedulerConfigDAO,
-        schedulerWebClient: SchedulerWebClient
+        schedulerWebClient: SchedulerWebClient,
+        schedulerModelMapper: SchedulerModelMapper
     ): SchedulerConfigImportationRepository {
         return SchedulerConfigImportationRepository(
             schedulerConfigDAO = schedulerConfigDAO,
             webClient = schedulerWebClient,
-            context = context
+            context = context,
+            schedulerModelMapper = schedulerModelMapper
         )
     }
 

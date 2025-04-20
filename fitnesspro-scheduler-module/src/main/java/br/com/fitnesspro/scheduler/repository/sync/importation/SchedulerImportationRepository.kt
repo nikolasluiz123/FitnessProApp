@@ -4,8 +4,7 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
-import br.com.fitnesspro.model.enums.EnumCompromiseType
-import br.com.fitnesspro.model.enums.EnumSchedulerSituation
+import br.com.fitnesspro.mappers.SchedulerModelMapper
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.scheduler.Scheduler
@@ -14,13 +13,12 @@ import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.shared.communication.enums.scheduler.EnumCompromiseType as EnumCompromiseTypeService
-import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation as EnumSchedulerSituationService
 
 class SchedulerImportationRepository(
     context: Context,
     private val schedulerDAO: SchedulerDAO,
-    private val webClient: SchedulerWebClient
+    private val webClient: SchedulerWebClient,
+    private val schedulerModelMapper: SchedulerModelMapper
 ): AbstractImportationRepository<SchedulerDTO, Scheduler, SchedulerDAO>(context) {
 
     override fun getDescription(): String {
@@ -46,35 +44,8 @@ class SchedulerImportationRepository(
     }
 
     override suspend fun convertDTOToEntity(dto: SchedulerDTO): Scheduler {
-        return Scheduler(
-            id = dto.id!!,
-            academyMemberPersonId = dto.academyMemberPersonId,
-            professionalPersonId = dto.professionalPersonId,
-            scheduledDate = dto.scheduledDate,
-            start = dto.timeStart,
-            end = dto.timeEnd,
-            canceledDate = dto.canceledDate,
-            situation = getEnumSchedulerSituation(dto.situation!!),
-            compromiseType = getEnumCompromiseType(dto.compromiseType!!),
-            observation = dto.observation,
-            active = dto.active,
+        return schedulerModelMapper.getScheduler(dto).copy(
             transmissionState = EnumTransmissionState.TRANSMITTED
         )
-    }
-
-    private fun getEnumCompromiseType(compromiseType: EnumCompromiseTypeService): EnumCompromiseType {
-        return when (compromiseType) {
-            EnumCompromiseTypeService.FIRST -> EnumCompromiseType.FIRST
-            EnumCompromiseTypeService.RECURRENT -> EnumCompromiseType.RECURRENT
-        }
-    }
-
-    private fun getEnumSchedulerSituation(situation: EnumSchedulerSituationService): EnumSchedulerSituation {
-        return when (situation) {
-            EnumSchedulerSituationService.SCHEDULED -> EnumSchedulerSituation.SCHEDULED
-            EnumSchedulerSituationService.CONFIRMED -> EnumSchedulerSituation.CONFIRMED
-            EnumSchedulerSituationService.COMPLETED -> EnumSchedulerSituation.COMPLETED
-            EnumSchedulerSituationService.CANCELLED -> EnumSchedulerSituation.CANCELLED
-        }
     }
 }

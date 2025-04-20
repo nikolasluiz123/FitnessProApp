@@ -63,7 +63,7 @@ class SchedulerConfigViewModel @Inject constructor(
             val toConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(toPerson.id!!)!!
 
             _uiState.value = _uiState.value.copy(
-                userType = toPerson.toUser?.type!!,
+                userType = toPerson.user?.type!!,
                 toConfig = toConfig,
                 alarm = _uiState.value.alarm.copy(
                     checked = toConfig.alarm

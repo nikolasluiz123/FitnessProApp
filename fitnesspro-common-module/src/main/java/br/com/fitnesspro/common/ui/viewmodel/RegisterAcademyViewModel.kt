@@ -29,7 +29,6 @@ import br.com.fitnesspro.core.extensions.parseToLocalTime
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
-import br.com.fitnesspro.to.TOAcademy
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOPersonAcademyTime
 import br.com.fitnesspro.tuple.AcademyTuple
@@ -244,7 +243,8 @@ class RegisterAcademyViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         toPersonAcademyTime = _uiState.value.toPersonAcademyTime.copy(
-                            toAcademy = TOAcademy(id = item.id, name = item.name)
+                            academyId = item.id,
+                            academyName = item.name
                         )
                     )
 
@@ -290,7 +290,7 @@ class RegisterAcademyViewModel @Inject constructor(
                     title = getTitle(toPerson, toPersonAcademyTime),
                     subtitle = getSubtitle(toPersonAcademyTime),
                     academy = state.academy.copy(
-                        value = toPersonAcademyTime?.toAcademy?.name ?: "",
+                        value = toPersonAcademyTime?.academyName ?: "",
                         dialogListState = _uiState.value.academy.dialogListState.copy(
                             dataList = menuItemListAcademy
                         )
@@ -314,19 +314,16 @@ class RegisterAcademyViewModel @Inject constructor(
                 toPersonAcademyTime.timeEnd!!.format(EnumDateTimePatterns.TIME)
             )
         } else {
-            when (toPerson.toUser?.type!!) {
+            when (toPerson.user?.type!!) {
                 EnumUserType.PERSONAL_TRAINER,
                 EnumUserType.NUTRITIONIST -> context.getString(R.string.register_academy_screen_title_new_work_hour)
                 EnumUserType.ACADEMY_MEMBER -> context.getString(R.string.register_academy_screen_title_new_academy_member)
-                else -> ""
             }
         }
     }
 
     private fun getSubtitle(toPersonAcademyTime: TOPersonAcademyTime?): String? {
-        return toPersonAcademyTime?.let {
-            it.toAcademy?.name!!
-        }
+        return toPersonAcademyTime?.academyName
     }
 
     fun saveAcademy(onSuccess: () -> Unit) {

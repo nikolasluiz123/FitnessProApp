@@ -189,7 +189,7 @@ fun HomeScreen(
 
                 if (openedBottomSheetWorkout) {
                     BottomSheetWorkout(
-                        userType = state.toPerson?.toUser?.type!!,
+                        userType = state.toPerson?.user?.type!!,
                         onDismissRequest = { openedBottomSheetWorkout = false },
                         onItemClickListener = {
                             openedBottomSheetWorkout = false

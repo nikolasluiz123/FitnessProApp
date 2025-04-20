@@ -32,8 +32,8 @@ internal val compromiseAcademyMemberEditionState = CompromiseUIState(
         id = UUID.randomUUID().toString(),
         professionalName = "Gabriela da Silva",
         professionalType = EnumUserType.NUTRITIONIST,
-        start = LocalTime.parse("08:00"),
-        end = LocalTime.parse("09:00"),
+        timeStart = LocalTime.parse("08:00"),
+        timeEnd = LocalTime.parse("09:00"),
         situation = CONFIRMED,
         observation = "Muito bem observado"
     )
@@ -49,8 +49,8 @@ internal val compromiseAcademyMemberCancelatedState = CompromiseUIState(
         id = UUID.randomUUID().toString(),
         professionalName = "Gabriela da Silva",
         professionalType = EnumUserType.NUTRITIONIST,
-        start = LocalTime.parse("08:00"),
-        end = LocalTime.parse("09:00"),
+        timeStart = LocalTime.parse("08:00"),
+        timeEnd = LocalTime.parse("09:00"),
         situation = CANCELLED,
         canceledDate = LocalDateTime.now(),
         observation = "Muito bem observado"
@@ -64,8 +64,8 @@ internal val compromisePersonalInclusionState = CompromiseUIState(
     toScheduler = TOScheduler(
         professionalName = "Gabriela da Silva",
         professionalType = EnumUserType.PERSONAL_TRAINER,
-        start = LocalTime.parse("08:00"),
-        end = LocalTime.parse("09:00"),
+        timeStart = LocalTime.parse("08:00"),
+        timeEnd = LocalTime.parse("09:00"),
         situation = CONFIRMED
     )
 )

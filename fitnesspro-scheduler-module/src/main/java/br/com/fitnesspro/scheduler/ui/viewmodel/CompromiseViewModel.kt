@@ -166,7 +166,7 @@ class CompromiseViewModel @Inject constructor(
                         value = newTime.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS),
                         errorMessage = ""
                     ),
-                    toScheduler = _uiState.value.toScheduler.copy(end = newTime)
+                    toScheduler = _uiState.value.toScheduler.copy(timeEnd = newTime)
                 )
             },
             onTimeDismiss = {
@@ -182,7 +182,7 @@ class CompromiseViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         toScheduler = _uiState.value.toScheduler.copy(
-                            end = text.parseToLocalTime(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
+                            timeEnd = text.parseToLocalTime(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
                         )
                     )
                 }
@@ -203,7 +203,7 @@ class CompromiseViewModel @Inject constructor(
                         value = newTime.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS),
                         errorMessage = ""
                     ),
-                    toScheduler = _uiState.value.toScheduler.copy(start = newTime)
+                    toScheduler = _uiState.value.toScheduler.copy(timeStart = newTime)
                 )
             },
             onTimeDismiss = {
@@ -219,7 +219,7 @@ class CompromiseViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         toScheduler = _uiState.value.toScheduler.copy(
-                            start = text.parseToLocalTime(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
+                            timeStart = text.parseToLocalTime(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
                         )
                     )
                 }
@@ -411,7 +411,7 @@ class CompromiseViewModel @Inject constructor(
     private fun loadUIStateWithDatabaseInfos() {
         launch {
             val toPerson = personRepository.getAuthenticatedTOPerson()!!
-            val userType = toPerson.toUser?.type!!
+            val userType = toPerson.user?.type!!
             val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
             val menuItemListProfessional = getListProfessional()
             val menuItemListMembers = getListMembers()
@@ -445,7 +445,7 @@ class CompromiseViewModel @Inject constructor(
         authenticatedPerson: TOPerson,
         args: CompromiseScreenArgs
     ): TOScheduler {
-        return when (authenticatedPerson.toUser?.type!!) {
+        return when (authenticatedPerson.user?.type!!) {
             EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST -> {
                 _uiState.value.toScheduler.copy(
                     professionalPersonId = authenticatedPerson.id,
@@ -491,10 +491,10 @@ class CompromiseViewModel @Inject constructor(
                         errorMessage = ""
                     ),
                     hourStart = _uiState.value.hourStart.copy(
-                        value = to.start!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
+                        value = to.timeStart!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
                     ),
                     hourEnd = _uiState.value.hourEnd.copy(
-                        value = to.end!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
+                        value = to.timeEnd!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
                     ),
                     observation = _uiState.value.observation.copy(
                         value = to.observation ?: ""
@@ -577,8 +577,8 @@ class CompromiseViewModel @Inject constructor(
         return context.getString(
             R.string.compromise_screen_subtitle,
             toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
-            toScheduler.start!!.format(EnumDateTimePatterns.TIME),
-            toScheduler.end!!.format(EnumDateTimePatterns.TIME)
+            toScheduler.timeStart!!.format(EnumDateTimePatterns.TIME),
+            toScheduler.timeEnd!!.format(EnumDateTimePatterns.TIME)
         )
     }
 
@@ -692,8 +692,8 @@ class CompromiseViewModel @Inject constructor(
             message = context.getString(
                 R.string.compromise_screen_dialog_inactivation_message,
                 toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
-                toScheduler.start!!.format(EnumDateTimePatterns.TIME),
-                toScheduler.end!!.format(EnumDateTimePatterns.TIME)
+                toScheduler.timeStart!!.format(EnumDateTimePatterns.TIME),
+                toScheduler.timeEnd!!.format(EnumDateTimePatterns.TIME)
             )
         ) {
             launch {
@@ -717,15 +717,15 @@ class CompromiseViewModel @Inject constructor(
             context.getString(
                 R.string.compromise_screen_message_question_confirmation,
                 toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
-                toScheduler.start!!.format(EnumDateTimePatterns.TIME),
-                toScheduler.end!!.format(EnumDateTimePatterns.TIME)
+                toScheduler.timeStart!!.format(EnumDateTimePatterns.TIME),
+                toScheduler.timeEnd!!.format(EnumDateTimePatterns.TIME)
             )
         } else {
             context.getString(
                 R.string.compromise_screen_message_question_finalization,
                 toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
-                toScheduler.start!!.format(EnumDateTimePatterns.TIME),
-                toScheduler.end!!.format(EnumDateTimePatterns.TIME)
+                toScheduler.timeStart!!.format(EnumDateTimePatterns.TIME),
+                toScheduler.timeEnd!!.format(EnumDateTimePatterns.TIME)
             )
         }
 

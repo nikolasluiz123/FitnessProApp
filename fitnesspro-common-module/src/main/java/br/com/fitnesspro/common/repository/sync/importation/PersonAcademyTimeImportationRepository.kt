@@ -5,6 +5,7 @@ import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
+import br.com.fitnesspro.mappers.AcademyModelMapper
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.PersonAcademyTime
@@ -16,7 +17,8 @@ import br.com.fitnesspro.shared.communication.responses.ImportationServiceRespon
 class PersonAcademyTimeImportationRepository(
     context: Context,
     private val webClient: PersonWebClient,
-    private val personAcademyTimeDAO: PersonAcademyTimeDAO
+    private val personAcademyTimeDAO: PersonAcademyTimeDAO,
+    private val academyModelMapper: AcademyModelMapper
 ): AbstractImportationRepository<PersonAcademyTimeDTO, PersonAcademyTime, PersonAcademyTimeDAO>(context) {
 
     override fun getDescription(): String {
@@ -42,15 +44,8 @@ class PersonAcademyTimeImportationRepository(
     }
 
     override suspend fun convertDTOToEntity(dto: PersonAcademyTimeDTO): PersonAcademyTime {
-        return PersonAcademyTime(
-            id = dto.id!!,
-            active = dto.active,
-            personId = dto.personId,
-            academyId = dto.academyId,
-            timeStart = dto.timeStart,
-            timeEnd = dto.timeEnd,
-            dayOfWeek = dto.dayOfWeek,
-            transmissionState = EnumTransmissionState.TRANSMITTED,
+        return academyModelMapper.getPersonAcademyTime(dto).copy(
+            transmissionState = EnumTransmissionState.TRANSMITTED
         )
     }
 }

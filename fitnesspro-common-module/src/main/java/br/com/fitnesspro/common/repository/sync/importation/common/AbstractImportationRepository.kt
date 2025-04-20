@@ -17,7 +17,7 @@ import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import java.time.LocalDateTime
 
 abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO: MaintenanceDAO<MODEL>>(context: Context)
-    : AbstractSyncRepository<MODEL, DAO>(context) {
+    : AbstractSyncRepository<DAO>(context) {
 
     abstract suspend fun getImportationData(
         token: String,

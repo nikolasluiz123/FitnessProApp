@@ -139,10 +139,10 @@ class SchedulerScreenStateUITests: BaseAuthenticatedUITest() {
         val toScheduler = TOScheduler(
             academyMemberPersonId = toPersons[2].id!!,
             professionalPersonId = toPersons[0].id!!,
-            professionalType = toPersons[0].toUser?.type!!,
+            professionalType = toPersons[0].user?.type!!,
             scheduledDate = dateNow(),
-            start = LocalTime.of(13, 0),
-            end = LocalTime.of(14, 0),
+            timeStart = LocalTime.of(13, 0),
+            timeEnd = LocalTime.of(14, 0),
             situation = EnumSchedulerSituation.SCHEDULED,
             compromiseType = EnumCompromiseType.FIRST
         )

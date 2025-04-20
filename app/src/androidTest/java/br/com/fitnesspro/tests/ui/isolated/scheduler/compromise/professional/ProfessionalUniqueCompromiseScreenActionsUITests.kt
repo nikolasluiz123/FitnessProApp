@@ -221,10 +221,10 @@ class ProfessionalUniqueCompromiseScreenActionsUITests: BaseAuthenticatedUITest(
         val toScheduler = TOScheduler(
             academyMemberPersonId = toPersons[2].id!!,
             professionalPersonId = toPersons[0].id!!,
-            professionalType = toPersons[0].toUser?.type!!,
+            professionalType = toPersons[0].user?.type!!,
             scheduledDate = dateNow().plusDays(1),
-            start = LocalTime.of(13, 0),
-            end = LocalTime.of(14, 0),
+            timeStart = LocalTime.of(13, 0),
+            timeEnd = LocalTime.of(14, 0),
             situation = EnumSchedulerSituation.SCHEDULED,
             compromiseType = EnumCompromiseType.FIRST,
             observation = "Conversa sobre os treinos"
@@ -241,10 +241,10 @@ class ProfessionalUniqueCompromiseScreenActionsUITests: BaseAuthenticatedUITest(
         val toScheduler = TOScheduler(
             academyMemberPersonId = toPersons[2].id!!,
             professionalPersonId = toPersons[0].id!!,
-            professionalType = toPersons[0].toUser?.type!!,
+            professionalType = toPersons[0].user?.type!!,
             scheduledDate = dateNow().plusDays(1),
-            start = LocalTime.of(13, 0),
-            end = LocalTime.of(14, 0),
+            timeStart = LocalTime.of(13, 0),
+            timeEnd = LocalTime.of(14, 0),
             situation = EnumSchedulerSituation.CONFIRMED,
             compromiseType = EnumCompromiseType.FIRST,
             observation = "Conversa sobre os treinos"

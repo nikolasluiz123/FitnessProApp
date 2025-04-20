@@ -59,7 +59,7 @@ class PersonMockHelper(
             name = faker.name().fullName(),
             birthDate = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
             phone = phone,
-            toUser = user
+            user = user
         )
     }
 

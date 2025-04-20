@@ -33,7 +33,7 @@ class SavePersonBatchUseCase(
             result.addAll(validatePerson(it))
 
             if (result.isEmpty()) {
-                it.toUser?.password = HashHelper.applyHash(it.toUser?.password!!)
+                it.user?.password = HashHelper.applyHash(it.user?.password!!)
             }
 
             validationResults.addAll(result)

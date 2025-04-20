@@ -41,9 +41,9 @@ class SaveRecurrentCompromiseUseCase(
                     academyMemberPersonId = toScheduler.academyMemberPersonId,
                     professionalPersonId = toScheduler.professionalPersonId,
                     scheduledDate = it,
-                    start = toScheduler.start,
-                    end = toScheduler.end,
-                    professionalType = professional.toUser?.type!!,
+                    timeStart = toScheduler.timeStart,
+                    timeEnd = toScheduler.timeEnd,
+                    professionalType = professional.user?.type!!,
                     situation = EnumSchedulerSituation.SCHEDULED,
                     compromiseType = EnumCompromiseType.RECURRENT,
                     observation = toScheduler.observation
@@ -144,8 +144,8 @@ class SaveRecurrentCompromiseUseCase(
             config.dateStart,
             config.dateEnd,
             toScheduler.academyMemberPersonId,
-            toScheduler.start,
-            toScheduler.end
+            toScheduler.timeStart,
+            toScheduler.timeEnd
         )
 
         if (requiredFields.any { it == null }) return null
@@ -174,10 +174,10 @@ class SaveRecurrentCompromiseUseCase(
             schedulerRepository.getHasSchedulerConflict(
                 schedulerId = scheduler.id,
                 personId = scheduler.academyMemberPersonId!!,
-                userType = member.toUser?.type!!,
+                userType = member.user?.type!!,
                 scheduledDate = scheduler.scheduledDate!!,
-                start = scheduler.start!!,
-                end = scheduler.end!!
+                start = scheduler.timeStart!!,
+                end = scheduler.timeEnd!!
             )
         }
 

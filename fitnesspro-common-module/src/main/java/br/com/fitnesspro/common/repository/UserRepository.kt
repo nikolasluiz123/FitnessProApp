@@ -10,7 +10,7 @@ import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.UserDAO
-import br.com.fitnesspro.mappers.toTOUser
+import br.com.fitnesspro.mappers.PersonModelMapper
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
 import br.com.fitnesspro.to.TOUser
@@ -26,7 +26,8 @@ class UserRepository(
     private val firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
     private val firebaseGoogleAuthenticationService: FirebaseGoogleAuthenticationService,
     private val authenticationWebClient: AuthenticationWebClient,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
+    private val personModelMapper: PersonModelMapper
 ): FitnessProRepository(context) {
 
     suspend fun hasUserWithEmail(email: String, userId: String?): Boolean = withContext(IO) {
@@ -92,7 +93,7 @@ class UserRepository(
     }
 
     suspend fun getAuthenticatedTOUser(): TOUser? = withContext(IO) {
-        getAuthenticatedUser()?.toTOUser()
+        getAuthenticatedUser()?.let(personModelMapper::getTOUser)
     }
 
     suspend fun findUserById(userId: String): User? = withContext(IO) {

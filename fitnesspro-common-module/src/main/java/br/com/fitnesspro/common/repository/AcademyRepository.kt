@@ -5,13 +5,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.mappers.AcademyModelMapper
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDecorator
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
-import br.com.fitnesspro.mappers.toPersonAcademyTime
-import br.com.fitnesspro.mappers.toTOAcademy
-import br.com.fitnesspro.mappers.toTOPersonAcademyTime
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.to.TOPersonAcademyTime
@@ -24,11 +22,12 @@ class AcademyRepository(
     context: Context,
     private val academyDAO: AcademyDAO,
     private val personAcademyTimeDAO: PersonAcademyTimeDAO,
-    private val personWebClient: PersonWebClient
+    private val personWebClient: PersonWebClient,
+    private val academyModelMapper: AcademyModelMapper
 ): FitnessProRepository(context) {
 
     suspend fun savePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
-        val personAcademyTime = toPersonAcademyTime.toPersonAcademyTime()
+        val personAcademyTime = academyModelMapper.getPersonAcademyTime(toPersonAcademyTime)
 
         savePersonAcademyTimeLocally(toPersonAcademyTime, personAcademyTime)
         savePersonAcademyTimeRemote(personAcademyTime)
@@ -82,7 +81,7 @@ class AcademyRepository(
     }
 
     suspend fun getAcademiesFromPerson(personId: String): List<AcademyGroupDecorator> = withContext(IO) {
-        val toAcademyList = academyDAO.getAcademiesFromPerson(personId = personId).map { it.toTOAcademy()!! }
+        val toAcademyList = academyDAO.getAcademiesFromPerson(personId).map(academyModelMapper::getTOAcademy)
 
         val personAcademyTimes = toAcademyList.flatMap { academy ->
             personAcademyTimeDAO.getAcademyTimes(personId = personId, academyId = academy.id!!)
@@ -90,10 +89,7 @@ class AcademyRepository(
 
         val groups = toAcademyList.map { toAcademy ->
             val academyTimes = personAcademyTimes.filter { it.academyId == toAcademy.id }
-            val items = academyTimes.map { academyTime ->
-                val toAcademy = academyDAO.findAcademyById(academyTime.academyId!!).toTOAcademy()
-                academyTime.toTOPersonAcademyTime(toAcademy)
-            }.sortedBy { it.dayOfWeek!!.ordinal }
+            val items = academyTimes.map(academyModelMapper::getTOPersonAcademyTime).sortedBy { it.dayOfWeek!!.ordinal }
 
             AcademyGroupDecorator(
                 id = toAcademy.id!!,
@@ -121,9 +117,7 @@ class AcademyRepository(
 
     suspend fun getTOPersonAcademyTimeById(personAcademyTimeId: String): TOPersonAcademyTime = withContext(IO) {
         val personAcademyTime = personAcademyTimeDAO.findPersonAcademyTimeById(personAcademyTimeId)
-        val academy = academyDAO.findAcademyById(personAcademyTime.academyId!!)
-
-        personAcademyTime.toTOPersonAcademyTime(academy.toTOAcademy())
+        academyModelMapper.getTOPersonAcademyTime(personAcademyTime)
     }
 
     suspend fun inactivatePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
@@ -141,10 +135,12 @@ class AcademyRepository(
         val updateList = mutableListOf<PersonAcademyTime>()
 
         toPersonAcademyTimeList.forEach { toPersonAcademyTime ->
+            val personAcademyTime = academyModelMapper.getPersonAcademyTime(toPersonAcademyTime)
+
             if (toPersonAcademyTime.id == null) {
-                insertionList.add(toPersonAcademyTime.toPersonAcademyTime())
+                insertionList.add(personAcademyTime)
             } else {
-                updateList.add(toPersonAcademyTime.toPersonAcademyTime())
+                updateList.add(personAcademyTime)
             }
         }
 
@@ -159,7 +155,7 @@ class AcademyRepository(
 
     private suspend fun savePersonAcademyTimeBatchRemote(toPersonAcademyTimeList: List<TOPersonAcademyTime>) {
         getAuthenticatedUser()?.serviceToken?.let { token ->
-            val personAcademyTimeList = toPersonAcademyTimeList.map { it.toPersonAcademyTime() }
+            val personAcademyTimeList = toPersonAcademyTimeList.map(academyModelMapper::getPersonAcademyTime)
 
             val response = personWebClient.savePersonAcademyTimeBatch(
                 token = token,

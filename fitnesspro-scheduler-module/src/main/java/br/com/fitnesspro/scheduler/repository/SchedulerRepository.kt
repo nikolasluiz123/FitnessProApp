@@ -8,8 +8,7 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
-import br.com.fitnesspro.mappers.toScheduler
-import br.com.fitnesspro.mappers.toTOScheduler
+import br.com.fitnesspro.mappers.SchedulerModelMapper
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
@@ -31,14 +30,15 @@ class SchedulerRepository(
     private val workoutGroupDAO: WorkoutGroupDAO,
     private val userRepository: UserRepository,
     private val personRepository: PersonRepository,
-    private val schedulerWebClient: SchedulerWebClient
+    private val schedulerWebClient: SchedulerWebClient,
+    private val schedulerModelMapper: SchedulerModelMapper
 ): FitnessProRepository(context) {
 
     suspend fun saveScheduler(
         toScheduler: TOScheduler,
         schedulerType: EnumSchedulerType
     ) = withContext(IO) {
-        val scheduler = toScheduler.toScheduler()
+        val scheduler = schedulerModelMapper.getScheduler(toScheduler)
 
         saveSchedulerLocally(toScheduler, scheduler)
         saveSchedulerRemote(scheduler, schedulerType)
@@ -82,7 +82,7 @@ class SchedulerRepository(
 
         schedulerDAO.getSchedulerList(
             personId = person.id!!,
-            userType = person.toUser?.type!!,
+            userType = person.user?.type!!,
             yearMonth = yearMonth,
             scheduledDate = scheduledDate
         )
@@ -95,7 +95,8 @@ class SchedulerRepository(
         val professionalPerson = personRepository.findPersonById(scheduler.professionalPersonId!!)
         val professionalUser = userRepository.findUserById(professionalPerson.userId!!)!!
 
-        scheduler.toTOScheduler(
+        schedulerModelMapper.getTOScheduler(
+            scheduler = scheduler,
             memberPersonName = memberPerson.name!!,
             professionalPersonName = professionalPerson.name!!,
             professionalUserType = professionalUser.type!!
@@ -122,13 +123,13 @@ class SchedulerRepository(
 
 
     suspend fun saveRecurrentScheduler(schedules: List<TOScheduler>) = withContext(IO) {
-        val schedulers = schedules.map { it.toScheduler() }.sortedBy { it.scheduledDate }
+        val schedulers = schedules.map(schedulerModelMapper::getScheduler).sortedBy(Scheduler::scheduledDate)
 
         val workout = Workout(
             academyMemberPersonId = schedules.first().academyMemberPersonId,
             professionalPersonId = schedules.first().professionalPersonId,
-            start = schedulers.first().scheduledDate,
-            end = schedulers.last().scheduledDate
+            dateStart = schedulers.first().scheduledDate,
+            dateEnd = schedulers.last().scheduledDate
         )
 
         val workoutGroups = schedulers.map { it.scheduledDate!!.dayOfWeek }.distinct().map {
@@ -146,12 +147,10 @@ class SchedulerRepository(
                 token = user.serviceToken!!,
                 scheduler = schedulers.first(),
                 schedulerType = EnumSchedulerType.RECURRENT.name,
-                dateStart = workout.start,
-                dateEnd = workout.end,
+                dateStart = workout.dateStart,
+                dateEnd = workout.dateEnd,
                 dayWeeks = workoutGroups.map { it.dayWeek!! }
             )
         }
     }
-
-
 }

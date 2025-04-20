@@ -5,11 +5,10 @@ import br.com.fitnesspro.common.injection.ISyncRepositoryEntryPoint
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.common.BaseDAO
-import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import dagger.hilt.android.EntryPointAccessors
 
-abstract class AbstractSyncRepository<MODEL: BaseModel, DAO: BaseDAO>(context: Context): FitnessProRepository(context) {
+abstract class AbstractSyncRepository<DAO: BaseDAO>(context: Context): FitnessProRepository(context) {
 
     private val entryPoint: ISyncRepositoryEntryPoint = EntryPointAccessors.fromApplication(context, ISyncRepositoryEntryPoint::class.java)
 

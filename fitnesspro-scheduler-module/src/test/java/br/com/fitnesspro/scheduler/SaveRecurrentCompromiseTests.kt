@@ -58,8 +58,8 @@ class SaveRecurrentCompromiseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            start = LocalTime.of(13, 0),
-            end = LocalTime.of(14, 0),
+            timeStart = LocalTime.of(13, 0),
+            timeEnd = LocalTime.of(14, 0),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -84,8 +84,8 @@ class SaveRecurrentCompromiseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = LocalDate.of(2025, 1, 15),
-            start = null,
-            end = LocalTime.of(8, 0),
+            timeStart = null,
+            timeEnd = LocalTime.of(8, 0),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -110,8 +110,8 @@ class SaveRecurrentCompromiseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            start = timeNow().minusHours(1),
-            end = timeNow().plusHours(2),
+            timeStart = timeNow().minusHours(1),
+            timeEnd = timeNow().plusHours(2),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -136,8 +136,8 @@ class SaveRecurrentCompromiseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            start = timeNow(),
-            end = timeNow().plusHours(1),
+            timeStart = timeNow(),
+            timeEnd = timeNow().plusHours(1),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -162,8 +162,8 @@ class SaveRecurrentCompromiseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = LocalDate.of(2025, 1, 15),
-            start = LocalTime.of(13, 0),
-            end = null,
+            timeStart = LocalTime.of(13, 0),
+            timeEnd = null,
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -188,8 +188,8 @@ class SaveRecurrentCompromiseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            start = LocalTime.of(13, 0),
-            end = LocalTime.of(14, 0),
+            timeStart = LocalTime.of(13, 0),
+            timeEnd = LocalTime.of(14, 0),
             compromiseType = EnumCompromiseType.FIRST,
             observation = "a".repeat(4097)
         )
@@ -215,8 +215,8 @@ class SaveRecurrentCompromiseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            start = LocalTime.of(13, 0),
-            end = LocalTime.of(14, 0),
+            timeStart = LocalTime.of(13, 0),
+            timeEnd = LocalTime.of(14, 0),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -241,8 +241,8 @@ class SaveRecurrentCompromiseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            start = LocalTime.of(13, 0),
-            end = LocalTime.of(14, 0),
+            timeStart = LocalTime.of(13, 0),
+            timeEnd = LocalTime.of(14, 0),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -267,8 +267,8 @@ class SaveRecurrentCompromiseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            start = LocalTime.of(13, 0),
-            end = LocalTime.of(14, 0),
+            timeStart = LocalTime.of(13, 0),
+            timeEnd = LocalTime.of(14, 0),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -293,8 +293,8 @@ class SaveRecurrentCompromiseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            start = LocalTime.of(13, 0),
-            end = LocalTime.of(14, 0),
+            timeStart = LocalTime.of(13, 0),
+            timeEnd = LocalTime.of(14, 0),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -319,7 +319,7 @@ class SaveRecurrentCompromiseTests: BaseUnitTests() {
 
     private fun prepareMockGetTOPersonByIdAcademyMember() {
         coEvery { personRepository.getTOPersonById(any()) } returns TOPerson(
-            toUser = TOUser(type = EnumUserType.ACADEMY_MEMBER)
+            user = TOUser(type = EnumUserType.ACADEMY_MEMBER)
         )
     }
     

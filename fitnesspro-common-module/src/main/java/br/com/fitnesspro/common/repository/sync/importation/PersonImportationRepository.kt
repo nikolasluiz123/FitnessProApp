@@ -5,6 +5,7 @@ import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
+import br.com.fitnesspro.mappers.PersonModelMapper
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.Person
@@ -16,7 +17,8 @@ import br.com.fitnesspro.shared.communication.responses.ImportationServiceRespon
 class PersonImportationRepository(
     context: Context,
     private val webClient: PersonWebClient,
-    private val personDAO: PersonDAO
+    private val personDAO: PersonDAO,
+    private val personModelMapper: PersonModelMapper
 ): AbstractImportationRepository<PersonDTO, Person, PersonDAO>(context) {
 
     override fun getDescription(): String {
@@ -42,13 +44,7 @@ class PersonImportationRepository(
     }
 
     override suspend fun convertDTOToEntity(dto: PersonDTO): Person {
-        return Person(
-            id = dto.id!!,
-            active = dto.active,
-            name = dto.name!!,
-            birthDate = dto.birthDate,
-            phone = dto.phone,
-            userId = dto.user?.id,
+        return personModelMapper.getPerson(dto).copy(
             transmissionState = EnumTransmissionState.TRANSMITTED
         )
     }

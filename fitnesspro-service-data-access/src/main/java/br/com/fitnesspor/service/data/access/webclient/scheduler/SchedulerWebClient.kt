@@ -2,11 +2,10 @@ package br.com.fitnesspor.service.data.access.webclient.scheduler
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.extensions.getResponseBody
-import br.com.fitnesspor.service.data.access.mappers.toSchedulerConfigDTO
-import br.com.fitnesspor.service.data.access.mappers.toSchedulerDTO
 import br.com.fitnesspor.service.data.access.service.scheduler.ISchedulerService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
 import br.com.fitnesspro.core.extensions.defaultGSon
+import br.com.fitnesspro.mappers.SchedulerModelMapper
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
@@ -22,7 +21,8 @@ import java.time.LocalDate
 
 class SchedulerWebClient(
     context: Context,
-    private val schedulerService: ISchedulerService
+    private val schedulerService: ISchedulerService,
+    private val schedulerModelMapper: SchedulerModelMapper
 ): FitnessProWebClient(context) {
 
     suspend fun saveScheduler(
@@ -35,14 +35,17 @@ class SchedulerWebClient(
     ): PersistenceServiceResponse<SchedulerDTO> {
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
+                val schedulerDTO = schedulerModelMapper.getSchedulerDTO(
+                    scheduler = scheduler,
+                    schedulerType = schedulerType,
+                    dateStart = dateStart,
+                    dateEnd = dateEnd,
+                    dayWeeks = dayWeeks
+                )
+
                 schedulerService.saveScheduler(
                     token = formatToken(token),
-                    schedulerDTO = scheduler.toSchedulerDTO(
-                        schedulerType = schedulerType,
-                        dateStart = dateStart,
-                        dateEnd = dateEnd,
-                        dayWeeks = dayWeeks
-                    )
+                    schedulerDTO = schedulerDTO
                 ).getResponseBody(SchedulerDTO::class.java)
             }
         )
@@ -55,16 +58,19 @@ class SchedulerWebClient(
     ): ExportationServiceResponse {
         return exportationServiceErrorHandlingBlock(
             codeBlock = {
+                val listSchedulerDTO = schedulerList.map {
+                    schedulerModelMapper.getSchedulerDTO(
+                        scheduler = it,
+                        schedulerType = schedulerType,
+                        dateStart = null,
+                        dateEnd = null,
+                        dayWeeks = emptyList()
+                    )
+                }
+
                 schedulerService.saveSchedulerBatch(
                     token = formatToken(token),
-                    schedulerDTOList = schedulerList.map {
-                        it.toSchedulerDTO(
-                            schedulerType = schedulerType,
-                            dateStart = null,
-                            dateEnd = null,
-                            dayWeeks = emptyList(),
-                        )
-                    }
+                    schedulerDTOList = listSchedulerDTO
                 ).getResponseBody()
             }
         )
@@ -74,7 +80,7 @@ class SchedulerWebClient(
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 schedulerService.saveSchedulerConfig(
-                    schedulerConfigDTO = schedulerConfig.toSchedulerConfigDTO()
+                    schedulerConfigDTO = schedulerModelMapper.getSchedulerConfigDTO(schedulerConfig),
                 ).getResponseBody(SchedulerConfigDTO::class.java)
             }
         )
@@ -85,7 +91,7 @@ class SchedulerWebClient(
             codeBlock = {
                 schedulerService.saveSchedulerConfigBatch(
                     token = token,
-                    schedulerConfigDTOList = schedulerConfigList.map { it.toSchedulerConfigDTO() }
+                    schedulerConfigDTOList = schedulerConfigList.map(schedulerModelMapper::getSchedulerConfigDTO)
                 ).getResponseBody()
             }
         )

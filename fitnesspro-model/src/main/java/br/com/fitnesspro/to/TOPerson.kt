@@ -7,6 +7,6 @@ data class TOPerson(
     var name: String? = null,
     var birthDate: LocalDate? = null,
     var phone: String? = null,
-    var toUser: TOUser? = null,
+    var user: TOUser? = null,
     var active: Boolean = true,
 ): BaseTO

@@ -5,6 +5,7 @@ import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebCli
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
+import br.com.fitnesspro.mappers.SchedulerModelMapper
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
@@ -16,7 +17,8 @@ import br.com.fitnesspro.shared.communication.responses.ImportationServiceRespon
 class SchedulerConfigImportationRepository(
     context: Context,
     private val schedulerConfigDAO: SchedulerConfigDAO,
-    private val webClient: SchedulerWebClient
+    private val webClient: SchedulerWebClient,
+    private val schedulerModelMapper: SchedulerModelMapper
 ): AbstractImportationRepository<SchedulerConfigDTO, SchedulerConfig, SchedulerConfigDAO>(context) {
 
     override fun getDescription(): String {
@@ -42,13 +44,7 @@ class SchedulerConfigImportationRepository(
     }
 
     override suspend fun convertDTOToEntity(dto: SchedulerConfigDTO): SchedulerConfig {
-        return SchedulerConfig(
-            id = dto.id!!,
-            alarm = dto.alarm,
-            notification = dto.notification,
-            minScheduleDensity = dto.minScheduleDensity,
-            maxScheduleDensity = dto.maxScheduleDensity,
-            personId = dto.personId,
+        return schedulerModelMapper.getSchedulerConfig(dto).copy(
             transmissionState = EnumTransmissionState.TRANSMITTED
         )
     }

@@ -55,7 +55,7 @@ class SaveSchedulerConfigUseCase(
     }
 
     private suspend fun validateSchedulerConfig(config: TOSchedulerConfig): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
-        val userType = personRepository.getTOPersonById(config.personId!!).toUser?.type!!
+        val userType = personRepository.getTOPersonById(config.personId!!).user?.type!!
         if (userType == EnumUserType.ACADEMY_MEMBER) return mutableListOf()
 
         val validationResults = mutableListOf(

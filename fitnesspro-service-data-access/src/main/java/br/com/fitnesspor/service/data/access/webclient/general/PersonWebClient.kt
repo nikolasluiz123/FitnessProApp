@@ -2,11 +2,11 @@ package br.com.fitnesspor.service.data.access.webclient.general
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.extensions.getResponseBody
-import br.com.fitnesspor.service.data.access.mappers.toPersonAcademyTimeDTO
-import br.com.fitnesspor.service.data.access.mappers.toPersonDTO
 import br.com.fitnesspor.service.data.access.service.general.IPersonService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
 import br.com.fitnesspro.core.extensions.defaultGSon
+import br.com.fitnesspro.mappers.AcademyModelMapper
+import br.com.fitnesspro.mappers.PersonModelMapper
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.model.general.User
@@ -23,13 +23,16 @@ import com.google.gson.GsonBuilder
 
 class PersonWebClient(
     context: Context,
-    private val personService: IPersonService
+    private val personService: IPersonService,
+    private val personModelMapper: PersonModelMapper,
+    private val academyModelMapper: AcademyModelMapper
 ): FitnessProWebClient(context) {
 
     suspend fun savePerson(person: Person, user: User): PersistenceServiceResponse<PersonDTO> {
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
-                personService.savePerson(personDTO = person.toPersonDTO(user)).getResponseBody(PersonDTO::class.java)
+                val personDTO = personModelMapper.getPersonDTO(person, user)
+                personService.savePerson(personDTO).getResponseBody(PersonDTO::class.java)
             }
         )
     }
@@ -42,7 +45,7 @@ class PersonWebClient(
         return exportationServiceErrorHandlingBlock(
             codeBlock = {
                 val personDTOList = persons.mapIndexed { index, person ->
-                    person.toPersonDTO(users[index])
+                    personModelMapper.getPersonDTO(person, users[index])
                 }
 
                 personService.savePersonBatch(
@@ -61,7 +64,7 @@ class PersonWebClient(
             codeBlock = {
                 personService.savePersonAcademyTime(
                     token = formatToken(token),
-                    personAcademyTimeDTO = personAcademyTime.toPersonAcademyTimeDTO()
+                    personAcademyTimeDTO = academyModelMapper.getPersonAcademyTimeDTO(personAcademyTime)
                 ).getResponseBody(PersonAcademyTimeDTO::class.java)
             }
         )
@@ -75,7 +78,7 @@ class PersonWebClient(
             codeBlock = {
                 personService.savePersonAcademyTimeBatch(
                     token = formatToken(token),
-                    personAcademyTimeDTOList = personAcademyTimeList.map { it.toPersonAcademyTimeDTO() }
+                    personAcademyTimeDTOList = personAcademyTimeList.map(academyModelMapper::getPersonAcademyTimeDTO)
                 ).getResponseBody()
             }
         )

@@ -67,8 +67,8 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = LocalDate.of(2025, 1, 15),
-            start = null,
-            end = LocalTime.of(8, 0),
+            timeStart = null,
+            timeEnd = LocalTime.of(8, 0),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -88,8 +88,8 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            start = timeNow().minusHours(1),
-            end = timeNow().plusHours(2),
+            timeStart = timeNow().minusHours(1),
+            timeEnd = timeNow().plusHours(2),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -109,8 +109,8 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            start = timeNow(),
-            end = timeNow().plusHours(1),
+            timeStart = timeNow(),
+            timeEnd = timeNow().plusHours(1),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -130,8 +130,8 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = LocalDate.of(2025, 1, 16),
-            start = LocalTime.of(7, 30),
-            end = LocalTime.of(8, 30),
+            timeStart = LocalTime.of(7, 30),
+            timeEnd = LocalTime.of(8, 30),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -151,8 +151,8 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = LocalDate.of(2025, 1, 15),
-            start = LocalTime.of(13, 0),
-            end = null,
+            timeStart = LocalTime.of(13, 0),
+            timeEnd = null,
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -172,8 +172,8 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = LocalDate.of(2025, 1, 16),
-            start = LocalTime.of(17, 0),
-            end = LocalTime.of(18, 30),
+            timeStart = LocalTime.of(17, 0),
+            timeEnd = LocalTime.of(18, 30),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -193,8 +193,8 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = LocalDate.of(2025, 1, 16),
-            start = LocalTime.of(20, 0),
-            end = LocalTime.of(21, 0),
+            timeStart = LocalTime.of(20, 0),
+            timeEnd = LocalTime.of(21, 0),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -214,8 +214,8 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            start = LocalTime.of(13, 30),
-            end = LocalTime.of(14, 0),
+            timeStart = LocalTime.of(13, 30),
+            timeEnd = LocalTime.of(14, 0),
             compromiseType = EnumCompromiseType.FIRST,
             observation = "a".repeat(4097)
         )
@@ -227,7 +227,7 @@ class SaveCompromiseSuggestionTests: BaseUnitTests() {
 
     private fun prepareMockGetTOPersonByIdPersonalTrainer() {
         coEvery { personRepository.getTOPersonById(any()) } returns TOPerson(
-            toUser = TOUser(type = EnumUserType.PERSONAL_TRAINER)
+            user = TOUser(type = EnumUserType.PERSONAL_TRAINER)
         )
     }
 

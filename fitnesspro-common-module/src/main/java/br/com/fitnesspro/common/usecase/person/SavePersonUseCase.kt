@@ -42,7 +42,7 @@ open class SavePersonUseCase(
         validationResults.addAll(validatePerson(toPerson))
 
         if (validationResults.isEmpty()) {
-            toPerson.toUser!!.password = passwordHasher.hashPassword(toPerson.toUser?.password!!)
+            toPerson.user!!.password = passwordHasher.hashPassword(toPerson.user?.password!!)
 
             personRepository.runInTransaction {
                 personRepository.savePerson(toPerson, isRegisterServiceAuth)
@@ -165,7 +165,7 @@ open class SavePersonUseCase(
     }
 
     private suspend fun validateUserEmail(toPerson: TOPerson): FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>? {
-        val email = toPerson.toUser?.email?.trim()
+        val email = toPerson.user?.email?.trim()
 
         val validationPair = when {
             email.isNullOrEmpty() -> {
@@ -208,7 +208,7 @@ open class SavePersonUseCase(
                 )
             }
 
-            userRepository.hasUserWithEmail(email, toPerson.toUser?.id) -> {
+            userRepository.hasUserWithEmail(email, toPerson.user?.id) -> {
                 val message = context.getString(R.string.validation_msg_email_in_use)
                 FieldValidationError(
                     field = EMAIL,
@@ -221,14 +221,14 @@ open class SavePersonUseCase(
         }
 
         if (validationPair == null) {
-            toPerson.toUser?.email = email
+            toPerson.user?.email = email
         }
 
         return validationPair
     }
 
     private fun validateUserPassword(toPerson: TOPerson): FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>? {
-        val password = toPerson.toUser?.password?.trim()
+        val password = toPerson.user?.password?.trim()
 
         val validationPair = when {
             password.isNullOrEmpty() -> {
@@ -244,7 +244,7 @@ open class SavePersonUseCase(
                 )
             }
 
-            toPerson.toUser?.password!!.length > PASSWORD.maxLength -> {
+            toPerson.user?.password!!.length > PASSWORD.maxLength -> {
                 val message = context.getString(
                     R.string.validation_msg_field_with_max_length,
                     context.getString(PASSWORD.labelResId),
@@ -262,7 +262,7 @@ open class SavePersonUseCase(
         }
 
         if (validationPair == null) {
-            toPerson.toUser?.password = password
+            toPerson.user?.password = password
         }
 
         return validationPair

@@ -48,10 +48,10 @@ abstract class SaveCompromiseCommonUseCase(
 
     protected fun validateHourStart(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         val actualHour = timeNow()
-        val start = scheduler.start
+        val start = scheduler.timeStart
 
         return when {
-            scheduler.start == null -> {
+            scheduler.timeStart == null -> {
                 val message = context.getString(
                     br.com.fitnesspro.common.R.string.validation_msg_required_field,
                     context.getString(HOUR_START.labelResId)
@@ -90,7 +90,7 @@ abstract class SaveCompromiseCommonUseCase(
 
     protected fun validateHourEnd(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         return when {
-            scheduler.end == null -> {
+            scheduler.timeEnd == null -> {
                 val message = context.getString(
                     br.com.fitnesspro.common.R.string.validation_msg_required_field,
                     context.getString(HOUR_END.labelResId)
@@ -108,10 +108,10 @@ abstract class SaveCompromiseCommonUseCase(
     }
 
     protected fun validateHourPeriod(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
-        if (scheduler.start == null || scheduler.end == null) return null
+        if (scheduler.timeStart == null || scheduler.timeEnd == null) return null
 
         return when {
-            scheduler.start!!.isAfter(scheduler.end!!) || scheduler.start == scheduler.end -> {
+            scheduler.timeStart!!.isAfter(scheduler.timeEnd!!) || scheduler.timeStart == scheduler.timeEnd -> {
                 val message = context.getString(R.string.save_compromise_invalid_hour_period)
 
                 FieldValidationError(

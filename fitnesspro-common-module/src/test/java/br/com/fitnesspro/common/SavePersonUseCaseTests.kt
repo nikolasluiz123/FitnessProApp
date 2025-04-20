@@ -67,7 +67,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = getFakeName(),
             birthDate = getFakeBirthDate(),
             phone = getFakePhoneNumber(),
-            toUser = TOUser(
+            user = TOUser(
                 password = getFakePassword(),
                 type = EnumUserType.PERSONAL_TRAINER
             )
@@ -86,7 +86,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = getFakeName(),
             birthDate = getFakeBirthDate(),
             phone = getFakePhoneNumber(),
-            toUser = TOUser(
+            user = TOUser(
                 password = getFakePassword(),
                 email = "nikolas.silva.martins.2025.projetos.inovadores.exemplares@empresaexemplo.com.br",
                 type = EnumUserType.PERSONAL_TRAINER
@@ -106,7 +106,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = getFakeName(),
             birthDate = getFakeBirthDate(),
             phone = getFakePhoneNumber(),
-            toUser = TOUser(
+            user = TOUser(
                 password = getFakePassword(),
                 email = getFakeEmail().replace("@", ""),
                 type = EnumUserType.PERSONAL_TRAINER
@@ -117,7 +117,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = getFakeName(),
             birthDate = getFakeBirthDate(),
             phone = getFakePhoneNumber(),
-            toUser = TOUser(
+            user = TOUser(
                 password = getFakePassword(),
                 email = "email.teste@gmail",
                 type = EnumUserType.PERSONAL_TRAINER
@@ -144,7 +144,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = getFakeName(),
             birthDate = getFakeBirthDate(),
             phone = getFakePhoneNumber(),
-            toUser = TOUser(
+            user = TOUser(
                 password = getFakePassword(),
                 email = "nikolas@gmail.com",
                 type = EnumUserType.PERSONAL_TRAINER
@@ -164,7 +164,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = getFakeName(),
             birthDate = getFakeBirthDate(),
             phone = getFakePhoneNumber(),
-            toUser = TOUser(
+            user = TOUser(
                 password = null,
                 email = getFakeEmail(),
                 type = EnumUserType.PERSONAL_TRAINER
@@ -175,7 +175,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = getFakeName(),
             birthDate = getFakeBirthDate(),
             phone = getFakePhoneNumber(),
-            toUser = TOUser(
+            user = TOUser(
                 password = "  ",
                 email = getFakeEmail(),
                 type = EnumUserType.PERSONAL_TRAINER
@@ -204,7 +204,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = getFakeName(),
             birthDate = getFakeBirthDate(),
             phone = getFakePhoneNumber(),
-            toUser = TOUser(
+            user = TOUser(
                 password = password,
                 email = getFakeEmail(),
                 type = EnumUserType.PERSONAL_TRAINER
@@ -222,7 +222,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = null,
             birthDate = getFakeBirthDate(),
             phone = getFakePhoneNumber(),
-            toUser = TOUser(
+            user = TOUser(
                 password = getFakePassword(),
                 email = getFakeEmail(),
                 type = EnumUserType.PERSONAL_TRAINER
@@ -240,7 +240,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = "  ",
             birthDate = getFakeBirthDate(),
             phone = getFakePhoneNumber(),
-            toUser = TOUser(
+            user = TOUser(
                 password = getFakePassword(),
                 email = getFakeEmail(),
                 type = EnumUserType.PERSONAL_TRAINER
@@ -260,7 +260,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = name,
             birthDate = getFakeBirthDate(),
             phone = getFakePhoneNumber(),
-            toUser = TOUser(
+            user = TOUser(
                 password = getFakePassword(),
                 email = getFakeEmail(),
                 type = EnumUserType.PERSONAL_TRAINER
@@ -278,7 +278,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = getFakeName(),
             birthDate = dateNow().plusDays(1),
             phone = getFakePhoneNumber(),
-            toUser = TOUser(
+            user = TOUser(
                 password = getFakePassword(),
                 email = getFakeEmail(),
                 type = EnumUserType.PERSONAL_TRAINER
@@ -296,7 +296,7 @@ class SavePersonUseCaseTests: BaseUnitTests() {
             name = getFakeName(),
             birthDate = getFakeBirthDate(),
             phone = "123456789012",
-            toUser = TOUser(
+            user = TOUser(
                 password = getFakePassword(),
                 email = getFakeEmail(),
                 type = EnumUserType.PERSONAL_TRAINER

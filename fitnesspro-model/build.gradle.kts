@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinAndroidKsp)
+    alias(libs.plugins.hiltAndroid)
 }
 
 android {
@@ -32,6 +33,12 @@ android {
 
 dependencies {
     implementation(project(":fitnesspro-core"))
+
+    implementation(libs.model.mapper)
+    implementation(libs.fitnesspro.shared.communication)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     implementation(kotlin("reflect"))
     runtimeOnly(libs.kotlin.reflection)

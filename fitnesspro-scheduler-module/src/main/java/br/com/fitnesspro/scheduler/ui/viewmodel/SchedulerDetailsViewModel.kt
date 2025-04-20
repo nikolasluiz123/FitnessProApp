@@ -66,7 +66,7 @@ class SchedulerDetailsViewModel @Inject constructor(
 
             _uiState.update {
                 it.copy(
-                    userType = toPerson.toUser?.type,
+                    userType = toPerson.user?.type,
                 )
             }
         }

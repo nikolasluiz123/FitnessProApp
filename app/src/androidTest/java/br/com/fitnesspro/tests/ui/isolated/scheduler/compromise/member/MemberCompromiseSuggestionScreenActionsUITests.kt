@@ -163,7 +163,7 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
                     activity.getString(
                         R.string.compromise_screen_label_professional_name_and_type,
                         toPersons[0].name!!,
-                        toPersons[0].toUser?.type!!.getLabel(activity)
+                        toPersons[0].user?.type!!.getLabel(activity)
                     )
                 )
             )
@@ -257,10 +257,10 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
         val toScheduler = TOScheduler(
             academyMemberPersonId = toPersons[2].id!!,
             professionalPersonId = toPersons[0].id!!,
-            professionalType = toPersons[0].toUser?.type!!,
+            professionalType = toPersons[0].user?.type!!,
             scheduledDate = dateNow().plusDays(1),
-            start = LocalTime.of(7, 0),
-            end = LocalTime.of(8, 0),
+            timeStart = LocalTime.of(7, 0),
+            timeEnd = LocalTime.of(8, 0),
             situation = EnumSchedulerSituation.SCHEDULED,
             compromiseType = EnumCompromiseType.FIRST
         )

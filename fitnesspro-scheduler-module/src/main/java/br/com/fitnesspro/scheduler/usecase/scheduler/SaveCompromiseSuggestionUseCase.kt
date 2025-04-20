@@ -82,7 +82,7 @@ class SaveCompromiseSuggestionUseCase(
             val endWorkTime = academyTimes.maxOf { it.timeEnd!! }
 
             validationResult = when {
-                scheduler.start!! < startWorkTime || scheduler.start!! > endWorkTime -> {
+                scheduler.timeStart!! < startWorkTime || scheduler.timeStart!! > endWorkTime -> {
                     val message = context.getString(
                         R.string.save_compromise_start_hour_out_of_work_time_range,
                         context.getString(EnumValidatedCompromiseFields.HOUR_START.labelResId),
@@ -119,7 +119,7 @@ class SaveCompromiseSuggestionUseCase(
             val endWorkTime = academyTimes.maxOf { it.timeEnd!! }
 
             validationResult = when {
-                scheduler.end!! < startWorkTime || scheduler.end!! > endWorkTime -> {
+                scheduler.timeEnd!! < startWorkTime || scheduler.timeEnd!! > endWorkTime -> {
                     val message = context.getString(
                         R.string.save_compromise_start_hour_out_of_work_time_range,
                         context.getString(EnumValidatedCompromiseFields.HOUR_END.labelResId),
@@ -143,8 +143,8 @@ class SaveCompromiseSuggestionUseCase(
 
     private suspend fun validateSchedulerConflictProfessional(toScheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         val requiredFields = listOf(
-            toScheduler.start,
-            toScheduler.end,
+            toScheduler.timeStart,
+            toScheduler.timeEnd,
             toScheduler.professionalPersonId
         )
 
@@ -155,10 +155,10 @@ class SaveCompromiseSuggestionUseCase(
         val hasConflict = schedulerRepository.getHasSchedulerConflict(
             schedulerId = toScheduler.id,
             personId = toScheduler.professionalPersonId!!,
-            userType = professional.toUser?.type!!,
+            userType = professional.user?.type!!,
             scheduledDate = toScheduler.scheduledDate!!,
-            start = toScheduler.start!!,
-            end = toScheduler.end!!
+            start = toScheduler.timeStart!!,
+            end = toScheduler.timeEnd!!
         )
 
         return when {
@@ -166,8 +166,8 @@ class SaveCompromiseSuggestionUseCase(
                 val message = context.getString(
                     R.string.save_compromise_scheduler_conflict,
                     toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
-                    toScheduler.start!!.format(EnumDateTimePatterns.TIME),
-                    toScheduler.end!!.format(EnumDateTimePatterns.TIME),
+                    toScheduler.timeStart!!.format(EnumDateTimePatterns.TIME),
+                    toScheduler.timeEnd!!.format(EnumDateTimePatterns.TIME),
                     professional.name
                 )
 

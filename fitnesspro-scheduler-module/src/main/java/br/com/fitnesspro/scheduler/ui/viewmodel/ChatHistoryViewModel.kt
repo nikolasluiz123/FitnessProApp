@@ -176,7 +176,7 @@ class ChatHistoryViewModel @Inject constructor(
 
             _uiState.update {
                 it.copy(
-                    userType = authenticatedPerson.toUser?.type!!
+                    userType = authenticatedPerson.user?.type!!
                 )
             }
         }

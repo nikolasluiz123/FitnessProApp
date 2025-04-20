@@ -135,13 +135,13 @@ class SaveSchedulerConfigUseCaseTests: BaseUnitTests() {
 
     private fun prepareMockGetTOPersonByIdWithPersonal() {
         coEvery { personRepository.getTOPersonById(any()) } returns TOPerson(
-            toUser = TOUser(type = EnumUserType.PERSONAL_TRAINER)
+            user = TOUser(type = EnumUserType.PERSONAL_TRAINER)
         )
     }
 
     private fun prepareMockGetTOPersonByIdWithMember() {
         coEvery { personRepository.getTOPersonById(any()) } returns TOPerson(
-            toUser = TOUser(type = EnumUserType.ACADEMY_MEMBER)
+            user = TOUser(type = EnumUserType.ACADEMY_MEMBER)
         )
     }
 }

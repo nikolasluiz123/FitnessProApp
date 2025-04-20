@@ -57,7 +57,7 @@ class SchedulerViewModel @Inject constructor(
     private fun loadUIStateWithDatabaseInfos() {
         launch {
             val toPerson = personRepository.getAuthenticatedTOPerson()!!
-            val userType = toPerson.toUser?.type!!
+            val userType = toPerson.user?.type!!
 
             _uiState.update {
                 it.copy(

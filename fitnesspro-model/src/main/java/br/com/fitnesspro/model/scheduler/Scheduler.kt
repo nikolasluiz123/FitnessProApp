@@ -42,8 +42,10 @@ data class Scheduler(
     var professionalPersonId: String? = null,
     @ColumnInfo(name = "scheduled_date")
     var scheduledDate: LocalDate? = null,
-    var start: LocalTime? = null,
-    var end: LocalTime? = null,
+    @ColumnInfo(name = "time_start")
+    var timeStart: LocalTime? = null,
+    @ColumnInfo(name = "time_end")
+    var timeEnd: LocalTime? = null,
     @ColumnInfo(name = "canceled_date")
     var canceledDate: LocalDateTime? = null,
     var situation: EnumSchedulerSituation? = null,

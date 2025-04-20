@@ -45,8 +45,8 @@ class SaveUniqueCompromiseUseCase(
 
     private suspend fun validateSchedulerConflictMember(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         val requiredFields = listOf(
-            scheduler.start,
-            scheduler.end,
+            scheduler.timeStart,
+            scheduler.timeEnd,
             scheduler.academyMemberPersonId
         )
 
@@ -57,10 +57,10 @@ class SaveUniqueCompromiseUseCase(
         val hasConflict = schedulerRepository.getHasSchedulerConflict(
             schedulerId = scheduler.id,
             personId = scheduler.academyMemberPersonId!!,
-            userType = member.toUser?.type!!,
+            userType = member.user?.type!!,
             scheduledDate = scheduler.scheduledDate!!,
-            start = scheduler.start!!,
-            end = scheduler.end!!
+            start = scheduler.timeStart!!,
+            end = scheduler.timeEnd!!
         )
 
         return when {
@@ -68,8 +68,8 @@ class SaveUniqueCompromiseUseCase(
                 val message = context.getString(
                     R.string.save_compromise_scheduler_conflict,
                     scheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
-                    scheduler.start!!.format(EnumDateTimePatterns.TIME),
-                    scheduler.end!!.format(EnumDateTimePatterns.TIME),
+                    scheduler.timeStart!!.format(EnumDateTimePatterns.TIME),
+                    scheduler.timeEnd!!.format(EnumDateTimePatterns.TIME),
                     member.name
                 )
 

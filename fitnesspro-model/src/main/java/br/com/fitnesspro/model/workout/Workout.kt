@@ -36,7 +36,9 @@ data class Workout(
     var academyMemberPersonId: String? = null,
     @ColumnInfo(name = "personal_trainer_person_id", index = true)
     var professionalPersonId: String? = null,
-    var start: LocalDate? = null,
-    var end: LocalDate? = null,
+    @ColumnInfo(name = "date_start")
+    var dateStart: LocalDate? = null,
+    @ColumnInfo(name = "date_end")
+    var dateEnd: LocalDate? = null,
     var active: Boolean = true
 ): IntegratedModel

@@ -162,7 +162,7 @@ class RegisterUserViewModel @Inject constructor(
                         errorMessage = ""
                     ),
                     toPerson = _uiState.value.toPerson.copy(
-                        toUser = _uiState.value.toPerson.toUser?.copy(type = it.value)
+                        user = _uiState.value.toPerson.user?.copy(type = it.value)
                     )
                 )
             },
@@ -175,7 +175,7 @@ class RegisterUserViewModel @Inject constructor(
     private fun loadUIStateWithAuthenticatedPerson(args: RegisterUserScreenArgs) = launch {
         if (args.context == null && args.toPersonAuthService == null) {
             val authenticatedTOPerson = personRepository.getAuthenticatedTOPerson()
-            authenticatedTOPerson?.toUser?.password = null
+            authenticatedTOPerson?.user?.password = null
 
             authenticatedTOPerson?.let { toPerson ->
                 _uiState.update {
@@ -186,7 +186,7 @@ class RegisterUserViewModel @Inject constructor(
                         academies = getAcademiesFromAuthenticatedPerson(toPerson.id!!),
                         isVisibleFieldPhone = isVisibleFieldPhone(context = null, toPerson = toPerson),
                         name = it.name.copy(value = toPerson.name!!),
-                        email = it.email.copy(value = toPerson.toUser?.email!!),
+                        email = it.email.copy(value = toPerson.user?.email!!),
                         birthDate = it.birthDate.copy(value = toPerson.birthDate?.format(DATE_ONLY_NUMBERS) ?: ""),
                         phone = it.phone.copy(value = toPerson.phone ?: ""),
                         tabState = it.tabState.copy(tabs = getTabListAllEnabled())
@@ -204,7 +204,7 @@ class RegisterUserViewModel @Inject constructor(
                     toPerson = toPerson,
                     isVisibleFieldPhone = isVisibleFieldPhone(context = null, toPerson = toPerson),
                     name = it.name.copy(value = toPerson.name!!),
-                    email = it.email.copy(value = toPerson.toUser?.email!!),
+                    email = it.email.copy(value = toPerson.user?.email!!),
                     phone = it.phone.copy(value = toPerson.phone ?: ""),
                     isRegisterServiceAuth = true
                 )
@@ -292,7 +292,7 @@ class RegisterUserViewModel @Inject constructor(
                     errorMessage = ""
                 ),
                 toPerson = _uiState.value.toPerson.copy(
-                    toUser = _uiState.value.toPerson.toUser?.copy(password = it)
+                    user = _uiState.value.toPerson.user?.copy(password = it)
                 )
             )
         })
@@ -306,7 +306,7 @@ class RegisterUserViewModel @Inject constructor(
                     errorMessage = ""
                 ),
                 toPerson = _uiState.value.toPerson.copy(
-                    toUser = _uiState.value.toPerson.toUser?.copy(email = it)
+                    user = _uiState.value.toPerson.user?.copy(email = it)
                 )
             )
         })
@@ -334,7 +334,7 @@ class RegisterUserViewModel @Inject constructor(
                 EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER
             )
         } else {
-            toPerson?.toUser?.type in listOf(
+            toPerson?.user?.type in listOf(
                 EnumUserType.NUTRITIONIST,
                 EnumUserType.PERSONAL_TRAINER
             )
@@ -351,7 +351,7 @@ class RegisterUserViewModel @Inject constructor(
     ): String {
         return when {
             toPersonAuthenticated != null -> {
-                when(toPersonAuthenticated.toUser?.type!!) {
+                when(toPersonAuthenticated.user?.type!!) {
                     EnumUserType.ACADEMY_MEMBER -> this.context.getString(R.string.register_user_screen_title_academy_member)
                     EnumUserType.PERSONAL_TRAINER -> this.context.getString(R.string.register_user_screen_title_personal_trainer)
                     EnumUserType.NUTRITIONIST -> this.context.getString(R.string.register_user_screen_title_nutritionist)
@@ -380,7 +380,7 @@ class RegisterUserViewModel @Inject constructor(
             _uiState.value.onToggleLoading()
 
             val toPerson = _uiState.value.toPerson
-            toPerson.toUser!!.type = getUserTypeFromContext(_uiState.value.context)
+            toPerson.user!!.type = getUserTypeFromContext(_uiState.value.context)
 
             val validationResults = savePersonUseCase.execute(toPerson, _uiState.value.isRegisterServiceAuth)
 
@@ -478,7 +478,7 @@ class RegisterUserViewModel @Inject constructor(
             EnumOptionsBottomSheetRegisterUser.ACADEMY_MEMBER -> EnumUserType.ACADEMY_MEMBER
             EnumOptionsBottomSheetRegisterUser.PERSONAL_TRAINER -> EnumUserType.PERSONAL_TRAINER
             EnumOptionsBottomSheetRegisterUser.NUTRITIONIST -> EnumUserType.NUTRITIONIST
-            null -> _uiState.value.toPerson.toUser?.type!!
+            null -> _uiState.value.toPerson.user?.type!!
         }
     }
 }

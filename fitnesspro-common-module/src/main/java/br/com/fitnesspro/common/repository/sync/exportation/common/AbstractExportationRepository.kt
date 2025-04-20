@@ -16,7 +16,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: IntegratedMaintenanceDAO<MODEL>>(context: Context)
-    : AbstractSyncRepository<MODEL, DAO>(context) {
+    : AbstractSyncRepository<DAO>(context) {
 
     abstract suspend fun getExportationData(pageInfos: ExportPageInfos): List<MODEL>
 

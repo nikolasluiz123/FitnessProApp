@@ -37,7 +37,7 @@ open class SavePersonAcademyTimeUseCase(
 
     private fun validateAcademy(toPersonAcademyTime: TOPersonAcademyTime): FieldValidationError<EnumValidatedAcademyFields, EnumAcademyValidationTypes>? {
         val validationPair = when {
-            toPersonAcademyTime.toAcademy?.id.isNullOrEmpty() -> {
+            toPersonAcademyTime.academyId.isNullOrEmpty() -> {
                 val message = context.getString(
                     R.string.validation_msg_required_field,
                     context.getString(EnumValidatedAcademyFields.ACADEMY.labelResId)

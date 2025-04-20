@@ -94,7 +94,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getTitle(toPerson: TOPerson): String {
-        return when (toPerson.toUser?.type!!) {
+        return when (toPerson.user?.type!!) {
             EnumUserType.PERSONAL_TRAINER -> context.getString(R.string.home_screen_title_personal_trainer)
             EnumUserType.NUTRITIONIST -> context.getString(R.string.home_screen_title_nutritionist)
             EnumUserType.ACADEMY_MEMBER -> context.getString(R.string.home_screen_title_academy_member)
