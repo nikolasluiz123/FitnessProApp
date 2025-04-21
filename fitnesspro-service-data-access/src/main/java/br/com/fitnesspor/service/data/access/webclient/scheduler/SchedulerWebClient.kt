@@ -76,10 +76,11 @@ class SchedulerWebClient(
         )
     }
 
-    suspend fun saveSchedulerConfig(schedulerConfig: SchedulerConfig): PersistenceServiceResponse<SchedulerConfigDTO> {
+    suspend fun saveSchedulerConfig(token: String, schedulerConfig: SchedulerConfig): PersistenceServiceResponse<SchedulerConfigDTO> {
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 schedulerService.saveSchedulerConfig(
+                    token = formatToken(token),
                     schedulerConfigDTO = schedulerModelMapper.getSchedulerConfigDTO(schedulerConfig),
                 ).getResponseBody(SchedulerConfigDTO::class.java)
             }

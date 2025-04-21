@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -6,6 +8,12 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotest)
 }
+
+val localProperties = Properties().apply {
+    rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+}
+
+val appJWT: String = localProperties.getProperty("APP_JWT", "\"default_value\"")
 
 android {
     namespace = "br.com.fitnesspro.common"
@@ -16,6 +24,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        android.buildFeatures.buildConfig = true
     }
 
     buildTypes {
@@ -25,6 +34,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            buildConfigField("String", "APP_JWT", "\"$appJWT\"")
+        }
+
+        debug {
+            buildConfigField("String", "APP_JWT", "\"$appJWT\"")
         }
     }
     compileOptions {

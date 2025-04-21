@@ -3,7 +3,6 @@ package br.com.fitnesspro.common.repository
 import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.room.Transaction
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.core.extensions.isNetworkAvailable
@@ -85,10 +84,11 @@ class PersonRepository(
         }
     }
 
-    @Transaction
     suspend fun savePersonBatch(toPersons: List<TOPerson>) = withContext(IO) {
-        savePersonBatchLocally(toPersons)
-        savePersonBatchRemote(toPersons)
+        runInTransaction {
+            savePersonBatchLocally(toPersons)
+            savePersonBatchRemote(toPersons)
+        }
     }
 
     private suspend fun savePersonBatchLocally(toPersons: List<TOPerson>) {
@@ -129,31 +129,29 @@ class PersonRepository(
     }
 
     private suspend fun savePersonBatchRemote(toPersons: List<TOPerson>) {
-        getAuthenticatedUser()?.serviceToken?.let { token ->
-            val users = mutableListOf<User>()
-            val persons = mutableListOf<Person>()
+        val users = mutableListOf<User>()
+        val persons = mutableListOf<Person>()
 
-            toPersons.forEach { toPerson ->
-                val user = personModelMapper.getUser(toPerson.user!!)
-                val person = personModelMapper.getPerson(toPerson)
+        toPersons.forEach { toPerson ->
+            val user = personModelMapper.getUser(toPerson.user!!)
+            val person = personModelMapper.getPerson(toPerson)
 
-                users.add(user)
-                persons.add(person)
-            }
+            users.add(user)
+            persons.add(person)
+        }
 
-            val response = personWebClient.savePersonBatch(
-                token = token,
-                persons = persons,
-                users = users
-            )
+        val response = personWebClient.savePersonBatch(
+            token = getValidToken(),
+            persons = persons,
+            users = users
+        )
 
-            if (response.success) {
-                val transmittedUsers = users.map { it.copy(transmissionState = EnumTransmissionState.TRANSMITTED) }
-                val transmittedPersons = persons.map { it.copy(transmissionState = EnumTransmissionState.TRANSMITTED) }
+        if (response.success) {
+            val transmittedUsers = users.map { it.copy(transmissionState = EnumTransmissionState.TRANSMITTED) }
+            val transmittedPersons = persons.map { it.copy(transmissionState = EnumTransmissionState.TRANSMITTED) }
 
-                userDAO.updateBatch(transmittedUsers)
-                personDAO.updateBatch(transmittedPersons)
-            }
+            userDAO.updateBatch(transmittedUsers)
+            personDAO.updateBatch(transmittedPersons)
         }
     }
 
@@ -205,7 +203,11 @@ class PersonRepository(
 
     suspend fun findPersonByEmailRemote(email: String): TOPerson? = withContext(IO) {
         if (context.isNetworkAvailable()) {
-            val response =  personWebClient.findPersonByEmail(email)
+            val response =  personWebClient.findPersonByEmail(
+                token = getValidToken(),
+                email = email
+            )
+
             if (response.success) personModelMapper.getTOPerson(response.value!!) else null
         } else {
             null

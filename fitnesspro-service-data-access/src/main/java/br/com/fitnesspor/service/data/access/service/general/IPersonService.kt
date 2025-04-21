@@ -68,6 +68,9 @@ interface IPersonService {
     ): Response<ImportationServiceResponse<PersonAcademyTimeDTO>>
 
     @GET("$PERSON$PERSON_EMAIL/{email}")
-    suspend fun findPersonByEmail(@Path("email") email: String): Response<SingleValueServiceResponse<PersonDTO?>>
+    suspend fun findPersonByEmail(
+        @Header("Authorization") token: String,
+        @Path("email") email: String
+    ): Response<SingleValueServiceResponse<PersonDTO?>>
 
 }

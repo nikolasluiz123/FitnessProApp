@@ -6,6 +6,7 @@ import br.com.fitnesspro.common.injection.ISyncRepositoryEntryPoint
 import br.com.fitnesspro.core.worker.FitnessProOneTimeCoroutineWorker
 import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
 import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
 import dagger.hilt.android.EntryPointAccessors
 
 abstract class AbstractSyncWorker(
@@ -17,6 +18,14 @@ abstract class AbstractSyncWorker(
     protected val userRepository = repositoryEntryPoint.getUserRepository()
 
     protected abstract fun getModule(): EnumSyncModule
+
+    protected suspend fun getValidTokenOrNull(): String? {
+        return try {
+            userRepository.getValidToken()
+        } catch (_: ExpiredTokenException) {
+            null
+        }
+    }
 
     abstract suspend fun onSyncWithTransaction()
 

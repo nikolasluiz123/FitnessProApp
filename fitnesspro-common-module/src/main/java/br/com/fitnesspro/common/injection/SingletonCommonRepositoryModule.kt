@@ -6,7 +6,10 @@ import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWeb
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.AcademyRepository
+import br.com.fitnesspro.common.repository.ApplicationRepository
+import br.com.fitnesspro.common.repository.DeviceRepository
 import br.com.fitnesspro.common.repository.PersonRepository
+import br.com.fitnesspro.common.repository.ServiceTokenRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.repository.sync.exportation.PersonAcademyTimeExportationRepository
 import br.com.fitnesspro.common.repository.sync.exportation.PersonExportationRepository
@@ -19,13 +22,19 @@ import br.com.fitnesspro.common.repository.sync.importation.UserImportationRepos
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
+import br.com.fitnesspro.local.data.access.dao.ApplicationDAO
+import br.com.fitnesspro.local.data.access.dao.DeviceDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
+import br.com.fitnesspro.local.data.access.dao.ServiceTokenDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.mappers.AcademyModelMapper
+import br.com.fitnesspro.mappers.ApplicationModelMapper
+import br.com.fitnesspro.mappers.DeviceModelMapper
 import br.com.fitnesspro.mappers.PersonModelMapper
 import br.com.fitnesspro.mappers.SchedulerModelMapper
+import br.com.fitnesspro.mappers.ServiceTokenModelMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,7 +53,9 @@ class SingletonCommonRepositoryModule {
         firebaseGoogleAuthenticationService: FirebaseGoogleAuthenticationService,
         authenticationWebClient: AuthenticationWebClient,
         personRepository: PersonRepository,
-        personModelMapper: PersonModelMapper
+        personModelMapper: PersonModelMapper,
+        deviceRepository: DeviceRepository,
+        serviceTokenRepository: ServiceTokenRepository
     ): UserRepository {
         return UserRepository(
             userDAO = userDAO,
@@ -53,7 +64,9 @@ class SingletonCommonRepositoryModule {
             authenticationWebClient = authenticationWebClient,
             context = context,
             personRepository = personRepository,
-            personModelMapper = personModelMapper
+            personModelMapper = personModelMapper,
+            deviceRepository = deviceRepository,
+            serviceTokenRepository = serviceTokenRepository
         )
     }
 
@@ -202,6 +215,49 @@ class SingletonCommonRepositoryModule {
             schedulerWebClient = schedulerWebClient,
             schedulerConfigDAO = schedulerConfigDAO,
             context = context
+        )
+    }
+
+    @Provides
+    fun provideDeviceRepository(
+        @ApplicationContext context: Context,
+        deviceDAO: DeviceDAO,
+        deviceModelMapper: DeviceModelMapper
+    ): DeviceRepository {
+        return DeviceRepository(
+            context = context,
+            deviceDAO = deviceDAO,
+            deviceModelMapper = deviceModelMapper
+        )
+    }
+
+    @Provides
+    fun provideApplicationRepository(
+        @ApplicationContext context: Context,
+        applicationDAO: ApplicationDAO,
+        applicationModelMapper: ApplicationModelMapper
+    ): ApplicationRepository {
+        return ApplicationRepository(
+            context = context,
+            applicationDAO = applicationDAO,
+            applicationModelMapper = applicationModelMapper
+        )
+    }
+
+    @Provides
+    fun provideServiceTokenRepository(
+        @ApplicationContext context: Context,
+        deviceRepository: DeviceRepository,
+        applicationRepository: ApplicationRepository,
+        serviceTokenDAO: ServiceTokenDAO,
+        serviceTokenModelMapper: ServiceTokenModelMapper
+    ): ServiceTokenRepository {
+        return ServiceTokenRepository(
+            context = context,
+            deviceRepository = deviceRepository,
+            applicationRepository = applicationRepository,
+            serviceTokenDAO = serviceTokenDAO,
+            serviceTokenModelMapper = serviceTokenModelMapper
         )
     }
 }

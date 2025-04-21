@@ -37,7 +37,10 @@ class SchedulerConfigRepository(
     }
 
     private suspend fun saveSchedulerConfigRemote(schedulerConfig: SchedulerConfig) {
-        val response = schedulerWebClient.saveSchedulerConfig(schedulerConfig = schedulerConfig)
+        val response = schedulerWebClient.saveSchedulerConfig(
+            token = getValidToken(),
+            schedulerConfig = schedulerConfig
+        )
 
         if (response.success) {
             schedulerConfigDAO.update(schedulerConfig.copy(transmissionState = EnumTransmissionState.TRANSMITTED))
@@ -73,12 +76,10 @@ class SchedulerConfigRepository(
     }
 
     private suspend fun saveSchedulerConfigBatchRemote(toSchedulerConfigs: List<TOSchedulerConfig>) {
-        getAuthenticatedUser()?.serviceToken?.let { token ->
-            schedulerWebClient.saveSchedulerConfigBatch(
-                token = token,
-                schedulerConfigList = toSchedulerConfigs.map(schedulerModelMapper::getSchedulerConfig)
-            )
-        }
+        schedulerWebClient.saveSchedulerConfigBatch(
+            token = getValidToken(),
+            schedulerConfigList = toSchedulerConfigs.map(schedulerModelMapper::getSchedulerConfig)
+        )
     }
 
     suspend fun getTOSchedulerConfigByPersonId(personId: String): TOSchedulerConfig? = withContext(IO) {

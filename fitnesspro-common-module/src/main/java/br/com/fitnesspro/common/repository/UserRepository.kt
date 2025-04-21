@@ -3,6 +3,7 @@ package br.com.fitnesspro.common.repository
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
+import br.com.fitnesspro.common.BuildConfig
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.core.extensions.PreferencesKey
 import br.com.fitnesspro.core.extensions.dataStore
@@ -12,7 +13,7 @@ import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticatio
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.mappers.PersonModelMapper
 import br.com.fitnesspro.model.general.User
-import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
+import br.com.fitnesspro.shared.communication.dtos.general.AuthenticationDTO
 import br.com.fitnesspro.to.TOUser
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -27,7 +28,9 @@ class UserRepository(
     private val firebaseGoogleAuthenticationService: FirebaseGoogleAuthenticationService,
     private val authenticationWebClient: AuthenticationWebClient,
     private val personRepository: PersonRepository,
-    private val personModelMapper: PersonModelMapper
+    private val personModelMapper: PersonModelMapper,
+    private val deviceRepository: DeviceRepository,
+    private val serviceTokenRepository: ServiceTokenRepository
 ): FitnessProRepository(context) {
 
     suspend fun hasUserWithEmail(email: String, userId: String?): Boolean = withContext(IO) {
@@ -60,23 +63,32 @@ class UserRepository(
     }
 
     private suspend fun authenticateRemote(email: String, password: String) {
-        val response = authenticationWebClient.authenticate(email, password)
+        runInTransaction {
+            val authenticationDTO = getAuthenticationDTO(email, password)
 
-        if (response.success) {
-            updateUserServiceToken(email, response)
-        } else if (response.code == HTTP_NOT_FOUND && context.isNetworkAvailable()) {
-            savePersonRemoteAndAuthenticateAgain(email, password)
+            val response = authenticationWebClient.authenticate(
+                token = getValidToken(),
+                authenticationDTO = authenticationDTO
+            )
+
+            if (response.success) {
+                serviceTokenRepository.saveTokenInformation(response.tokens)
+            } else if (response.code == HTTP_NOT_FOUND && context.isNetworkAvailable()) {
+                savePersonRemoteAndAuthenticateAgain(email, password)
+            }
         }
     }
 
-    private suspend fun updateUserServiceToken(
-        email: String,
-        response: AuthenticationServiceResponse
-    ) {
-        userDAO.findByEmail(email)!!.also { user ->
-            user.serviceToken = response.token!!
-            userDAO.update(user)
-        }
+    private suspend fun getAuthenticationDTO(email: String, password: String): AuthenticationDTO {
+        val deviceDTO = deviceRepository.getDeviceDTO()
+
+        val authenticationDTO = AuthenticationDTO(
+            email = email,
+            password = password,
+            deviceDTO = deviceDTO,
+            applicationJWT = BuildConfig.APP_JWT
+        )
+        return authenticationDTO
     }
 
     private suspend fun savePersonRemoteAndAuthenticateAgain(email: String, password: String) {
@@ -104,7 +116,6 @@ class UserRepository(
         userDAO.findByEmail(email)
     }
 
-
     suspend fun logout() = withContext(IO) {
         context.dataStore.edit {
             it.remove(PreferencesKey.USER)
@@ -113,11 +124,14 @@ class UserRepository(
         firebaseDefaultAuthenticationService.logout()
 
         getAuthenticatedUser()?.let { user ->
-            authenticationWebClient.logout(
-                token = user.serviceToken!!,
-                email = user.email!!,
-                password = user.password!!
+            val response = authenticationWebClient.logout(
+                token = getValidToken(),
+                authenticationDTO = getAuthenticationDTO(user.email!!, user.password!!)
             )
+
+            if (response.success) {
+                serviceTokenRepository.saveTokenInformation(response.tokens)
+            }
         }
     }
 }

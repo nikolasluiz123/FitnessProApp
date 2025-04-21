@@ -64,4 +64,15 @@ class DatabaseModule {
     @Singleton
     fun provideSyncHistoryDao(appDatabase: AppDatabase) = appDatabase.syncHistoryDAO()
 
+    @Provides
+    @Singleton
+    fun provideDeviceDao(appDatabase: AppDatabase) = appDatabase.deviceDAO()
+
+    @Provides
+    @Singleton
+    fun provideApplicationDao(appDatabase: AppDatabase) = appDatabase.applicationDAO()
+
+    @Provides
+    @Singleton
+    fun provideServiceTokenDao(appDatabase: AppDatabase) = appDatabase.serviceTokenDAO()
 }

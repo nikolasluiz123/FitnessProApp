@@ -5,14 +5,20 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import br.com.fitnesspro.local.data.access.converters.RoomTypeConverters
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
+import br.com.fitnesspro.local.data.access.dao.ApplicationDAO
+import br.com.fitnesspro.local.data.access.dao.DeviceDAO
 import br.com.fitnesspro.local.data.access.dao.ImportationHistoryDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
+import br.com.fitnesspro.local.data.access.dao.ServiceTokenDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
+import br.com.fitnesspro.model.authentication.Application
+import br.com.fitnesspro.model.authentication.Device
+import br.com.fitnesspro.model.authentication.ServiceToken
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.PersonAcademyTime
@@ -40,14 +46,15 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 
 @Database(
-    version = 16,
+    version = 17,
     entities = [
         User::class, Person::class, Academy::class, PersonAcademyTime::class, PhysicEvaluation::class,
         IngredientPreDefinition::class, MealOptionPreDefinition::class, Diet::class, DayWeekDiet::class, Meal::class,
         MealOption::class, Ingredient::class, Scheduler::class, SchedulerConfig::class, ExerciseExecution::class,
         VideoExerciseExecution::class, ExercisePreDefinition::class, VideoExercisePreDefinition::class,
         WorkoutGroupPreDefinition::class, Exercise::class, Video::class, VideoExercise::class,
-        Workout::class, WorkoutGroup::class, ImportationHistory::class
+        Workout::class, WorkoutGroup::class, ImportationHistory::class, ServiceToken::class, Device::class,
+        Application::class
     ],
     exportSchema = true
 )
@@ -71,5 +78,11 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun workoutGroupDAO(): WorkoutGroupDAO
 
     abstract fun syncHistoryDAO(): ImportationHistoryDAO
+
+    abstract fun deviceDAO(): DeviceDAO
+
+    abstract fun applicationDAO(): ApplicationDAO
+
+    abstract fun serviceTokenDAO(): ServiceTokenDAO
 
 }

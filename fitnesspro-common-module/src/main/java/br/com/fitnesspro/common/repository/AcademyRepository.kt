@@ -5,11 +5,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
-import br.com.fitnesspro.mappers.AcademyModelMapper
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDecorator
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
+import br.com.fitnesspro.mappers.AcademyModelMapper
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.to.TOPersonAcademyTime
@@ -46,15 +46,13 @@ class AcademyRepository(
     }
 
     private suspend fun savePersonAcademyTimeRemote(personAcademyTime: PersonAcademyTime) {
-        getAuthenticatedUser()?.serviceToken?.let { token ->
-            val response = personWebClient.savePersonAcademyTime(
-                token = token,
-                personAcademyTime = personAcademyTime
-            )
+        val response = personWebClient.savePersonAcademyTime(
+            token = getValidToken(),
+            personAcademyTime = personAcademyTime
+        )
 
-            if (response.success) {
-                personAcademyTimeDAO.update(personAcademyTime.copy(transmissionState = EnumTransmissionState.TRANSMITTED))
-            }
+        if (response.success) {
+            personAcademyTimeDAO.update(personAcademyTime.copy(transmissionState = EnumTransmissionState.TRANSMITTED))
         }
     }
 
@@ -154,21 +152,19 @@ class AcademyRepository(
     }
 
     private suspend fun savePersonAcademyTimeBatchRemote(toPersonAcademyTimeList: List<TOPersonAcademyTime>) {
-        getAuthenticatedUser()?.serviceToken?.let { token ->
-            val personAcademyTimeList = toPersonAcademyTimeList.map(academyModelMapper::getPersonAcademyTime)
+        val personAcademyTimeList = toPersonAcademyTimeList.map(academyModelMapper::getPersonAcademyTime)
 
-            val response = personWebClient.savePersonAcademyTimeBatch(
-                token = token,
-                personAcademyTimeList = personAcademyTimeList
+        val response = personWebClient.savePersonAcademyTimeBatch(
+            token = getValidToken(),
+            personAcademyTimeList = personAcademyTimeList
+        )
+
+        if (response.success) {
+            personAcademyTimeDAO.updateBatch(
+                models = personAcademyTimeList.map {
+                    it.copy(transmissionState = EnumTransmissionState.TRANSMITTED)
+                }
             )
-
-            if (response.success) {
-                personAcademyTimeDAO.updateBatch(
-                    models = personAcademyTimeList.map { 
-                        it.copy(transmissionState = EnumTransmissionState.TRANSMITTED)
-                    }
-                )
-            }
         }
     }
 

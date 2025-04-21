@@ -33,7 +33,10 @@ interface ISchedulerService {
     ): Response<ExportationServiceResponse>
 
     @POST("$SCHEDULER$SCHEDULER_CONFIG")
-    suspend fun saveSchedulerConfig(@Body schedulerConfigDTO: SchedulerConfigDTO): Response<PersistenceServiceResponse<SchedulerConfigDTO>>
+    suspend fun saveSchedulerConfig(
+        @Header("Authorization") token: String,
+        @Body schedulerConfigDTO: SchedulerConfigDTO
+    ): Response<PersistenceServiceResponse<SchedulerConfigDTO>>
 
     @POST("$SCHEDULER$SCHEDULER_CONFIG_EXPORT")
     suspend fun saveSchedulerConfigBatch(

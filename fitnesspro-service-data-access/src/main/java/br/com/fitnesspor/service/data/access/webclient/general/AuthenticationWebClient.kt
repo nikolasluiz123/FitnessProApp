@@ -12,28 +12,16 @@ class AuthenticationWebClient(
     private val authenticationService: IAuthenticationService
 ): FitnessProWebClient(context) {
 
-    suspend fun authenticate(email: String, password: String): AuthenticationServiceResponse {
-        val authenticationDTO = AuthenticationDTO(
-            email = email,
-            password = password
-        )
-
-        val response = authenticationServiceErrorHandlingBlock(
+    suspend fun authenticate(token: String, authenticationDTO: AuthenticationDTO): AuthenticationServiceResponse {
+        return authenticationServiceErrorHandlingBlock(
             codeBlock = {
-                authenticationService.authenticate(authenticationDTO).getResponseBody()
+                authenticationService.authenticate(token, authenticationDTO).getResponseBody()
             }
         )
-
-        return response
     }
 
-    suspend fun logout(token: String, email: String, password: String) {
-        val authenticationDTO = AuthenticationDTO(
-            email = email,
-            password = password
-        )
-
-        serviceErrorHandlingBlock(
+    suspend fun logout(token: String, authenticationDTO: AuthenticationDTO): AuthenticationServiceResponse {
+        return authenticationServiceErrorHandlingBlock(
             codeBlock = {
                 authenticationService.logout(token, authenticationDTO).getResponseBody()
             }

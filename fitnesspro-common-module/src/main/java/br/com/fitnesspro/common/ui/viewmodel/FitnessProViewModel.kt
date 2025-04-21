@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
+import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
@@ -17,8 +18,17 @@ abstract class FitnessProViewModel : ViewModel() {
     }
 
     protected fun onError(throwable: Throwable) {
-        throwable.sendToFirebaseCrashlytics()
-        Log.e(TAG, throwable.message, throwable)
+        when (throwable) {
+            is ExpiredTokenException -> {
+                // TODO - Fazer alguma coisa para exibir a tela de login
+                Log.e(TAG, throwable.message, throwable)
+            }
+
+            else -> {
+                throwable.sendToFirebaseCrashlytics()
+                Log.e(TAG, throwable.message, throwable)
+            }
+        }
     }
 
     fun launch(block: suspend () -> Unit) = viewModelScope.launch(exceptionHandler) {

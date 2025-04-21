@@ -138,10 +138,10 @@ class PersonWebClient(
         )
     }
 
-    suspend fun findPersonByEmail(email: String): SingleValueServiceResponse<PersonDTO?> {
+    suspend fun findPersonByEmail(token: String, email: String): SingleValueServiceResponse<PersonDTO?> {
         return singleValueErrorHandlingBlock(
             codeBlock = {
-                personService.findPersonByEmail(email).getResponseBody(PersonDTO::class.java)
+                personService.findPersonByEmail(formatToken(token), email).getResponseBody(PersonDTO::class.java)
             }
         )
     }

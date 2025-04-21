@@ -11,7 +11,7 @@ abstract class AbstractExportationWorker(
     abstract suspend fun onExport(serviceToken: String)
 
     override suspend fun onSyncWithTransaction() {
-        userRepository.getAuthenticatedUser()?.serviceToken?.let { serviceToken ->
+        getValidTokenOrNull()?.let { serviceToken ->
             onExport(serviceToken)
         }
     }

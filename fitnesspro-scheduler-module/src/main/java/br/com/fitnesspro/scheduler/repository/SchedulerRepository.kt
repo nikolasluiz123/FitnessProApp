@@ -60,16 +60,14 @@ class SchedulerRepository(
         scheduler: Scheduler,
         schedulerType: EnumSchedulerType
     ) {
-        userRepository.getAuthenticatedTOUser()?.serviceToken?.let { token ->
-            val response = schedulerWebClient.saveScheduler(
-                token = token,
-                scheduler = scheduler,
-                schedulerType = schedulerType.name
-            )
+        val response = schedulerWebClient.saveScheduler(
+            token = getValidToken(),
+            scheduler = scheduler,
+            schedulerType = schedulerType.name
+        )
 
-            if (response.success) {
-                schedulerDAO.update(scheduler.copy(transmissionState = EnumTransmissionState.TRANSMITTED))
-            }
+        if (response.success) {
+            schedulerDAO.update(scheduler.copy(transmissionState = EnumTransmissionState.TRANSMITTED))
         }
     }
 
@@ -142,15 +140,13 @@ class SchedulerRepository(
             workoutGroupDAO.insertBatch(workoutGroups)
         }
 
-        userRepository.getAuthenticatedTOUser()?.let { user ->
-            schedulerWebClient.saveScheduler(
-                token = user.serviceToken!!,
-                scheduler = schedulers.first(),
-                schedulerType = EnumSchedulerType.RECURRENT.name,
-                dateStart = workout.dateStart,
-                dateEnd = workout.dateEnd,
-                dayWeeks = workoutGroups.map { it.dayWeek!! }
-            )
-        }
+        schedulerWebClient.saveScheduler(
+            token = getValidToken(),
+            scheduler = schedulers.first(),
+            schedulerType = EnumSchedulerType.RECURRENT.name,
+            dateStart = workout.dateStart,
+            dateEnd = workout.dateEnd,
+            dayWeeks = workoutGroups.map { it.dayWeek!! }
+        )
     }
 }
