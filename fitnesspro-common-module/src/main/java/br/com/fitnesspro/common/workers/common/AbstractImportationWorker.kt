@@ -15,7 +15,7 @@ abstract class AbstractImportationWorker(
     abstract suspend fun onImport(serviceToken: String, lastUpdateDate: LocalDateTime?)
 
     override suspend fun onSyncWithTransaction() {
-        getValidTokenOrNull()?.let { serviceToken ->
+        getValidUserTokenOrNull()?.let { serviceToken ->
             insertImportationHistory()
             val lastUpdateDate = importationHistoryDAO.getImportationHistory(getModule())?.date
 

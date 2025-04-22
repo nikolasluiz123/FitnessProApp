@@ -35,9 +35,10 @@ abstract class FitnessProRepository(protected val context: Context) {
         }
     }
 
-    private suspend fun getValidUserToken(): String? {
-        val userId = getAuthenticatedUser()?.id!!
-        return entryPoint.getServiceTokenDAO().findValidTokenByUserId(userId)
+    suspend fun getValidUserToken(): String? {
+        return getAuthenticatedUser()?.id?.let {
+            entryPoint.getServiceTokenDAO().findValidTokenByUserId(it)
+        }
     }
 
     private suspend fun getValidDeviceToken(): String? {
