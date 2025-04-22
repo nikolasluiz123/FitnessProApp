@@ -11,7 +11,7 @@ import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.UserDAO
-import br.com.fitnesspro.mappers.PersonModelMapper
+import br.com.fitnesspro.mappers.getTOUser
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.shared.communication.dtos.general.AuthenticationDTO
 import br.com.fitnesspro.to.TOUser
@@ -28,7 +28,6 @@ class UserRepository(
     private val firebaseGoogleAuthenticationService: FirebaseGoogleAuthenticationService,
     private val authenticationWebClient: AuthenticationWebClient,
     private val personRepository: PersonRepository,
-    private val personModelMapper: PersonModelMapper,
     private val deviceRepository: DeviceRepository,
     private val serviceTokenRepository: ServiceTokenRepository
 ): FitnessProRepository(context) {
@@ -80,15 +79,12 @@ class UserRepository(
     }
 
     private suspend fun getAuthenticationDTO(email: String, password: String): AuthenticationDTO {
-        val deviceDTO = deviceRepository.getDeviceDTO()
-
-        val authenticationDTO = AuthenticationDTO(
+        return AuthenticationDTO(
             email = email,
             password = password,
-            deviceDTO = deviceDTO,
+            deviceDTO = deviceRepository.getDeviceDTO(),
             applicationJWT = BuildConfig.APP_JWT
         )
-        return authenticationDTO
     }
 
     private suspend fun savePersonRemoteAndAuthenticateAgain(email: String, password: String) {
@@ -105,7 +101,7 @@ class UserRepository(
     }
 
     suspend fun getAuthenticatedTOUser(): TOUser? = withContext(IO) {
-        getAuthenticatedUser()?.let(personModelMapper::getTOUser)
+        getAuthenticatedUser()?.let(User::getTOUser)
     }
 
     suspend fun findUserById(userId: String): User? = withContext(IO) {

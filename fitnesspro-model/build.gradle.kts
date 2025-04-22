@@ -34,7 +34,6 @@ android {
 dependencies {
     implementation(project(":fitnesspro-core"))
 
-    implementation(libs.model.mapper)
     implementation(libs.fitnesspro.shared.communication)
 
     implementation(libs.hilt.android)

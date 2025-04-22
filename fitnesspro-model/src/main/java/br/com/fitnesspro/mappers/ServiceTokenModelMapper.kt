@@ -1,34 +1,27 @@
 package br.com.fitnesspro.mappers
 
 import br.com.fitnesspro.model.authentication.ServiceToken
+import br.com.fitnesspro.model.enums.EnumTokenType
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.ServiceTokenDTO
+import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType as EnumServiceTokenType
 
-class ServiceTokenModelMapper: AbstractModelMapper() {
+fun ServiceTokenDTO.getServiceToken(): ServiceToken {
+    return ServiceToken(
+        id = id!!,
+        userId = user?.id,
+        applicationId = application?.id,
+        deviceId = device?.id,
+        jwtToken = jwtToken,
+        type = getTokenType(type!!),
+        expirationDate = expirationDate,
+        creationDate = creationDate
+    )
+}
 
-    init {
-        mapper.typeMap(ServiceTokenDTO::class.java, ServiceToken::class.java).addMappings { mapper ->
-            mapper.map(
-                { to: ServiceTokenDTO -> to.user?.id },
-                { serviceToken: ServiceToken, value: String? -> serviceToken.userId = value }
-            )
-        }
-
-        mapper.typeMap(ServiceTokenDTO::class.java, ServiceToken::class.java).addMappings { mapper ->
-            mapper.map(
-                { to: ServiceTokenDTO -> to.device?.id },
-                { serviceToken: ServiceToken, value: String? -> serviceToken.deviceId = value }
-            )
-        }
-
-        mapper.typeMap(ServiceTokenDTO::class.java, ServiceToken::class.java).addMappings { mapper ->
-            mapper.map(
-                { to: ServiceTokenDTO -> to.application?.id },
-                { serviceToken: ServiceToken, value: String? -> serviceToken.applicationId = value }
-            )
-        }
-    }
-
-    fun getServiceToken(serviceTokenDTO: ServiceTokenDTO): ServiceToken {
-        return mapper.map(serviceTokenDTO, ServiceToken::class.java)
+private fun getTokenType(type: EnumServiceTokenType): EnumTokenType {
+    return when (type) {
+        EnumServiceTokenType.USER_AUTHENTICATION_TOKEN -> EnumTokenType.USER_AUTHENTICATION_TOKEN
+        EnumServiceTokenType.DEVICE_TOKEN -> EnumTokenType.DEVICE_TOKEN
+        EnumServiceTokenType.APPLICATION_TOKEN -> EnumTokenType.APPLICATION_TOKEN
     }
 }

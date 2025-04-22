@@ -11,9 +11,6 @@ import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
-import br.com.fitnesspro.mappers.AcademyModelMapper
-import br.com.fitnesspro.mappers.PersonModelMapper
-import br.com.fitnesspro.mappers.SchedulerModelMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,14 +47,10 @@ class SingletonWebClientModule {
     fun providePersonWebClient(
         @ApplicationContext context: Context,
         personService: IPersonService,
-        academyModelMapper: AcademyModelMapper,
-        personModelMapper: PersonModelMapper
     ): PersonWebClient {
         return PersonWebClient(
             context = context,
             personService = personService,
-            academyModelMapper = academyModelMapper,
-            personModelMapper = personModelMapper
         )
     }
 
@@ -65,12 +58,10 @@ class SingletonWebClientModule {
     fun provideSchedulerWebClient(
         @ApplicationContext context: Context,
         schedulerService: ISchedulerService,
-        schedulerModelMapper: SchedulerModelMapper
     ): SchedulerWebClient {
         return SchedulerWebClient(
             context = context,
             schedulerService = schedulerService,
-            schedulerModelMapper = schedulerModelMapper
         )
     }
 

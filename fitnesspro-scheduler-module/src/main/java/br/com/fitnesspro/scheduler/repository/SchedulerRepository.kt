@@ -8,7 +8,8 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
-import br.com.fitnesspro.mappers.SchedulerModelMapper
+import br.com.fitnesspro.mappers.getScheduler
+import br.com.fitnesspro.mappers.getTOScheduler
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
@@ -31,14 +32,13 @@ class SchedulerRepository(
     private val userRepository: UserRepository,
     private val personRepository: PersonRepository,
     private val schedulerWebClient: SchedulerWebClient,
-    private val schedulerModelMapper: SchedulerModelMapper
 ): FitnessProRepository(context) {
 
     suspend fun saveScheduler(
         toScheduler: TOScheduler,
         schedulerType: EnumSchedulerType
     ) = withContext(IO) {
-        val scheduler = schedulerModelMapper.getScheduler(toScheduler)
+        val scheduler = toScheduler.getScheduler()
 
         saveSchedulerLocally(toScheduler, scheduler)
         saveSchedulerRemote(scheduler, schedulerType)
@@ -93,8 +93,7 @@ class SchedulerRepository(
         val professionalPerson = personRepository.findPersonById(scheduler.professionalPersonId!!)
         val professionalUser = userRepository.findUserById(professionalPerson.userId!!)!!
 
-        schedulerModelMapper.getTOScheduler(
-            scheduler = scheduler,
+        scheduler.getTOScheduler(
             memberPersonName = memberPerson.name!!,
             professionalPersonName = professionalPerson.name!!,
             professionalUserType = professionalUser.type!!
@@ -121,7 +120,7 @@ class SchedulerRepository(
 
 
     suspend fun saveRecurrentScheduler(schedules: List<TOScheduler>) = withContext(IO) {
-        val schedulers = schedules.map(schedulerModelMapper::getScheduler).sortedBy(Scheduler::scheduledDate)
+        val schedulers = schedules.map { it.getScheduler() }.sortedBy(Scheduler::scheduledDate)
 
         val workout = Workout(
             academyMemberPersonId = schedules.first().academyMemberPersonId,

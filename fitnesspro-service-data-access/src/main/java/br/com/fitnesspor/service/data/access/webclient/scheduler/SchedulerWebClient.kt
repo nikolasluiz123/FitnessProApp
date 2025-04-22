@@ -5,7 +5,8 @@ import br.com.fitnesspor.service.data.access.extensions.getResponseBody
 import br.com.fitnesspor.service.data.access.service.scheduler.ISchedulerService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
 import br.com.fitnesspro.core.extensions.defaultGSon
-import br.com.fitnesspro.mappers.SchedulerModelMapper
+import br.com.fitnesspro.mappers.getSchedulerConfigDTO
+import br.com.fitnesspro.mappers.getSchedulerDTO
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
@@ -22,7 +23,6 @@ import java.time.LocalDate
 class SchedulerWebClient(
     context: Context,
     private val schedulerService: ISchedulerService,
-    private val schedulerModelMapper: SchedulerModelMapper
 ): FitnessProWebClient(context) {
 
     suspend fun saveScheduler(
@@ -35,8 +35,7 @@ class SchedulerWebClient(
     ): PersistenceServiceResponse<SchedulerDTO> {
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
-                val schedulerDTO = schedulerModelMapper.getSchedulerDTO(
-                    scheduler = scheduler,
+                val schedulerDTO = scheduler.getSchedulerDTO(
                     schedulerType = schedulerType,
                     dateStart = dateStart,
                     dateEnd = dateEnd,
@@ -59,8 +58,7 @@ class SchedulerWebClient(
         return exportationServiceErrorHandlingBlock(
             codeBlock = {
                 val listSchedulerDTO = schedulerList.map {
-                    schedulerModelMapper.getSchedulerDTO(
-                        scheduler = it,
+                    it.getSchedulerDTO(
                         schedulerType = schedulerType,
                         dateStart = null,
                         dateEnd = null,
@@ -81,7 +79,7 @@ class SchedulerWebClient(
             codeBlock = {
                 schedulerService.saveSchedulerConfig(
                     token = formatToken(token),
-                    schedulerConfigDTO = schedulerModelMapper.getSchedulerConfigDTO(schedulerConfig),
+                    schedulerConfigDTO = schedulerConfig.getSchedulerConfigDTO(),
                 ).getResponseBody(SchedulerConfigDTO::class.java)
             }
         )
@@ -92,7 +90,7 @@ class SchedulerWebClient(
             codeBlock = {
                 schedulerService.saveSchedulerConfigBatch(
                     token = token,
-                    schedulerConfigDTOList = schedulerConfigList.map(schedulerModelMapper::getSchedulerConfigDTO)
+                    schedulerConfigDTOList = schedulerConfigList.map(SchedulerConfig::getSchedulerConfigDTO)
                 ).getResponseBody()
             }
         )

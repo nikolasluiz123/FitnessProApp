@@ -1,67 +1,141 @@
 package br.com.fitnesspro.mappers
 
+import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
+import br.com.fitnesspro.shared.communication.enums.general.EnumUserType as EnumUserTypeService
 
-class PersonModelMapper: AbstractModelMapper() {
+fun Person.getTOPerson(user: User): TOPerson {
+    return TOPerson(
+        id = id,
+        name = name,
+        birthDate = birthDate,
+        phone = phone,
+        user = user.getTOUser(),
+        active = active,
+    )
+}
 
-    init {
-        mapper.typeMap(TOPerson::class.java, Person::class.java).addMappings { mapper ->
-            mapper.map(
-                { to: TOPerson -> to.user?.id },
-                { person: Person, value: String? -> person.userId = value }
-            )
-        }
+fun PersonDTO.getTOPerson(): TOPerson {
+    return TOPerson(
+        id = id,
+        name = name,
+        birthDate = birthDate,
+        phone = phone,
+        active = active,
+        user = user?.getTOUser(),
+    )
+}
 
-        mapper.typeMap(PersonDTO::class.java, Person::class.java).addMappings { mapper ->
-            mapper.map(
-                { to: PersonDTO -> to.user?.id },
-                { person: Person, value: String? -> person.userId = value }
-            )
-        }
+fun TOPerson.getPerson(): Person {
+    val model = Person(
+        name = name,
+        birthDate = birthDate,
+        phone = phone,
+        active = active,
+        userId = user?.id,
+    )
+
+    id?.let { model.id = it }
+
+    return model
+}
+
+fun PersonDTO.getPerson(): Person {
+    return Person(
+        id = id!!,
+        name = name,
+        birthDate = birthDate,
+        phone = phone,
+        active = active,
+        userId = user?.id,
+        transmissionState = EnumTransmissionState.TRANSMITTED
+    )
+}
+
+fun Person.getPersonDTO(user: User): PersonDTO {
+    return PersonDTO(
+        id = id,
+        name = name,
+        birthDate = birthDate,
+        phone = phone,
+        active = active,
+        user = user.getUserDTO(),
+    )
+}
+
+fun User.getTOUser(): TOUser {
+    return TOUser(
+        id = id,
+        email = email,
+        password = password,
+        active = active,
+        type = type,
+    )
+}
+
+fun User.getUserDTO(): UserDTO {
+    return UserDTO(
+        id = id,
+        email = email,
+        password = password,
+        active = active,
+        type = getServiceUserType(type!!)
+    )
+}
+
+fun TOUser.getUser(): User {
+    val model = User(
+        email = email,
+        password = password,
+        active = active,
+        type = type,
+    )
+
+    id?.let { model.id = it }
+
+    return model
+}
+
+fun UserDTO.getUser(): User {
+    return User(
+        id = id!!,
+        email = email,
+        password = password,
+        active = active,
+        type = getUserType(type!!),
+        transmissionState = EnumTransmissionState.TRANSMITTED
+    )
+}
+
+fun UserDTO.getTOUser(): TOUser {
+    return TOUser(
+        id = id,
+        email = email,
+        password = password,
+        active = active,
+        type = getUserType(type!!),
+    )
+}
+
+fun getServiceUserType(type: EnumUserType): EnumUserTypeService {
+    return when (type) {
+        EnumUserType.PERSONAL_TRAINER -> EnumUserTypeService.PERSONAL_TRAINER
+        EnumUserType.NUTRITIONIST -> EnumUserTypeService.NUTRITIONIST
+        EnumUserType.ACADEMY_MEMBER -> EnumUserTypeService.ACADEMY_MEMBER
     }
+}
 
-    fun getTOPerson(person: Person, user: User): TOPerson {
-        return mapper.map(person, TOPerson::class.java).copy(user = getTOUser(user))
-    }
-
-    fun getTOPerson(personDTO: PersonDTO): TOPerson {
-        return mapper.map(personDTO, TOPerson::class.java)
-    }
-
-    fun getPerson(toPerson: TOPerson): Person {
-        return mapper.map(toPerson, Person::class.java).apply {
-            toPerson.id?.let { id = it }
-        }
-    }
-
-    fun getPerson(personDTO: PersonDTO): Person {
-        return mapper.map(personDTO, Person::class.java)
-    }
-
-    fun getPersonDTO(person: Person, user: User): PersonDTO {
-        return mapper.map(person, PersonDTO::class.java).copy(user = getUserDTO(user))
-    }
-
-    fun getTOUser(user: User): TOUser {
-        return mapper.map(user, TOUser::class.java)
-    }
-
-    fun getUserDTO(user: User): UserDTO {
-        return mapper.map(user, UserDTO::class.java)
-    }
-
-    fun getUser(toUser: TOUser): User {
-        return mapper.map(toUser, User::class.java).apply {
-            toUser.id?.let { id = it }
-        }
-    }
-
-    fun getUser(userDTO: UserDTO): User {
-        return mapper.map(userDTO, User::class.java)
+fun getUserType(type: EnumUserTypeService): EnumUserType {
+    return when (type) {
+        EnumUserTypeService.PERSONAL_TRAINER -> EnumUserType.PERSONAL_TRAINER
+        EnumUserTypeService.NUTRITIONIST -> EnumUserType.NUTRITIONIST
+        EnumUserTypeService.ACADEMY_MEMBER -> EnumUserType.ACADEMY_MEMBER
+        EnumUserTypeService.ADMINISTRATOR -> throw IllegalArgumentException("O valor ${type.name} é inválido para obter o EnumUserType")
     }
 }

@@ -9,7 +9,9 @@ import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
-import br.com.fitnesspro.mappers.PersonModelMapper
+import br.com.fitnesspro.mappers.getPerson
+import br.com.fitnesspro.mappers.getTOPerson
+import br.com.fitnesspro.mappers.getUser
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
@@ -25,7 +27,6 @@ class PersonRepository(
     private val userDAO: UserDAO,
     private val firebaseDefaultAuthenticationService: FirebaseDefaultAuthenticationService,
     private val personWebClient: PersonWebClient,
-    private val personModelMapper: PersonModelMapper
 ): FitnessProRepository(context) {
 
     suspend fun savePerson(
@@ -33,8 +34,8 @@ class PersonRepository(
         isRegisterServiceAuth: Boolean,
         forceInsertLocally: Boolean = false
     ) = withContext(IO) {
-        val user = personModelMapper.getUser(toPerson.user!!)
-        val person = personModelMapper.getPerson(toPerson)
+        val user = toPerson.user!!.getUser()
+        val person = toPerson.getPerson()
 
         saveUserOnFirebase(user, isRegisterServiceAuth)
         savePersonLocally(toPerson, user, person, forceInsertLocally)
@@ -70,7 +71,11 @@ class PersonRepository(
     }
 
     suspend fun savePersonRemote(person: Person, user: User) {
-        val response = personWebClient.savePerson(person, user)
+        val response = personWebClient.savePerson(
+            token = getValidToken(),
+            person = person,
+            user = user
+        )
 
         if (response.success) {
             userDAO.update(
@@ -99,8 +104,8 @@ class PersonRepository(
         val updatePersonList = mutableListOf<Person>()
 
         toPersons.forEach { toPerson ->
-            val user = personModelMapper.getUser(toPerson.user!!)
-            val person = personModelMapper.getPerson(toPerson)
+            val user = toPerson.user!!.getUser()
+            val person = toPerson.getPerson()
 
             if (toPerson.id == null) {
                 insertionUserList.add(user)
@@ -133,8 +138,8 @@ class PersonRepository(
         val persons = mutableListOf<Person>()
 
         toPersons.forEach { toPerson ->
-            val user = personModelMapper.getUser(toPerson.user!!)
-            val person = personModelMapper.getPerson(toPerson)
+            val user = toPerson.user?.getUser()!!
+            val person = toPerson.getPerson()
 
             users.add(user)
             persons.add(person)
@@ -159,17 +164,12 @@ class PersonRepository(
         val person = personDAO.findPersonById(personId)
         val user = userDAO.findById(person.userId!!)
 
-        personModelMapper.getTOPerson(person, user!!)
+        person.getTOPerson(user!!)
     }
 
     suspend fun getAuthenticatedTOPerson(): TOPerson? = withContext(IO) {
-        getAuthenticatedUser()?.id?.let { userId ->
-            val person = personDAO.findPersonByUserId(userId)
-
-            personModelMapper.getTOPerson(
-                person = person,
-                user = getAuthenticatedUser()!!
-            )
+        getAuthenticatedUser()?.let { user ->
+            personDAO.findPersonByUserId(user.id).getTOPerson(user)
         }
     }
 
@@ -208,7 +208,7 @@ class PersonRepository(
                 email = email
             )
 
-            if (response.success) personModelMapper.getTOPerson(response.value!!) else null
+            if (response.success) response.value!!.getTOPerson() else null
         } else {
             null
         }

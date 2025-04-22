@@ -4,7 +4,8 @@ import android.content.Context
 import android.os.Build
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.DeviceDAO
-import br.com.fitnesspro.mappers.DeviceModelMapper
+import br.com.fitnesspro.mappers.getDevice
+import br.com.fitnesspro.mappers.getDeviceDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
 import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.tasks.await
@@ -12,11 +13,10 @@ import kotlinx.coroutines.tasks.await
 class DeviceRepository(
     context: Context,
     private val deviceDAO: DeviceDAO,
-    private val deviceModelMapper: DeviceModelMapper
 ) : FitnessProRepository(context) {
 
     suspend fun saveDeviceLocally(deviceDTO: DeviceDTO) {
-        val device = deviceModelMapper.getDevice(deviceDTO)
+        val device = deviceDTO.getDevice()
 
         if (deviceDAO.findById(deviceDTO.id!!) == null) {
             deviceDAO.insert(device)
@@ -28,11 +28,12 @@ class DeviceRepository(
     suspend fun getDeviceDTO(): DeviceDTO {
         val deviceId = getDeviceIdFromFirebase()
 
-        return deviceDAO.findById(deviceId)?.let(deviceModelMapper::getDeviceDTO) ?: DeviceDTO(
+        return deviceDAO.findById(deviceId)?.getDeviceDTO() ?: DeviceDTO(
             id = deviceId,
             model = Build.MODEL,
             brand = Build.BRAND,
-            androidVersion = Build.VERSION.RELEASE
+            androidVersion = Build.VERSION.RELEASE,
+            active = true,
         )
     }
 

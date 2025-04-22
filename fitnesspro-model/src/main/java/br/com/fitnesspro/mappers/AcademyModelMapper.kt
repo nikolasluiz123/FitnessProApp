@@ -1,5 +1,6 @@
 package br.com.fitnesspro.mappers
 
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
@@ -7,31 +8,76 @@ import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.to.TOAcademy
 import br.com.fitnesspro.to.TOPersonAcademyTime
 
-class AcademyModelMapper: AbstractModelMapper() {
+fun Academy.getTOAcademy(): TOAcademy {
+    return TOAcademy(
+        id = id,
+        name = name,
+        active = active,
+        address = address,
+        phone = phone,
+    )
+}
 
-    fun getTOAcademy(academy: Academy): TOAcademy {
-        return mapper.map(academy, TOAcademy::class.java)
-    }
+fun AcademyDTO.getAcademy(): Academy {
+    return Academy(
+        id = id!!,
+        name = name,
+        active = active,
+        address = address,
+        phone = phone,
+    )
+}
 
-    fun getAcademy(academyDTO: AcademyDTO): Academy {
-        return mapper.map(academyDTO, Academy::class.java)
-    }
+fun PersonAcademyTime.getTOPersonAcademyTime(academyName: String): TOPersonAcademyTime {
+    return TOPersonAcademyTime(
+        id = id,
+        personId = personId,
+        academyId = academyId,
+        active = active,
+        timeStart = timeStart,
+        timeEnd = timeEnd,
+        dayOfWeek = dayOfWeek,
+        academyName = academyName,
+    )
+}
 
-    fun getTOPersonAcademyTime(personAcademyTime: PersonAcademyTime): TOPersonAcademyTime {
-        return mapper.map(personAcademyTime, TOPersonAcademyTime::class.java)
-    }
+fun TOPersonAcademyTime.getPersonAcademyTime(): PersonAcademyTime {
+    val model = PersonAcademyTime(
+        id = id!!,
+        personId = personId,
+        academyId = academyId,
+        active = active,
+        timeStart = timeStart,
+        timeEnd = timeEnd,
+        dayOfWeek = dayOfWeek,
+    )
 
-    fun getPersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime): PersonAcademyTime {
-        return mapper.map(toPersonAcademyTime, PersonAcademyTime::class.java).apply {
-            toPersonAcademyTime.id?.let { id = it }
-        }
-    }
+    id?.let { model.id = it }
 
-    fun getPersonAcademyTime(personAcademyTimeDTO: PersonAcademyTimeDTO): PersonAcademyTime {
-        return mapper.map(personAcademyTimeDTO, PersonAcademyTime::class.java)
-    }
+    return model
+}
 
-    fun getPersonAcademyTimeDTO(personAcademyTime: PersonAcademyTime): PersonAcademyTimeDTO {
-        return mapper.map(personAcademyTime, PersonAcademyTimeDTO::class.java)
-    }
+fun PersonAcademyTimeDTO.getPersonAcademyTime(): PersonAcademyTime {
+    return PersonAcademyTime(
+        id = id!!,
+        personId = personId,
+        academyId = academyId,
+        active = active,
+        timeStart = timeStart,
+        timeEnd = timeEnd,
+        dayOfWeek = dayOfWeek,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
+    )
+}
+
+fun PersonAcademyTime.getPersonAcademyTimeDTO(): PersonAcademyTimeDTO {
+    return PersonAcademyTimeDTO(
+        id = id,
+        personId = personId,
+        academyId = academyId,
+        active = active,
+        timeStart = timeStart,
+        timeEnd = timeEnd,
+        dayOfWeek = dayOfWeek,
+    )
 }

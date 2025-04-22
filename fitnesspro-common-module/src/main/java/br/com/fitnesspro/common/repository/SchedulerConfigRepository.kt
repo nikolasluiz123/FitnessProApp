@@ -4,7 +4,8 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
-import br.com.fitnesspro.mappers.SchedulerModelMapper
+import br.com.fitnesspro.mappers.getSchedulerConfig
+import br.com.fitnesspro.mappers.getTOSchedulerConfig
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.to.TOSchedulerConfig
@@ -15,10 +16,9 @@ class SchedulerConfigRepository(
     context: Context,
     private val schedulerConfigDAO: SchedulerConfigDAO,
     private val schedulerWebClient: SchedulerWebClient,
-    private val schedulerModelMapper: SchedulerModelMapper
 ): FitnessProRepository(context) {
     suspend fun saveSchedulerConfig(toSchedulerConfig: TOSchedulerConfig) = withContext(IO) {
-        val schedulerConfig = schedulerModelMapper.getSchedulerConfig(toSchedulerConfig)
+        val schedulerConfig = toSchedulerConfig.getSchedulerConfig()
 
         saveSchedulerConfigLocally(toSchedulerConfig, schedulerConfig)
         saveSchedulerConfigRemote(schedulerConfig)
@@ -57,7 +57,7 @@ class SchedulerConfigRepository(
         val updateList = mutableListOf<SchedulerConfig>()
 
         toSchedulerConfigs.forEach { toSchedulerConfig ->
-            val schedulerConfig = schedulerModelMapper.getSchedulerConfig(toSchedulerConfig)
+            val schedulerConfig = toSchedulerConfig.getSchedulerConfig()
 
             if (toSchedulerConfig.id == null) {
                 insertionList.add(schedulerConfig)
@@ -78,11 +78,11 @@ class SchedulerConfigRepository(
     private suspend fun saveSchedulerConfigBatchRemote(toSchedulerConfigs: List<TOSchedulerConfig>) {
         schedulerWebClient.saveSchedulerConfigBatch(
             token = getValidToken(),
-            schedulerConfigList = toSchedulerConfigs.map(schedulerModelMapper::getSchedulerConfig)
+            schedulerConfigList = toSchedulerConfigs.map { it.getSchedulerConfig() }
         )
     }
 
     suspend fun getTOSchedulerConfigByPersonId(personId: String): TOSchedulerConfig? = withContext(IO) {
-         schedulerConfigDAO.findSchedulerConfigByPersonId(personId)?.let(schedulerModelMapper::getTOSchedulerConfig)
+         schedulerConfigDAO.findSchedulerConfigByPersonId(personId)?.let(SchedulerConfig::getTOSchedulerConfig)
     }
 }

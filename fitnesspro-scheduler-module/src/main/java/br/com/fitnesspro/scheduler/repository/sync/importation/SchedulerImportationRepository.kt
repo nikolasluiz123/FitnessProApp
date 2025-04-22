@@ -4,9 +4,8 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
-import br.com.fitnesspro.mappers.SchedulerModelMapper
+import br.com.fitnesspro.mappers.getScheduler
 import br.com.fitnesspro.model.enums.EnumSyncModule
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
@@ -18,7 +17,6 @@ class SchedulerImportationRepository(
     context: Context,
     private val schedulerDAO: SchedulerDAO,
     private val webClient: SchedulerWebClient,
-    private val schedulerModelMapper: SchedulerModelMapper
 ): AbstractImportationRepository<SchedulerDTO, Scheduler, SchedulerDAO>(context) {
 
     override fun getDescription(): String {
@@ -44,8 +42,6 @@ class SchedulerImportationRepository(
     }
 
     override suspend fun convertDTOToEntity(dto: SchedulerDTO): Scheduler {
-        return schedulerModelMapper.getScheduler(dto).copy(
-            transmissionState = EnumTransmissionState.TRANSMITTED
-        )
+        return dto.getScheduler()
     }
 }

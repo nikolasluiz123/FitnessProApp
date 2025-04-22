@@ -9,7 +9,6 @@ import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
-import br.com.fitnesspro.mappers.SchedulerModelMapper
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.repository.sync.exportation.SchedulerExportationRepository
 import br.com.fitnesspro.scheduler.repository.sync.importation.SchedulerImportationRepository
@@ -32,7 +31,6 @@ class SingletonSchedulerRepositoryModule {
         userRepository: UserRepository,
         personRepository: PersonRepository,
         schedulerWebClient: SchedulerWebClient,
-        schedulerModelMapper: SchedulerModelMapper
     ): SchedulerRepository {
         return SchedulerRepository(
             schedulerDAO = schedulerDAO,
@@ -42,7 +40,6 @@ class SingletonSchedulerRepositoryModule {
             schedulerWebClient = schedulerWebClient,
             workoutGroupDAO = workoutGroupDAO,
             context = context,
-            schedulerModelMapper = schedulerModelMapper
         )
     }
 
@@ -51,13 +48,11 @@ class SingletonSchedulerRepositoryModule {
         @ApplicationContext context: Context,
         schedulerConfigDAO: SchedulerConfigDAO,
         schedulerWebClient: SchedulerWebClient,
-        schedulerModelMapper: SchedulerModelMapper
     ): SchedulerConfigRepository {
         return SchedulerConfigRepository(
             context = context,
             schedulerConfigDAO = schedulerConfigDAO,
             schedulerWebClient = schedulerWebClient,
-            schedulerModelMapper = schedulerModelMapper
         )
     }
 
@@ -66,13 +61,11 @@ class SingletonSchedulerRepositoryModule {
         @ApplicationContext context: Context,
         schedulerDAO: SchedulerDAO,
         schedulerWebClient: SchedulerWebClient,
-        schedulerModelMapper: SchedulerModelMapper
     ): SchedulerImportationRepository {
         return SchedulerImportationRepository(
             schedulerDAO = schedulerDAO,
             webClient = schedulerWebClient,
             context = context,
-            schedulerModelMapper = schedulerModelMapper
         )
     }
 
