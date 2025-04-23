@@ -11,8 +11,8 @@ import br.com.fitnesspro.AndroidTestsActivity
 import br.com.fitnesspro.common.ui.navigation.loginScreen
 import br.com.fitnesspro.common.ui.navigation.loginScreenRoute
 import br.com.fitnesspro.common.ui.navigation.navigateToRegisterUserScreen
-import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_EMAIL_FIELD
-import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_PASSWORD_FIELD
+import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_EMAIL_FIELD
+import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_PASSWORD_FIELD
 import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_TRAILING_ICON
 import br.com.fitnesspro.tests.ui.common.BaseUITests
 import br.com.fitnesspro.tests.ui.extensions.assertWithText

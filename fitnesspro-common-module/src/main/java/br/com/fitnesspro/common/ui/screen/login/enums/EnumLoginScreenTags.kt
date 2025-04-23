@@ -1,6 +1,6 @@
 package br.com.fitnesspro.common.ui.screen.login.enums
 
-enum class EnumLoginScreenTestTags {
+enum class EnumLoginScreenTags {
     LOGIN_SCREEN_EMAIL_FIELD,
     LOGIN_SCREEN_PASSWORD_FIELD,
     LOGIN_SCREEN_LOGIN_BUTTON,

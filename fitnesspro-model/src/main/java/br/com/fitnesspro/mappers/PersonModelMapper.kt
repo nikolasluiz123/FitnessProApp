@@ -97,7 +97,11 @@ fun TOUser.getUser(): User {
         type = type,
     )
 
-    id?.let { model.id = it }
+    if (id != null) {
+        model.id = id!!
+    } else {
+        id = model.id
+    }
 
     return model
 }

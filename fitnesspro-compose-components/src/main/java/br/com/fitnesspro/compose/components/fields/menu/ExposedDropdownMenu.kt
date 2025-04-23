@@ -6,6 +6,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -67,7 +68,8 @@ fun <T> DefaultExposedDropdownMenu(
                     modifier = Modifier
                         .testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name)
                         .rotate(if (expanded) 180f else 0f),
-                    onClick = { }
+                    onClick = { },
+                    iconColor = MaterialTheme.colorScheme.onBackground
                 )
             },
             readOnly = true

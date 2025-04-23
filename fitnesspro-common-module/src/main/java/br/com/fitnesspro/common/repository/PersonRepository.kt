@@ -21,6 +21,7 @@ import br.com.fitnesspro.tuple.PersonTuple
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
+
 class PersonRepository(
     context: Context,
     private val personDAO: PersonDAO,
@@ -37,9 +38,13 @@ class PersonRepository(
         val user = toPerson.user!!.getUser()
         val person = toPerson.getPerson()
 
-        saveUserOnFirebase(user, isRegisterServiceAuth)
         savePersonLocally(toPerson, user, person, forceInsertLocally)
-        savePersonRemote(person, user)
+
+        val successRemoteSave = savePersonRemote(person, user)
+
+        if (successRemoteSave) {
+            saveUserOnFirebase(user, isRegisterServiceAuth)
+        }
     }
 
     private suspend fun saveUserOnFirebase(user: User, isRegisterServiceAuth: Boolean) {
@@ -70,7 +75,7 @@ class PersonRepository(
         }
     }
 
-    suspend fun savePersonRemote(person: Person, user: User) {
+    suspend fun savePersonRemote(person: Person, user: User): Boolean {
         val response = personWebClient.savePerson(
             token = getValidToken(),
             person = person,
@@ -87,6 +92,8 @@ class PersonRepository(
                 writeTransmissionState = true
             )
         }
+
+        return response.success
     }
 
     suspend fun savePersonBatch(toPersons: List<TOPerson>) = withContext(IO) {
@@ -208,7 +215,7 @@ class PersonRepository(
                 email = email
             )
 
-            if (response.success) response.value!!.getTOPerson() else null
+            if (response.success) response.value?.getTOPerson() else null
         } else {
             null
         }

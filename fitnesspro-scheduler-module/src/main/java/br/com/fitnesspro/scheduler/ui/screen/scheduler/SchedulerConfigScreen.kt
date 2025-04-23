@@ -103,7 +103,7 @@ fun SchedulerConfigScreen(
         ) {
             FitnessProMessageDialog(state = state.messageDialogState)
 
-            when (state.userType) {
+            when (state.toPerson?.user?.type) {
                 EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST -> {
                     ProfessionalSchedulerConfigScreen(state)
                 }

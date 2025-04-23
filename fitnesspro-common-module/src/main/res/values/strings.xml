@@ -108,4 +108,5 @@
     <string name="sync_module_person">Exportação de Pessoas</string>
     <string name="sync_module_scheduler_config">Exportação de Configurações de Agendas</string>
     <string name="sync_module_person_academy_time">Exportação de Horários de Academia</string>
+    <string name="auth_bottom_sheet_label_loading">Autenticando…</string>
 </resources>

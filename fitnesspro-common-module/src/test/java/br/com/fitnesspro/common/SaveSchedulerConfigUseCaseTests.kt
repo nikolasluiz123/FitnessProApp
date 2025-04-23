@@ -39,8 +39,7 @@ class SaveSchedulerConfigUseCaseTests: BaseUnitTests() {
 
         saveSchedulerConfigUseCase = SaveSchedulerConfigUseCase(
             context,
-            schedulerConfigRepository,
-            personRepository
+            schedulerConfigRepository
         )
 
     }

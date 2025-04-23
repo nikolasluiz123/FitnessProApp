@@ -34,8 +34,7 @@ class SingletonSchedulerUseCaseModule {
     ): SaveSchedulerConfigUseCase {
         return SaveSchedulerConfigUseCase(
             context = context,
-            schedulerConfigRepository = schedulerConfigRepository,
-            personRepository = personRepository
+            schedulerConfigRepository = schedulerConfigRepository
         )
     }
 

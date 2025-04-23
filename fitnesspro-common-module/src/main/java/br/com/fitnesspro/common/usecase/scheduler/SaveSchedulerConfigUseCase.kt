@@ -2,7 +2,6 @@ package br.com.fitnesspro.common.usecase.scheduler
 
 import android.content.Context
 import br.com.fitnesspro.common.R
-import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields
@@ -10,19 +9,19 @@ import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerCo
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MIN_SCHEDULE_DENSITY
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
+import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOSchedulerConfig
 
 class SaveSchedulerConfigUseCase(
     private val context: Context,
-    private val schedulerConfigRepository: SchedulerConfigRepository,
-    private val personRepository: PersonRepository
+    private val schedulerConfigRepository: SchedulerConfigRepository
 ) {
 
     suspend fun saveConfig(
-        personId: String,
+        toPerson: TOPerson,
         toSchedulerConfig: TOSchedulerConfig? = null
     ): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
-        val personConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(personId)
+        val personConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(toPerson.id!!)
 
         val config = when {
             personConfig != null && toSchedulerConfig != null -> {
@@ -35,7 +34,7 @@ class SaveSchedulerConfigUseCase(
             }
 
             personConfig == null && toSchedulerConfig == null -> {
-                TOSchedulerConfig(personId = personId)
+                TOSchedulerConfig(personId = toPerson.id)
             }
 
             personConfig != null && toSchedulerConfig == null -> {
@@ -45,7 +44,7 @@ class SaveSchedulerConfigUseCase(
             else -> null
         }
 
-        val validationResults = validateSchedulerConfig(config!!)
+        val validationResults = validateSchedulerConfig(config!!, toPerson.user?.type!!)
 
         if (validationResults.isEmpty()) {
             schedulerConfigRepository.saveSchedulerConfig(config)
@@ -54,8 +53,7 @@ class SaveSchedulerConfigUseCase(
         return validationResults
     }
 
-    private suspend fun validateSchedulerConfig(config: TOSchedulerConfig): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
-        val userType = personRepository.getTOPersonById(config.personId!!).user?.type!!
+    private suspend fun validateSchedulerConfig(config: TOSchedulerConfig, userType: EnumUserType): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
         if (userType == EnumUserType.ACADEMY_MEMBER) return mutableListOf()
 
         val validationResults = mutableListOf(
@@ -153,12 +151,16 @@ class SaveSchedulerConfigUseCase(
         }
     }
 
-    suspend fun createConfigBatch(personIds: List<String>): List<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
-        val configs = personIds.map {
-            TOSchedulerConfig(personId = it)
+    suspend fun createConfigBatch(toPersonList: List<TOPerson>): List<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
+        val configs = toPersonList.map {
+            TOSchedulerConfig(personId = it.id)
         }
 
-        val validationResults = configs.flatMap { validateSchedulerConfig(it) }
+        val userTypes = toPersonList.map { it.user?.type!! }
+
+        val validationResults = configs.flatMapIndexed { index, it ->
+            validateSchedulerConfig(config = it, userType = userTypes[index])
+        }
 
         if (validationResults.isEmpty()) {
             schedulerConfigRepository.saveSchedulerConfigBatch(configs)

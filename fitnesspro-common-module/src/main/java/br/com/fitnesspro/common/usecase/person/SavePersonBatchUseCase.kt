@@ -41,7 +41,7 @@ class SavePersonBatchUseCase(
 
         if (validationResults.isEmpty()) {
             personRepository.savePersonBatch(toPersons)
-            saveSchedulerConfigUseCase.createConfigBatch(toPersons.map { it.id!! })
+            saveSchedulerConfigUseCase.createConfigBatch(toPersons)
         }
 
         return validationResults

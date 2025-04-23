@@ -17,8 +17,8 @@ import br.com.fitnesspro.common.ui.navigation.navigateToLoginScreen
 import br.com.fitnesspro.common.ui.navigation.navigateToRegisterAcademyScreen
 import br.com.fitnesspro.common.ui.navigation.navigateToRegisterUserScreen
 import br.com.fitnesspro.common.ui.navigation.registerUserScreen
-import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags
-import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTestTags.LOGIN_SCREEN_REGISTER_BUTTON
+import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags
+import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_REGISTER_BUTTON
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_FAB_SAVE
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_EMAIL
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_NAME
@@ -116,9 +116,9 @@ class RegisterUserScreenStateUITests: BaseAuthenticatedUITest() {
         prepareDatabaseWithPersons()
 
         composeTestRule.apply {
-            writeTextField(EnumLoginScreenTestTags.LOGIN_SCREEN_EMAIL_FIELD, MEMBER_EMAIL)
-            writeTextField(EnumLoginScreenTestTags.LOGIN_SCREEN_PASSWORD_FIELD, DEFAULT_PASSWORD)
-            onClick(EnumLoginScreenTestTags.LOGIN_SCREEN_LOGIN_BUTTON)
+            writeTextField(EnumLoginScreenTags.LOGIN_SCREEN_EMAIL_FIELD, MEMBER_EMAIL)
+            writeTextField(EnumLoginScreenTags.LOGIN_SCREEN_PASSWORD_FIELD, DEFAULT_PASSWORD)
+            onClick(EnumLoginScreenTags.LOGIN_SCREEN_LOGIN_BUTTON)
 
             waitUntil {
                 onNodeWithTag(HOME_SCREEN_ACCOUNT_BUTTON.name).isDisplayed()
@@ -152,9 +152,9 @@ class RegisterUserScreenStateUITests: BaseAuthenticatedUITest() {
         prepareDatabaseWithPersons()
 
         composeTestRule.apply {
-            writeTextField(EnumLoginScreenTestTags.LOGIN_SCREEN_EMAIL_FIELD, PERSONAL_EMAIL)
-            writeTextField(EnumLoginScreenTestTags.LOGIN_SCREEN_PASSWORD_FIELD, DEFAULT_PASSWORD)
-            onClick(EnumLoginScreenTestTags.LOGIN_SCREEN_LOGIN_BUTTON)
+            writeTextField(EnumLoginScreenTags.LOGIN_SCREEN_EMAIL_FIELD, PERSONAL_EMAIL)
+            writeTextField(EnumLoginScreenTags.LOGIN_SCREEN_PASSWORD_FIELD, DEFAULT_PASSWORD)
+            onClick(EnumLoginScreenTags.LOGIN_SCREEN_LOGIN_BUTTON)
 
             waitUntil {
                 onNodeWithTag(HOME_SCREEN_ACCOUNT_BUTTON.name).isDisplayed()
@@ -188,9 +188,9 @@ class RegisterUserScreenStateUITests: BaseAuthenticatedUITest() {
         prepareDatabaseWithPersons()
 
         composeTestRule.apply {
-            writeTextField(EnumLoginScreenTestTags.LOGIN_SCREEN_EMAIL_FIELD, NUTRITIONIST_EMAIL)
-            writeTextField(EnumLoginScreenTestTags.LOGIN_SCREEN_PASSWORD_FIELD, DEFAULT_PASSWORD)
-            onClick(EnumLoginScreenTestTags.LOGIN_SCREEN_LOGIN_BUTTON)
+            writeTextField(EnumLoginScreenTags.LOGIN_SCREEN_EMAIL_FIELD, NUTRITIONIST_EMAIL)
+            writeTextField(EnumLoginScreenTags.LOGIN_SCREEN_PASSWORD_FIELD, DEFAULT_PASSWORD)
+            onClick(EnumLoginScreenTags.LOGIN_SCREEN_LOGIN_BUTTON)
 
             waitUntil {
                 onNodeWithTag(HOME_SCREEN_ACCOUNT_BUTTON.name).isDisplayed()
@@ -210,9 +210,9 @@ class RegisterUserScreenStateUITests: BaseAuthenticatedUITest() {
         prepareDatabaseWithPersons()
 
         composeTestRule.apply {
-            writeTextField(EnumLoginScreenTestTags.LOGIN_SCREEN_EMAIL_FIELD, NUTRITIONIST_EMAIL)
-            writeTextField(EnumLoginScreenTestTags.LOGIN_SCREEN_PASSWORD_FIELD, DEFAULT_PASSWORD)
-            onClick(EnumLoginScreenTestTags.LOGIN_SCREEN_LOGIN_BUTTON)
+            writeTextField(EnumLoginScreenTags.LOGIN_SCREEN_EMAIL_FIELD, NUTRITIONIST_EMAIL)
+            writeTextField(EnumLoginScreenTags.LOGIN_SCREEN_PASSWORD_FIELD, DEFAULT_PASSWORD)
+            onClick(EnumLoginScreenTags.LOGIN_SCREEN_LOGIN_BUTTON)
 
             waitUntil {
                 onNodeWithTag(HOME_SCREEN_ACCOUNT_BUTTON.name).isDisplayed()

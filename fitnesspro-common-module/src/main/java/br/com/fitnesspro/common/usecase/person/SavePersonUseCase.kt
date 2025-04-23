@@ -46,7 +46,7 @@ open class SavePersonUseCase(
 
             personRepository.runInTransaction {
                 personRepository.savePerson(toPerson, isRegisterServiceAuth)
-                saveSchedulerConfigUseCase.saveConfig(toPerson.id!!)
+                saveSchedulerConfigUseCase.saveConfig(toPerson)
             }
         }
 

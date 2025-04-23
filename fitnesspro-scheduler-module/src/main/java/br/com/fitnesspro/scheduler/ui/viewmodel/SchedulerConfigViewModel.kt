@@ -63,7 +63,7 @@ class SchedulerConfigViewModel @Inject constructor(
             val toConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(toPerson.id!!)!!
 
             _uiState.value = _uiState.value.copy(
-                userType = toPerson.user?.type!!,
+                toPerson = toPerson,
                 toConfig = toConfig,
                 alarm = _uiState.value.alarm.copy(
                     checked = toConfig.alarm
@@ -155,7 +155,7 @@ class SchedulerConfigViewModel @Inject constructor(
     fun save(onSuccess: () -> Unit) {
         launch {
             val validationResults = schedulerConfigUseCase.saveConfig(
-                personId = _uiState.value.toConfig.personId!!,
+                toPerson = _uiState.value.toPerson!!,
                 toSchedulerConfig = _uiState.value.toConfig
             )
 

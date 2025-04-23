@@ -11,8 +11,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import br.com.fitnesspro.common.ui.screen.login.AuthenticationBottomSheet
 import br.com.fitnesspro.common.ui.screen.login.LoginScreen
+import br.com.fitnesspro.common.ui.viewmodel.BottomSheetAuthenticationViewModel
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.ui.navigation.FitnessProNavHost
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +37,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App(content: @Composable () -> Unit = { LoginScreen() }) {
+    val viewModel: BottomSheetAuthenticationViewModel = hiltViewModel()
+
+    AuthenticationBottomSheet(viewModel = viewModel)
+
     Scaffold { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             content()
