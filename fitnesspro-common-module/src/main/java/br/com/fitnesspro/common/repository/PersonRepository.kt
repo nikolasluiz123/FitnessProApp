@@ -48,12 +48,12 @@ class PersonRepository(
     }
 
     private suspend fun saveUserOnFirebase(user: User, isRegisterServiceAuth: Boolean) {
-        val existentUser = userDAO.findById(user.id)
+        val isAuthenticated = getAuthenticatedUser() != null
 
-        if (existentUser == null && !isRegisterServiceAuth) {
-            firebaseDefaultAuthenticationService.register(user.email!!, user.password!!)
-        } else {
+        if (isAuthenticated || isRegisterServiceAuth) {
             firebaseDefaultAuthenticationService.updateUserInfos(user)
+        } else {
+            firebaseDefaultAuthenticationService.register(user.email!!, user.password!!)
         }
     }
 
