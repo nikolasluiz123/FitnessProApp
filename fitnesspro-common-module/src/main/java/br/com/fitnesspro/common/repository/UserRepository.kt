@@ -66,7 +66,7 @@ class UserRepository(
             val authenticationDTO = getAuthenticationDTO(email, password)
 
             val response = authenticationWebClient.authenticate(
-                token = getValidToken(),
+                token = getValidToken(withoutAuthentication = true),
                 authenticationDTO = authenticationDTO
             )
 

@@ -109,10 +109,12 @@ fun RegisterUserScreen(
                             iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             onClick = {
+                                state.onToggleLoading()
                                 Firebase.analytics.logButtonClick(REGISTER_USER_SCREEN_FAB_SAVE)
                                 onSaveUserClick?.onExecute(
                                     onSaved = {
                                         showSaveSuccessMessage(coroutineScope, snackbarHostState, context)
+                                        state.onToggleLoading()
                                     }
                                 )
                             }
@@ -201,7 +203,9 @@ fun RegisterUserScreen(
                             RegisterUserTabGeneral(
                                 state = state,
                                 onDone = {
+                                    state.onToggleLoading()
                                     onSaveUserClick?.onExecute {
+                                        state.onToggleLoading()
                                         showSaveSuccessMessage(coroutineScope, snackbarHostState, context)
                                     }
                                 }

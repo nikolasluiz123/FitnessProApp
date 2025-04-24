@@ -377,8 +377,6 @@ class RegisterUserViewModel @Inject constructor(
 
     fun saveUser(onSuccess: () -> Unit) {
         launch {
-            _uiState.value.onToggleLoading()
-
             val toPerson = _uiState.value.toPerson
             toPerson.user!!.type = getUserTypeFromContext(_uiState.value.context)
 
@@ -390,8 +388,6 @@ class RegisterUserViewModel @Inject constructor(
             } else {
                 showValidationMessages(validationResults)
             }
-
-            _uiState.value.onToggleLoading()
         }
     }
 

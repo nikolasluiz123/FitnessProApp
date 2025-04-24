@@ -77,7 +77,7 @@ class PersonRepository(
 
     suspend fun savePersonRemote(person: Person, user: User): Boolean {
         val response = personWebClient.savePerson(
-            token = getValidToken(),
+            token = getValidToken(withoutAuthentication = true),
             person = person,
             user = user
         )
@@ -153,7 +153,7 @@ class PersonRepository(
         }
 
         val response = personWebClient.savePersonBatch(
-            token = getValidToken(),
+            token = getValidToken(withoutAuthentication = true),
             persons = persons,
             users = users
         )
@@ -211,7 +211,7 @@ class PersonRepository(
     suspend fun findPersonByEmailRemote(email: String): TOPerson? = withContext(IO) {
         if (context.isNetworkAvailable()) {
             val response =  personWebClient.findPersonByEmail(
-                token = getValidToken(),
+                token = getValidToken(withoutAuthentication = true),
                 email = email
             )
 

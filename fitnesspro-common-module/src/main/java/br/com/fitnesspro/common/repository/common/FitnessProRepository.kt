@@ -34,10 +34,10 @@ abstract class FitnessProRepository(protected val context: Context) {
      * O token de apliação só expira por uma ação manual realizada.
      */
     @Throws(ExpiredTokenException::class)
-    suspend fun getValidToken(): String {
+    suspend fun getValidToken(withoutAuthentication: Boolean = false): String {
         val authenticatedUser = getAuthenticatedUser()
 
-        return if (authenticatedUser != null) {
+        return if (authenticatedUser != null && !withoutAuthentication) {
             return getValidUserToken() ?: throw ExpiredTokenException()
         } else {
             getValidDeviceToken() ?: BuildConfig.APP_JWT
