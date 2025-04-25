@@ -15,7 +15,7 @@ class AuthenticationWebClient(
     suspend fun authenticate(token: String, authenticationDTO: AuthenticationDTO): AuthenticationServiceResponse {
         return authenticationServiceErrorHandlingBlock(
             codeBlock = {
-                authenticationService.authenticate(token, authenticationDTO).getResponseBody()
+                authenticationService.authenticate(formatToken(token), authenticationDTO).getResponseBody()
             }
         )
     }
@@ -23,7 +23,7 @@ class AuthenticationWebClient(
     suspend fun logout(token: String, authenticationDTO: AuthenticationDTO): AuthenticationServiceResponse {
         return authenticationServiceErrorHandlingBlock(
             codeBlock = {
-                authenticationService.logout(token, authenticationDTO).getResponseBody()
+                authenticationService.logout(formatToken(token), authenticationDTO).getResponseBody()
             }
         )
     }
