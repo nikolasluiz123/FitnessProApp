@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.edit
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspro.common.BuildConfig
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
+import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.core.extensions.PreferencesKey
 import br.com.fitnesspro.core.extensions.dataStore
 import br.com.fitnesspro.core.extensions.isNetworkAvailable
@@ -74,6 +75,8 @@ class UserRepository(
                 serviceTokenRepository.saveTokenInformation(response.tokens)
             } else if (response.code == HTTP_NOT_FOUND && context.isNetworkAvailable()) {
                 savePersonRemoteAndAuthenticateAgain(email, password)
+            } else {
+                throw ServiceException(response.error!!)
             }
         }
     }
@@ -113,21 +116,20 @@ class UserRepository(
     }
 
     suspend fun logout() = withContext(IO) {
+        val user = getAuthenticatedUser()!!
+        val response = authenticationWebClient.logout(
+            token = getValidToken(withoutAuthentication = true),
+            authenticationDTO = getAuthenticationDTO(user.email!!, user.password!!)
+        )
+
+        if (response.success) {
+            serviceTokenRepository.saveTokenInformation(response.tokens)
+        }
+
         context.dataStore.edit {
             it.remove(PreferencesKey.USER)
         }
 
         firebaseDefaultAuthenticationService.logout()
-
-        getAuthenticatedUser()?.let { user ->
-            val response = authenticationWebClient.logout(
-                token = getValidToken(),
-                authenticationDTO = getAuthenticationDTO(user.email!!, user.password!!)
-            )
-
-            if (response.success) {
-                serviceTokenRepository.saveTokenInformation(response.tokens)
-            }
-        }
     }
 }

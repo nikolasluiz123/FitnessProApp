@@ -2,11 +2,13 @@ package br.com.fitnesspro.core.extensions
 
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import java.time.DateTimeException
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 /**
@@ -107,13 +109,21 @@ fun YearMonth.format(enumDateTimePatterns: EnumDateTimePatterns): String {
     return this.format(DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
 }
 
-fun timeNow(): LocalTime = LocalTime.now()
+fun timeNow(): LocalTime {
+    return Instant.now().atOffset(ZoneOffset.UTC).toLocalTime()
+}
 
-fun dateNow(): LocalDate = LocalDate.now()
+fun dateNow(): LocalDate {
+    return Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
+}
 
-fun dateTimeNow(): LocalDateTime = LocalDateTime.now()
+fun dateTimeNow(): LocalDateTime {
+    return LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC)
+}
 
-fun yearMonthNow(): YearMonth = YearMonth.now()
+fun yearMonthNow(): YearMonth {
+    return YearMonth.now()
+}
 
 fun LocalDateTime.toEpochMillis(): Long {
     val zoneId = ZoneId.systemDefault()
