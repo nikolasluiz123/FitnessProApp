@@ -4,9 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,6 +23,7 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_END_HOUR_FIELD
@@ -36,15 +35,24 @@ import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScr
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_LABELED_TEXT_SITUATION
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_OBSERVATION_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_PROFESSIONAL_FIELD
+import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_SAVE_KEYBOARD_DONE
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_START_HOUR_FIELD
 import br.com.fitnesspro.scheduler.ui.state.CompromiseUIState
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 
 @Composable
-fun UniqueCompromiseSuggestion(state: CompromiseUIState) {
+fun UniqueCompromiseSuggestion(
+    state: CompromiseUIState,
+    onKeyboardDone: () -> Unit = { }
+) {
     if (state.toScheduler.id != null) {
         UniqueCompromiseSuggestionReadOnly(state)
     } else {
-        UniqueCompromiseSuggestionEditable(state)
+        UniqueCompromiseSuggestionEditable(
+            state = state,
+            onKeyboardDone = onKeyboardDone
+        )
     }
 }
 
@@ -145,7 +153,8 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
                 modifier = Modifier
                     .testTag(COMPROMISE_SCREEN_LABELED_TEXT_OBSERVATION.name)
                     .constrainAs(observationRef) {
-                        val isCanceled = state.toScheduler.situation == EnumSchedulerSituation.CANCELLED
+                        val isCanceled =
+                            state.toScheduler.situation == EnumSchedulerSituation.CANCELLED
                         val topAnchor = if (isCanceled) dataCancelRef else situationRef
 
                         top.linkTo(topAnchor.bottom, margin = 8.dp)
@@ -159,14 +168,14 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
 }
 
 @Composable
-private fun UniqueCompromiseSuggestionEditable(state: CompromiseUIState) {
-    val scrollState = rememberScrollState()
-
+private fun UniqueCompromiseSuggestionEditable(
+    state: CompromiseUIState,
+    onKeyboardDone: () -> Unit = { }
+) {
     ConstraintLayout(
         Modifier
             .padding(8.dp)
             .fillMaxSize()
-            .verticalScroll(scrollState)
     ) {
         val (professionalRef, startRef, endRef, observationRef) = createRefs()
 
@@ -240,7 +249,8 @@ private fun UniqueCompromiseSuggestionEditable(state: CompromiseUIState) {
             label = stringResource(R.string.compromise_screen_label_observation),
             keyboardActions = KeyboardActions(
                 onDone = {
-
+                    Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_SAVE_KEYBOARD_DONE)
+                    onKeyboardDone()
                 }
             )
         )

@@ -191,16 +191,55 @@ fun CompromiseScreen(
                     if (state.recurrent) {
                         RecurrentCompromise(state)
                     } else {
-                        UniqueCompromise(state)
+                        UniqueCompromise(
+                            state = state,
+                            onKeyboardDone = {
+                                onSaveCompromiseClick?.onExecute {
+                                    showSuccessMessage(
+                                        enumSchedulerType = it,
+                                        state = state,
+                                        coroutineScope = coroutineScope,
+                                        snackbarHostState = snackbarHostState,
+                                        context = context
+                                    )
+                                }
+                            }
+                        )
                     }
                 }
 
                 EnumUserType.NUTRITIONIST -> {
-                    UniqueCompromise(state)
+                    UniqueCompromise(
+                        state = state,
+                        onKeyboardDone = {
+                            onSaveCompromiseClick?.onExecute {
+                                showSuccessMessage(
+                                    enumSchedulerType = it,
+                                    state = state,
+                                    coroutineScope = coroutineScope,
+                                    snackbarHostState = snackbarHostState,
+                                    context = context
+                                )
+                            }
+                        }
+                    )
                 }
 
                 EnumUserType.ACADEMY_MEMBER -> {
-                    UniqueCompromiseSuggestion(state)
+                    UniqueCompromiseSuggestion(
+                        state = state,
+                        onKeyboardDone = {
+                            onSaveCompromiseClick?.onExecute {
+                                showSuccessMessage(
+                                    enumSchedulerType = it,
+                                    state = state,
+                                    coroutineScope = coroutineScope,
+                                    snackbarHostState = snackbarHostState,
+                                    context = context
+                                )
+                            }
+                        }
+                    )
                 }
 
                 else -> {}

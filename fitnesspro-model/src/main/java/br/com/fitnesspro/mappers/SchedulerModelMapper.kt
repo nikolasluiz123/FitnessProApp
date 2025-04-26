@@ -140,6 +140,7 @@ fun Scheduler.getSchedulerDTO(
         compromiseType = getServiceCompromiseType(compromiseType!!),
         observation = observation,
         active = active,
+        type = EnumSchedulerType.valueOf(schedulerType),
         recurrentConfig = getRecurrentConfigDTO(
             schedulerType = EnumSchedulerType.valueOf(schedulerType),
             dateStart = dateStart,

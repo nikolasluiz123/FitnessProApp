@@ -18,15 +18,22 @@ import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.TimePickerOutlinedTextFieldValidation
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_END_HOUR_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_MEMBER_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_OBSERVATION_FIELD
+import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_SAVE_KEYBOARD_DONE
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_START_HOUR_FIELD
 import br.com.fitnesspro.scheduler.ui.state.CompromiseUIState
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 
 @Composable
-fun UniqueCompromise(state: CompromiseUIState) {
+fun UniqueCompromise(
+    state: CompromiseUIState,
+    onKeyboardDone: () -> Unit = { }
+) {
     ConstraintLayout(
         Modifier
             .padding(8.dp)
@@ -100,7 +107,8 @@ fun UniqueCompromise(state: CompromiseUIState) {
             label = stringResource(R.string.compromise_screen_label_observation),
             keyboardActions = KeyboardActions(
                 onDone = {
-
+                    Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_SAVE_KEYBOARD_DONE)
+                    onKeyboardDone()
                 }
             )
         )
