@@ -77,7 +77,12 @@ class RegisterAcademyViewModel @Inject constructor(
                 academy = initializeAcademyPagedDialogListTextField(),
                 dayWeek = initializeDayWeekDropDownTextField(),
                 start = initializeStartTimePickerTextField(),
-                end = initializeEndTimePickerTextField()
+                end = initializeEndTimePickerTextField(),
+                onToggleLoading = {
+                    _uiState.value = _uiState.value.copy(
+                        showLoading = _uiState.value.showLoading.not()
+                    )
+                }
             )
         }
     }

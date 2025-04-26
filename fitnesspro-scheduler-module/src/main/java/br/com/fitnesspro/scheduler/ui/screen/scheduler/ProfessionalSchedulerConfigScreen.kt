@@ -1,11 +1,10 @@
 package br.com.fitnesspro.scheduler.ui.screen.scheduler
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,7 +46,7 @@ internal fun ProfessionalSchedulerConfigScreen(state: SchedulerConfigUIState) {
         Modifier
             .fillMaxSize()
             .padding(8.dp)
-            .scrollable(scrollState, orientation = Orientation.Vertical)
+            .verticalScroll(scrollState)
     ) {
         val (
             generalRef, labeledCheckboxAlarmRef, labeledCheckboxNotificationRef,

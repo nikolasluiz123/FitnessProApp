@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -51,10 +52,12 @@ fun UniqueCompromiseSuggestion(state: CompromiseUIState) {
 @Composable
 fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
     val context = LocalContext.current
+    val scrollState = rememberScrollState()
 
     ConstraintLayout(
         Modifier
             .padding(8.dp)
+            .verticalScroll(scrollState)
             .fillMaxSize()
     ) {
         val (nameRef, hourRef, professionalRef, situationRef, observationRef, dataCancelRef) = createRefs()
@@ -160,11 +163,12 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
 @Composable
 private fun UniqueCompromiseSuggestionEditable(state: CompromiseUIState) {
     val scrollState = rememberScrollState()
+
     ConstraintLayout(
         Modifier
             .padding(8.dp)
             .fillMaxSize()
-            .scrollable(scrollState, orientation = Orientation.Vertical)
+            .verticalScroll(scrollState)
     ) {
         val (professionalRef, startRef, endRef, observationRef) = createRefs()
 

@@ -1,11 +1,10 @@
 package br.com.fitnesspro.scheduler.ui.screen.compromisse
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -39,7 +38,7 @@ internal fun RecurrentCompromise(state: CompromiseUIState) {
         Modifier
             .padding(8.dp)
             .fillMaxSize()
-            .scrollable(scrollState, orientation = Orientation.Vertical)
+            .verticalScroll(scrollState)
     ) {
         val (memberRef, startDateRef, endDateRef, startHourRef, endHourRef,
             observationRef, dayWeeksRef) = createRefs()

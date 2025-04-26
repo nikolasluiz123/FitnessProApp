@@ -49,6 +49,7 @@ import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.TimePickerOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
+import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
@@ -103,9 +104,12 @@ fun RegisterAcademyScreen(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         onClick = {
+                            state.onToggleLoading()
+
                             Firebase.analytics.logButtonClick(REGISTER_ACADEMY_SCREEN_FAB_SAVE)
                             onSaveAcademyClick?.onExecute(
                                 onSaved = {
+                                    state.onToggleLoading()
                                     showSaveSuccessMessage(coroutineScope, snackbarHostState, context)
                                 }
                             )
@@ -116,8 +120,11 @@ fun RegisterAcademyScreen(
                     IconButtonDelete(
                         modifier = Modifier.testTag(REGISTER_ACADEMY_ACTION_BUTTON_DELETE.name),
                         onClick = {
+                            state.onToggleLoading()
+
                             Firebase.analytics.logButtonClick(REGISTER_ACADEMY_ACTION_BUTTON_DELETE)
                             onInactivateAcademyClick?.onExecute {
+                                state.onToggleLoading()
                                 showInactivatedSuccessMessage(coroutineScope, snackbarHostState, context)
                             }
                         },
@@ -135,81 +142,107 @@ fun RegisterAcademyScreen(
         }
     ) { paddingValues ->
         ConstraintLayout(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(12.dp)
+            Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
         ) {
-            val (gymRef, dayWeekRef, startRef, endRef) = createRefs()
+            val (loadingRef, containerRef) = createRefs()
 
-            FitnessProMessageDialog(state = state.messageDialogState)
+            ConstraintLayout(
+                Modifier.fillMaxWidth()
+            ) {
+                FitnessProLinearProgressIndicator(
+                    state.showLoading,
+                    Modifier.constrainAs(loadingRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                    }
+                )
+            }
 
-            PagedListDialogOutlinedTextFieldValidation(
-                field = state.academy,
-                fieldLabel = stringResource(R.string.register_user_screen_label_gym),
-                simpleFilterPlaceholderResId = R.string.register_user_screen_simple_filter_placeholder_gym_dialog_list,
-                emptyMessage = R.string.register_user_screen_empty_message_gym_dialog_list,
-                itemLayout = { academyTuple ->
-                    DialogListItem(
-                        academy = academyTuple,
-                        onItemClick = state.academy.dialogListState.onDataListItemClick
-                    )
-                },
+            ConstraintLayout(
                 modifier = Modifier
-                    .testTag(REGISTER_ACADEMY_SCREEN_FIELD_ACADEMY.name)
-                    .constrainAs(gymRef) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-
-                    width = Dimension.fillToConstraints
-                }
-            )
-
-            DefaultExposedDropdownMenu(
-                modifier = Modifier
-                    .testTag(REGISTER_ACADEMY_SCREEN_FIELD_DAY_WEEK.name)
-                    .constrainAs(dayWeekRef) {
-                    start.linkTo(parent.start)
-                    top.linkTo(gymRef.bottom, margin = 8.dp)
-                    end.linkTo(parent.end)
-
-                    width = Dimension.fillToConstraints
-                },
-                field = state.dayWeek,
-                labelResId = R.string.register_user_screen_label_day_week,
-            )
-
-
-            TimePickerOutlinedTextFieldValidation(
-                field = state.start,
-                fieldLabel = stringResource(R.string.register_user_screen_label_start),
-                timePickerTitle = stringResource(R.string.register_academy_label_start),
-                modifier = Modifier
-                    .testTag(REGISTER_ACADEMY_SCREEN_FIELD_START.name)
-                    .constrainAs(startRef) {
+                    .padding(12.dp)
+                    .fillMaxSize()
+                    .constrainAs(containerRef) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                        top.linkTo(dayWeekRef.bottom, margin = 8.dp)
+                        top.linkTo(loadingRef.bottom)
+                        bottom.linkTo(parent.bottom)
+                    }
+            ) {
+                val (gymRef, dayWeekRef, startRef, endRef) = createRefs()
 
-                        width = Dimension.fillToConstraints
+                FitnessProMessageDialog(state = state.messageDialogState)
+
+                PagedListDialogOutlinedTextFieldValidation(
+                    field = state.academy,
+                    fieldLabel = stringResource(R.string.register_user_screen_label_gym),
+                    simpleFilterPlaceholderResId = R.string.register_user_screen_simple_filter_placeholder_gym_dialog_list,
+                    emptyMessage = R.string.register_user_screen_empty_message_gym_dialog_list,
+                    itemLayout = { academyTuple ->
+                        DialogListItem(
+                            academy = academyTuple,
+                            onItemClick = state.academy.dialogListState.onDataListItemClick
+                        )
                     },
-            )
+                    modifier = Modifier
+                        .testTag(REGISTER_ACADEMY_SCREEN_FIELD_ACADEMY.name)
+                        .constrainAs(gymRef) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
 
-            TimePickerOutlinedTextFieldValidation(
-                field = state.end,
-                fieldLabel = stringResource(R.string.register_user_screen_label_end),
-                timePickerTitle = stringResource(R.string.register_academy_label_end),
-                modifier = Modifier
-                    .testTag(REGISTER_ACADEMY_SCREEN_FIELD_END.name)
-                    .constrainAs(endRef) {
-                    top.linkTo(startRef.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
+                            width = Dimension.fillToConstraints
+                        }
+                )
 
-                    width = Dimension.fillToConstraints
-                },
-            )
+                DefaultExposedDropdownMenu(
+                    modifier = Modifier
+                        .testTag(REGISTER_ACADEMY_SCREEN_FIELD_DAY_WEEK.name)
+                        .constrainAs(dayWeekRef) {
+                            start.linkTo(parent.start)
+                            top.linkTo(gymRef.bottom, margin = 8.dp)
+                            end.linkTo(parent.end)
+
+                            width = Dimension.fillToConstraints
+                        },
+                    field = state.dayWeek,
+                    labelResId = R.string.register_user_screen_label_day_week,
+                )
+
+
+                TimePickerOutlinedTextFieldValidation(
+                    field = state.start,
+                    fieldLabel = stringResource(R.string.register_user_screen_label_start),
+                    timePickerTitle = stringResource(R.string.register_academy_label_start),
+                    modifier = Modifier
+                        .testTag(REGISTER_ACADEMY_SCREEN_FIELD_START.name)
+                        .constrainAs(startRef) {
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            top.linkTo(dayWeekRef.bottom, margin = 8.dp)
+
+                            width = Dimension.fillToConstraints
+                        },
+                )
+
+                TimePickerOutlinedTextFieldValidation(
+                    field = state.end,
+                    fieldLabel = stringResource(R.string.register_user_screen_label_end),
+                    timePickerTitle = stringResource(R.string.register_academy_label_end),
+                    modifier = Modifier
+                        .testTag(REGISTER_ACADEMY_SCREEN_FIELD_END.name)
+                        .constrainAs(endRef) {
+                            top.linkTo(startRef.bottom, margin = 8.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+
+                            width = Dimension.fillToConstraints
+                        },
+                )
+            }
         }
     }
 }
