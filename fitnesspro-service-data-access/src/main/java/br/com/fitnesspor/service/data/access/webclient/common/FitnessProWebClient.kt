@@ -234,9 +234,10 @@ abstract class FitnessProWebClient(private val context: Context) {
 
     private fun executeResponseValidations(response: IFitnessProServiceResponse) {
         if (!response.success) {
-            when (response.errorType!!) {
+            when (response.errorType) {
                 EXPIRED_TOKEN -> throw ExpiredTokenException()
                 INVALID_TOKEN -> throw NotFoundTokenException()
+                else -> { }
             }
         }
     }
