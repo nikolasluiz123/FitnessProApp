@@ -49,8 +49,9 @@ class PersonRepository(
 
     private suspend fun saveUserOnFirebase(user: User, isRegisterServiceAuth: Boolean) {
         val isAuthenticated = getAuthenticatedUser() != null
+        val toPersonRemote = user.email?.let { findPersonByEmailRemote(it) }
 
-        if (isAuthenticated || isRegisterServiceAuth) {
+        if (isAuthenticated || isRegisterServiceAuth || toPersonRemote != null) {
             firebaseDefaultAuthenticationService.updateUserInfos(user)
         } else {
             firebaseDefaultAuthenticationService.register(user.email!!, user.password!!)
