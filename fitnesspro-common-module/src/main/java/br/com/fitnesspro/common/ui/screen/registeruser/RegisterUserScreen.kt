@@ -1,7 +1,7 @@
 package br.com.fitnesspro.common.ui.screen.registeruser
 
 import android.content.Context
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -137,12 +137,12 @@ fun RegisterUserScreen(
                 }
             )
         },
-        contentWindowInsets = WindowInsets(0.dp)
     ) { padding ->
         ConstraintLayout(
             Modifier
-                .fillMaxSize()
                 .padding(padding)
+                .consumeWindowInsets(padding)
+                .fillMaxSize()
         ) {
             val (loadingRef, containerRef) = createRefs()
 

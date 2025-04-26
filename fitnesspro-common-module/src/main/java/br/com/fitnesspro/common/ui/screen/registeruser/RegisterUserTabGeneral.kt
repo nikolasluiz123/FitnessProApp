@@ -1,6 +1,7 @@
 package br.com.fitnesspro.common.ui.screen.registeruser
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -44,6 +45,7 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
             .padding(12.dp)
             .fillMaxSize()
             .verticalScroll(scrollState)
+            .imePadding()
     ) {
         val (nameRef, emailRef, passwordRef, birthDayDatePickerRef, phoneRef, userTypeRef) = createRefs()
 

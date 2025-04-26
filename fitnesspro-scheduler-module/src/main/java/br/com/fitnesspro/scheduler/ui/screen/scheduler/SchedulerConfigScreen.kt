@@ -3,8 +3,13 @@ package br.com.fitnesspro.scheduler.ui.screen.scheduler
 import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -94,11 +99,20 @@ fun SchedulerConfigScreen(
                 }
             }
         },
-        contentWindowInsets = WindowInsets(0.dp)
+        contentWindowInsets = WindowInsets(
+            top = WindowInsets.ime.asPaddingValues().calculateTopPadding(),
+            bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding() - 48.dp,
+            left = 0.dp,
+            right = 0.dp
+        )
     ) { paddingValues ->
+        val scrollState = rememberScrollState()
+
         Box(
             modifier = Modifier
                 .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)
+                .verticalScroll(scrollState)
                 .fillMaxSize()
         ) {
             FitnessProMessageDialog(state = state.messageDialogState)
