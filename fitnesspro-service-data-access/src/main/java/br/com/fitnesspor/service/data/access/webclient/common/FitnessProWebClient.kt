@@ -3,9 +3,14 @@ package br.com.fitnesspor.service.data.access.webclient.common
 import android.content.Context
 import br.com.fitnesspro.service.data.access.R
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
+import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumErrorType.EXPIRED_TOKEN
+import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumErrorType.INVALID_TOKEN
+import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
+import br.com.fitnesspro.shared.communication.exception.NotFoundTokenException
 import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
+import br.com.fitnesspro.shared.communication.responses.IFitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
@@ -23,7 +28,9 @@ abstract class FitnessProWebClient(private val context: Context) {
         customExceptions: (e: Exception) -> PersistenceServiceResponse<DTO> = { throw it }
     ): PersistenceServiceResponse<DTO> {
         return try {
-            codeBlock()
+            val response = codeBlock()
+            executeResponseValidations(response)
+            response
         } catch (exception: Exception) {
             when (exception) {
                 is ConnectException -> {
@@ -48,7 +55,9 @@ abstract class FitnessProWebClient(private val context: Context) {
         customExceptions: (e: Exception) -> ExportationServiceResponse = { throw it }
     ): ExportationServiceResponse {
         return try {
-            codeBlock()
+            val response = codeBlock()
+            executeResponseValidations(response)
+            response
         } catch (exception: Exception) {
             when (exception) {
                 is ConnectException -> {
@@ -77,7 +86,9 @@ abstract class FitnessProWebClient(private val context: Context) {
         customExceptions: (e: Exception) -> AuthenticationServiceResponse =  { throw it }
     ): AuthenticationServiceResponse {
         return try {
-            codeBlock()
+            val response = codeBlock()
+            executeResponseValidations(response)
+            response
         } catch (exception: Exception) {
             when (exception) {
                 is ConnectException -> {
@@ -104,7 +115,9 @@ abstract class FitnessProWebClient(private val context: Context) {
         customExceptions: (e: Exception) -> ReadServiceResponse<DTO> = { throw it }
     ): ReadServiceResponse<DTO> {
         return try {
-            codeBlock()
+            val response = codeBlock()
+            executeResponseValidations(response)
+            response
         } catch (exception: Exception) {
             when (exception) {
                 is ConnectException -> {
@@ -133,7 +146,9 @@ abstract class FitnessProWebClient(private val context: Context) {
         customExceptions: (e: Exception) -> ImportationServiceResponse<DTO> = { throw it }
     ): ImportationServiceResponse<DTO> {
         return try {
-            codeBlock()
+            val response = codeBlock()
+            executeResponseValidations(response)
+            response
         } catch (exception: Exception) {
             when (exception) {
                 is ConnectException -> {
@@ -166,7 +181,9 @@ abstract class FitnessProWebClient(private val context: Context) {
         customExceptions: (e: Exception) -> SingleValueServiceResponse<DTO> = { throw it }
     ): SingleValueServiceResponse<DTO> {
         return try {
-            codeBlock()
+            val response = codeBlock()
+            executeResponseValidations(response)
+            response
         } catch (exception: Exception) {
             when (exception) {
                 is ConnectException -> {
@@ -191,7 +208,9 @@ abstract class FitnessProWebClient(private val context: Context) {
         customExceptions: (e: Exception) -> FitnessProServiceResponse = { throw it }
     ): FitnessProServiceResponse {
         return try {
-            codeBlock()
+            val response = codeBlock()
+            executeResponseValidations(response)
+            response
         } catch (exception: Exception) {
             when (exception) {
                 is ConnectException -> {
@@ -209,6 +228,15 @@ abstract class FitnessProWebClient(private val context: Context) {
                     )
                 }
                 else -> customExceptions(exception)
+            }
+        }
+    }
+
+    private fun executeResponseValidations(response: IFitnessProServiceResponse) {
+        if (!response.success) {
+            when (response.errorType!!) {
+                EXPIRED_TOKEN -> throw ExpiredTokenException()
+                INVALID_TOKEN -> throw NotFoundTokenException()
             }
         }
     }

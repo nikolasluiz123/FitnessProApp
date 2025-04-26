@@ -18,11 +18,11 @@ class DefaultLoginUseCase(
     private val personRepository: PersonRepository
 ) {
 
-    suspend fun execute(email: String?, password: String?): List<FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>> {
+    suspend fun execute(email: String?, password: String?, authAgain: Boolean = false): List<FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>> {
         val validationsResults = mutableListOf(
             validateEmail(email),
             validatePassword(password),
-            validateUserCredentials(email, password)
+            validateUserCredentials(email, password, authAgain)
         ).filterNotNull().toMutableList()
 
         if (validationsResults.isEmpty()) {
@@ -77,7 +77,8 @@ class DefaultLoginUseCase(
 
     private suspend fun validateUserCredentials(
         email: String?,
-        password: String?
+        password: String?,
+        authAgain: Boolean
     ): FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>? {
         val emailTrimmed = email?.trim()
         val passwordTrimmed = password?.trim()
@@ -90,6 +91,9 @@ class DefaultLoginUseCase(
         val hashedPassword = passwordHasher.hashPassword(passwordTrimmed)
         var userNotExists = !userRepository.hasUserWithCredentials(emailTrimmed, hashedPassword)
         val toPersonRemote = personRepository.findPersonByEmailRemote(emailTrimmed)
+
+        val authUser = userRepository.getAuthenticatedUser()
+        val isSameUser = authUser?.email == emailTrimmed && authUser.password == hashedPassword
 
         if (userNotExists && toPersonRemote != null) {
             personRepository.savePerson(
@@ -107,6 +111,14 @@ class DefaultLoginUseCase(
                     field = null,
                     message = context.getString(R.string.validation_msg_invalid_credetials_login),
                     validationType = EnumLoginValidationTypes.INVALID_CREDENTIALS
+                )
+            }
+
+            authAgain && !isSameUser -> {
+                FieldValidationError(
+                    field = null,
+                    message = context.getString(R.string.validation_msg_not_same_user_auth_again),
+                    validationType = EnumLoginValidationTypes.RE_AUTHENTICATION_DIFF_USER
                 )
             }
 

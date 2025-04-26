@@ -49,7 +49,9 @@ fun AuthenticationBottomSheet(viewModel: BottomSheetAuthenticationViewModel) {
 
     AuthenticationBottomSheet(
         state = state,
-        onLoginWithGoogleClick = viewModel::loginWithGoogle,
+        onLoginWithGoogleClick = { _, _ ->
+            viewModel.loginWithGoogle()
+        },
         onLoginClick = viewModel::login
     )
 }
@@ -141,9 +143,7 @@ fun AuthenticationBottomSheet(
                     label = stringResource(R.string.login_screen_label_button_login),
                     onClickListener = {
                         Firebase.analytics.logButtonClick(LOGIN_SCREEN_LOGIN_BUTTON)
-                        onLoginClick?.onExecute {
-                            // TODO - Callback de sucesso para que as telas se recarreguem?
-                        }
+                        onLoginClick?.onExecute(onSuccess = { })
                     }
                 )
 
@@ -162,13 +162,8 @@ fun AuthenticationBottomSheet(
                         Firebase.analytics.logButtonClick(EnumAuthenticationBottomSheetTags.BOTTOM_SHEET_AUTH_GOOGLE_BUTTON)
 
                         onLoginWithGoogleClick?.onExecute(
-                            onUserNotExistsLocal = {
-                                // TODO - Exibir uma mensagem de erro? Já que nesse ponto não deveria
-                                //  ser alguém inexistente
-                            },
-                            onSuccess = {
-                                /// TODO - Callback de sucesso para que as telas se recarreguem?
-                            }
+                            onSuccess = { },
+                            onUserNotExistsLocal = { }
                         )
                     }
                 )

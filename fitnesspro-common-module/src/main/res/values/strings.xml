@@ -109,4 +109,5 @@
     <string name="sync_module_scheduler_config">Exportação de Configurações de Agendas</string>
     <string name="sync_module_person_academy_time">Exportação de Horários de Academia</string>
     <string name="auth_bottom_sheet_label_loading">Autenticando…</string>
+    <string name="validation_msg_not_same_user_auth_again">Não é possível se reautenticar com um usuário diferente do que você autenticou inicialmente.\n\nCaso precise autenticar-se com um usuário diferente, realize logout e tente novamente.</string>
 </resources>

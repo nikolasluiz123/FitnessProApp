@@ -43,8 +43,8 @@ class UserRepository(
 
     suspend fun authenticate(email: String, password: String): Unit = withContext(IO) {
         saveUserIdDataStore(email)
-        authenticateFirebase(email, password)
         authenticateRemote(email, password)
+        authenticateFirebase(email, password)
     }
 
     private suspend fun saveUserIdDataStore(email: String) {

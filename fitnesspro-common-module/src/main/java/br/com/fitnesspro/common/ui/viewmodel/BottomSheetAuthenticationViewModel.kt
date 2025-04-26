@@ -16,7 +16,6 @@ import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
-import br.com.fitnesspro.to.TOPerson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -83,7 +82,11 @@ class BottomSheetAuthenticationViewModel @Inject constructor(
             val username = _uiState.value.email.value
             val password = _uiState.value.password.value
 
-            val validationsResult = defaultLoginUseCase.execute(username, password)
+            val validationsResult = defaultLoginUseCase.execute(
+                email = username,
+                password = password,
+                authAgain = true
+            )
 
             if (validationsResult.isEmpty()) {
                 if (!context.isNetworkAvailable()) {
@@ -92,7 +95,7 @@ class BottomSheetAuthenticationViewModel @Inject constructor(
                         onConfirm = onSuccess
                     )
                 } else {
-                    onSuccess()
+                    _uiState.value.onDismissRequest()
                 }
             } else {
                 showValidationMessages(validationsResult)
@@ -102,23 +105,19 @@ class BottomSheetAuthenticationViewModel @Inject constructor(
         }
     }
 
-    fun loginWithGoogle(onUserNotExistsLocal: (TOPerson) -> Unit, onSuccess: () -> Unit) {
+    fun loginWithGoogle() {
         launch {
             _uiState.value.onToggleLoading()
 
-            val googleAuthResult = googleLoginUseCase()
+            val googleAuthResult = googleLoginUseCase(authAgain = true)
 
             when {
                 googleAuthResult.success.not() -> {
                     _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(googleAuthResult.errorMessage!!)
                 }
 
-                googleAuthResult.userExists -> {
-                    onSuccess()
-                }
-
                 else -> {
-                    onUserNotExistsLocal(googleAuthResult.toPerson!!)
+                    _uiState.value.onDismissRequest()
                 }
             }
 

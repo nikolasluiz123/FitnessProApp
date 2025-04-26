@@ -13,7 +13,7 @@ class GoogleLoginUseCase(
     private val personRepository: PersonRepository
 ) {
 
-    suspend operator fun invoke(): GoogleAuthResult {
+    suspend operator fun invoke(authAgain: Boolean = false): GoogleAuthResult {
         val authResult = userRepository.signInWithGoogle() ?: return GoogleAuthResult(errorMessage = context.getString(R.string.login_google_unknown_error))
 
         val toPerson = TOPerson(
@@ -26,6 +26,9 @@ class GoogleLoginUseCase(
 
         val userExistsLocal = userRepository.hasUserWithEmail(authResult.user?.email!!, null)
         val toPersonRemote = personRepository.findPersonByEmailRemote(authResult.user?.email!!)
+
+        val authUser = userRepository.getAuthenticatedUser()
+        val isSameUser = authUser?.email == authResult.user?.email
 
         when {
             userExistsLocal -> {
@@ -44,6 +47,10 @@ class GoogleLoginUseCase(
                     email = toPersonRemote.user?.email!!,
                     toPersonRemote.user?.password!!
                 )
+            }
+
+            authAgain && !isSameUser -> {
+                GoogleAuthResult(errorMessage = context.getString(R.string.validation_msg_not_same_user_auth_again))
             }
         }
 
