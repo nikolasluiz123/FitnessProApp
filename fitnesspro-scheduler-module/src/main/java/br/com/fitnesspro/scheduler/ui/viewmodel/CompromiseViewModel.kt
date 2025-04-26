@@ -472,10 +472,6 @@ class CompromiseViewModel @Inject constructor(
                     compromiseType = if (args.recurrent) RECURRENT else FIRST
                 )
             }
-
-            else -> {
-                _uiState.value.toScheduler
-            }
         }
     }
 
@@ -556,21 +552,23 @@ class CompromiseViewModel @Inject constructor(
                     }
                 } else {
                     if (toScheduler?.id != null) {
-                        val situation = _uiState.value.toScheduler.situation!!.getLabel(context)!!
+                        val situation = toScheduler.situation!!.getLabel(context)!!
                         context.getString(R.string.compromise_screen_title_compromise_with_situation, situation)
                     } else {
                         context.getString(R.string.compromise_screen_title_new_compromise)
                     }
                 }
             }
+
             EnumUserType.NUTRITIONIST -> {
                 if (toScheduler?.id != null) {
-                    val situation = _uiState.value.toScheduler.situation!!.getLabel(context)!!
+                    val situation = toScheduler.situation!!.getLabel(context)!!
                     context.getString(R.string.compromise_screen_title_compromise_with_situation, situation)
                 } else {
                     context.getString(R.string.compromise_screen_title_new_compromise)
                 }
             }
+
             EnumUserType.ACADEMY_MEMBER -> {
                 if (toScheduler?.id != null) {
                     context.getString(R.string.compromise_screen_title_compromise)
@@ -578,7 +576,6 @@ class CompromiseViewModel @Inject constructor(
                     context.getString(R.string.compromise_screen_title_new_sugestion)
                 }
             }
-            else -> ""
         }
     }
 
