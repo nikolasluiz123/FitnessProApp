@@ -4,29 +4,36 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.common.ui.event.GlobalEvent
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
 import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
+import br.com.fitnesspro.shared.communication.exception.NotFoundTokenException
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 abstract class FitnessProViewModel : ViewModel() {
 
-    private val _globalEvents = MutableSharedFlow<GlobalEvent>()
-    val globalEvents: SharedFlow<GlobalEvent> = _globalEvents.asSharedFlow()
-
     abstract fun onShowError(throwable: Throwable)
 
+    abstract fun getGlobalEventsBus(): GlobalEvents
+
+    private fun onShowCommonError(throwable: Throwable) {
+        when(throwable) {
+            is ExpiredTokenException,
+            is NotFoundTokenException -> { }
+            else -> onShowError(throwable)
+        }
+    }
+
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        onShowError(throwable)
+        onShowCommonError(throwable)
         onError(throwable)
     }
 
     protected fun onError(throwable: Throwable) {
         when (throwable) {
-            is ExpiredTokenException -> {
+            is ExpiredTokenException,
+            is NotFoundTokenException -> {
                 notifyTokenExpired()
             }
 
@@ -44,7 +51,7 @@ abstract class FitnessProViewModel : ViewModel() {
 
     protected fun notifyTokenExpired() {
         viewModelScope.launch {
-            _globalEvents.emit(GlobalEvent.TokenExpired)
+            getGlobalEventsBus().publish(GlobalEvent.TokenExpired)
         }
     }
 

@@ -3,6 +3,7 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import br.com.fitnesspro.common.repository.PersonRepository
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.callback.showErrorDialog
@@ -27,6 +28,7 @@ class ChatViewModel @Inject constructor(
     private val firestoreChatRepository: FirestoreChatRepository,
     private val sendChatMessageUseCase: SendChatMessageUseCase,
     private val personRepository: PersonRepository,
+    private val globalEvents: GlobalEvents,
     savedStateHandle: SavedStateHandle
 ): FitnessProViewModel() {
 
@@ -41,6 +43,8 @@ class ChatViewModel @Inject constructor(
 
         addListeners()
     }
+
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(

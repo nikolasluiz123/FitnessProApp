@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetValue.Expanded
 import androidx.compose.material3.SheetValue.Hidden
-import androidx.compose.material3.SheetValue.PartiallyExpanded
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -63,7 +63,7 @@ fun AuthenticationBottomSheet(
     onLoginClick: OnLoginClick? = null,
 ) {
     val bottomSheetState = rememberStandardBottomSheetState(
-        initialValue = if (state.showBottomSheet) PartiallyExpanded else Hidden,
+        initialValue = if (state.showBottomSheet) Expanded else Hidden,
         skipHiddenState = false
     )
     val context = LocalContext.current
@@ -79,7 +79,7 @@ fun AuthenticationBottomSheet(
             ConstraintLayout(
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
             ) {
                 val (emailRef, passwordRef, loginButtonRef, loginGoogleRef, loginFacebookRef,
                     loadingRef) = createRefs()
@@ -154,9 +154,10 @@ fun AuthenticationBottomSheet(
                         .testTag(EnumAuthenticationBottomSheetTags.BOTTOM_SHEET_AUTH_GOOGLE_BUTTON.name)
                         .constrainAs(loginGoogleRef) {
                             start.linkTo(parent.start)
+                            bottom.linkTo(parent.bottom)
                             top.linkTo(loginButtonRef.bottom)
                         }
-                        .padding(end = 8.dp, top = 8.dp),
+                        .padding(end = 8.dp, top = 8.dp, bottom = 16.dp),
                     onClick = {
                         Firebase.analytics.logButtonClick(EnumAuthenticationBottomSheetTags.BOTTOM_SHEET_AUTH_GOOGLE_BUTTON)
 
@@ -177,9 +178,10 @@ fun AuthenticationBottomSheet(
                         .testTag(EnumAuthenticationBottomSheetTags.BOTTOM_SHEET_AUTH_FACEBOOK_BUTTON.name)
                         .constrainAs(loginFacebookRef) {
                             end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
                             top.linkTo(loginButtonRef.bottom)
                         }
-                        .padding(start = 8.dp, top = 8.dp),
+                        .padding(start = 8.dp, top = 8.dp, bottom = 16.dp),
                     onClick = {
                         Firebase.analytics.logButtonClick(EnumAuthenticationBottomSheetTags.BOTTOM_SHEET_AUTH_FACEBOOK_BUTTON)
 

@@ -2,6 +2,7 @@ package br.com.fitnesspro.common.workers.common
 
 import android.content.Context
 import androidx.work.WorkerParameters
+import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.model.sync.ImportationHistory
 import java.time.LocalDateTime
 
@@ -31,7 +32,7 @@ abstract class AbstractImportationWorker(
 
     private suspend fun updateImportationDate() {
         importationHistoryDAO.getImportationHistory(getModule())!!.apply {
-            date = LocalDateTime.now()
+            date = dateTimeNow()
             importationHistoryDAO.update(this)
         }
     }

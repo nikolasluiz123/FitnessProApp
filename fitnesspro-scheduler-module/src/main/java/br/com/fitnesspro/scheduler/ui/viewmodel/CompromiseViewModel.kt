@@ -5,6 +5,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
 import br.com.fitnesspro.common.repository.PersonRepository
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
 import br.com.fitnesspro.compose.components.fields.state.DayWeeksSelectorField
@@ -64,6 +65,7 @@ class CompromiseViewModel @Inject constructor(
     private val saveCompromiseUseCase: SaveCompromiseUseCase,
     private val confirmationSchedulerUseCase: ConfirmationSchedulerUseCase,
     private val inactivateSchedulerUseCase: InactivateSchedulerUseCase,
+    private val globalEvents: GlobalEvents,
     savedStateHandle: SavedStateHandle
 ) : FitnessProViewModel() {
 
@@ -76,6 +78,8 @@ class CompromiseViewModel @Inject constructor(
         initialUIStateLoad()
         loadUIStateWithDatabaseInfos()
     }
+
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
@@ -339,7 +343,10 @@ class CompromiseViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(
                         member = _uiState.value.member.copy(
                             dialogListState = _uiState.value.member.dialogListState.copy(
-                                dataList = getListMembers(simpleFilter = filter)
+                                dataList = getListMembers(
+                                    authenticatedPerson = _uiState.value.authenticatedPerson,
+                                    simpleFilter = filter
+                                )
                             )
                         )
                     )
@@ -392,7 +399,10 @@ class CompromiseViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(
                         professional = _uiState.value.professional.copy(
                             dialogListState = _uiState.value.professional.dialogListState.copy(
-                                dataList = getListProfessional(simpleFilter = filter)
+                                dataList = getListProfessional(
+                                    authenticatedPerson = _uiState.value.authenticatedPerson,
+                                    simpleFilter = filter
+                                )
                             )
                         )
                     )
@@ -413,8 +423,8 @@ class CompromiseViewModel @Inject constructor(
             val toPerson = personRepository.getAuthenticatedTOPerson()!!
             val userType = toPerson.user?.type!!
             val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
-            val menuItemListProfessional = getListProfessional()
-            val menuItemListMembers = getListMembers()
+            val menuItemListProfessional = getListProfessional(authenticatedPerson = toPerson)
+            val menuItemListMembers = getListMembers(authenticatedPerson = toPerson)
 
             _uiState.update { state ->
                 state.copy(
@@ -433,7 +443,8 @@ class CompromiseViewModel @Inject constructor(
                             dataList = menuItemListMembers
                         )
                     ),
-                    toScheduler = getToSchedulerWithDefaultInfos(toPerson, args)
+                    toScheduler = getToSchedulerWithDefaultInfos(toPerson, args),
+                    authenticatedPerson = toPerson
                 )
             }
 
@@ -508,23 +519,25 @@ class CompromiseViewModel @Inject constructor(
         }
     }
 
-    private fun getListProfessional(simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
+    private fun getListProfessional(authenticatedPerson: TOPerson, simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
         val types = listOf(EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST)
 
         return personRepository.getListTOPersonWithUserType(
             types = types,
             simpleFilter = simpleFilter,
-            personsForSchedule = true
+            personsForSchedule = true,
+            authenticatedPersonId = authenticatedPerson.id!!
         ).flow
     }
 
-    private fun getListMembers(simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
+    private fun getListMembers(authenticatedPerson: TOPerson, simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
         val types = listOf(EnumUserType.ACADEMY_MEMBER)
 
         return personRepository.getListTOPersonWithUserType(
             types = types,
             simpleFilter = simpleFilter,
-            personsForSchedule = true
+            personsForSchedule = true,
+            authenticatedPersonId = authenticatedPerson.id!!
         ).flow
     }
 

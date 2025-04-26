@@ -3,6 +3,7 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import br.com.fitnesspro.common.repository.PersonRepository
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
@@ -27,6 +28,7 @@ class SchedulerDetailsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val schedulerRepository: SchedulerRepository,
     private val personRepository: PersonRepository,
+    private val globalEvents: GlobalEvents,
     savedStateHandle: SavedStateHandle
 ) : FitnessProViewModel() {
 
@@ -39,6 +41,8 @@ class SchedulerDetailsViewModel @Inject constructor(
         initialLoadUIState()
         loadUIStateWithDatabaseInfos()
     }
+
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(

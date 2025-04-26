@@ -8,7 +8,7 @@ import androidx.paging.PagingData
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
-import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.navigation.RegisterAcademyScreenArgs
 import br.com.fitnesspro.common.ui.state.RegisterAcademyUIState
 import br.com.fitnesspro.common.usecase.academy.EnumAcademyValidationTypes
@@ -45,10 +45,10 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterAcademyViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val userRepository: UserRepository,
     private val personRepository: PersonRepository,
     private val academyRepository: AcademyRepository,
     private val savePersonAcademyTimeUseCase: SavePersonAcademyTimeUseCase,
+    private val globalEvents: GlobalEvents,
     savedStateHandle: SavedStateHandle
 ) : FitnessProViewModel() {
 
@@ -61,6 +61,8 @@ class RegisterAcademyViewModel @Inject constructor(
         initialLoadUIState()
         loadUIStateWithDatabaseInfos()
     }
+
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(

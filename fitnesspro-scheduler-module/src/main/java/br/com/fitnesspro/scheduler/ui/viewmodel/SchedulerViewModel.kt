@@ -3,6 +3,7 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 import android.content.Context
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.state.MessageDialogState
@@ -24,6 +25,7 @@ class SchedulerViewModel @Inject constructor(
     private val schedulerRepository: SchedulerRepository,
     private val schedulerConfigRepository: SchedulerConfigRepository,
     private val personRepository: PersonRepository,
+    private val globalEvents: GlobalEvents
 ) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<SchedulerUIState> = MutableStateFlow(SchedulerUIState())
@@ -34,6 +36,8 @@ class SchedulerViewModel @Inject constructor(
         loadUIStateWithDatabaseInfos()
         updateSchedules()
     }
+
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(

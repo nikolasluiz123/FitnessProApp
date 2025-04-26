@@ -43,7 +43,6 @@ fun PersonAcademyTime.getTOPersonAcademyTime(academyName: String): TOPersonAcade
 
 fun TOPersonAcademyTime.getPersonAcademyTime(): PersonAcademyTime {
     val model = PersonAcademyTime(
-        id = id!!,
         personId = personId,
         academyId = academyId,
         active = active,

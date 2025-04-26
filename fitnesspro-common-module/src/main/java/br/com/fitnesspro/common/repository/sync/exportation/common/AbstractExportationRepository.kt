@@ -1,6 +1,7 @@
 package br.com.fitnesspro.common.repository.sync.exportation.common
 
 import android.content.Context
+import android.util.Log
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
 import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.core.extensions.dateTimeNow

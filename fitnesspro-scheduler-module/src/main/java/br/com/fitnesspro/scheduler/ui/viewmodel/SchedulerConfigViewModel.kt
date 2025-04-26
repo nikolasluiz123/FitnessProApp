@@ -5,6 +5,7 @@ import androidx.core.text.isDigitsOnly
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes
@@ -28,7 +29,8 @@ class SchedulerConfigViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val personRepository: PersonRepository,
     private val schedulerConfigRepository: SchedulerConfigRepository,
-    private val schedulerConfigUseCase: SaveSchedulerConfigUseCase
+    private val schedulerConfigUseCase: SaveSchedulerConfigUseCase,
+    private val globalEvents: GlobalEvents
 ) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<SchedulerConfigUIState> = MutableStateFlow(SchedulerConfigUIState())
@@ -38,6 +40,8 @@ class SchedulerConfigViewModel @Inject constructor(
         initialUIStateLoad()
         loadUIStateWithDatabaseInfos()
     }
+
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(

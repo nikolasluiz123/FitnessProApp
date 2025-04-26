@@ -1,13 +1,15 @@
 package br.com.fitnesspro.ui.viewmodel
 
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val globalEvents: GlobalEvents
 ): FitnessProViewModel() {
 
     fun verifyNavigationDestination(onNavigateToLogin: () -> Unit, onNavigateToRoomList: () -> Unit) {
@@ -21,6 +23,8 @@ class SplashViewModel @Inject constructor(
             }
         }
     }
+
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) = Unit
 }

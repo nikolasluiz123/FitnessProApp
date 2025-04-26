@@ -8,6 +8,7 @@ import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.usecase.scheduler.CompromiseRecurrentConfig
+import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOScheduler
 import br.com.fitnesspro.tuple.PersonTuple
 
@@ -30,5 +31,6 @@ data class CompromiseUIState(
     val isEnabledMessageButton: Boolean = false,
     val isEnabledConfirmButton: Boolean = false,
     val hasNewMessages: Boolean = false,
-    val messageDialogState: MessageDialogState = MessageDialogState()
+    val messageDialogState: MessageDialogState = MessageDialogState(),
+    val authenticatedPerson: TOPerson = TOPerson()
 )

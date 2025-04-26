@@ -26,7 +26,8 @@ abstract class PersonDAO: IntegratedMaintenanceDAO<Person>() {
     fun getPersonsWithUserType(
         types: List<EnumUserType>,
         simpleFilter: String,
-        personsForSchedule: Boolean
+        personsForSchedule: Boolean,
+        authenticatedPersonId: String
     ): PagingSource<Int, PersonTuple> {
         val params = mutableListOf<Any>()
 
@@ -55,14 +56,7 @@ abstract class PersonDAO: IntegratedMaintenanceDAO<Person>() {
                 add("       select 1 ")
                 add("       from person_academy_time pat_auth_person ")
                 add("       where pat_auth_person.active = 1 ")
-                add("       and pat_auth_person.person_id = (  ")
-                add("                                         select p.id ")
-                add("                                         from person p ")
-                add("                                         inner join user u on u.id = p.user_id ")
-                add("                                         where p.active = 1 ")
-                add("                                         and u.active = 1 ")
-                add("                                         and u.authenticated = 1 ")
-                add("                                       ) ")
+                add("       and pat_auth_person.person_id = ? ")
                 add("       and pat_auth_person.academy_id = academy_time.academy_id ")
                 add("       and pat_auth_person.day_week = academy_time.day_week ")
                 add("       and not ( ")
@@ -71,6 +65,8 @@ abstract class PersonDAO: IntegratedMaintenanceDAO<Person>() {
                 add("               pat_auth_person.time_start >= academy_time.time_end ")
                 add("           ) ")
                 add("    )   ")
+
+                params.add(authenticatedPersonId)
             }
 
             if (simpleFilter.isNotEmpty()) {

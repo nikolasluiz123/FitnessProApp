@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.event.GlobalEvent
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.state.BottomSheetAuthenticationUIState
 import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
 import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
@@ -29,6 +30,7 @@ class BottomSheetAuthenticationViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val defaultLoginUseCase: DefaultLoginUseCase,
     private val googleLoginUseCase: GoogleLoginUseCase,
+    private val globalEvents: GlobalEvents
 ) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<BottomSheetAuthenticationUIState> = MutableStateFlow(BottomSheetAuthenticationUIState())
@@ -50,7 +52,7 @@ class BottomSheetAuthenticationViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            globalEvents.collect { event ->
+            globalEvents.events.collect { event ->
                 when (event) {
                     is GlobalEvent.TokenExpired -> {
                         _uiState.value = _uiState.value.copy(
@@ -61,6 +63,8 @@ class BottomSheetAuthenticationViewModel @Inject constructor(
             }
         }
     }
+
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
         if (_uiState.value.showLoading) {

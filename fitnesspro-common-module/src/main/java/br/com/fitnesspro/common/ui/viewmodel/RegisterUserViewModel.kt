@@ -7,6 +7,7 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.common.ui.navigation.registerUserArguments
 import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDecorator
@@ -46,6 +47,7 @@ class RegisterUserViewModel @Inject constructor(
     private val savePersonUseCase: SavePersonUseCase,
     private val personRepository: PersonRepository,
     private val academyRepository: AcademyRepository,
+    private val globalEvents: GlobalEvents,
     savedStateHandle: SavedStateHandle
 ) : FitnessProViewModel() {
 
@@ -63,6 +65,8 @@ class RegisterUserViewModel @Inject constructor(
             showDialogRegisterUserAuthenticatedWithService(args)
         }
     }
+
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
         val message = when (throwable) {

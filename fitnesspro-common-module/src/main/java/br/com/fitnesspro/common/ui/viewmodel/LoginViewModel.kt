@@ -3,6 +3,7 @@ package br.com.fitnesspro.common.ui.viewmodel
 import android.content.Context
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.state.LoginUIState
 import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
 import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
@@ -28,6 +29,7 @@ class LoginViewModel @Inject constructor(
     private val defaultLoginUseCase: DefaultLoginUseCase,
     private val googleLoginUseCase: GoogleLoginUseCase,
     private val userRepository: UserRepository,
+    private val globalEvents: GlobalEvents
 ) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<LoginUIState> = MutableStateFlow(LoginUIState())
@@ -37,6 +39,8 @@ class LoginViewModel @Inject constructor(
         initialUIStateLoad()
         loadEmailAuthenticatedUser()
     }
+
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
         if (_uiState.value.showLoading) {

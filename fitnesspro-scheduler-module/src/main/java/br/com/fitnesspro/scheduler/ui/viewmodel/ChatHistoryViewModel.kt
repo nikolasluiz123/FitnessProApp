@@ -3,7 +3,7 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 import android.content.Context
 import androidx.paging.PagingData
 import br.com.fitnesspro.common.repository.PersonRepository
-import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.core.callback.showErrorDialog
@@ -14,6 +14,7 @@ import br.com.fitnesspro.model.enums.EnumUserType.NUTRITIONIST
 import br.com.fitnesspro.model.enums.EnumUserType.PERSONAL_TRAINER
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.state.ChatHistoryUIState
+import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.tuple.PersonTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -26,9 +27,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatHistoryViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val userRepository: UserRepository,
     private val personRepository: PersonRepository,
-    private val firestoreChatRepository: FirestoreChatRepository
+    private val firestoreChatRepository: FirestoreChatRepository,
+    private val globalEvents: GlobalEvents
 ): FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<ChatHistoryUIState> = MutableStateFlow(ChatHistoryUIState())
@@ -40,6 +41,8 @@ class ChatHistoryViewModel @Inject constructor(
 
         addChatListListener()
     }
+
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
@@ -106,11 +109,13 @@ class ChatHistoryViewModel @Inject constructor(
             onSimpleFilterChange = { filter ->
                 _uiState.value = _uiState.value.copy(
                     membersDialogState = _uiState.value.membersDialogState.copy(
-                        dataList = getListMembers(filter)
+                        dataList = getListMembers(
+                            authenticatedPerson = _uiState.value.authenticatedPerson,
+                            filter = filter
+                        )
                     )
                 )
-            },
-            dataList = getListMembers()
+            }
         )
     }
 
@@ -134,27 +139,31 @@ class ChatHistoryViewModel @Inject constructor(
             onSimpleFilterChange = { filter ->
                 _uiState.value = _uiState.value.copy(
                     professionalsDialogState = _uiState.value.professionalsDialogState.copy(
-                        dataList = getListProfessionals(filter)
+                        dataList = getListProfessionals(
+                            authenticatedPerson = _uiState.value.authenticatedPerson,
+                            filter = filter
+                        )
                     )
                 )
-            },
-            dataList = getListProfessionals()
+            }
         )
     }
 
-    private fun getListMembers(filter: String = ""): Flow<PagingData<PersonTuple>> {
+    private fun getListMembers(authenticatedPerson: TOPerson, filter: String = ""): Flow<PagingData<PersonTuple>> {
         return personRepository.getListTOPersonWithUserType(
             types = listOf(ACADEMY_MEMBER),
             simpleFilter = filter,
-            personsForSchedule = false
+            personsForSchedule = false,
+            authenticatedPersonId = authenticatedPerson.id!!
         ).flow
     }
 
-    private fun getListProfessionals(filter: String = ""): Flow<PagingData<PersonTuple>> {
+    private fun getListProfessionals(authenticatedPerson: TOPerson, filter: String = ""): Flow<PagingData<PersonTuple>> {
         return personRepository.getListTOPersonWithUserType(
             types = listOf(NUTRITIONIST, PERSONAL_TRAINER),
             simpleFilter = filter,
-            personsForSchedule = false
+            personsForSchedule = false,
+            authenticatedPersonId = authenticatedPerson.id!!
         ).flow
     }
 
@@ -176,7 +185,14 @@ class ChatHistoryViewModel @Inject constructor(
 
             _uiState.update {
                 it.copy(
-                    userType = authenticatedPerson.user?.type!!
+                    authenticatedPerson = authenticatedPerson,
+                    userType = authenticatedPerson.user?.type!!,
+                    membersDialogState = _uiState.value.membersDialogState.copy(
+                        dataList = getListMembers(authenticatedPerson = authenticatedPerson)
+                    ),
+                    professionalsDialogState = _uiState.value.professionalsDialogState.copy(
+                        dataList = getListProfessionals(authenticatedPerson = authenticatedPerson)
+                    )
                 )
             }
         }

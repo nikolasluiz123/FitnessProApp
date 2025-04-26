@@ -183,7 +183,8 @@ class PersonRepository(
     fun getListTOPersonWithUserType(
         types: List<EnumUserType>,
         simpleFilter: String,
-        personsForSchedule: Boolean
+        personsForSchedule: Boolean,
+        authenticatedPersonId: String
     ): Pager<Int, PersonTuple> {
         return Pager(
             config = PagingConfig(
@@ -194,7 +195,8 @@ class PersonRepository(
                 personDAO.getPersonsWithUserType(
                     types = types,
                     simpleFilter = simpleFilter,
-                    personsForSchedule = personsForSchedule
+                    personsForSchedule = personsForSchedule,
+                    authenticatedPersonId = authenticatedPersonId
                 )
             }
         )

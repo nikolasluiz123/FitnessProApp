@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
@@ -24,7 +25,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val userRepository: UserRepository,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
+    private val globalEvents: GlobalEvents
 ) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<HomeUIState> = MutableStateFlow(HomeUIState())
@@ -33,6 +35,8 @@ class HomeViewModel @Inject constructor(
     init {
         initialUIStateLoad()
     }
+
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
