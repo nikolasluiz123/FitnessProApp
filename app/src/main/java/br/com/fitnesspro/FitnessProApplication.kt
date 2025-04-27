@@ -4,15 +4,19 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import br.com.fitnesspro.common.workers.AuthenticationSessionWorker
 import br.com.fitnesspro.common.workers.GeneralModuleExportationWorker
 import br.com.fitnesspro.common.workers.GeneralModuleImportationWorker
-import br.com.fitnesspro.core.worker.OneTimeWorkerRequester
+import br.com.fitnesspro.core.worker.onetime.OneTimeWorkerRequester
+import br.com.fitnesspro.core.worker.periodic.PeriodicWorkerRequester
 import br.com.fitnesspro.scheduler.workers.SchedulerModuleExportationWorker
 import br.com.fitnesspro.scheduler.workers.SchedulerModuleImportationWorker
 import dagger.hilt.android.HiltAndroidApp
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
+import java.util.concurrent.TimeUnit
 
 @HiltAndroidApp
 class FitnessProApplication : Application(), Configuration.Provider {
@@ -29,6 +33,12 @@ class FitnessProApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+
+        PeriodicWorkerRequester(
+            context = this,
+            clazz = AuthenticationSessionWorker::class.java,
+            builder = PeriodicWorkRequestBuilder<AuthenticationSessionWorker>(15, TimeUnit.MINUTES)
+        ).enqueue()
 
         OneTimeWorkerRequester(
             context = this,

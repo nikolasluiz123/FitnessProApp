@@ -3,7 +3,7 @@ package br.com.fitnesspro.common.workers.common
 import android.content.Context
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.ISyncRepositoryEntryPoint
-import br.com.fitnesspro.core.worker.FitnessProOneTimeCoroutineWorker
+import br.com.fitnesspro.core.worker.onetime.FitnessProOneTimeCoroutineWorker
 import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import dagger.hilt.android.EntryPointAccessors
@@ -30,7 +30,8 @@ abstract class AbstractSyncWorker(
         }
     }
 
-    override fun onError(e: Exception) {
+    override suspend fun onError(e: Exception): Result {
         e.sendToFirebaseCrashlytics()
+        return Result.retry()
     }
 }

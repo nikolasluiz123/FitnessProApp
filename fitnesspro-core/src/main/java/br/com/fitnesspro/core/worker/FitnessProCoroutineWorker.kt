@@ -9,19 +9,17 @@ abstract class FitnessProCoroutineWorker(
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
-    abstract fun onError(e: Exception)
+    abstract suspend fun onError(e: Exception): Result
 
     abstract suspend fun onWork()
 
     override suspend fun doWork(): Result {
-        try {
+        return try {
             onWork()
-
-            return Result.success()
+            Result.success()
         } catch (e: Exception) {
             e.printStackTrace()
             onError(e)
-            return Result.retry()
         }
     }
 }

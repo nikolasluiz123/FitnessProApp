@@ -1,4 +1,4 @@
-package br.com.fitnesspro.core.worker
+package br.com.fitnesspro.core.worker.onetime
 
 import android.content.Context
 import androidx.work.Constraints

@@ -7,7 +7,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.ICommonWorkersEntryPoint
 import br.com.fitnesspro.common.workers.common.AbstractExportationWorker
-import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.scheduler.injection.IScheduleWorkersEntryPoint
 import dagger.assisted.Assisted
@@ -22,10 +21,6 @@ class SchedulerModuleExportationWorker @AssistedInject constructor(
 
     private val scheduleEntryPoint = EntryPointAccessors.fromApplication(context, IScheduleWorkersEntryPoint::class.java)
     private val commonEntryPoint = EntryPointAccessors.fromApplication(context, ICommonWorkersEntryPoint::class.java)
-
-    override fun onError(e: Exception) {
-        e.sendToFirebaseCrashlytics()
-    }
 
     override suspend fun onExport(serviceToken: String) {
         scheduleEntryPoint.getSchedulerExportationRepository().export(serviceToken)

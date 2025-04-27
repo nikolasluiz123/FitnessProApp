@@ -1,8 +1,9 @@
-package br.com.fitnesspro.core.worker
+package br.com.fitnesspro.core.worker.onetime
 
 import android.content.Context
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkerParameters
+import br.com.fitnesspro.core.worker.FitnessProCoroutineWorker
 
 abstract class FitnessProOneTimeCoroutineWorker(
     context: Context,
