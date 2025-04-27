@@ -108,6 +108,7 @@ fun TOScheduler.getScheduler(): Scheduler {
 
 fun SchedulerDTO.getScheduler(): Scheduler {
     return Scheduler(
+        id = id!!,
         academyMemberPersonId = academyMemberPersonId,
         professionalPersonId = professionalPersonId,
         scheduledDate = scheduledDate,
