@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import br.com.fitnesspro.core.extensions.defaultGSon
+import br.com.fitnesspro.scheduler.ui.screen.chat.callbacks.OnNavigateToChat
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.CompromiseScreen
 import br.com.fitnesspro.scheduler.ui.viewmodel.CompromiseViewModel
 import com.google.gson.GsonBuilder
@@ -17,14 +18,16 @@ internal const val compromiseArguments = "compromiseArguments"
 
 
 fun NavGraphBuilder.compromiseScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateToChat: OnNavigateToChat
 ) {
     composable(route = "$compromiseScreenRoute?$compromiseArguments={$compromiseArguments}") {
         val viewModel = hiltViewModel<CompromiseViewModel>()
 
         CompromiseScreen(
             viewModel = viewModel,
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            onNavigateToChat = onNavigateToChat
         )
     }
 }

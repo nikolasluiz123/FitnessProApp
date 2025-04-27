@@ -3,7 +3,6 @@ package br.com.fitnesspro.scheduler.ui.screen.scheduler
 import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.ime
@@ -99,12 +98,7 @@ fun SchedulerConfigScreen(
                 }
             }
         },
-        contentWindowInsets = WindowInsets(
-            top = WindowInsets.ime.asPaddingValues().calculateTopPadding(),
-            bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding() - 48.dp,
-            left = 0.dp,
-            right = 0.dp
-        )
+        contentWindowInsets = WindowInsets.ime
     ) { paddingValues ->
         val scrollState = rememberScrollState()
 

@@ -92,7 +92,8 @@ fun FitnessProNavHost(
         )
 
         compromiseScreen(
-            onBackClick = navController::popBackStack
+            onBackClick = navController::popBackStack,
+            onNavigateToChat = navController::navigateToChatScreen
         )
 
         mockScreen()

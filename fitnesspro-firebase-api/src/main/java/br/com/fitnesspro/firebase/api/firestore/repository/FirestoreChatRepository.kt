@@ -47,6 +47,17 @@ class FirestoreChatRepository(
         firestoreChatService.getChatDocument(personId, chatId)
     }
 
+    suspend fun getChatIdFromPerson(senderPerson: TOPerson, receiverPerson: TOPerson): String = withContext(IO) {
+        firestoreChatService.getChatIdFromPerson(
+            senderPersonId = senderPerson.id!!,
+            receiverPersonId = receiverPerson.id!!
+        ) ?: startChatAndReturnChatId(senderPerson, receiverPerson)
+    }
+
+    private suspend fun startChatAndReturnChatId(senderPerson: TOPerson, receiverPerson: TOPerson): String {
+        return startChat(senderPerson, receiverPerson)
+    }
+
     fun addChatListListener(
         authenticatedPersonId: String,
         onSuccess: (List<ChatDocument>) -> Unit,

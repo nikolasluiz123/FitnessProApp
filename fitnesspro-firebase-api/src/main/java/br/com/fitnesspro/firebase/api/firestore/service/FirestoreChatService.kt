@@ -17,16 +17,15 @@ import java.util.UUID
 
 class FirestoreChatService: FirestoreService() {
 
-    suspend fun startChat(senderPerson: PersonDocument, receiverPerson: PersonDocument) {
+    suspend fun startChat(senderPerson: PersonDocument, receiverPerson: PersonDocument): String {
         val personsCollectionRef = db.collection(PersonDocument.COLLECTION_NAME)
         val senderPersonChatsRef = db.collection(getPersonChatsPath(senderPerson.id!!))
         val receiverPersonChatsRef = db.collection(getPersonChatsPath(receiverPerson.id!!))
+        val chatId = UUID.randomUUID().toString()
 
         db.runTransaction { transaction ->
             transaction.set(personsCollectionRef.document(senderPerson.id), senderPerson)
             transaction.set(personsCollectionRef.document(receiverPerson.id), receiverPerson)
-
-            val chatId = UUID.randomUUID().toString()
 
             val chatSender = ChatDocument(
                 id = chatId,
@@ -43,6 +42,8 @@ class FirestoreChatService: FirestoreService() {
             transaction.set(senderPersonChatsRef.document(chatSender.id), chatSender)
             transaction.set(receiverPersonChatsRef.document(chatReceiver.id), chatReceiver)
         }.await()
+
+        return chatId
     }
 
     suspend fun getPersonNameFromChat(personId: String, chatId: String): String {
@@ -194,6 +195,15 @@ class FirestoreChatService: FirestoreService() {
                 }
             }
         }
+    }
+
+    suspend fun getChatIdFromPerson(senderPersonId: String, receiverPersonId: String): String? {
+        val chatsPath = getPersonChatsPath(senderPersonId)
+        val queryDocumentSnapshot = db.collection(chatsPath)
+            .whereEqualTo(ChatDocument::receiverPersonId.name, receiverPersonId)
+            .get().await().firstOrNull()
+
+        return queryDocumentSnapshot?.id
     }
 
     private suspend fun readMessages(

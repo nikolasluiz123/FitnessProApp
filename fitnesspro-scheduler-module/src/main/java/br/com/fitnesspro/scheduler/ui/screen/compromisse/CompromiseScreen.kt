@@ -40,6 +40,8 @@ import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CONFIRMED
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
+import br.com.fitnesspro.scheduler.ui.navigation.ChatArgs
+import br.com.fitnesspro.scheduler.ui.screen.chat.callbacks.OnNavigateToChat
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.callbacks.OnInactivateCompromiseClick
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.callbacks.OnSaveCompromiseClick
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.callbacks.OnScheduleConfirmClick
@@ -59,7 +61,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun CompromiseScreen(
     viewModel: CompromiseViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateToChat: OnNavigateToChat
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -68,7 +71,9 @@ fun CompromiseScreen(
         onBackClick = onBackClick,
         onSaveCompromiseClick = viewModel::saveCompromise,
         onInactivateCompromiseClick = viewModel::onInactivateCompromiseClick,
-        onScheduleConfirmClick = viewModel::onScheduleConfirmClick
+        onScheduleConfirmClick = viewModel::onScheduleConfirmClick,
+        onPrepareChatNavigation = viewModel::onPrepareChatNavigation,
+        onNavigateToChat = onNavigateToChat
     )
 }
 
@@ -79,7 +84,9 @@ fun CompromiseScreen(
     onBackClick: () -> Unit = { },
     onSaveCompromiseClick: OnSaveCompromiseClick? = null,
     onInactivateCompromiseClick: OnInactivateCompromiseClick? = null,
-    onScheduleConfirmClick: OnScheduleConfirmClick? = null
+    onScheduleConfirmClick: OnScheduleConfirmClick? = null,
+    onPrepareChatNavigation: (onSuccess: (ChatArgs) -> Unit) -> Unit = { },
+    onNavigateToChat: OnNavigateToChat? = null
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -125,6 +132,7 @@ fun CompromiseScreen(
                             enabled = state.isEnabledMessageButton,
                             onClick = {
                                 Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_ACTION_MESSAGE)
+                                onPrepareChatNavigation { onNavigateToChat?.onExecute(it) }
                             }
                         )
 

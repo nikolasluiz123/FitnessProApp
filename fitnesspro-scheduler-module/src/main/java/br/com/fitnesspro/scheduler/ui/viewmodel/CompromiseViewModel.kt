@@ -22,12 +22,14 @@ import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.core.extensions.parseToLocalTime
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
+import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.model.enums.EnumCompromiseType.FIRST
 import br.com.fitnesspro.model.enums.EnumCompromiseType.RECURRENT
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
+import br.com.fitnesspro.scheduler.ui.navigation.ChatArgs
 import br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs
 import br.com.fitnesspro.scheduler.ui.navigation.compromiseArguments
 import br.com.fitnesspro.scheduler.ui.state.CompromiseUIState
@@ -66,6 +68,7 @@ class CompromiseViewModel @Inject constructor(
     private val confirmationSchedulerUseCase: ConfirmationSchedulerUseCase,
     private val inactivateSchedulerUseCase: InactivateSchedulerUseCase,
     private val globalEvents: GlobalEvents,
+    private val chatRepository: FirestoreChatRepository,
     savedStateHandle: SavedStateHandle
 ) : FitnessProViewModel() {
 
@@ -753,5 +756,25 @@ class CompromiseViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onPrepareChatNavigation(onSuccess: (ChatArgs) -> Unit) {
+        launch {
+            val id = chatRepository.getChatIdFromPerson(
+                senderPerson = _uiState.value.authenticatedPerson,
+                receiverPerson = getPersonChatReceiver()!!
+            )
+
+            onSuccess(ChatArgs(id))
+        }
+    }
+
+    private suspend fun getPersonChatReceiver(): TOPerson? {
+        val personId = when (_uiState.value.userType) {
+            EnumUserType.ACADEMY_MEMBER -> _uiState.value.toScheduler.professionalPersonId
+            else -> _uiState.value.toScheduler.academyMemberPersonId
+        }
+
+        return personRepository.getTOPersonById(personId!!)
     }
 }

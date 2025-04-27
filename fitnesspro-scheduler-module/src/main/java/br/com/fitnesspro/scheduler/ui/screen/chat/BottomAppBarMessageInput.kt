@@ -2,7 +2,6 @@ package br.com.fitnesspro.scheduler.ui.screen.chat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -25,19 +24,19 @@ import br.com.fitnesspro.scheduler.ui.state.ChatUIState
 @Composable
 internal fun BottomAppBarMessageInput(
     state: ChatUIState,
-    onSendMessageClick: () -> Unit
+    onSendMessageClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     ConstraintLayout(
-        Modifier
+        modifier
             .fillMaxWidth()
-            .height(80.dp)
             .background(color = MaterialTheme.colorScheme.primary)
     ) {
         val (inputRef, sendBtnRef) = createRefs()
 
         OutlinedTextField(
             modifier = Modifier
-                .padding(horizontal = 8.dp)
+                .padding(8.dp)
                 .constrainAs(inputRef) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)

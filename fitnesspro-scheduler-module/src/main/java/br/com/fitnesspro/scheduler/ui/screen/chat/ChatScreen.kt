@@ -1,6 +1,8 @@
 package br.com.fitnesspro.scheduler.ui.screen.chat
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -33,7 +35,7 @@ fun ChatScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ChatScreen(
     state: ChatUIState,
@@ -50,6 +52,7 @@ fun ChatScreen(
         },
         bottomBar = {
             BottomAppBarMessageInput(
+                modifier = Modifier.imePadding(),
                 state = state,
                 onSendMessageClick = onSendMessageClick
             )
