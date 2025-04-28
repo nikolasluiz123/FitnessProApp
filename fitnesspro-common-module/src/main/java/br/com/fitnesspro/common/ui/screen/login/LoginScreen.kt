@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -58,8 +56,6 @@ import br.com.fitnesspro.core.extensions.verifyPermissionGranted
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.GREY_800
-import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.core.utils.PermissionUtils.requestMultiplePermissionsLauncher
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import com.google.firebase.analytics.ktx.analytics
@@ -70,7 +66,6 @@ fun LoginScreen(
     viewModel: LoginViewModel,
     onNavigateToRegisterUser: OnNavigateToRegisterUser,
     onNavigateToHome: () -> Unit,
-    onNavigateToMockScreen: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -79,7 +74,6 @@ fun LoginScreen(
         onNavigateToRegisterUser = onNavigateToRegisterUser,
         onLoginClick = viewModel::login,
         onNavigateToHome = onNavigateToHome,
-        onNavigateToMockScreen = onNavigateToMockScreen,
         onLoginWithGoogleClick = viewModel::loginWithGoogle
     )
 }
@@ -91,7 +85,6 @@ fun LoginScreen(
     onNavigateToRegisterUser: OnNavigateToRegisterUser? = null,
     onLoginClick: OnLoginClick? = null,
     onNavigateToHome: () -> Unit = { },
-    onNavigateToMockScreen: () -> Unit = { },
     onLoginWithGoogleClick: OnLoginWithGoogle? = null
 ) {
     val context = LocalContext.current
@@ -100,18 +93,6 @@ fun LoginScreen(
         topBar = {
             SimpleFitnessProTopAppBar(
                 title = stringResource(R.string.login_screen_title),
-                menuItems = {
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = stringResource(R.string.login_screen_menu_item_mocks),
-                                style = LabelTextStyle,
-                                color = GREY_800
-                            )
-                        },
-                        onClick = onNavigateToMockScreen
-                    )
-                },
                 showNavigationIcon = false,
                 showMenu = true
             )

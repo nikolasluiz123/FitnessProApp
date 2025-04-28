@@ -5,7 +5,6 @@
     <string name="login_screen_label_button_login">Login</string>
     <string name="login_screen_label_button_register">Registrar-se</string>
     <string name="login_screen_title">Bem-Vindo</string>
-    <string name="login_screen_menu_item_mocks">Mock de Dados</string>
     <string name="label_member_bottom_sheet_register_user">Membro</string>
     <string name="label_trainer_bottom_sheet_register_user">Instrutor</string>
     <string name="label_nutritionist_bottom_sheet_register_user">Nutricionista</string>

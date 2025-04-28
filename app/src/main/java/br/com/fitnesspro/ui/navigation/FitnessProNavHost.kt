@@ -53,7 +53,6 @@ fun FitnessProNavHost(
                     }
                 )
             },
-            onNavigateToMockScreen = navController::navigateToMockScreen
         )
 
         registerUserScreen(
@@ -95,8 +94,6 @@ fun FitnessProNavHost(
             onBackClick = navController::popBackStack,
             onNavigateToChat = navController::navigateToChatScreen
         )
-
-        mockScreen()
 
         schedulerConfigScreen(
             onBackClick = navController::popBackStack
