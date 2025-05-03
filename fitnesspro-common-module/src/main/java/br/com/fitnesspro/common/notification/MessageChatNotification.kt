@@ -1,14 +1,14 @@
-package br.com.fitnesspro.scheduler.notification
+package br.com.fitnesspro.common.notification
 
 import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.app.Person
+import br.com.fitnesspro.common.R
 import br.com.fitnesspro.core.notification.FitnessProNotification
 import br.com.fitnesspro.firebase.api.firestore.documents.MessageNotificationDocument
-import br.com.fitnesspro.scheduler.R
 
-class NewMessageChatNotification(
+class MessageChatNotification(
     context: Context,
     private val messages: List<MessageNotificationDocument>
 ): FitnessProNotification(context) {

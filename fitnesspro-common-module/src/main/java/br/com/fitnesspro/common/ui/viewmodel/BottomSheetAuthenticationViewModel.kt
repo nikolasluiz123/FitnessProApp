@@ -16,6 +16,7 @@ import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,9 +71,17 @@ class BottomSheetAuthenticationViewModel @Inject constructor(
             _uiState.value.onToggleLoading()
         }
 
-        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
-            message = context.getString(R.string.unknown_error_message)
-        )
+        val message = when {
+            throwable is FirebaseAuthInvalidUserException && throwable.errorCode == "ERROR_USER_TOKEN_EXPIRED" -> {
+                context.getString(R.string.firebase_user_token_expired_message)
+            }
+
+            else -> {
+                context.getString(R.string.unknown_error_message)
+            }
+        }
+
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
     }
 
     fun login(onSuccess: () -> Unit) {

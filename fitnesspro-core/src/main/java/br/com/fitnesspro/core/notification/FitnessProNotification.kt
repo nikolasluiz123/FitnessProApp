@@ -27,7 +27,7 @@ abstract class FitnessProNotification(protected val context: Context) {
         createNotificationChannel()
 
         val defaultNotificationBuilder = NotificationCompat.Builder(context, getChannelId())
-            .setSmallIcon(R.drawable.ic_health)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(message)
 

@@ -16,6 +16,7 @@ class ServiceTokenRepository(
     suspend fun saveTokenInformation(tokens: List<ServiceTokenDTO>) {
         tokens.forEach { tokenServiceDTO ->
             tokenServiceDTO.device?.let {
+                applicationRepository.saveApplicationLocally(it.application!!)
                 deviceRepository.saveDeviceLocally(it)
             }
 

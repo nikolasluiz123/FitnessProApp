@@ -121,6 +121,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-performance = { group = "com.google.firebase", name = "firebase-perf" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
 work-runtime = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workVersion" }
 junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }

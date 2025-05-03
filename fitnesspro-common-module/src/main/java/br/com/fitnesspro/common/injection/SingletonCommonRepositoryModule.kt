@@ -200,10 +200,12 @@ class SingletonCommonRepositoryModule {
     fun provideDeviceRepository(
         @ApplicationContext context: Context,
         deviceDAO: DeviceDAO,
+        personRepository: PersonRepository
     ): DeviceRepository {
         return DeviceRepository(
             context = context,
             deviceDAO = deviceDAO,
+            personRepository = personRepository
         )
     }
 

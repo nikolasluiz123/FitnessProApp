@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.general.Person
 import java.util.UUID
 
 @Entity(
@@ -16,6 +17,12 @@ import java.util.UUID
             parentColumns = ["id"],
             childColumns = ["application_id"],
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = Person::class,
+            parentColumns = ["id"],
+            childColumns = ["person_id"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [
@@ -25,11 +32,25 @@ import java.util.UUID
 data class Device(
     @PrimaryKey
     override var id: String = UUID.randomUUID().toString(),
+
     var model: String? = null,
+
     var brand: String? = null,
+
     @ColumnInfo(name = "android_version")
     var androidVersion: String? = null,
+
     @ColumnInfo(name = "application_id")
     var applicationId: String? = null,
+
     var active: Boolean = true,
+
+    @ColumnInfo(name = "person_id")
+    var personId: String? = null,
+
+    @ColumnInfo(name = "firebase_messaging_token")
+    var firebaseMessagingToken: String? = null,
+
+    @ColumnInfo(name = "zone_id")
+    var zoneId: String? = null
 ) : BaseModel

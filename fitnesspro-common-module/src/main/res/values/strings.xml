@@ -109,4 +109,13 @@
     <string name="sync_module_person_academy_time">Exportação de Horários de Academia</string>
     <string name="auth_bottom_sheet_label_loading">Autenticando…</string>
     <string name="validation_msg_not_same_user_auth_again">Não é possível se reautenticar com um usuário diferente do que você autenticou inicialmente.\n\nCaso precise autenticar-se com um usuário diferente, realize logout e tente novamente.</string>
+    <string name="firebase_user_token_expired_message">Não foi possível realizar a autenticação pois o token expirou, por favor, tente novamente.\n\nSe o erro persistir, contate o suporte.</string>
+    <string name="new_message_chat_channel_name">Notificações do Chat</string>
+    <string name="new_message_chat_channel_description">Notificações das Novas Mensagens do Chat</string>
+    <string name="new_message_chat_notification_title">Mensagens</string>
+    <string name="new_message_chat_notification_message">Você tem novas mensagens</string>
+    <string name="scheduler_notification_channel_name">Notificações de Agendamento</string>
+    <string name="scheduler_notification_channel_description">Notificações sobre mudanças em agendamentos</string>
+    <string name="generic_communication_notification_channel_name">Comunicações Gerais</string>
+    <string name="generic_communication_notification_channel_description">Notificações sobre comunicados gerais</string>
 </resources>

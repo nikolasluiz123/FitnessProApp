@@ -110,6 +110,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
 
     testRuntimeOnly(libs.junit.jupter.engine)
     testImplementation(libs.junit.jupter.api)

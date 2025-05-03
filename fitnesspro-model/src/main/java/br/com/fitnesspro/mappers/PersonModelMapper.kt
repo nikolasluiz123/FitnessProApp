@@ -46,6 +46,17 @@ fun TOPerson.getPerson(): Person {
     return model
 }
 
+fun TOPerson.getPersonDTO(): PersonDTO {
+    return PersonDTO(
+        id = id,
+        name = name,
+        birthDate = birthDate,
+        phone = phone,
+        active = active,
+        user = user?.getUserDTO(),
+    )
+}
+
 fun PersonDTO.getPerson(): Person {
     return Person(
         id = id!!,
@@ -104,6 +115,16 @@ fun TOUser.getUser(): User {
     }
 
     return model
+}
+
+fun TOUser.getUserDTO(): UserDTO {
+    return UserDTO(
+        id = id,
+        email = email,
+        password = password,
+        active = active,
+        type = getServiceUserType(type!!)
+    )
 }
 
 fun UserDTO.getUser(): User {
