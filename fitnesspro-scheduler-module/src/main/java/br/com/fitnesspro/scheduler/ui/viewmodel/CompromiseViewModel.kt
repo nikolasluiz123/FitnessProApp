@@ -761,6 +761,7 @@ class CompromiseViewModel @Inject constructor(
                 val validationError = confirmationSchedulerUseCase(toScheduler, getSchedulerType())
 
                 if (validationError != null) {
+                    state.onToggleLoading()
                     _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(validationError.message)
                 } else {
                     initializeEditionInfos()
