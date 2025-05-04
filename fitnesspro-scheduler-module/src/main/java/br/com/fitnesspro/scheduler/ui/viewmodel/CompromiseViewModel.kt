@@ -583,7 +583,8 @@ class CompromiseViewModel @Inject constructor(
 
             EnumUserType.ACADEMY_MEMBER -> {
                 if (toScheduler?.id != null) {
-                    context.getString(R.string.compromise_screen_title_compromise)
+                    val situation = toScheduler.situation!!.getLabel(context)!!
+                    context.getString(R.string.compromise_screen_title_compromise_with_situation, situation)
                 } else {
                     context.getString(R.string.compromise_screen_title_new_sugestion)
                 }
