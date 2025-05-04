@@ -757,6 +757,8 @@ class CompromiseViewModel @Inject constructor(
         _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
             message = message
         ) {
+            state.onToggleLoading()
+
             launch {
                 val validationError = confirmationSchedulerUseCase(toScheduler, getSchedulerType())
 

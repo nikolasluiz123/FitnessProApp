@@ -147,7 +147,6 @@ fun CompromiseScreen(
                                 modifier = Modifier.testTag(COMPROMISE_SCREEN_ACTION_SCHEDULE_CONFIRM.name),
                                 enabled = state.isEnabledConfirmButton,
                                 onClick = {
-                                    state.onToggleLoading()
                                     Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_ACTION_SCHEDULE_CONFIRM)
                                     onScheduleConfirmClick?.onExecute {
                                         state.onToggleLoading()
