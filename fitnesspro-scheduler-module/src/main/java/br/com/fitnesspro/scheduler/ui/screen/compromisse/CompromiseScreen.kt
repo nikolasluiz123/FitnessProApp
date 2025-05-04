@@ -27,8 +27,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
+import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCalendarCancel
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCalendarCheck
-import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonMessage
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
@@ -112,7 +112,7 @@ fun CompromiseScreen(
             FitnessProBottomAppBar(
                 actions = {
                     if (!state.recurrent) {
-                        IconButtonDelete(
+                        IconButtonCalendarCancel(
                             modifier = Modifier.testTag(COMPROMISE_SCREEN_ACTION_DELETE.name),
                             enabled = state.isEnabledDeleteButton,
                             onClick = {
@@ -124,20 +124,6 @@ fun CompromiseScreen(
                                             message = context.getString(R.string.compromise_screen_message_inactivated)
                                         )
                                     }
-                                }
-                            }
-                        )
-
-                        IconButtonMessage(
-                            modifier = Modifier.testTag(COMPROMISE_SCREEN_ACTION_MESSAGE.name),
-                            hasMessagesToRead = state.hasNewMessages,
-                            enabled = state.isEnabledMessageButton,
-                            onClick = {
-                                state.onToggleLoading()
-                                Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_ACTION_MESSAGE)
-                                onPrepareChatNavigation {
-                                    state.onToggleLoading()
-                                    onNavigateToChat?.onExecute(it)
                                 }
                             }
                         )
@@ -163,6 +149,20 @@ fun CompromiseScreen(
                                 }
                             )
                         }
+
+                        IconButtonMessage(
+                            modifier = Modifier.testTag(COMPROMISE_SCREEN_ACTION_MESSAGE.name),
+                            hasMessagesToRead = state.hasNewMessages,
+                            enabled = state.isEnabledMessageButton,
+                            onClick = {
+                                state.onToggleLoading()
+                                Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_ACTION_MESSAGE)
+                                onPrepareChatNavigation {
+                                    state.onToggleLoading()
+                                    onNavigateToChat?.onExecute(it)
+                                }
+                            }
+                        )
                     }
 
                 },
