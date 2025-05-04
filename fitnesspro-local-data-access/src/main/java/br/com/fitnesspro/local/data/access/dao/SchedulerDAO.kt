@@ -100,7 +100,8 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
         personId: String,
         userType: EnumUserType,
         yearMonth: YearMonth? = null,
-        scheduledDate: LocalDate? = null
+        scheduledDate: LocalDate? = null,
+        canceledSchedules: Boolean = true
     ): List<TOScheduler> {
         val params = mutableListOf<Any>()
 
@@ -130,6 +131,10 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
             add(" where schedule.active = 1 ")
             add(" and personMember.active = 1 ")
             add(" and personProfessional.active = 1 ")
+
+            if (!canceledSchedules) {
+                add(" and schedule.situation != '${EnumSchedulerSituation.CANCELLED}' ")
+            }
 
             when (userType) {
                 EnumUserType.PERSONAL_TRAINER,

@@ -76,7 +76,8 @@ class SchedulerViewModel @Inject constructor(
     fun updateSchedules() {
         launch {
             val groupedTOSchedulers = schedulerRepository.getSchedulerList(
-                yearMonth = _uiState.value.selectedYearMonth
+                yearMonth = _uiState.value.selectedYearMonth,
+                canceledSchedules = false
             ).groupBy { it.scheduledDate!! }
 
             val decorators = groupedTOSchedulers.map { (date, schedules) ->

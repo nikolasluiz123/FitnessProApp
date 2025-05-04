@@ -74,7 +74,8 @@ class SchedulerRepository(
     suspend fun getSchedulerList(
         yearMonth: YearMonth? = null,
         toPerson: TOPerson? = null,
-        scheduledDate: LocalDate? = null
+        scheduledDate: LocalDate? = null,
+        canceledSchedules: Boolean = true
     ): List<TOScheduler> = withContext(IO) {
         val person = toPerson ?: personRepository.getAuthenticatedTOPerson()!!
 
@@ -82,7 +83,8 @@ class SchedulerRepository(
             personId = person.id!!,
             userType = person.user?.type!!,
             yearMonth = yearMonth,
-            scheduledDate = scheduledDate
+            scheduledDate = scheduledDate,
+            canceledSchedules = canceledSchedules
         )
     }
 

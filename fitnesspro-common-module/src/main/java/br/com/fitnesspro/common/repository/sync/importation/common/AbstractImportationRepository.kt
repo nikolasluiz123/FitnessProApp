@@ -30,7 +30,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
     abstract suspend fun convertDTOToEntity(dto: DTO): MODEL
 
     suspend fun import(serviceToken: String, lastUpdateDate: LocalDateTime?) {
-        val importFilter = CommonImportFilter(lastUpdateDate = lastUpdateDate)
+        val importFilter = CommonImportFilter(lastUpdateDate = lastUpdateDate?.minusMinutes(5))
         val pageInfos = ImportPageInfos(pageSize = getPageSize())
 
         lateinit var response: ImportationServiceResponse<DTO>

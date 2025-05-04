@@ -65,6 +65,10 @@ class RegisterAcademyViewModel @Inject constructor(
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
+        if (_uiState.value.showLoading) {
+            _uiState.value.onToggleLoading()
+        }
+
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
             message = context.getString(R.string.unknown_error_message)
         )

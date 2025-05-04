@@ -28,6 +28,12 @@ import java.util.UUID
             parentColumns = ["id"],
             childColumns = ["professional_person_id"],
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = Person::class,
+            parentColumns = ["id"],
+            childColumns = ["cancellation_person_id"],
+            onDelete = ForeignKey.CASCADE
         )
     ]
 )
@@ -48,6 +54,8 @@ data class Scheduler(
     var timeEnd: LocalTime? = null,
     @ColumnInfo(name = "canceled_date")
     var canceledDate: LocalDateTime? = null,
+    @ColumnInfo(name = "cancellation_person_id")
+    var cancellationPersonId: String? = null,
     var situation: EnumSchedulerSituation? = null,
     @ColumnInfo(name = "compromise_type")
     var compromiseType: EnumCompromiseType? = null,

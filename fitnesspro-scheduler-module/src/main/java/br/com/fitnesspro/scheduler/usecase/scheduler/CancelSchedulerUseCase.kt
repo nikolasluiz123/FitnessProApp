@@ -1,6 +1,7 @@
 package br.com.fitnesspro.scheduler.usecase.scheduler
 
 import android.content.Context
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.core.validation.ValidationError
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CANCELLED
@@ -14,9 +15,10 @@ import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidat
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.to.TOScheduler
 
-class InactivateSchedulerUseCase(
+class CancelSchedulerUseCase(
     private val context: Context,
     private val schedulerRepository: SchedulerRepository,
+    private val personRepository: PersonRepository
 ) {
 
     suspend operator fun invoke(toScheduler: TOScheduler, schedulerType: EnumSchedulerType): ValidationError<EnumCompromiseValidationTypes>? {
@@ -24,9 +26,9 @@ class InactivateSchedulerUseCase(
 
         if (result == null) {
             toScheduler.apply {
-                active = false
                 canceledDate = dateTimeNow()
                 situation = CANCELLED
+                cancellationPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
 
                 schedulerRepository.saveScheduler(this, schedulerType)
             }

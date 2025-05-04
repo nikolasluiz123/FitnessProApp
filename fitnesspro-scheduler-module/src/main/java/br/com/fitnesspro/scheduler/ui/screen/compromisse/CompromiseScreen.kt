@@ -31,6 +31,7 @@ import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCalendarChec
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonMessage
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
+import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
 import br.com.fitnesspro.core.extensions.format
@@ -42,7 +43,7 @@ import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.navigation.ChatArgs
 import br.com.fitnesspro.scheduler.ui.screen.chat.callbacks.OnNavigateToChat
-import br.com.fitnesspro.scheduler.ui.screen.compromisse.callbacks.OnInactivateCompromiseClick
+import br.com.fitnesspro.scheduler.ui.screen.compromisse.callbacks.OnCancelCompromiseClick
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.callbacks.OnSaveCompromiseClick
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.callbacks.OnScheduleConfirmClick
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_ACTION_DELETE
@@ -70,7 +71,7 @@ fun CompromiseScreen(
         state = state,
         onBackClick = onBackClick,
         onSaveCompromiseClick = viewModel::saveCompromise,
-        onInactivateCompromiseClick = viewModel::onInactivateCompromiseClick,
+        onCancelCompromiseClick = viewModel::onCancelCompromiseClick,
         onScheduleConfirmClick = viewModel::onScheduleConfirmClick,
         onPrepareChatNavigation = viewModel::onPrepareChatNavigation,
         onNavigateToChat = onNavigateToChat
@@ -83,7 +84,7 @@ fun CompromiseScreen(
     state: CompromiseUIState,
     onBackClick: () -> Unit = { },
     onSaveCompromiseClick: OnSaveCompromiseClick? = null,
-    onInactivateCompromiseClick: OnInactivateCompromiseClick? = null,
+    onCancelCompromiseClick: OnCancelCompromiseClick? = null,
     onScheduleConfirmClick: OnScheduleConfirmClick? = null,
     onPrepareChatNavigation: (onSuccess: (ChatArgs) -> Unit) -> Unit = { },
     onNavigateToChat: OnNavigateToChat? = null
@@ -116,7 +117,8 @@ fun CompromiseScreen(
                             enabled = state.isEnabledDeleteButton,
                             onClick = {
                                 Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_ACTION_DELETE)
-                                onInactivateCompromiseClick?.onExecute {
+                                onCancelCompromiseClick?.onExecute {
+                                    state.onToggleLoading()
                                     coroutineScope.launch {
                                         snackbarHostState.showSnackbar(
                                             message = context.getString(R.string.compromise_screen_message_inactivated)
@@ -131,8 +133,12 @@ fun CompromiseScreen(
                             hasMessagesToRead = state.hasNewMessages,
                             enabled = state.isEnabledMessageButton,
                             onClick = {
+                                state.onToggleLoading()
                                 Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_ACTION_MESSAGE)
-                                onPrepareChatNavigation { onNavigateToChat?.onExecute(it) }
+                                onPrepareChatNavigation {
+                                    state.onToggleLoading()
+                                    onNavigateToChat?.onExecute(it)
+                                }
                             }
                         )
 
@@ -141,8 +147,10 @@ fun CompromiseScreen(
                                 modifier = Modifier.testTag(COMPROMISE_SCREEN_ACTION_SCHEDULE_CONFIRM.name),
                                 enabled = state.isEnabledConfirmButton,
                                 onClick = {
+                                    state.onToggleLoading()
                                     Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_ACTION_SCHEDULE_CONFIRM)
                                     onScheduleConfirmClick?.onExecute {
+                                        state.onToggleLoading()
                                         coroutineScope.launch {
                                             val message = if (state.toScheduler.situation == CONFIRMED) {
                                                 context.getString(R.string.compromise_screen_message_success_confirmed)
@@ -166,8 +174,10 @@ fun CompromiseScreen(
                             iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             onClick = {
+                                state.onToggleLoading()
                                 Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_FAB_SAVE)
                                 onSaveCompromiseClick?.onExecute {
+                                    state.onToggleLoading()
                                     showSuccessMessage(
                                         enumSchedulerType = it,
                                         state = state,
@@ -192,6 +202,8 @@ fun CompromiseScreen(
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
+            FitnessProLinearProgressIndicator(state.showLoading)
+
             FitnessProMessageDialog(state = state.messageDialogState)
 
             when (state.userType) {

@@ -1,6 +1,7 @@
 package br.com.fitnesspro.common.services
 
 import android.annotation.SuppressLint
+import android.util.Log
 import br.com.fitnesspro.common.notification.GenericCommunicationNotification
 import br.com.fitnesspro.common.notification.SchedulerNotification
 import br.com.fitnesspro.shared.communication.enums.notification.EnumNotificationChannel
@@ -30,6 +31,7 @@ class FitnessProFirebaseMessagingService: FirebaseMessagingService() {
             }
 
             EnumNotificationChannel.GENERIC_COMMUNICATION_CHANNEL -> {
+                Log.i("Teste", "onMessageReceived: ${EnumNotificationChannel.GENERIC_COMMUNICATION_CHANNEL} ")
                 GenericCommunicationNotification(baseContext).showNotification(
                     title = remoteMessage.data[FitnessProNotificationData::title.name]!!,
                     message = remoteMessage.data[FitnessProNotificationData::message.name]!!

@@ -9,7 +9,7 @@ import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.ConfirmationSchedulerUseCase
-import br.com.fitnesspro.scheduler.usecase.scheduler.InactivateSchedulerUseCase
+import br.com.fitnesspro.scheduler.usecase.scheduler.CancelSchedulerUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseSuggestionUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveRecurrentCompromiseUseCase
@@ -102,10 +102,12 @@ class SingletonSchedulerUseCaseModule {
     fun provideInactivateSchedulerUseCase(
         @ApplicationContext context: Context,
         schedulerRepository: SchedulerRepository,
-    ): InactivateSchedulerUseCase {
-        return InactivateSchedulerUseCase(
+        personRepository: PersonRepository
+    ): CancelSchedulerUseCase {
+        return CancelSchedulerUseCase(
             context = context,
             schedulerRepository = schedulerRepository,
+            personRepository = personRepository
         )
     }
 

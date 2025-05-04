@@ -33,8 +33,8 @@ import br.com.fitnesspro.scheduler.ui.navigation.ChatArgs
 import br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs
 import br.com.fitnesspro.scheduler.ui.navigation.compromiseArguments
 import br.com.fitnesspro.scheduler.ui.state.CompromiseUIState
+import br.com.fitnesspro.scheduler.usecase.scheduler.CancelSchedulerUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.ConfirmationSchedulerUseCase
-import br.com.fitnesspro.scheduler.usecase.scheduler.InactivateSchedulerUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
@@ -66,7 +66,7 @@ class CompromiseViewModel @Inject constructor(
     private val schedulerRepository: SchedulerRepository,
     private val saveCompromiseUseCase: SaveCompromiseUseCase,
     private val confirmationSchedulerUseCase: ConfirmationSchedulerUseCase,
-    private val inactivateSchedulerUseCase: InactivateSchedulerUseCase,
+    private val cancelSchedulerUseCase: CancelSchedulerUseCase,
     private val globalEvents: GlobalEvents,
     private val chatRepository: FirestoreChatRepository,
     savedStateHandle: SavedStateHandle
@@ -85,6 +85,10 @@ class CompromiseViewModel @Inject constructor(
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
+        if (_uiState.value.showLoading) {
+            _uiState.value.onToggleLoading()
+        }
+
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
             message = context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
         )
@@ -106,7 +110,12 @@ class CompromiseViewModel @Inject constructor(
                 messageDialogState = initializeMessageDialogState(),
                 dayWeeksSelectorField = initializeDayWeeksSelectorField(),
                 recurrent = args.recurrent,
-                toScheduler = _uiState.value.toScheduler.copy(scheduledDate = args.date)
+                toScheduler = _uiState.value.toScheduler.copy(scheduledDate = args.date),
+                onToggleLoading = {
+                    _uiState.value = _uiState.value.copy(
+                        showLoading = _uiState.value.showLoading.not()
+                    )
+                }
             )
         }
     }
@@ -697,7 +706,7 @@ class CompromiseViewModel @Inject constructor(
         }
     }
 
-    fun onInactivateCompromiseClick(onSuccess: () -> Unit) {
+    fun onCancelCompromiseClick(onSuccess: () -> Unit) {
         val state = _uiState.value
         val toScheduler = state.toScheduler
 
@@ -709,10 +718,13 @@ class CompromiseViewModel @Inject constructor(
                 toScheduler.timeEnd!!.format(EnumDateTimePatterns.TIME)
             )
         ) {
+            state.onToggleLoading()
+
             launch {
-                val validationError = inactivateSchedulerUseCase(toScheduler, getSchedulerType())
+                val validationError = cancelSchedulerUseCase(toScheduler, getSchedulerType())
 
                 if (validationError != null) {
+                    state.onToggleLoading()
                     _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(validationError.message)
                 } else {
                     initializeEditionInfos()

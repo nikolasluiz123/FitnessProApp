@@ -94,9 +94,11 @@ class UserRepository(
         val user = findUserByEmail(email)
         val person = personRepository.findPersonByUserId(user?.id!!)
 
-        personRepository.savePersonRemote(person, user)
+        val success = personRepository.savePersonRemote(person, user)
 
-        authenticate(email, password)
+        if (success) {
+            authenticate(email, password)
+        }
     }
 
     suspend fun signInWithGoogle(): AuthResult? = withContext(IO) {

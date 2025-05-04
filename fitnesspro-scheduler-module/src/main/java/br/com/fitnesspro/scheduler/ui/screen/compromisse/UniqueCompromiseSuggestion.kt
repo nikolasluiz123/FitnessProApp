@@ -176,6 +176,7 @@ private fun UniqueCompromiseSuggestionEditable(
         Modifier
             .padding(8.dp)
             .fillMaxSize()
+            .imePadding()
     ) {
         val (professionalRef, startRef, endRef, observationRef) = createRefs()
 
