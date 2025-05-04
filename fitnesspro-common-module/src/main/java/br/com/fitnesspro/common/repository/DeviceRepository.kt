@@ -12,7 +12,7 @@ import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.tasks.await
-import java.util.TimeZone
+import java.time.ZoneId
 
 class DeviceRepository(
     context: Context,
@@ -34,16 +34,20 @@ class DeviceRepository(
         val deviceId = getDeviceIdFromFirebase()
         val personDTO = personRepository.getAuthenticatedTOPerson()!!.getPersonDTO()
 
-        return deviceDAO.findById(deviceId)?.getDeviceDTO(
-            personDTO = personDTO
-        ) ?: DeviceDTO(
+        val deviceDTO = deviceDAO.findById(deviceId)?.getDeviceDTO(personDTO)?.copy(
+            androidVersion = Build.VERSION.RELEASE,
+            firebaseMessagingToken = Firebase.messaging.token.await(),
+            zoneId = ZoneId.systemDefault().id,
+        )
+
+        return deviceDTO ?: DeviceDTO(
             id = deviceId,
             model = Build.MODEL,
             brand = Build.BRAND,
             androidVersion = Build.VERSION.RELEASE,
             active = true,
             firebaseMessagingToken = Firebase.messaging.token.await(),
-            zoneId = TimeZone.getDefault().id,
+            zoneId = ZoneId.systemDefault().id,
             person = personDTO
         )
     }
