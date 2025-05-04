@@ -92,7 +92,7 @@
     <string name="compromise_screen_message_success_completed">Compromisso Finalizado com Sucesso</string>
     <string name="label_cancelado">cancelado</string>
     <string name="label_confirmado">confirmado</string>
-    <string name="compromise_screen_label_cancel">Data de Cancelamento</string>
+    <string name="compromise_screen_label_cancel">Cancelado em</string>
     <string name="chat_message_date_now">Hoje, %s</string>
     <string name="chat_message_date_yesterday">Ontem, %s</string>
     <string name="chat_history_empty_message">Não existem conversas no histórico.</string>
@@ -109,4 +109,5 @@
     <string name="chat_screen_title">Conversa</string>
     <string name="scheduler_importation_descrition">Importação dos Agendamentos</string>
     <string name="scheduler_exportation_description">Exportação das Agendas</string>
+    <string name="compromise_screen_label_cancel_person">Cancelado por</string>
 </resources>

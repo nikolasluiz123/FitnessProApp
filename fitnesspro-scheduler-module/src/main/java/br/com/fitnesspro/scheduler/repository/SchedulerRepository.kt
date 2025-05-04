@@ -93,11 +93,13 @@ class SchedulerRepository(
 
         val memberPerson = personRepository.findPersonById(scheduler.academyMemberPersonId!!)
         val professionalPerson = personRepository.findPersonById(scheduler.professionalPersonId!!)
+        val cancellationPerson = scheduler.cancellationPersonId?.let { personRepository.findPersonById(it) }
         val professionalUser = userRepository.findUserById(professionalPerson.userId!!)!!
 
         scheduler.getTOScheduler(
             memberPersonName = memberPerson.name!!,
             professionalPersonName = professionalPerson.name!!,
+            cancellationPersonName = cancellationPerson?.name,
             professionalUserType = professionalUser.type!!
         )
     }

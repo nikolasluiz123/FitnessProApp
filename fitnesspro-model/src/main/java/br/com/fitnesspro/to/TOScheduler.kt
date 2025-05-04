@@ -19,6 +19,7 @@ data class TOScheduler(
     var timeEnd: LocalTime? = null,
     var canceledDate: LocalDateTime? = null,
     var cancellationPersonId: String? = null,
+    var cancellationPersonName: String? = null,
     var situation: EnumSchedulerSituation? = null,
     var compromiseType: EnumCompromiseType? = null,
     var observation: String? = null,

@@ -67,6 +67,7 @@ fun SchedulerConfig.getSchedulerConfigDTO(): SchedulerConfigDTO {
 fun Scheduler.getTOScheduler(
     memberPersonName: String,
     professionalPersonName: String,
+    cancellationPersonName: String?,
     professionalUserType: EnumUserType
 ): TOScheduler {
     return TOScheduler(
@@ -81,6 +82,7 @@ fun Scheduler.getTOScheduler(
         timeEnd = timeEnd,
         canceledDate = canceledDate,
         cancellationPersonId = cancellationPersonId,
+        cancellationPersonName = cancellationPersonName,
         situation = situation,
         compromiseType = compromiseType,
         observation = observation,

@@ -19,7 +19,7 @@ import br.com.fitnesspro.compose.components.LabeledText
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.TimePickerOutlinedTextFieldValidation
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -27,6 +27,7 @@ import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_END_HOUR_FIELD
+import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_LABELED_TEXT_CANCELLATION_PERSON
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_LABELED_TEXT_DATA_CANCEL
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_LABELED_TEXT_HOUR
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_LABELED_TEXT_NAME
@@ -66,7 +67,7 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
             .fillMaxSize()
             .imePadding()
     ) {
-        val (nameRef, hourRef, professionalRef, situationRef, observationRef, dataCancelRef) = createRefs()
+        val (nameRef, hourRef, professionalRef, situationRef, observationRef, dataCancelRef, personCancelRef) = createRefs()
 
         createHorizontalChain(nameRef, professionalRef)
 
@@ -133,6 +134,22 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
         )
 
         if (state.toScheduler.situation == EnumSchedulerSituation.CANCELLED) {
+            createHorizontalChain(personCancelRef, dataCancelRef)
+
+            LabeledText(
+                modifier = Modifier
+                    .testTag(COMPROMISE_SCREEN_LABELED_TEXT_CANCELLATION_PERSON.name)
+                    .constrainAs(personCancelRef) {
+                        top.linkTo(situationRef.bottom, margin = 8.dp)
+                        end.linkTo(parent.end)
+
+                        width = Dimension.fillToConstraints
+                        horizontalChainWeight = 0.5f
+                    },
+                label = stringResource(R.string.compromise_screen_label_cancel_person),
+                value = state.toScheduler.cancellationPersonName!!
+            )
+
             LabeledText(
                 modifier = Modifier
                     .testTag(COMPROMISE_SCREEN_LABELED_TEXT_DATA_CANCEL.name)
@@ -144,7 +161,7 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
                         horizontalChainWeight = 0.5f
                     },
                 label = stringResource(R.string.compromise_screen_label_cancel),
-                value = state.toScheduler.canceledDate?.format(DATE)!!
+                value = state.toScheduler.canceledDate?.format(EnumDateTimePatterns.DATE_TIME)!!
             )
         }
 
