@@ -111,4 +111,5 @@
     <string name="scheduler_exportation_description">Exportação das Agendas</string>
     <string name="compromise_screen_label_cancel_person">Cancelado por</string>
     <string name="compromise_screen_label_member_readonly">Membro</string>
+    <string name="compromise_screen_label_you">Você</string>
 </resources>

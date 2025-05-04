@@ -126,7 +126,7 @@ fun UniqueCompromiseReadOnly(state: CompromiseUIState) {
                         horizontalChainWeight = 0.5f
                     },
                 label = stringResource(R.string.compromise_screen_label_cancel_person),
-                value = state.toScheduler.cancellationPersonName!!
+                value = getPersonCancellation(state)
             )
 
             LabeledText(
@@ -149,8 +149,7 @@ fun UniqueCompromiseReadOnly(state: CompromiseUIState) {
                 modifier = Modifier
                     .testTag(COMPROMISE_SCREEN_LABELED_TEXT_OBSERVATION.name)
                     .constrainAs(observationRef) {
-                        val isCanceled =
-                            state.toScheduler.situation == EnumSchedulerSituation.CANCELLED
+                        val isCanceled = state.toScheduler.situation == EnumSchedulerSituation.CANCELLED
                         val topAnchor = if (isCanceled) dataCancelRef else situationRef
 
                         top.linkTo(topAnchor.bottom, margin = 8.dp)

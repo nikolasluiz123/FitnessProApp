@@ -147,7 +147,7 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
                         horizontalChainWeight = 0.5f
                     },
                 label = stringResource(R.string.compromise_screen_label_cancel_person),
-                value = state.toScheduler.cancellationPersonName!!
+                value = getPersonCancellation(state)
             )
 
             LabeledText(
@@ -181,6 +181,15 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
                 value = it
             )
         }
+    }
+}
+
+@Composable
+internal fun getPersonCancellation(state: CompromiseUIState): String {
+    return if (state.authenticatedPerson.id == state.toScheduler.cancellationPersonId) {
+        stringResource(R.string.compromise_screen_label_you)
+    } else {
+        state.toScheduler.cancellationPersonName!!
     }
 }
 
