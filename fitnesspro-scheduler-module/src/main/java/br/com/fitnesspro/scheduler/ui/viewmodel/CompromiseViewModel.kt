@@ -557,39 +557,53 @@ class CompromiseViewModel @Inject constructor(
         return when (userType) {
             EnumUserType.PERSONAL_TRAINER -> {
                 if (recurrent) {
-                    if (toScheduler?.id != null) {
-                        context.getString(R.string.compromise_screen_title_recurrent_compromise)
-                    } else {
-                        context.getString(R.string.compromise_screen_title_new_recurrent_compromise)
-                    }
+                    getRecurrentCompromisseTitle(toScheduler)
                 } else {
-                    if (toScheduler?.id != null) {
-                        val situation = toScheduler.situation!!.getLabel(context)!!
-                        context.getString(R.string.compromise_screen_title_compromise_with_situation, situation)
-                    } else {
-                        context.getString(R.string.compromise_screen_title_new_compromise)
-                    }
+                    getUniqueCompromisseTitle(toScheduler)
                 }
             }
 
             EnumUserType.NUTRITIONIST -> {
-                if (toScheduler?.id != null) {
-                    val situation = toScheduler.situation!!.getLabel(context)!!
-                    context.getString(R.string.compromise_screen_title_compromise_with_situation, situation)
-                } else {
-                    context.getString(R.string.compromise_screen_title_new_compromise)
-                }
+                getUniqueCompromisseTitle(toScheduler)
             }
 
             EnumUserType.ACADEMY_MEMBER -> {
-                if (toScheduler?.id != null) {
-                    val situation = toScheduler.situation!!.getLabel(context)!!
-                    context.getString(R.string.compromise_screen_title_compromise_with_situation, situation)
-                } else {
-                    context.getString(R.string.compromise_screen_title_new_sugestion)
-                }
+                getCompromiseSuggestionTitle(toScheduler)
             }
         }
+    }
+
+    private fun getCompromiseSuggestionTitle(toScheduler: TOScheduler?): String {
+        return if (toScheduler?.id != null) {
+            getTitleWithSituation(toScheduler)
+        } else {
+            context.getString(R.string.compromise_screen_title_new_sugestion)
+        }
+    }
+
+    private fun getRecurrentCompromisseTitle(toScheduler: TOScheduler?): String {
+        return if (toScheduler?.id != null) {
+            context.getString(R.string.compromise_screen_title_recurrent_compromise)
+        } else {
+            context.getString(R.string.compromise_screen_title_new_recurrent_compromise)
+        }
+    }
+
+    private fun getUniqueCompromisseTitle(toScheduler: TOScheduler?): String {
+        return if (toScheduler?.id != null) {
+            getTitleWithSituation(toScheduler)
+        } else {
+            context.getString(R.string.compromise_screen_title_new_compromise)
+        }
+    }
+
+    private fun getTitleWithSituation(toScheduler: TOScheduler): String {
+        val situation = toScheduler.situation!!.getLabel(context)!!
+
+        return context.getString(
+            R.string.compromise_screen_title_compromise_with_situation,
+            situation
+        )
     }
 
     private fun getSubtitle(date: LocalDate?): String? {
