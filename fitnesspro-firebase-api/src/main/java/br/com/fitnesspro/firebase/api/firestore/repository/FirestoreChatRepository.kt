@@ -54,6 +54,10 @@ class FirestoreChatRepository(
         ) ?: startChatAndReturnChatId(senderPerson, receiverPerson)
     }
 
+    suspend fun deleteNotificationsAfterReceive(authenticatedPersonId: String, ids: List<String>) = withContext(IO) {
+        firestoreChatService.deleteNotificationsAfterReceive(authenticatedPersonId, ids)
+    }
+
     private suspend fun startChatAndReturnChatId(senderPerson: TOPerson, receiverPerson: TOPerson): String {
         return startChat(senderPerson, receiverPerson)
     }

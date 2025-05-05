@@ -23,7 +23,7 @@ abstract class FitnessProNotification(protected val context: Context) {
     open fun onBuildNotification(builder: NotificationCompat.Builder) = Unit
 
     @SuppressLint("MissingPermission")
-    fun showNotification(title: String, message: String) {
+    fun showNotification(title: String = "", message: String = "") {
         createNotificationChannel()
 
         val defaultNotificationBuilder = NotificationCompat.Builder(context, getChannelId())

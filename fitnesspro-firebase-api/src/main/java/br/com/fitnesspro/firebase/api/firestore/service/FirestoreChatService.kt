@@ -170,7 +170,7 @@ class FirestoreChatService: FirestoreService() {
         val messagesPath = getChatMessagesPath(chatDocument.receiverPersonId, chatId)
         val messagesRef = db.collection(messagesPath)
 
-        val notificationsPath = getPersonNotificationsPath(chatDocument.receiverPersonId)
+        val notificationsPath = getPersonNotificationsPath(authenticatedPersonId)
         val notificationsRef = db.collection(notificationsPath)
 
         return messagesRef.addSnapshotListener { value, error ->
@@ -204,6 +204,19 @@ class FirestoreChatService: FirestoreService() {
             .get().await().firstOrNull()
 
         return queryDocumentSnapshot?.id
+    }
+
+    suspend fun deleteNotificationsAfterReceive(authenticatedPersonId: String, ids: List<String>) {
+        val notificationsPath = getPersonNotificationsPath(authenticatedPersonId)
+        val notificationsRef = db.collection(notificationsPath)
+
+        val notifications = notificationsRef
+            .whereIn(MessageNotificationDocument::id.name, ids)
+            .get().await().documents.map { it.reference }
+
+        db.runTransaction { transaction ->
+            transaction.deleteNotifications(notifications)
+        }
     }
 
     private suspend fun readMessages(
