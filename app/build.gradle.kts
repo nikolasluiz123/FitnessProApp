@@ -73,6 +73,8 @@ dependencies {
     implementation(project(":fitnesspro-workout-module"))
     implementation(project(":fitnesspro-firebase-api"))
 
+    implementation(libs.fitnesspro.shared.communication)
+
     implementation(libs.java.faker)
     implementation(libs.splash)
     implementation(libs.data.store)

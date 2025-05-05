@@ -1,12 +1,12 @@
-package br.com.fitnesspro.common.services
+package br.com.fitnesspro.service
 
 import android.annotation.SuppressLint
 import br.com.fitnesspro.common.injection.IMessagingServiceEntryPoint
-import br.com.fitnesspro.common.notification.GenericCommunicationNotification
-import br.com.fitnesspro.common.notification.MessageChatNotification
-import br.com.fitnesspro.common.notification.SchedulerNotification
 import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.firebase.api.firestore.documents.MessageNotificationDocument
+import br.com.fitnesspro.notification.GenericCommunicationNotification
+import br.com.fitnesspro.notification.MessageChatNotification
+import br.com.fitnesspro.notification.SchedulerNotification
 import br.com.fitnesspro.shared.communication.enums.notification.EnumNotificationChannel
 import br.com.fitnesspro.shared.communication.notification.FitnessProNotificationData
 import com.google.firebase.messaging.FirebaseMessagingService

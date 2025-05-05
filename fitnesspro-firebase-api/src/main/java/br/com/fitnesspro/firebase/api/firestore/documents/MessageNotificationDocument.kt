@@ -6,6 +6,7 @@ data class MessageNotificationDocument(
     val date: Long? = null,
     val personReceiverId: String? = null,
     val personSenderName: String? = null,
+    val chatId: String? = null
 ): FirestoreDocument() {
 
     companion object {

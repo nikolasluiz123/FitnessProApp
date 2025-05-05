@@ -97,7 +97,8 @@ class FirestoreChatService: FirestoreService() {
                 text = messageDocument.text,
                 personReceiverId = receiverPersonId,
                 personSenderName = senderPerson.name!!,
-                date = serverTime
+                date = serverTime,
+                chatId = chatId
             )
 
             transaction.update(senderChatDocumentRef, senderChat.toMap())

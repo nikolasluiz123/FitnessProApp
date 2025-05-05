@@ -34,9 +34,14 @@
             android:theme="@style/Theme.FitnessPro"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
+                <data android:scheme="app" android:host="fitnesspro" android:pathPrefix="/chat" />
+
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
             </intent-filter>
         </activity>
 
@@ -54,7 +59,7 @@
         </provider>
 
         <service
-            android:name=".common.services.FitnessProFirebaseMessagingService"
+            android:name=".service.FitnessProFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

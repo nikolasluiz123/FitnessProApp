@@ -1,12 +1,18 @@
-package br.com.fitnesspro.common.notification
+package br.com.fitnesspro.notification
 
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.Person
+import androidx.core.app.TaskStackBuilder
+import br.com.fitnesspro.MainActivity
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.core.notification.FitnessProNotification
 import br.com.fitnesspro.firebase.api.firestore.documents.MessageNotificationDocument
+import br.com.fitnesspro.scheduler.ui.navigation.ChatArgs
+import br.com.fitnesspro.scheduler.ui.navigation.getChatScreenDeepLinkUri
 
 class MessageChatNotification(
     context: Context,
@@ -33,7 +39,24 @@ class MessageChatNotification(
             messagingStyle.addMessage(message.text, message.date!!, user)
         }
 
-        builder.setStyle(messagingStyle)
+        val chatArgs = ChatArgs(chatId = messages.first().chatId!!)
+
+        val deepLinkIntent = Intent(
+            Intent.ACTION_VIEW,
+            getChatScreenDeepLinkUri(chatArgs),
+            context,
+            MainActivity::class.java
+        )
+
+        val deepLinkPendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
+            addNextIntentWithParentStack(deepLinkIntent)
+            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
+        }
+
+        builder
+            .setStyle(messagingStyle)
+            .setContentIntent(deepLinkPendingIntent)
+            .setAutoCancel(true)
     }
 
     companion object {

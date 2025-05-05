@@ -1,4 +1,4 @@
-package br.com.fitnesspro.common.notification
+package br.com.fitnesspro.notification
 
 import android.app.NotificationManager
 import android.content.Context
