@@ -23,7 +23,7 @@ import java.util.StringJoiner
 abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
 
     @Query("select * from scheduler where id = :id")
-    abstract suspend fun findSchedulerById(id: String): Scheduler
+    abstract suspend fun findSchedulerById(id: String): Scheduler?
 
     suspend fun getHasSchedulerConflict(
         schedulerId: String?,

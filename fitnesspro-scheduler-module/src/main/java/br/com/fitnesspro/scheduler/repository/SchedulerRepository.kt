@@ -91,7 +91,7 @@ class SchedulerRepository(
     suspend fun getTOSchedulerById(id: String): TOScheduler = withContext(IO) {
         val scheduler = schedulerDAO.findSchedulerById(id)
 
-        val memberPerson = personRepository.findPersonById(scheduler.academyMemberPersonId!!)
+        val memberPerson = personRepository.findPersonById(scheduler?.academyMemberPersonId!!)
         val professionalPerson = personRepository.findPersonById(scheduler.professionalPersonId!!)
         val cancellationPerson = scheduler.cancellationPersonId?.let { personRepository.findPersonById(it) }
         val professionalUser = userRepository.findUserById(professionalPerson.userId!!)!!
@@ -122,7 +122,6 @@ class SchedulerRepository(
         )
     }
 
-
     suspend fun saveRecurrentScheduler(schedules: List<TOScheduler>) = withContext(IO) {
         val schedulers = schedules.map { it.getScheduler() }.sortedBy(Scheduler::scheduledDate)
 
@@ -151,5 +150,9 @@ class SchedulerRepository(
             dateEnd = workout.dateEnd,
             dayWeeks = workoutGroups.map { it.dayWeek!! }
         )
+    }
+
+    suspend fun hasSchedulerWithId(id: String): Boolean = withContext(IO) {
+        schedulerDAO.hasSchedulerWithId(id)
     }
 }
