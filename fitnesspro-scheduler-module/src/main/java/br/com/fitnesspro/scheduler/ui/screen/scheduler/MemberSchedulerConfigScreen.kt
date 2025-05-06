@@ -17,7 +17,6 @@ import br.com.fitnesspro.compose.components.buttons.HorizontalLabeledSwitchButto
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.scheduler.R
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABELED_SWITCH_BUTTON_ALARM
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABELED_SWITCH_BUTTON_NOTIFICATION
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABEL_GENERAL
 import br.com.fitnesspro.scheduler.ui.state.SchedulerConfigUIState
@@ -29,7 +28,7 @@ internal fun MemberSchedulerConfigScreen(state: SchedulerConfigUIState) {
             .fillMaxSize()
             .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 64.dp)
     ) {
-        val (generalRef, labeledCheckboxAlarmRef, labeledCheckboxNotificationRef) = createRefs()
+        val (generalRef, labeledCheckboxNotificationRef) = createRefs()
 
         Text(
             text = stringResource(R.string.scheduler_config_screen_label_general),
@@ -44,26 +43,12 @@ internal fun MemberSchedulerConfigScreen(state: SchedulerConfigUIState) {
         )
 
         HorizontalLabeledSwitchButton(
-            field = state.alarm,
-            label = stringResource(R.string.scheduler_config_screen_label_alarm),
-            modifier = Modifier
-                .testTag(SCHEDULER_CONFIG_SCREEN_LABELED_SWITCH_BUTTON_ALARM.name)
-                .constrainAs(labeledCheckboxAlarmRef) {
-                    top.linkTo(generalRef.bottom, 8.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-
-                    width = Dimension.fillToConstraints
-                }
-        )
-
-        HorizontalLabeledSwitchButton(
             field = state.notification,
             label = stringResource(R.string.scheduler_config_screen_label_notification),
             modifier = Modifier
                 .testTag(SCHEDULER_CONFIG_SCREEN_LABELED_SWITCH_BUTTON_NOTIFICATION.name)
                 .constrainAs(labeledCheckboxNotificationRef) {
-                    top.linkTo(labeledCheckboxAlarmRef.bottom, 8.dp)
+                    top.linkTo(generalRef.bottom, 8.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
 
