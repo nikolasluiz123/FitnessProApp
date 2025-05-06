@@ -1,5 +1,6 @@
 package br.com.fitnesspro.common.ui.screen.registeruser
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -29,6 +30,7 @@ import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordVali
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
 import br.com.fitnesspro.compose.components.fields.transformation.PhoneVisualTransformation
+import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPhoneKeyboardOptions
 import br.com.fitnesspro.core.keyboard.PasswordKeyboardOptions
@@ -39,116 +41,125 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
     val scrollState = rememberScrollState()
 
-    ConstraintLayout(
-        Modifier
-            .testTag(REGISTER_USER_SCREEN_TAB_GENERAL.name)
-            .padding(12.dp)
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-            .imePadding()
-    ) {
-        val (nameRef, emailRef, passwordRef, birthDayDatePickerRef, phoneRef, userTypeRef) = createRefs()
+    Column(Modifier.fillMaxSize()) {
+        FitnessProLinearProgressIndicator(
+            modifier = Modifier.padding(top = 4.dp),
+            show = state.showLoading
+        )
 
-        if (state.isRegisterServiceAuth) {
-            DefaultExposedDropdownMenu(
-                field = state.userType,
-                labelResId = R.string.register_user_screen_label_user_type,
+        ConstraintLayout(
+            Modifier
+                .testTag(REGISTER_USER_SCREEN_TAB_GENERAL.name)
+                .padding(horizontal = 12.dp)
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .imePadding()
+        ) {
+            val (nameRef, emailRef, passwordRef, birthDayDatePickerRef, phoneRef, userTypeRef) = createRefs()
+
+            if (state.isRegisterServiceAuth) {
+                DefaultExposedDropdownMenu(
+                    field = state.userType,
+                    labelResId = R.string.register_user_screen_label_user_type,
+                    modifier = Modifier
+                        .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_USER_TYPE.name)
+                        .constrainAs(userTypeRef) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top, margin = 12.dp)
+                            end.linkTo(parent.end)
+
+                            width = Dimension.fillToConstraints
+                        }
+                )
+            }
+
+            OutlinedTextFieldValidation(
+                field = state.name,
+                label = stringResource(R.string.register_user_screen_label_name),
                 modifier = Modifier
-                    .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_USER_TYPE.name)
-                    .constrainAs(userTypeRef) {
+                    .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_NAME.name)
+                    .constrainAs(nameRef) {
+                        val constraintTop = if (state.isRegisterServiceAuth) userTypeRef.bottom else parent.top
+                        val marginTop = if (state.isRegisterServiceAuth) 8.dp else 12.dp
+
                         start.linkTo(parent.start)
-                        top.linkTo(parent.top)
+                        top.linkTo(constraintTop, marginTop)
                         end.linkTo(parent.end)
 
                         width = Dimension.fillToConstraints
-                    }
+                    },
+                keyboardOptions = PersonNameKeyboardOptions,
             )
-        }
 
-        OutlinedTextFieldValidation(
-            field = state.name,
-            label = stringResource(R.string.register_user_screen_label_name),
-            modifier = Modifier
-                .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_NAME.name)
-                .constrainAs(nameRef) {
-                    val constraintTop = if (state.isRegisterServiceAuth) userTypeRef.bottom else parent.top
-
-                    start.linkTo(parent.start)
-                    top.linkTo(constraintTop)
-                    end.linkTo(parent.end)
-
-                    width = Dimension.fillToConstraints
-                },
-            keyboardOptions = PersonNameKeyboardOptions,
-        )
-
-        OutlinedTextFieldValidation(
-            field = state.email,
-            label = stringResource(R.string.register_user_screen_label_email),
-            modifier = Modifier
-                .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_EMAIL.name)
-                .constrainAs(emailRef) {
-                start.linkTo(parent.start)
-                top.linkTo(nameRef.bottom)
-                end.linkTo(parent.end)
-
-                width = Dimension.fillToConstraints
-            },
-            keyboardOptions = EmailKeyboardOptions,
-        )
-
-        OutlinedTextFieldPasswordValidation(
-            field = state.password,
-            label = stringResource(R.string.register_user_screen_label_password),
-            modifier = Modifier
-                .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_PASSWORD.name)
-                .constrainAs(passwordRef) {
-                start.linkTo(parent.start)
-                top.linkTo(emailRef.bottom)
-                end.linkTo(parent.end)
-
-                width = Dimension.fillToConstraints
-            },
-            keyboardOptions = PasswordKeyboardOptions
-        )
-
-        DatePickerOutlinedTextFieldValidation(
-            modifier = Modifier
-                .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_BIRTH_DATE.name)
-                .constrainAs(birthDayDatePickerRef) {
-                    start.linkTo(parent.start)
-                    top.linkTo(passwordRef.bottom)
-                    end.linkTo(parent.end)
-
-                    width = Dimension.fillToConstraints
-                },
-            field = state.birthDate,
-            fieldLabel = stringResource(R.string.register_user_screen_label_birth_date),
-        )
-
-        if (state.isVisibleFieldPhone) {
             OutlinedTextFieldValidation(
-                field = state.phone,
-                label = stringResource(R.string.register_user_screen_label_phone),
+                field = state.email,
+                label = stringResource(R.string.register_user_screen_label_email),
                 modifier = Modifier
-                    .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_PHONE.name)
-                    .constrainAs(phoneRef) {
-                    start.linkTo(parent.start)
-                    top.linkTo(birthDayDatePickerRef.bottom)
-                    end.linkTo(parent.end)
+                    .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_EMAIL.name)
+                    .constrainAs(emailRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(nameRef.bottom, margin = 8.dp)
+                        end.linkTo(parent.end)
 
-                    width = Dimension.fillToConstraints
-                },
-                keyboardOptions = LastPhoneKeyboardOptions,
-                visualTransformation = PhoneVisualTransformation(),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        onDone()
-                    }
-                )
+                        width = Dimension.fillToConstraints
+                    },
+                keyboardOptions = EmailKeyboardOptions,
             )
+
+            OutlinedTextFieldPasswordValidation(
+                field = state.password,
+                label = stringResource(R.string.register_user_screen_label_password),
+                modifier = Modifier
+                    .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_PASSWORD.name)
+                    .constrainAs(passwordRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(emailRef.bottom, margin = 8.dp)
+                        end.linkTo(parent.end)
+
+                        width = Dimension.fillToConstraints
+                    },
+                keyboardOptions = PasswordKeyboardOptions
+            )
+
+            DatePickerOutlinedTextFieldValidation(
+                modifier = Modifier
+                    .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_BIRTH_DATE.name)
+                    .constrainAs(birthDayDatePickerRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(passwordRef.bottom, margin = 8.dp)
+                        end.linkTo(parent.end)
+
+                        width = Dimension.fillToConstraints
+                    },
+                field = state.birthDate,
+                fieldLabel = stringResource(R.string.register_user_screen_label_birth_date),
+            )
+
+            if (state.isVisibleFieldPhone) {
+                OutlinedTextFieldValidation(
+                    field = state.phone,
+                    label = stringResource(R.string.register_user_screen_label_phone),
+                    modifier = Modifier
+                        .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_PHONE.name)
+                        .constrainAs(phoneRef) {
+                            start.linkTo(parent.start)
+                            top.linkTo(birthDayDatePickerRef.bottom, margin = 8.dp)
+                            end.linkTo(parent.end)
+
+                            width = Dimension.fillToConstraints
+                        },
+                    keyboardOptions = LastPhoneKeyboardOptions,
+                    visualTransformation = PhoneVisualTransformation(),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            onDone()
+                        }
+                    )
+                )
+            }
         }
     }
+
 }
 
 @Preview(device = "id:small_phone")

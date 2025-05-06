@@ -394,6 +394,7 @@ class RegisterUserViewModel @Inject constructor(
                 updateInfosAfterSave()
                 onSuccess()
             } else {
+                _uiState.value.onToggleLoading()
                 showValidationMessages(validationResults)
             }
         }

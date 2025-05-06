@@ -52,7 +52,7 @@ class PersonRepository(
         val toPersonRemote = user.email?.let { findPersonByEmailRemote(it) }
 
         if (isAuthenticated || isRegisterServiceAuth || toPersonRemote != null) {
-            firebaseDefaultAuthenticationService.updateUserInfos(user)
+            firebaseDefaultAuthenticationService.updateUserInfos(context, user)
         } else {
             firebaseDefaultAuthenticationService.register(user.email!!, user.password!!)
         }

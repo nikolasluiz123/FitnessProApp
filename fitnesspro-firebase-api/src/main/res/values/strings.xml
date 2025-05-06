@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="validation_msg_require_reauthentication">Para realizar esta operação é necessário ter conexão com a internet pois é necessário uma nova autenticação. Verifique sua conexão e tente novamente, a nova autenticação será realizada automaticamente.</string>
+</resources>
