@@ -345,6 +345,7 @@ class RegisterAcademyViewModel @Inject constructor(
                 onSuccess()
                 loadUIStateWithDatabaseInfos()
             } else {
+                _uiState.value.onToggleLoading()
                 showValidationMessages(validationResults)
             }
         }

@@ -28,7 +28,6 @@ import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.compose.components.buttons.SquaredButton
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonAccount
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonLogout
-import br.com.fitnesspro.compose.components.buttons.icons.IconButtonNotification
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -43,7 +42,6 @@ import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUT
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_SCHEDULER
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_WORKOUT
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_LOGOUT_BUTTON
-import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_NOTIFICATIONS_BUTTON
 import br.com.fitnesspro.ui.state.HomeUIState
 import br.com.fitnesspro.ui.viewmodel.HomeViewModel
 import com.google.firebase.analytics.ktx.analytics
@@ -83,9 +81,6 @@ fun HomeScreen(
                 title = state.title,
                 subtitle = state.subtitle,
                 actions = {
-                    IconButtonNotification(
-                        modifier = Modifier.testTag(HOME_SCREEN_NOTIFICATIONS_BUTTON.name)
-                    )
                     IconButtonLogout(
                         modifier = Modifier.testTag(HOME_SCREEN_LOGOUT_BUTTON.name),
                         onClick = {

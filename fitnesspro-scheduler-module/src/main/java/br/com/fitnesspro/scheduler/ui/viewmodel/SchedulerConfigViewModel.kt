@@ -44,6 +44,10 @@ class SchedulerConfigViewModel @Inject constructor(
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun onShowError(throwable: Throwable) {
+        if (_uiState.value.showLoading) {
+            _uiState.value.onToggleLoading()
+        }
+
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
             message = context.getString(R.string.unknown_error_message)
         )
@@ -57,6 +61,11 @@ class SchedulerConfigViewModel @Inject constructor(
                 minEventDensity = initializeMinEventDensityTextField(),
                 maxEventDensity = initializeMaxEventDensityTextField(),
                 messageDialogState = initializeMessageDialogState(),
+                onToggleLoading = {
+                    _uiState.value = _uiState.value.copy(
+                        showLoading = _uiState.value.showLoading.not()
+                    )
+                }
             )
         }
     }
@@ -166,6 +175,7 @@ class SchedulerConfigViewModel @Inject constructor(
             if (validationResults.isEmpty()) {
                 onSuccess()
             } else {
+                uiState.value.onToggleLoading()
                 showValidationMessage(validationResults)
             }
         }

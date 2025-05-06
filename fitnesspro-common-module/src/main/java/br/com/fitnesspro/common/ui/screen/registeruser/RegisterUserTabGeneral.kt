@@ -10,8 +10,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -40,12 +42,10 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 @Composable
 fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
     val scrollState = rememberScrollState()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(Modifier.fillMaxSize()) {
-        FitnessProLinearProgressIndicator(
-            modifier = Modifier.padding(top = 4.dp),
-            show = state.showLoading
-        )
+        FitnessProLinearProgressIndicator(show = state.showLoading)
 
         ConstraintLayout(
             Modifier
@@ -122,6 +122,8 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
             )
 
             DatePickerOutlinedTextFieldValidation(
+                field = state.birthDate,
+                fieldLabel = stringResource(R.string.register_user_screen_label_birth_date),
                 modifier = Modifier
                     .testTag(REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_BIRTH_DATE.name)
                     .constrainAs(birthDayDatePickerRef) {
@@ -131,8 +133,13 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
 
                         width = Dimension.fillToConstraints
                     },
-                field = state.birthDate,
-                fieldLabel = stringResource(R.string.register_user_screen_label_birth_date),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController?.hide()
+                        onDone()
+                    }
+                ),
+                imeAction = if (state.isVisibleFieldPhone) ImeAction.Next else ImeAction.Done,
             )
 
             if (state.isVisibleFieldPhone) {
@@ -152,6 +159,7 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
                     visualTransformation = PhoneVisualTransformation(),
                     keyboardActions = KeyboardActions(
                         onDone = {
+                            keyboardController?.hide()
                             onDone()
                         }
                     )

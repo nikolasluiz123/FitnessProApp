@@ -3,9 +3,13 @@ package br.com.fitnesspro.common.ui.screen.registeruser
 import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -98,6 +102,7 @@ fun RegisterAcademyScreen(
         },
         bottomBar = {
             FitnessProBottomAppBar(
+                modifier = Modifier.imePadding(),
                 floatingActionButton = {
                     FloatingActionButtonSave(
                         modifier = Modifier.testTag(REGISTER_ACADEMY_SCREEN_FAB_SAVE.name),
@@ -141,10 +146,13 @@ fun RegisterAcademyScreen(
             }
         }
     ) { paddingValues ->
+        val scrollState = rememberScrollState()
+
         ConstraintLayout(
             Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)
         ) {
             val (loadingRef, containerRef) = createRefs()
 
@@ -163,8 +171,10 @@ fun RegisterAcademyScreen(
 
             ConstraintLayout(
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(horizontal = 12.dp)
                     .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .imePadding()
                     .constrainAs(containerRef) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
@@ -190,7 +200,7 @@ fun RegisterAcademyScreen(
                     modifier = Modifier
                         .testTag(REGISTER_ACADEMY_SCREEN_FIELD_ACADEMY.name)
                         .constrainAs(gymRef) {
-                            top.linkTo(parent.top)
+                            top.linkTo(parent.top, margin = 12.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
 

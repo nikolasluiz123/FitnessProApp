@@ -2,6 +2,7 @@ package br.com.fitnesspro.scheduler.ui.screen.scheduler
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -10,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,7 +39,10 @@ import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfig
 import br.com.fitnesspro.scheduler.ui.state.SchedulerConfigUIState
 
 @Composable
-internal fun ProfessionalSchedulerConfigScreen(state: SchedulerConfigUIState) {
+internal fun ProfessionalSchedulerConfigScreen(
+    state: SchedulerConfigUIState,
+    onDone: () -> Unit = { }
+) {
     ConstraintLayout(
         Modifier
             .fillMaxSize()
@@ -119,7 +124,10 @@ internal fun ProfessionalSchedulerConfigScreen(state: SchedulerConfigUIState) {
         OutlinedTextFieldValidation(
             field = state.minEventDensity,
             label = stringResource(R.string.scheduler_config_screen_label_event_density_min),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = { onDone() }
+            ),
             modifier = Modifier
                 .testTag(SCHEDULER_CONFIG_SCREEN_MIN_DENSITY_FIELD.name)
                 .padding(end = 8.dp)
@@ -135,7 +143,10 @@ internal fun ProfessionalSchedulerConfigScreen(state: SchedulerConfigUIState) {
         OutlinedTextFieldValidation(
             field = state.maxEventDensity,
             label = stringResource(R.string.scheduler_config_screen_label_event_density_max),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = { onDone() }
+            ),
             modifier = Modifier
                 .testTag(SCHEDULER_CONFIG_SCREEN_MAX_DENSITY_FIELD.name)
                 .constrainAs(eventDensityMaxRef) {

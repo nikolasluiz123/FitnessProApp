@@ -2,6 +2,7 @@ package br.com.fitnesspro.scheduler.ui.screen.scheduler
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
+import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
@@ -80,8 +82,10 @@ fun SchedulerConfigScreen(
             FloatingActionButtonSave(
                 modifier = Modifier.testTag(SCHEDULER_CONFIG_SCREEN_FAB_SAVE.name),
                 onClick = {
+                    state.onToggleLoading()
                     Firebase.analytics.logButtonClick(SCHEDULER_CONFIG_SCREEN_FAB_SAVE)
                     onSaveClick?.onExecute {
+                        state.onToggleLoading()
                         showSuccessMessage(
                             coroutineScope = coroutineScope,
                             snackbarHostState = snackbarHostState,
@@ -102,25 +106,45 @@ fun SchedulerConfigScreen(
     ) { paddingValues ->
         val scrollState = rememberScrollState()
 
-        Box(
-            modifier = Modifier
+        Column(
+            Modifier
+                .fillMaxSize()
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues)
-                .verticalScroll(scrollState)
-                .fillMaxSize()
         ) {
-            FitnessProMessageDialog(state = state.messageDialogState)
+            FitnessProLinearProgressIndicator(show = state.showLoading)
 
-            when (state.toPerson?.user?.type) {
-                EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST -> {
-                    ProfessionalSchedulerConfigScreen(state)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+            ) {
+                FitnessProMessageDialog(state = state.messageDialogState)
+
+                when (state.toPerson?.user?.type) {
+                    EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST -> {
+                        ProfessionalSchedulerConfigScreen(
+                            state = state,
+                            onDone = {
+                                state.onToggleLoading()
+                                onSaveClick?.onExecute {
+                                    state.onToggleLoading()
+                                    showSuccessMessage(
+                                        coroutineScope = coroutineScope,
+                                        snackbarHostState = snackbarHostState,
+                                        context = context
+                                    )
+                                }
+                            }
+                        )
+                    }
+
+                    EnumUserType.ACADEMY_MEMBER -> {
+                        MemberSchedulerConfigScreen(state)
+                    }
+
+                    else -> { }
                 }
-
-                EnumUserType.ACADEMY_MEMBER -> {
-                    MemberSchedulerConfigScreen(state)
-                }
-
-                else -> { }
             }
         }
     }

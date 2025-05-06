@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -380,7 +381,8 @@ fun TimePickerOutlinedTextFieldValidation(
     fieldLabel: String,
     timePickerTitle: String,
     modifier: Modifier = Modifier,
-    keyboardActions: KeyboardActions = KeyboardActions.Default
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    imeAction: ImeAction = ImeAction.Next
 ) {
     OutlinedTextFieldValidation(
         field = field,
@@ -393,7 +395,8 @@ fun TimePickerOutlinedTextFieldValidation(
             ) { field.onTimePickerOpenChange(true) }
         },
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number
+            keyboardType = KeyboardType.Number,
+            imeAction = imeAction
         ),
         keyboardActions = keyboardActions,
         visualTransformation = TimeVisualTransformation(),
@@ -415,7 +418,8 @@ fun DatePickerOutlinedTextFieldValidation(
     field: DatePickerTextField,
     fieldLabel: String,
     modifier: Modifier = Modifier,
-    keyboardActions: KeyboardActions = KeyboardActions.Default
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    imeAction: ImeAction = ImeAction.Next
 ) {
     OutlinedTextFieldValidation(
         field = field,
@@ -428,7 +432,8 @@ fun DatePickerOutlinedTextFieldValidation(
             ) { field.onDatePickerOpenChange(true) }
         },
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number
+            keyboardType = KeyboardType.Number,
+            imeAction = imeAction
         ),
         keyboardActions = keyboardActions,
         visualTransformation = DateVisualTransformation(),
@@ -451,12 +456,14 @@ fun <T: ITupleListItem> PagedListDialogOutlinedTextFieldValidation(
     simpleFilterPlaceholderResId: Int,
     emptyMessage: Int,
     itemLayout: @Composable (T) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
 ) {
     OutlinedTextFieldValidation(
         field = field,
         label = fieldLabel,
         modifier = modifier,
+        keyboardOptions = keyboardOptions,
         trailingIcon = {
             IconButtonSearch(
                 modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),

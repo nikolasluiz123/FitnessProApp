@@ -633,6 +633,7 @@ class CompromiseViewModel @Inject constructor(
                 onSuccess(enumSchedulerType)
                 initializeEditionInfos()
             } else {
+                _uiState.value.onToggleLoading()
                 showFieldsValidationMessages(validationResults)
             }
         }
