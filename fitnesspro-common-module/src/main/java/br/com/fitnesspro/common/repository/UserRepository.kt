@@ -71,9 +71,11 @@ class UserRepository(
                 authenticationDTO = authenticationDTO
             )
 
+            val userExistsLocally = userDAO.hasUserWithEmailAndPassword(email, password)
+
             if (response.success) {
                 serviceTokenRepository.saveTokenInformation(response.tokens)
-            } else if (response.code == HTTP_NOT_FOUND && context.isNetworkAvailable()) {
+            } else if (response.code == HTTP_NOT_FOUND && context.isNetworkAvailable() && userExistsLocally) {
                 savePersonRemoteAndAuthenticateAgain(email, password)
             } else {
                 throw ServiceException(response.error!!)

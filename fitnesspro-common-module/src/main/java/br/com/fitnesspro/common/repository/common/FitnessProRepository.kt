@@ -6,6 +6,7 @@ import br.com.fitnesspro.common.BuildConfig
 import br.com.fitnesspro.core.extensions.dataStore
 import br.com.fitnesspro.core.extensions.getAuthenticatedUserId
 import br.com.fitnesspro.model.general.User
+import br.com.fitnesspro.service.data.access.R
 import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
 import dagger.hilt.android.EntryPointAccessors
 
@@ -38,7 +39,7 @@ abstract class FitnessProRepository(protected val context: Context) {
         val authenticatedUser = getAuthenticatedUser()
 
         return if (authenticatedUser != null && !withoutAuthentication) {
-            return getValidUserToken() ?: throw ExpiredTokenException()
+            return getValidUserToken() ?: throw ExpiredTokenException(context.getString(R.string.message_expired_token))
         } else {
             getValidDeviceToken() ?: BuildConfig.APP_JWT
         }

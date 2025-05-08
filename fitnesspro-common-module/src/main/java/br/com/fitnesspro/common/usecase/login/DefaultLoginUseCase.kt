@@ -15,7 +15,7 @@ class DefaultLoginUseCase(
     private val context: Context,
     private val userRepository: UserRepository,
     private val passwordHasher: IPasswordHasher,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
 ) {
 
     suspend fun execute(email: String?, password: String?, authAgain: Boolean = false): List<FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>> {
@@ -90,7 +90,7 @@ class DefaultLoginUseCase(
         val invalidLength = emailTrimmed.length > EMAIL.maxLength || passwordTrimmed.length > PASSWORD.maxLength
         val hashedPassword = passwordHasher.hashPassword(passwordTrimmed)
         var userNotExists = !userRepository.hasUserWithCredentials(emailTrimmed, hashedPassword)
-        val toPersonRemote = personRepository.findPersonByEmailRemote(emailTrimmed)
+        val toPersonRemote = personRepository.findPersonByEmailRemote(emailTrimmed, hashedPassword)
 
         val authUser = userRepository.getAuthenticatedUser()
         val isSameUser = authUser?.email == emailTrimmed && authUser.password == hashedPassword

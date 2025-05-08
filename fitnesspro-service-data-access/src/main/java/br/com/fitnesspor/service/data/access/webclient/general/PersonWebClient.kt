@@ -10,6 +10,7 @@ import br.com.fitnesspro.mappers.getPersonDTO
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.model.general.User
+import br.com.fitnesspro.shared.communication.dtos.general.FindPersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
@@ -136,10 +137,11 @@ class PersonWebClient(
         )
     }
 
-    suspend fun findPersonByEmail(token: String, email: String): SingleValueServiceResponse<PersonDTO?> {
+    suspend fun findPersonByEmail(token: String, email: String, password: String?): SingleValueServiceResponse<PersonDTO?> {
         return singleValueErrorHandlingBlock(
             codeBlock = {
-                personService.findPersonByEmail(formatToken(token), email).getResponseBody(PersonDTO::class.java)
+                val dto = FindPersonDTO(email = email, password = password)
+                personService.findPersonByEmail(formatToken(token), dto).getResponseBody(PersonDTO::class.java)
             }
         )
     }

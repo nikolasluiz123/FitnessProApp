@@ -25,7 +25,10 @@ class GoogleLoginUseCase(
         )
 
         val userExistsLocal = userRepository.hasUserWithEmail(authResult.user?.email!!, null)
-        val toPersonRemote = personRepository.findPersonByEmailRemote(authResult.user?.email!!)
+        val toPersonRemote = personRepository.findPersonByEmailRemote(
+            email = authResult.user?.email!!,
+            password = null
+        )
 
         val authUser = userRepository.getAuthenticatedUser()
         val isSameUser = authUser?.email == authResult.user?.email

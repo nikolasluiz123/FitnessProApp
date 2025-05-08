@@ -8,6 +8,7 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_EMAIL
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_USER_IMPORT
+import br.com.fitnesspro.shared.communication.dtos.general.FindPersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
@@ -20,7 +21,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface IPersonService {
@@ -70,10 +70,10 @@ interface IPersonService {
         @Query("pageInfos") pageInfos: String
     ): Response<ImportationServiceResponse<PersonAcademyTimeDTO>>
 
-    @GET("$PERSON$PERSON_EMAIL/{email}")
+    @POST("$PERSON$PERSON_EMAIL")
     suspend fun findPersonByEmail(
         @Header("Authorization") token: String,
-        @Path("email") email: String
+        @Body dto: FindPersonDTO
     ): Response<SingleValueServiceResponse<PersonDTO?>>
 
 }

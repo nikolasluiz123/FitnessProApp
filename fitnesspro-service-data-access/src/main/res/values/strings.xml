@@ -2,4 +2,6 @@
 <resources>
     <string name="message_connect_exception">Não foi possível se conectar com o servidor, verifique sua conexão com a internet.</string>
     <string name="message_socket_timeout_exception">Não foi possível se conectar com o servidor, pode ser que ele esteja fora do ar ou sobrecarregado. Se o problema persistir, contate o suporte para mais informações.</string>
+    <string name="message_expired_token">O Token expirou</string>
+    <string name="message_not_foud_token">O Token não foi encontrado</string>
 </resources>

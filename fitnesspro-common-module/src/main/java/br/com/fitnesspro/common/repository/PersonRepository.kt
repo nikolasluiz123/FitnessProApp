@@ -49,7 +49,7 @@ class PersonRepository(
 
     private suspend fun saveUserOnFirebase(user: User, isRegisterServiceAuth: Boolean) {
         val isAuthenticated = getAuthenticatedUser() != null
-        val toPersonRemote = user.email?.let { findPersonByEmailRemote(it) }
+        val toPersonRemote = findPersonByEmailRemote(user.email!!, user.password!!)
 
         if (isAuthenticated || isRegisterServiceAuth || toPersonRemote != null) {
             firebaseDefaultAuthenticationService.updateUserInfos(context, user)
@@ -211,11 +211,12 @@ class PersonRepository(
         personDAO.findPersonByUserId(userId)
     }
 
-    suspend fun findPersonByEmailRemote(email: String): TOPerson? = withContext(IO) {
+    suspend fun findPersonByEmailRemote(email: String, password: String?): TOPerson? = withContext(IO) {
         if (context.isNetworkAvailable()) {
             val response =  personWebClient.findPersonByEmail(
                 token = getValidToken(withoutAuthentication = true),
-                email = email
+                email = email,
+                password = password
             )
 
             if (response.success) response.value?.getTOPerson() else null
