@@ -56,7 +56,6 @@ class SchedulerConfigViewModel @Inject constructor(
     private fun initialUIStateLoad() {
         _uiState.update { state ->
             state.copy(
-                alarm = initializeAlarmSwitchField(),
                 notification = initializeNotificationSwitchField(),
                 minEventDensity = initializeMinEventDensityTextField(),
                 maxEventDensity = initializeMaxEventDensityTextField(),
@@ -78,9 +77,6 @@ class SchedulerConfigViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(
                 toPerson = toPerson,
                 toConfig = toConfig,
-                alarm = _uiState.value.alarm.copy(
-                    checked = toConfig.alarm
-                ),
                 notification = _uiState.value.notification.copy(
                     checked = toConfig.notification
                 ),
@@ -149,17 +145,6 @@ class SchedulerConfigViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     notification = _uiState.value.notification.copy(checked = checked),
                     toConfig = _uiState.value.toConfig.copy(notification = checked)
-                )
-            }
-        )
-    }
-
-    private fun initializeAlarmSwitchField(): SwitchButtonField {
-        return SwitchButtonField(
-            onCheckedChange = { checked ->
-                _uiState.value = _uiState.value.copy(
-                    alarm = _uiState.value.alarm.copy(checked = checked),
-                    toConfig = _uiState.value.toConfig.copy(alarm = checked)
                 )
             }
         )

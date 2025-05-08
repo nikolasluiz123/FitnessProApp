@@ -8,7 +8,6 @@ import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOSchedulerConfig
 
 data class SchedulerConfigUIState(
-    val alarm: SwitchButtonField = SwitchButtonField(),
     val notification: SwitchButtonField = SwitchButtonField(),
     val minEventDensity: TextField = TextField(),
     val maxEventDensity: TextField = TextField(),

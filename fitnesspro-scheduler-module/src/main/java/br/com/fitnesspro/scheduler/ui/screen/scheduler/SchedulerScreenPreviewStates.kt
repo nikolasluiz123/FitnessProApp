@@ -35,7 +35,6 @@ internal val fakeTOPersonMember = TOPerson(
 
 internal val schedulerConfigPersonalPopulatedState = SchedulerConfigUIState(
     toPerson = fakeTOPersonPersonal,
-    alarm = SwitchButtonField(checked = true),
     notification = SwitchButtonField(checked = true)
 )
 

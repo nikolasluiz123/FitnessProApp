@@ -26,7 +26,6 @@ class SaveSchedulerConfigUseCase(
         val config = when {
             personConfig != null && toSchedulerConfig != null -> {
                 personConfig.apply {
-                    alarm = toSchedulerConfig.alarm
                     notification = toSchedulerConfig.notification
                     minScheduleDensity = toSchedulerConfig.minScheduleDensity
                     maxScheduleDensity = toSchedulerConfig.maxScheduleDensity

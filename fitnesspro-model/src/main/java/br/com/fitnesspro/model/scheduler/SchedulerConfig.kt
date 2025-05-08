@@ -26,7 +26,6 @@ data class SchedulerConfig(
     override var id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "transmission_state", defaultValue = "PENDING")
     override var transmissionState: EnumTransmissionState = EnumTransmissionState.PENDING,
-    var alarm: Boolean = false,
     var notification: Boolean = false,
     @ColumnInfo(name = "min_schedule_density")
     var minScheduleDensity: Int = 1,

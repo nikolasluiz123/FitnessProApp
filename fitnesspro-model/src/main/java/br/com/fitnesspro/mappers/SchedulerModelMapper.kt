@@ -20,7 +20,6 @@ import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSitua
 fun SchedulerConfig.getTOSchedulerConfig(): TOSchedulerConfig {
     return TOSchedulerConfig(
         id = id,
-        alarm = alarm,
         notification = notification,
         minScheduleDensity = minScheduleDensity,
         maxScheduleDensity = maxScheduleDensity,
@@ -30,7 +29,6 @@ fun SchedulerConfig.getTOSchedulerConfig(): TOSchedulerConfig {
 
 fun TOSchedulerConfig.getSchedulerConfig(): SchedulerConfig {
     val model = SchedulerConfig(
-        alarm = alarm,
         notification = notification,
         minScheduleDensity = minScheduleDensity!!,
         maxScheduleDensity = maxScheduleDensity!!,
@@ -44,7 +42,6 @@ fun TOSchedulerConfig.getSchedulerConfig(): SchedulerConfig {
 
 fun SchedulerConfigDTO.getSchedulerConfig(): SchedulerConfig {
     return SchedulerConfig(
-        alarm = alarm,
         notification = notification,
         minScheduleDensity = minScheduleDensity,
         maxScheduleDensity = maxScheduleDensity,
@@ -56,7 +53,6 @@ fun SchedulerConfigDTO.getSchedulerConfig(): SchedulerConfig {
 fun SchedulerConfig.getSchedulerConfigDTO(): SchedulerConfigDTO {
     return SchedulerConfigDTO(
         id = id,
-        alarm = alarm,
         notification = notification,
         minScheduleDensity = minScheduleDensity,
         maxScheduleDensity = maxScheduleDensity,
