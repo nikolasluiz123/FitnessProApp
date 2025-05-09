@@ -9,6 +9,7 @@ import br.com.fitnesspro.to.TOSchedulerConfig
 
 data class SchedulerConfigUIState(
     val notification: SwitchButtonField = SwitchButtonField(),
+    val notificationAntecedenceTime: TextField = TextField(),
     val minEventDensity: TextField = TextField(),
     val maxEventDensity: TextField = TextField(),
     val toPerson: TOPerson? = null,

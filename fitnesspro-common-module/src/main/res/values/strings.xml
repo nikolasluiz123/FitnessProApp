@@ -118,4 +118,5 @@
     <string name="scheduler_notification_channel_description">Notificações sobre mudanças em agendamentos</string>
     <string name="generic_communication_notification_channel_name">Comunicações Gerais</string>
     <string name="generic_communication_notification_channel_description">Notificações sobre comunicados gerais</string>
+    <string name="enum_scheduler_config_notification_antecedence_time">Tempo de Antecedência da Notificação</string>
 </resources>

@@ -63,6 +63,7 @@ class SchedulerConfigViewModel @Inject constructor(
         _uiState.update { state ->
             state.copy(
                 notification = initializeNotificationSwitchField(),
+                notificationAntecedenceTime = initializeNotificationAntecedenceTextField(),
                 minEventDensity = initializeMinEventDensityTextField(),
                 maxEventDensity = initializeMaxEventDensityTextField(),
                 messageDialogState = initializeMessageDialogState(),
@@ -85,6 +86,9 @@ class SchedulerConfigViewModel @Inject constructor(
                 toConfig = toConfig,
                 notification = _uiState.value.notification.copy(
                     checked = toConfig.notification
+                ),
+                notificationAntecedenceTime = _uiState.value.notificationAntecedenceTime.copy(
+                    value = toConfig.notificationAntecedenceTime.toString()
                 ),
                 minEventDensity = _uiState.value.minEventDensity.copy(
                     value = toConfig.minScheduleDensity.toString()
@@ -132,6 +136,18 @@ class SchedulerConfigViewModel @Inject constructor(
         )
     }
 
+    private fun initializeNotificationAntecedenceTextField(): TextField {
+        return TextField(
+            onChange = { value ->
+                if (value.isDigitsOnly()) {
+                    _uiState.value = _uiState.value.copy(
+                        notificationAntecedenceTime = _uiState.value.notificationAntecedenceTime.copy(value = value),
+                        toConfig = _uiState.value.toConfig.copy(notificationAntecedenceTime = value.toIntOrNull())
+                    )
+                }
+            }
+        )
+    }
     private fun initializeMinEventDensityTextField(): TextField {
         return TextField(
             onChange = { value ->
@@ -193,6 +209,14 @@ class SchedulerConfigViewModel @Inject constructor(
                 EnumValidatedSchedulerConfigFields.MAX_SCHEDULE_DENSITY -> {
                     _uiState.value = _uiState.value.copy(
                         maxEventDensity = _uiState.value.maxEventDensity.copy(
+                            errorMessage = it.message
+                        )
+                    )
+                }
+
+                EnumValidatedSchedulerConfigFields.NOTIFICATION_ANTECEDENCE_TIME -> {
+                    _uiState.value = _uiState.value.copy(
+                        notificationAntecedenceTime = _uiState.value.notificationAntecedenceTime.copy(
                             errorMessage = it.message
                         )
                     )

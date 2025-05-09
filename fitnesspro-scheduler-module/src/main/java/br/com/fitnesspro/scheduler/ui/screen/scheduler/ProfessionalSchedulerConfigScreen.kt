@@ -25,14 +25,11 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.core.theme.ValueTextStyle
 import br.com.fitnesspro.scheduler.R
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABELED_SWITCH_BUTTON_NOTIFICATION
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABEL_BREAK_TIME
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABEL_BREAK_TIME_EXPLANATION
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABEL_DENSITY_EVENTS
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABEL_DENSITY_EVENTS_EXPLANATION
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABEL_GENERAL
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABEL_WORK_TIME
-import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABEL_WORK_TIME_EXPLANATION
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_MAX_DENSITY_FIELD
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_MIN_DENSITY_FIELD
 import br.com.fitnesspro.scheduler.ui.state.SchedulerConfigUIState
@@ -48,7 +45,7 @@ internal fun ProfessionalSchedulerConfigScreen(
             .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 64.dp)
     ) {
         val (
-            generalRef, labeledCheckboxNotificationRef,
+            generalRef, labeledCheckboxNotificationRef, notificationTimeRef,
             eventDensityRef, eventDensityExplanationRef, eventDensityMinRef, eventDensityMaxRef,
             workTimeRef, workTimeExplanationRef, breakTimeRef, breakTimeExplanationRef
         ) = createRefs()
@@ -79,13 +76,35 @@ internal fun ProfessionalSchedulerConfigScreen(
                 }
         )
 
+        if (state.notification.checked) {
+            OutlinedTextFieldValidation(
+                field = state.notificationAntecedenceTime,
+                label = stringResource(R.string.scheduler_config_screen_label_notification_antecedence_time),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                modifier = Modifier
+                    .testTag(EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABEL_NOTIFICATION_TIME.name)
+                    .constrainAs(notificationTimeRef) {
+                        top.linkTo(labeledCheckboxNotificationRef.bottom, 8.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+
+                        width = Dimension.fillToConstraints
+                    }
+            )
+        }
+
         Text(
             text = stringResource(R.string.scheduler_config_screen_label_event_density),
             style = LabelTextStyle.copy(fontWeight = FontWeight.Medium),
             modifier = Modifier
                 .testTag(SCHEDULER_CONFIG_SCREEN_LABEL_DENSITY_EVENTS.name)
                 .constrainAs(eventDensityRef) {
-                    top.linkTo(labeledCheckboxNotificationRef.bottom, margin = 8.dp)
+                    val bottomConstraint = if (state.notification.checked) notificationTimeRef else labeledCheckboxNotificationRef
+
+                    top.linkTo(bottomConstraint.bottom, margin = 8.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
@@ -140,56 +159,6 @@ internal fun ProfessionalSchedulerConfigScreen(
 
                     width = Dimension.fillToConstraints
                     horizontalChainWeight = 0.5f
-                }
-        )
-
-        Text(
-            text = stringResource(R.string.scheduler_config_screen_label_work_time),
-            style = LabelTextStyle.copy(fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .testTag(SCHEDULER_CONFIG_SCREEN_LABEL_WORK_TIME.name)
-                .constrainAs(workTimeRef) {
-                    top.linkTo(eventDensityMinRef.bottom, margin = 16.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        )
-
-        Text(
-            text = stringResource(R.string.scheduler_config_screen_label_work_time_explanation),
-            style = ValueTextStyle.copy(fontSize = 14.sp),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .testTag(SCHEDULER_CONFIG_SCREEN_LABEL_WORK_TIME_EXPLANATION.name)
-                .constrainAs(workTimeExplanationRef) {
-                    top.linkTo(workTimeRef.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        )
-
-        Text(
-            text = stringResource(R.string.scheduler_config_screen_label_break_time),
-            style = LabelTextStyle.copy(fontWeight = FontWeight.Medium),
-            modifier = Modifier
-                .testTag(SCHEDULER_CONFIG_SCREEN_LABEL_BREAK_TIME.name)
-                .constrainAs(breakTimeRef) {
-                    top.linkTo(workTimeExplanationRef.bottom, margin = 16.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        )
-
-        Text(
-            text = stringResource(R.string.scheduler_config_screen_label_break_time_explanation),
-            style = ValueTextStyle.copy(fontSize = 14.sp),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .testTag(SCHEDULER_CONFIG_SCREEN_LABEL_BREAK_TIME_EXPLANATION.name)
-                .constrainAs(breakTimeExplanationRef) {
-                    top.linkTo(breakTimeRef.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
                 }
         )
     }

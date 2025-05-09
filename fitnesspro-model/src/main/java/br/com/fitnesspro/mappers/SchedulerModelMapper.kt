@@ -31,7 +31,7 @@ fun SchedulerConfig.getTOSchedulerConfig(): TOSchedulerConfig {
 fun TOSchedulerConfig.getSchedulerConfig(): SchedulerConfig {
     val model = SchedulerConfig(
         notification = notification,
-        notificationAntecedenceTime = notificationAntecedenceTime,
+        notificationAntecedenceTime = notificationAntecedenceTime!!,
         minScheduleDensity = minScheduleDensity!!,
         maxScheduleDensity = maxScheduleDensity!!,
         personId = personId,
@@ -43,14 +43,18 @@ fun TOSchedulerConfig.getSchedulerConfig(): SchedulerConfig {
 }
 
 fun SchedulerConfigDTO.getSchedulerConfig(): SchedulerConfig {
-    return SchedulerConfig(
+    val model = SchedulerConfig(
         notification = notification,
         notificationAntecedenceTime = notificationAntecedenceTime,
         minScheduleDensity = minScheduleDensity,
         maxScheduleDensity = maxScheduleDensity,
         personId = personId,
-        transmissionState = EnumTransmissionState.TRANSMITTED
+        transmissionState = EnumTransmissionState.TRANSMITTED,
     )
+
+    id?.let { model.id = it }
+
+    return model
 }
 
 fun SchedulerConfig.getSchedulerConfigDTO(): SchedulerConfigDTO {

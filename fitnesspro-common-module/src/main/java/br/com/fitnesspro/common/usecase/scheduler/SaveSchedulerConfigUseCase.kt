@@ -7,6 +7,7 @@ import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValid
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MAX_SCHEDULE_DENSITY
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.MIN_SCHEDULE_DENSITY
+import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields.NOTIFICATION_ANTECEDENCE_TIME
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
@@ -27,6 +28,7 @@ class SaveSchedulerConfigUseCase(
             personConfig != null && toSchedulerConfig != null -> {
                 personConfig.apply {
                     notification = toSchedulerConfig.notification
+                    notificationAntecedenceTime = toSchedulerConfig.notificationAntecedenceTime
                     minScheduleDensity = toSchedulerConfig.minScheduleDensity
                     maxScheduleDensity = toSchedulerConfig.maxScheduleDensity
                 }
@@ -52,13 +54,14 @@ class SaveSchedulerConfigUseCase(
         return validationResults
     }
 
-    private suspend fun validateSchedulerConfig(config: TOSchedulerConfig, userType: EnumUserType): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
+    private fun validateSchedulerConfig(config: TOSchedulerConfig, userType: EnumUserType): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
         if (userType == EnumUserType.ACADEMY_MEMBER) return mutableListOf()
 
         val validationResults = mutableListOf(
             validateMinScheduleDensity(config),
             validateMaxScheduleDensity(config),
             validateDensityRange(config),
+            validateNotificationAntecedenceTime(config)
         )
 
         return validationResults.filterNotNull().toMutableList()
@@ -148,6 +151,40 @@ class SaveSchedulerConfigUseCase(
 
             else -> null
         }
+    }
+
+    private fun validateNotificationAntecedenceTime(config: TOSchedulerConfig): FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>? {
+        val validationPair = when {
+            config.notificationAntecedenceTime == null -> {
+                val message = context.getString(
+                    R.string.validation_msg_required_field,
+                    context.getString(MIN_SCHEDULE_DENSITY.labelResId)
+                )
+
+                FieldValidationError(
+                    field = NOTIFICATION_ANTECEDENCE_TIME,
+                    validationType = EnumSchedulerConfigValidationTypes.REQUIRED_NOTIFICATION_ANTECEDENCE_TIME,
+                    message = message
+                )
+            }
+
+            config.notificationAntecedenceTime!! < 30 -> {
+                val message = context.getString(
+                    R.string.validation_msg_invalid_field,
+                    context.getString(MIN_SCHEDULE_DENSITY.labelResId)
+                )
+
+                FieldValidationError(
+                    field = NOTIFICATION_ANTECEDENCE_TIME,
+                    validationType = EnumSchedulerConfigValidationTypes.REQUIRED_NOTIFICATION_ANTECEDENCE_TIME,
+                    message = message
+                )
+            }
+
+            else -> null
+        }
+
+        return validationPair
     }
 
     suspend fun createConfigBatch(toPersonList: List<TOPerson>): List<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>> {
