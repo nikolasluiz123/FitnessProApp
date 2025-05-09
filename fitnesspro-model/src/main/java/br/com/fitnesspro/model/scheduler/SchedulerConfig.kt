@@ -27,6 +27,8 @@ data class SchedulerConfig(
     @ColumnInfo(name = "transmission_state", defaultValue = "PENDING")
     override var transmissionState: EnumTransmissionState = EnumTransmissionState.PENDING,
     var notification: Boolean = false,
+    @ColumnInfo(name = "notification_antecedence_time")
+    var notificationAntecedenceTime: Int = 30,
     @ColumnInfo(name = "min_schedule_density")
     var minScheduleDensity: Int = 1,
     @ColumnInfo(name = "max_schedule_density")
