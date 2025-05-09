@@ -84,14 +84,20 @@ class CompromiseViewModel @Inject constructor(
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
-    override fun onShowError(throwable: Throwable) {
+    override fun getErrorMessageFrom(throwable: Throwable): String {
+        return context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
+    }
+
+    override fun onShowErrorDialog(message: String) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
+    }
+
+    override fun onError(throwable: Throwable) {
+        super.onError(throwable)
+
         if (_uiState.value.showLoading) {
             _uiState.value.onToggleLoading()
         }
-
-        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
-            message = context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
-        )
     }
 
     private fun initialUIStateLoad() {

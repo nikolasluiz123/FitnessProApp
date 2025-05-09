@@ -44,10 +44,12 @@ class ChatHistoryViewModel @Inject constructor(
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
-    override fun onShowError(throwable: Throwable) {
-        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
-            message = context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
-        )
+    override fun getErrorMessageFrom(throwable: Throwable): String {
+        return context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
+    }
+
+    override fun onShowErrorDialog(message: String) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
     }
 
     override fun onCleared() {
@@ -208,7 +210,7 @@ class ChatHistoryViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(history = chats)
                 },
                 onError = { exception ->
-                    onShowError(exception)
+                    getErrorMessageFrom(exception)
                     onError(exception)
                 }
             )

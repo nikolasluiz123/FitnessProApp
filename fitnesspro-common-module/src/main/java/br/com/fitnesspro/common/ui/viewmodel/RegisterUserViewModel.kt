@@ -68,12 +68,8 @@ class RegisterUserViewModel @Inject constructor(
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
-    override fun onShowError(throwable: Throwable) {
-        if (_uiState.value.showLoading) {
-            _uiState.value.onToggleLoading()
-        }
-
-        val message = when (throwable) {
+    override fun getErrorMessageFrom(throwable: Throwable): String {
+        return when (throwable) {
             is FirebaseAuthUserCollisionException -> {
                 context.getString(R.string.firebase_user_collision_error_message)
             }
@@ -82,8 +78,18 @@ class RegisterUserViewModel @Inject constructor(
                 context.getString(R.string.unknown_error_message)
             }
         }
+    }
 
+    override fun onShowErrorDialog(message: String) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
+    }
+
+    override fun onError(throwable: Throwable) {
+        super.onError(throwable)
+
+        if (_uiState.value.showLoading) {
+            _uiState.value.onToggleLoading()
+        }
     }
 
     private fun initialLoadUIState(args: RegisterUserScreenArgs) {

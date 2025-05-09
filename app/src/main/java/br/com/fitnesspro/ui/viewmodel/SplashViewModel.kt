@@ -26,5 +26,7 @@ class SplashViewModel @Inject constructor(
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
-    override fun onShowError(throwable: Throwable) = Unit
+    override fun getErrorMessageFrom(throwable: Throwable): String = ""
+
+    override fun onShowErrorDialog(message: String) = Unit
 }

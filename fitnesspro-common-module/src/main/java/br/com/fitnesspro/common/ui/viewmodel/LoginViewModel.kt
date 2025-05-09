@@ -43,12 +43,8 @@ class LoginViewModel @Inject constructor(
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
-    override fun onShowError(throwable: Throwable) {
-        if (_uiState.value.showLoading) {
-            _uiState.value.onToggleLoading()
-        }
-
-        val message = when {
+    override fun getErrorMessageFrom(throwable: Throwable): String {
+        return when {
             throwable is FirebaseAuthInvalidUserException && throwable.errorCode == "ERROR_USER_TOKEN_EXPIRED" -> {
                 context.getString(R.string.firebase_user_token_expired_message)
             }
@@ -57,8 +53,18 @@ class LoginViewModel @Inject constructor(
                 context.getString(R.string.unknown_error_message)
             }
         }
+    }
 
+    override fun onShowErrorDialog(message: String) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
+    }
+
+    override fun onError(throwable: Throwable) {
+        super.onError(throwable)
+
+        if (_uiState.value.showLoading) {
+            _uiState.value.onToggleLoading()
+        }
     }
 
     private fun loadEmailAuthenticatedUser() {

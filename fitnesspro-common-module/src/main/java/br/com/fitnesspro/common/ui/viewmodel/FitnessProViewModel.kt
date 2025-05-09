@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.fitnesspro.common.ui.event.GlobalEvent
 import br.com.fitnesspro.common.ui.event.GlobalEvents
+import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
 import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
 import br.com.fitnesspro.shared.communication.exception.NotFoundTokenException
@@ -13,16 +14,21 @@ import kotlinx.coroutines.launch
 
 abstract class FitnessProViewModel : ViewModel() {
 
-    abstract fun onShowError(throwable: Throwable)
+    abstract fun getErrorMessageFrom(throwable: Throwable): String
+
+    abstract fun onShowErrorDialog(message: String)
 
     abstract fun getGlobalEventsBus(): GlobalEvents
 
     private fun onShowCommonError(throwable: Throwable) {
-        when(throwable) {
+        val message = when(throwable) {
             is ExpiredTokenException,
-            is NotFoundTokenException -> { }
-            else -> onShowError(throwable)
+            is NotFoundTokenException -> null
+            is ServiceException -> throwable.message!!
+            else -> getErrorMessageFrom(throwable)
         }
+
+        message?.let(::onShowErrorDialog)
     }
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -30,7 +36,7 @@ abstract class FitnessProViewModel : ViewModel() {
         onError(throwable)
     }
 
-    protected fun onError(throwable: Throwable) {
+    protected open fun onError(throwable: Throwable) {
         when (throwable) {
             is ExpiredTokenException,
             is NotFoundTokenException -> {
