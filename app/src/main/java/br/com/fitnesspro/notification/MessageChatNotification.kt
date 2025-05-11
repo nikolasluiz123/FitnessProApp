@@ -25,7 +25,7 @@ class MessageChatNotification(
 
     override fun getChannelDescription(): String = context.getString(R.string.new_message_chat_channel_description)
 
-    override fun getNotificationId(): Int = NEW_MESSAGE_CHAT_NOTIFICATION_ID
+    override fun getNotificationId(): Int = messages.first().chatId.hashCode()
 
     override fun getImportance(): Int = NotificationManager.IMPORTANCE_HIGH
 
@@ -59,7 +59,6 @@ class MessageChatNotification(
     }
 
     companion object {
-        const val NEW_MESSAGE_CHAT_NOTIFICATION_ID = 1
         const val NEW_MESSAGE_CHAT_CHANNEL_ID = "new_message_chat_channel_id"
     }
 
