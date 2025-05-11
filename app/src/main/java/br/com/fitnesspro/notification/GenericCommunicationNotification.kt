@@ -13,12 +13,9 @@ class GenericCommunicationNotification(context: Context): FitnessProNotification
 
     override fun getChannelDescription(): String = context.getString(R.string.generic_communication_notification_channel_description)
 
-    override fun getNotificationId(): Int = GENERIC_COMMUNICATION_NOTIFICATION_ID
-
     override fun getImportance(): Int = NotificationManager.IMPORTANCE_DEFAULT
 
     companion object {
-        const val GENERIC_COMMUNICATION_NOTIFICATION_ID = 3
         const val GENERIC_COMMUNICATION_CHANNEL_ID = "generic_communication_channel_id"
     }
 

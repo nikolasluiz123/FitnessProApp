@@ -29,18 +29,13 @@ class SchedulerNotification(
 
     override fun getChannelDescription(): String = context.getString(R.string.scheduler_notification_channel_description)
 
-    override fun getNotificationId(): Int = SCHEDULER_NOTIFICATION_ID
-
     override fun getImportance(): Int = NotificationManager.IMPORTANCE_HIGH
 
     override fun onBuildNotification(builder: NotificationCompat.Builder) {
         super.onBuildNotification(builder)
 
         val deepLinkPendingIntent = getPendingIntent()
-
-        builder
-            .setContentIntent(deepLinkPendingIntent)
-            .setAutoCancel(true)
+        builder.setContentIntent(deepLinkPendingIntent)
     }
 
     private fun getPendingIntent(): PendingIntent? {
@@ -78,7 +73,6 @@ class SchedulerNotification(
     }
 
     companion object {
-        const val SCHEDULER_NOTIFICATION_ID = 2
         const val SCHEDULER_CHANNEL_ID = "scheduler_channel_id"
     }
 

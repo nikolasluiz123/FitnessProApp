@@ -16,11 +16,11 @@ abstract class FitnessProNotification(protected val context: Context) {
 
     abstract fun getChannelDescription(): String
 
-    abstract fun getNotificationId(): Int
-
     abstract fun getImportance(): Int
 
     open fun onBuildNotification(builder: NotificationCompat.Builder) = Unit
+
+    open fun getNotificationId(): Int = System.currentTimeMillis().toInt()
 
     @SuppressLint("MissingPermission")
     fun showNotification(title: String = "", message: String = "") {
@@ -30,6 +30,7 @@ abstract class FitnessProNotification(protected val context: Context) {
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(message)
+            .setAutoCancel(true)
 
         onBuildNotification(defaultNotificationBuilder)
 
