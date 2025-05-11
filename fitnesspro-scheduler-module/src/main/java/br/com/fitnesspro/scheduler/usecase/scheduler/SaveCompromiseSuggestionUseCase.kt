@@ -75,14 +75,16 @@ class SaveCompromiseSuggestionUseCase(
 
             val academyTimes = academyRepository.getAcademyTimes(
                 personId = scheduler.professionalPersonId!!,
-                dayOfWeek = scheduler.scheduledDate!!.dayOfWeek
+                dayOfWeek = scheduler.dateTimeStart?.toLocalDate()?.dayOfWeek!!
             )
 
             val startWorkTime = academyTimes.minOf { it.timeStart!! }
             val endWorkTime = academyTimes.maxOf { it.timeEnd!! }
 
+            val startLocalTime = scheduler.dateTimeStart!!.toLocalTime()
+
             validationResult = when {
-                scheduler.timeStart!! < startWorkTime || scheduler.timeStart!! > endWorkTime -> {
+                startLocalTime < startWorkTime || startLocalTime > endWorkTime -> {
                     val message = context.getString(
                         R.string.save_compromise_start_hour_out_of_work_time_range,
                         context.getString(EnumValidatedCompromiseFields.HOUR_START.labelResId),
@@ -112,14 +114,15 @@ class SaveCompromiseSuggestionUseCase(
 
             val academyTimes = academyRepository.getAcademyTimes(
                 personId = scheduler.professionalPersonId!!,
-                dayOfWeek = scheduler.scheduledDate!!.dayOfWeek
+                dayOfWeek = scheduler.dateTimeEnd?.dayOfWeek!!
             )
 
             val startWorkTime = academyTimes.minOf { it.timeStart!! }
             val endWorkTime = academyTimes.maxOf { it.timeEnd!! }
+            val endLocalTime = scheduler.dateTimeEnd!!.toLocalTime()
 
             validationResult = when {
-                scheduler.timeEnd!! < startWorkTime || scheduler.timeEnd!! > endWorkTime -> {
+                endLocalTime < startWorkTime || endLocalTime > endWorkTime -> {
                     val message = context.getString(
                         R.string.save_compromise_start_hour_out_of_work_time_range,
                         context.getString(EnumValidatedCompromiseFields.HOUR_END.labelResId),
@@ -143,8 +146,8 @@ class SaveCompromiseSuggestionUseCase(
 
     private suspend fun validateSchedulerConflictProfessional(toScheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         val requiredFields = listOf(
-            toScheduler.timeStart,
-            toScheduler.timeEnd,
+            toScheduler.dateTimeStart,
+            toScheduler.dateTimeEnd,
             toScheduler.professionalPersonId
         )
 
@@ -156,18 +159,17 @@ class SaveCompromiseSuggestionUseCase(
             schedulerId = toScheduler.id,
             personId = toScheduler.professionalPersonId!!,
             userType = professional.user?.type!!,
-            scheduledDate = toScheduler.scheduledDate!!,
-            start = toScheduler.timeStart!!,
-            end = toScheduler.timeEnd!!
+            start = toScheduler.dateTimeStart!!,
+            end = toScheduler.dateTimeEnd!!
         )
 
         return when {
             hasConflict -> {
                 val message = context.getString(
                     R.string.save_compromise_scheduler_conflict,
-                    toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
-                    toScheduler.timeStart!!.format(EnumDateTimePatterns.TIME),
-                    toScheduler.timeEnd!!.format(EnumDateTimePatterns.TIME),
+                    toScheduler.dateTimeStart!!.format(EnumDateTimePatterns.DATE),
+                    toScheduler.dateTimeStart!!.format(EnumDateTimePatterns.TIME),
+                    toScheduler.dateTimeEnd!!.format(EnumDateTimePatterns.TIME),
                     professional.name
                 )
 

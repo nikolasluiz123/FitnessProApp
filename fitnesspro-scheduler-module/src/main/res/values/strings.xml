@@ -56,7 +56,7 @@
     <string name="compromise_screen_message_success_recurrent">Agendamento recorrente realizado com sucesso de %s até %s</string>
     <string name="scheduler_config_screen_label_general">Geral</string>
     <string name="scheduler_config_screen_label_alarm">Criar alarmes para os eventos</string>
-    <string name="scheduler_config_screen_label_notification">Receber notificação um dia antes</string>
+    <string name="scheduler_config_screen_label_notification">Receber notificação com antecedência</string>
     <string name="scheduler_config_screen_label_event_density">Densidade dos Eventos</string>
     <string name="scheduler_config_screen_label_event_density_explanation">Defina a quantidade de eventos que normalmente ocorrem, isso será usado na definição das cores da agenda.</string>
     <string name="scheduler_config_screen_label_event_density_min">Mínimo *</string>
@@ -92,7 +92,7 @@
     <string name="chat_history_screen_label_members_list">Membros</string>
     <string name="chat_history_screen_empty_message_members">Não existem Membros com os filtros aplicados</string>
     <string name="chat_history_screen_empty_message_professionals">Não existem Profissionais com os filtros aplicados</string>
-    <string name="compromise_screen_empty_message_member_dialog_list">Não existem Membros com os filtros aplicaos</string>
+    <string name="compromise_screen_empty_message_member_dialog_list">Não existem Membros com os filtros aplicados</string>
     <string name="compromise_screen_empty_message_professional_dialog_list">Não existem Profissionais com os filtros aplicados</string>
     <string name="chat_screen_title">Conversa</string>
     <string name="scheduler_importation_descrition">Importação dos Agendamentos</string>
@@ -101,4 +101,5 @@
     <string name="compromise_screen_label_member_readonly">Membro</string>
     <string name="compromise_screen_label_you">Você</string>
     <string name="scheduler_config_screen_label_notification_antecedence_time">Antecedência da Notificação em Minutos</string>
+    <string name="network_required_save_schedule_message">É necessário ter conexão com a internet para realizar um agendamento ou alterá-lo.</string>
 </resources>

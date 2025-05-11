@@ -94,8 +94,8 @@ internal fun SchedulerDetailItem(
             label = stringResource(R.string.scheduler_details_hour_label),
             value = stringResource(
                 R.string.scheduler_details_hour_value,
-                to.timeStart!!.format(EnumDateTimePatterns.TIME),
-                to.timeEnd!!.format(EnumDateTimePatterns.TIME)
+                to.dateTimeStart!!.format(EnumDateTimePatterns.TIME),
+                to.dateTimeEnd!!.format(EnumDateTimePatterns.TIME)
             )
         )
 

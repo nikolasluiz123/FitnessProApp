@@ -5,6 +5,7 @@ import androidx.work.WorkerParameters
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.model.sync.ImportationHistory
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 abstract class AbstractImportationWorker(
     context: Context,
@@ -32,7 +33,7 @@ abstract class AbstractImportationWorker(
 
     private suspend fun updateImportationDate() {
         importationHistoryDAO.getImportationHistory(getModule())!!.apply {
-            date = dateTimeNow()
+            date = dateTimeNow(ZoneOffset.UTC)
             importationHistoryDAO.update(this)
         }
     }

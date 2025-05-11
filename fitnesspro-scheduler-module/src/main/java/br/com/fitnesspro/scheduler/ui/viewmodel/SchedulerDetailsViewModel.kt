@@ -21,6 +21,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -85,7 +86,7 @@ class SchedulerDetailsViewModel @Inject constructor(
             it.copy(
                 title = context.getString(R.string.scheduler_details_screen_title),
                 subtitle = args.scheduledDate.format(EnumDateTimePatterns.DATE),
-                isVisibleFabAdd = args.scheduledDate >= dateNow(),
+                isVisibleFabAdd = args.scheduledDate >= dateNow(ZoneId.systemDefault()),
                 messageDialogState = initializeMessageDialogState(),
             )
         }

@@ -100,7 +100,7 @@ fun TimePickerDialog(
     onDismiss: () -> Unit,
     onConfirm: (LocalTime) -> Unit
 ) {
-    val time = value ?: timeNow()
+    val time = value ?: timeNow(ZoneId.systemDefault())
 
     val timePickerState = rememberTimePickerState(
         initialHour = time.hour,

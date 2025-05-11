@@ -1,7 +1,6 @@
 package br.com.fitnesspro.common.repository.sync.exportation.common
 
 import android.content.Context
-import android.util.Log
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
 import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.core.extensions.dateTimeNow
@@ -15,6 +14,7 @@ import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: IntegratedMaintenanceDAO<MODEL>>(context: Context)
     : AbstractSyncRepository<DAO>(context) {
@@ -34,16 +34,16 @@ abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: Integr
 
         try {
             do {
-                clientDateTimeStart = dateTimeNow()
+                clientDateTimeStart = dateTimeNow(ZoneOffset.UTC)
 
                 models = getExportationData(pageInfos)
 
                 if (models.isNotEmpty()) {
                     updateTransmissionState(models, EnumTransmissionState.RUNNING)
 
-                    val serviceCallExportationStart = dateTimeNow()
+                    val serviceCallExportationStart = dateTimeNow(ZoneOffset.UTC)
                     response = callExportationService(models, serviceToken)
-                    val serviceCallExportationEnd = dateTimeNow()
+                    val serviceCallExportationEnd = dateTimeNow(ZoneOffset.UTC)
 
                     val callExportationTime = Duration.between(serviceCallExportationStart, serviceCallExportationEnd)
 
@@ -62,7 +62,7 @@ abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: Integr
                             logPackageId = response.executionLogPackageId,
                             models = models,
                             serviceToken = serviceToken,
-                            clientExecutionEnd = dateTimeNow().minus(callExportationTime)
+                            clientExecutionEnd = dateTimeNow(ZoneOffset.UTC).minus(callExportationTime)
                         )
 
                         pageInfos.pageNumber++
@@ -164,7 +164,7 @@ abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: Integr
             logPackageId = logPackageId,
             dto = UpdatableExecutionLogPackageInfosDTO(
                 clientExecutionStart = clientStartDateTime,
-                clientExecutionEnd = dateTimeNow(),
+                clientExecutionEnd = dateTimeNow(ZoneOffset.UTC),
                 error = exception.stackTraceToString(),
             )
         )

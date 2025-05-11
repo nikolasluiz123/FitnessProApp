@@ -2,7 +2,7 @@ package br.com.fitnesspro.scheduler.usecase.scheduler
 
 import android.content.Context
 import br.com.fitnesspro.common.repository.PersonRepository
-import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.core.extensions.offsetDateTimeNow
 import br.com.fitnesspro.core.validation.ValidationError
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CANCELLED
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation.COMPLETED
@@ -14,6 +14,7 @@ import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidat
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.INVALID_SITUATION_FOR_INACTIVATION
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.to.TOScheduler
+import java.time.ZoneId
 
 class CancelSchedulerUseCase(
     private val context: Context,
@@ -26,7 +27,7 @@ class CancelSchedulerUseCase(
 
         if (result == null) {
             toScheduler.apply {
-                canceledDate = dateTimeNow()
+                canceledDate = offsetDateTimeNow(ZoneId.systemDefault())
                 situation = CANCELLED
                 cancellationPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
 

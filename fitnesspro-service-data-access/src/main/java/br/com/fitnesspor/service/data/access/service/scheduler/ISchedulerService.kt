@@ -26,7 +26,7 @@ interface ISchedulerService {
         @Body schedulerDTO: SchedulerDTO
     ): Response<PersistenceServiceResponse<SchedulerDTO>>
 
-    @POST("$SCHEDULER/$SCHEDULER_EXPORT")
+    @POST("$SCHEDULER$SCHEDULER_EXPORT")
     suspend fun saveSchedulerBatch(
         @Header("Authorization") token: String,
         @Body schedulerDTOList: List<SchedulerDTO>

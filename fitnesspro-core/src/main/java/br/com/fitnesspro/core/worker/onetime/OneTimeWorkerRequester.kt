@@ -1,6 +1,7 @@
 package br.com.fitnesspro.core.worker.onetime
 
 import android.content.Context
+import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy.APPEND_OR_REPLACE
 import androidx.work.NetworkType
@@ -19,6 +20,7 @@ class OneTimeWorkerRequester(
 
     private val request = builder.setConstraints(constraints)
         .setInitialDelay(workerDelay, TimeUnit.SECONDS)
+        .setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.SECONDS)
         .build()
 
     fun enqueue() {

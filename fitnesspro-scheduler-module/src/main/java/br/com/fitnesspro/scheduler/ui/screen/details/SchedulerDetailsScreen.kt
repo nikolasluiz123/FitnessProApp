@@ -32,6 +32,8 @@ import br.com.fitnesspro.scheduler.ui.state.SchedulerDetailsUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerDetailsViewModel
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import java.time.ZoneId
+import java.time.ZoneOffset
 
 @Composable
 fun SchedulerDetailsScreen(
@@ -122,7 +124,7 @@ fun SchedulerDetailsScreen(
 private fun getEmptyMessage(state: SchedulerDetailsUIState): Int {
     val date = state.subtitle.parseToLocalDate(EnumDateTimePatterns.DATE)!!
 
-    return if (date < dateNow()) {
+    return if (date < dateNow(ZoneId.systemDefault())) {
         R.string.scheduler_details_empty_message_past_date
     } else {
         R.string.scheduler_details_empty_message

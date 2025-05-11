@@ -5,7 +5,7 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_SQLITE
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
@@ -15,7 +15,7 @@ import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.to.TOScheduler
 import java.time.LocalDate
-import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.time.YearMonth
 import java.util.StringJoiner
 
@@ -29,9 +29,8 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
         schedulerId: String?,
         personId: String,
         userType: EnumUserType,
-        scheduledDate: LocalDate,
-        start: LocalTime,
-        end: LocalTime
+        start: OffsetDateTime,
+        end: OffsetDateTime
     ): Boolean {
         val params = mutableListOf<Any>()
 
@@ -46,22 +45,18 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
         val where = StringJoiner(QR_NL).apply {
             add(" where schedule.active = 1 ")
             add(" and ( ")
-            add("       time_start between ? and ? ")
-            add("       or time_end between ? and ? ")
+            add("       date_time_start between ? and ? ")
+            add("       or date_time_end between ? and ? ")
             add("     ) ")
-            add(" and schedule.scheduled_date = ? ")
             add(" and schedule.situation != '${EnumSchedulerSituation.CANCELLED}' ")
 
-
-            val startFormated = start.format(EnumDateTimePatterns.TIME)
-            val endFormated = end.format(EnumDateTimePatterns.TIME)
-            val dateFormated = scheduledDate.format(EnumDateTimePatterns.DATE_SQLITE)
+            val startFormated = start.toString()
+            val endFormated = end.toString()
 
             params.add(startFormated)
             params.add(endFormated)
             params.add(startFormated)
             params.add(endFormated)
-            params.add(dateFormated)
 
             schedulerId?.let {
                 add(" and schedule.id != ? ")
@@ -111,9 +106,8 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
             add("        personMember.name as academyMemberName, ")
             add("        schedule.professional_person_id as professionalPersonId, ")
             add("        personProfessional.name as professionalName, ")
-            add("        schedule.scheduled_date as scheduledDate, ")
-            add("        schedule.time_start as timeStart, ")
-            add("        schedule.time_end as timeEnd, ")
+            add("        schedule.date_time_start as dateTimeStart, ")
+            add("        schedule.date_time_end as dateTimeEnd, ")
             add("        schedule.canceled_date as canceledDate, ")
             add("        schedule.situation as situation, ")
             add("        schedule.compromise_type as compromiseType, ")
@@ -150,17 +144,17 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
             }
 
             yearMonth?.let {
-                val firstDatOfMonth = it.atDay(1).atStartOfDay().format(EnumDateTimePatterns.DATE_SQLITE)
-                val lastDayOfMonth = it.atEndOfMonth().atTime(23, 59).format(EnumDateTimePatterns.DATE_SQLITE)
+                val firstDatOfMonth = it.atDay(1).atStartOfDay().format(DATE_SQLITE)
+                val lastDayOfMonth = it.atEndOfMonth().atTime(23, 59).format(DATE_SQLITE)
 
-                add(" and schedule.scheduled_date between ? and ? ")
+                add(" and schedule.date_time_start between ? and ? ")
                 params.add(firstDatOfMonth)
                 params.add(lastDayOfMonth)
             }
 
             scheduledDate?.let {
-                add(" and schedule.scheduled_date = ? ")
-                params.add(it.format(EnumDateTimePatterns.DATE_SQLITE))
+                add(" and schedule.date_time_start like ? ")
+                params.add("${it.format(DATE_SQLITE)}%")
             }
         }
 

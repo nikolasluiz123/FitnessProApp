@@ -21,7 +21,7 @@ import br.com.fitnesspro.to.TOScheduler
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.time.YearMonth
 
 class SchedulerRepository(
@@ -108,31 +108,31 @@ class SchedulerRepository(
         schedulerId: String?,
         personId: String,
         userType: EnumUserType,
-        scheduledDate: LocalDate,
-        start: LocalTime,
-        end: LocalTime
+        start: OffsetDateTime,
+        end: OffsetDateTime
     ): Boolean = withContext(IO) {
         schedulerDAO.getHasSchedulerConflict(
             schedulerId = schedulerId,
             personId = personId,
             userType = userType,
-            scheduledDate = scheduledDate,
             start = start,
             end = end
         )
     }
 
     suspend fun saveRecurrentScheduler(schedules: List<TOScheduler>) = withContext(IO) {
-        val schedulers = schedules.map { it.getScheduler() }.sortedBy(Scheduler::scheduledDate)
+        val schedulers = schedules.map { it.getScheduler() }.sortedBy {
+            it.dateTimeStart?.toLocalDate()!!
+        }
 
         val workout = Workout(
             academyMemberPersonId = schedules.first().academyMemberPersonId,
             professionalPersonId = schedules.first().professionalPersonId,
-            dateStart = schedulers.first().scheduledDate,
-            dateEnd = schedulers.last().scheduledDate
+            dateStart = schedulers.first().dateTimeStart?.toLocalDate()!!,
+            dateEnd = schedulers.last().dateTimeStart?.toLocalDate()!!
         )
 
-        val workoutGroups = schedulers.map { it.scheduledDate!!.dayOfWeek }.distinct().map {
+        val workoutGroups = schedulers.map { it.dateTimeStart?.toLocalDate()!!.dayOfWeek }.distinct().map {
             WorkoutGroup(dayWeek = it, workoutId = workout.id)
         }
 

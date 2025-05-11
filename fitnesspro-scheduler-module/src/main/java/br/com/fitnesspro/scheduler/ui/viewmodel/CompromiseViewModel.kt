@@ -15,11 +15,15 @@ import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
 import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME_ONLY_NUMBERS
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
+import br.com.fitnesspro.core.extensions.getOffsetDateTime
+import br.com.fitnesspro.core.extensions.parseTimeToOffsetDateTime
 import br.com.fitnesspro.core.extensions.parseToLocalDate
-import br.com.fitnesspro.core.extensions.parseToLocalTime
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
@@ -106,8 +110,8 @@ class CompromiseViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 subtitle = getSubtitle(args.date),
-                professional = initializeProfessionalPagedDialogListField(),
-                member = initializeMemberPagedDialogListField(),
+                professional = initializeProfessionalPagedDialogListField(args),
+                member = initializeMemberPagedDialogListField(args),
                 dateStart = initializeDateStartDatePickerField(),
                 dateEnd = initializeDateEndDatePickerField(),
                 hourStart = initializeHourStartTimePickerField(),
@@ -116,7 +120,6 @@ class CompromiseViewModel @Inject constructor(
                 messageDialogState = initializeMessageDialogState(),
                 dayWeeksSelectorField = initializeDayWeeksSelectorField(),
                 recurrent = args.recurrent,
-                toScheduler = _uiState.value.toScheduler.copy(scheduledDate = args.date),
                 onToggleLoading = {
                     _uiState.value = _uiState.value.copy(
                         showLoading = _uiState.value.showLoading.not()
@@ -176,6 +179,8 @@ class CompromiseViewModel @Inject constructor(
     }
 
     private fun initializeHourEndTimePickerField(): TimePickerTextField {
+        val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
+
         return TimePickerTextField(
             onTimePickerOpenChange = { newOpen ->
                 _uiState.value = _uiState.value.copy(
@@ -185,10 +190,12 @@ class CompromiseViewModel @Inject constructor(
             onTimeChange = { newTime ->
                 _uiState.value = _uiState.value.copy(
                     hourEnd = _uiState.value.hourEnd.copy(
-                        value = newTime.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS),
+                        value = newTime.format(TIME_ONLY_NUMBERS),
                         errorMessage = ""
                     ),
-                    toScheduler = _uiState.value.toScheduler.copy(timeEnd = newTime)
+                    toScheduler = _uiState.value.toScheduler.copy(
+                        dateTimeEnd = args.date!!.getOffsetDateTime(newTime)
+                    )
                 )
             },
             onTimeDismiss = {
@@ -204,7 +211,7 @@ class CompromiseViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         toScheduler = _uiState.value.toScheduler.copy(
-                            timeEnd = text.parseToLocalTime(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
+                            dateTimeEnd = text.parseTimeToOffsetDateTime(args.date!!, TIME_ONLY_NUMBERS)
                         )
                     )
                 }
@@ -213,6 +220,8 @@ class CompromiseViewModel @Inject constructor(
     }
 
     private fun initializeHourStartTimePickerField(): TimePickerTextField {
+        val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
+
         return TimePickerTextField(
             onTimePickerOpenChange = { newOpen ->
                 _uiState.value = _uiState.value.copy(
@@ -222,10 +231,10 @@ class CompromiseViewModel @Inject constructor(
             onTimeChange = { newTime ->
                 _uiState.value = _uiState.value.copy(
                     hourStart = _uiState.value.hourStart.copy(
-                        value = newTime.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS),
+                        value = newTime.format(TIME_ONLY_NUMBERS),
                         errorMessage = ""
                     ),
-                    toScheduler = _uiState.value.toScheduler.copy(timeStart = newTime)
+                    toScheduler = _uiState.value.toScheduler.copy(dateTimeStart = args.date!!.getOffsetDateTime(newTime))
                 )
             },
             onTimeDismiss = {
@@ -241,7 +250,7 @@ class CompromiseViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         toScheduler = _uiState.value.toScheduler.copy(
-                            timeStart = text.parseToLocalTime(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
+                            dateTimeStart = text.parseTimeToOffsetDateTime(args.date!!, TIME_ONLY_NUMBERS)
                         )
                     )
                 }
@@ -259,7 +268,7 @@ class CompromiseViewModel @Inject constructor(
             onDateChange = { newDate ->
                 _uiState.value = _uiState.value.copy(
                     dateEnd = _uiState.value.dateEnd.copy(
-                        value = newDate.format(EnumDateTimePatterns.DATE_ONLY_NUMBERS),
+                        value = newDate.format(DATE_ONLY_NUMBERS),
                         errorMessage = ""
                     )
                 )
@@ -279,7 +288,7 @@ class CompromiseViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         recurrentConfig = _uiState.value.recurrentConfig.copy(
-                            dateEnd = text.parseToLocalDate(EnumDateTimePatterns.DATE_ONLY_NUMBERS)
+                            dateEnd = text.parseToLocalDate(DATE_ONLY_NUMBERS)
                         )
                     )
                 }
@@ -297,7 +306,7 @@ class CompromiseViewModel @Inject constructor(
             onDateChange = { newDate ->
                 _uiState.value = _uiState.value.copy(
                     dateStart = _uiState.value.dateStart.copy(
-                        value = newDate.format(EnumDateTimePatterns.DATE_ONLY_NUMBERS),
+                        value = newDate.format(DATE_ONLY_NUMBERS),
                         errorMessage = ""
                     ),
                 )
@@ -317,7 +326,7 @@ class CompromiseViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         recurrentConfig = _uiState.value.recurrentConfig.copy(
-                            dateStart = text.parseToLocalDate(EnumDateTimePatterns.DATE_ONLY_NUMBERS)
+                            dateStart = text.parseToLocalDate(DATE_ONLY_NUMBERS)
                         )
                     )
                 }
@@ -325,7 +334,7 @@ class CompromiseViewModel @Inject constructor(
         )
     }
 
-    private fun initializeMemberPagedDialogListField(): PagedDialogListTextField<PersonTuple> {
+    private fun initializeMemberPagedDialogListField(args: CompromiseScreenArgs): PagedDialogListTextField<PersonTuple> {
         return PagedDialogListTextField(
             dialogListState = PagedDialogListState(
                 dialogTitle = context.getString(R.string.compromise_screen_label_member_list),
@@ -363,7 +372,8 @@ class CompromiseViewModel @Inject constructor(
                             dialogListState = _uiState.value.member.dialogListState.copy(
                                 dataList = getListMembers(
                                     authenticatedPerson = _uiState.value.authenticatedPerson,
-                                    simpleFilter = filter
+                                    simpleFilter = filter,
+                                    args = args
                                 )
                             )
                         )
@@ -380,7 +390,7 @@ class CompromiseViewModel @Inject constructor(
         )
     }
 
-    private fun initializeProfessionalPagedDialogListField(): PagedDialogListTextField<PersonTuple> {
+    private fun initializeProfessionalPagedDialogListField(args: CompromiseScreenArgs): PagedDialogListTextField<PersonTuple> {
         return PagedDialogListTextField(
             dialogListState = PagedDialogListState(
                 dialogTitle = context.getString(R.string.compromise_screen_label_professional_list),
@@ -419,7 +429,8 @@ class CompromiseViewModel @Inject constructor(
                             dialogListState = _uiState.value.professional.dialogListState.copy(
                                 dataList = getListProfessional(
                                     authenticatedPerson = _uiState.value.authenticatedPerson,
-                                    simpleFilter = filter
+                                    simpleFilter = filter,
+                                    args = args
                                 )
                             )
                         )
@@ -441,8 +452,8 @@ class CompromiseViewModel @Inject constructor(
             val toPerson = personRepository.getAuthenticatedTOPerson()!!
             val userType = toPerson.user?.type!!
             val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
-            val menuItemListProfessional = getListProfessional(authenticatedPerson = toPerson)
-            val menuItemListMembers = getListMembers(authenticatedPerson = toPerson)
+            val menuItemListProfessional = getListProfessional(authenticatedPerson = toPerson, args = args)
+            val menuItemListMembers = getListMembers(authenticatedPerson = toPerson, args = args)
 
             _uiState.update { state ->
                 state.copy(
@@ -516,10 +527,10 @@ class CompromiseViewModel @Inject constructor(
                         errorMessage = ""
                     ),
                     hourStart = _uiState.value.hourStart.copy(
-                        value = to.timeStart!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
+                        value = to.dateTimeStart!!.format(TIME_ONLY_NUMBERS)
                     ),
                     hourEnd = _uiState.value.hourEnd.copy(
-                        value = to.timeEnd!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
+                        value = to.dateTimeEnd!!.format(TIME_ONLY_NUMBERS)
                     ),
                     observation = _uiState.value.observation.copy(
                         value = to.observation ?: ""
@@ -533,23 +544,33 @@ class CompromiseViewModel @Inject constructor(
         }
     }
 
-    private fun getListProfessional(authenticatedPerson: TOPerson, simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
+    private fun getListProfessional(
+        authenticatedPerson: TOPerson,
+        simpleFilter: String = "",
+        args: CompromiseScreenArgs
+    ): Flow<PagingData<PersonTuple>> {
         val types = listOf(EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST)
 
         return personRepository.getListTOPersonWithUserType(
             types = types,
             simpleFilter = simpleFilter,
+            schedulerDate = args.date,
             personsForSchedule = true,
             authenticatedPersonId = authenticatedPerson.id!!
         ).flow
     }
 
-    private fun getListMembers(authenticatedPerson: TOPerson, simpleFilter: String = ""): Flow<PagingData<PersonTuple>> {
+    private fun getListMembers(
+        authenticatedPerson: TOPerson,
+        simpleFilter: String = "",
+        args: CompromiseScreenArgs
+    ): Flow<PagingData<PersonTuple>> {
         val types = listOf(EnumUserType.ACADEMY_MEMBER)
 
         return personRepository.getListTOPersonWithUserType(
             types = types,
             simpleFilter = simpleFilter,
+            schedulerDate = args.date,
             personsForSchedule = true,
             authenticatedPersonId = authenticatedPerson.id!!
         ).flow
@@ -613,15 +634,15 @@ class CompromiseViewModel @Inject constructor(
     }
 
     private fun getSubtitle(date: LocalDate?): String? {
-        return date?.format(EnumDateTimePatterns.DATE)
+        return date?.format(DATE)
     }
 
     private fun getSubtitle(toScheduler: TOScheduler): String {
         return context.getString(
             R.string.compromise_screen_subtitle,
-            toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
-            toScheduler.timeStart!!.format(EnumDateTimePatterns.TIME),
-            toScheduler.timeEnd!!.format(EnumDateTimePatterns.TIME)
+            toScheduler.dateTimeStart!!.format(DATE),
+            toScheduler.dateTimeStart!!.format(TIME),
+            toScheduler.dateTimeEnd!!.format(TIME)
         )
     }
 
@@ -735,9 +756,9 @@ class CompromiseViewModel @Inject constructor(
         _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
             message = context.getString(
                 R.string.compromise_screen_dialog_inactivation_message,
-                toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
-                toScheduler.timeStart!!.format(EnumDateTimePatterns.TIME),
-                toScheduler.timeEnd!!.format(EnumDateTimePatterns.TIME)
+                toScheduler.dateTimeStart!!.format(DATE),
+                toScheduler.dateTimeStart!!.format(TIME),
+                toScheduler.dateTimeEnd!!.format(TIME)
             )
         ) {
             state.onToggleLoading()
@@ -763,16 +784,16 @@ class CompromiseViewModel @Inject constructor(
         val message = if (toScheduler.situation == EnumSchedulerSituation.SCHEDULED) {
             context.getString(
                 R.string.compromise_screen_message_question_confirmation,
-                toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
-                toScheduler.timeStart!!.format(EnumDateTimePatterns.TIME),
-                toScheduler.timeEnd!!.format(EnumDateTimePatterns.TIME)
+                toScheduler.dateTimeStart!!.format(DATE),
+                toScheduler.dateTimeStart!!.format(TIME),
+                toScheduler.dateTimeEnd!!.format(TIME)
             )
         } else {
             context.getString(
                 R.string.compromise_screen_message_question_finalization,
-                toScheduler.scheduledDate!!.format(EnumDateTimePatterns.DATE),
-                toScheduler.timeStart!!.format(EnumDateTimePatterns.TIME),
-                toScheduler.timeEnd!!.format(EnumDateTimePatterns.TIME)
+                toScheduler.dateTimeStart!!.format(DATE),
+                toScheduler.dateTimeStart!!.format(TIME),
+                toScheduler.dateTimeEnd!!.format(TIME)
             )
         }
 

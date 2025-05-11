@@ -47,7 +47,6 @@ internal fun ProfessionalSchedulerConfigScreen(
         val (
             generalRef, labeledCheckboxNotificationRef, notificationTimeRef,
             eventDensityRef, eventDensityExplanationRef, eventDensityMinRef, eventDensityMaxRef,
-            workTimeRef, workTimeExplanationRef, breakTimeRef, breakTimeExplanationRef
         ) = createRefs()
 
         Text(

@@ -55,8 +55,8 @@ class SaveUniqueCompromiseUseCaseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            timeStart = LocalTime.of(13, 0),
-            timeEnd = LocalTime.of(14, 0),
+            dateTimeStart = LocalTime.of(13, 0),
+            dateTimeEnd = LocalTime.of(14, 0),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -75,8 +75,8 @@ class SaveUniqueCompromiseUseCaseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            timeStart = LocalTime.of(13, 0),
-            timeEnd = LocalTime.of(14, 0),
+            dateTimeStart = LocalTime.of(13, 0),
+            dateTimeEnd = LocalTime.of(14, 0),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -95,8 +95,8 @@ class SaveUniqueCompromiseUseCaseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = LocalDate.of(2025, 1, 15),
-            timeStart = null,
-            timeEnd = LocalTime.of(8, 0),
+            dateTimeStart = null,
+            dateTimeEnd = LocalTime.of(8, 0),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -115,8 +115,8 @@ class SaveUniqueCompromiseUseCaseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            timeStart = timeNow().minusHours(1),
-            timeEnd = timeNow().plusHours(2),
+            dateTimeStart = timeNow().minusHours(1),
+            dateTimeEnd = timeNow().plusHours(2),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -135,8 +135,8 @@ class SaveUniqueCompromiseUseCaseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            timeStart = timeNow(),
-            timeEnd = timeNow().plusHours(1),
+            dateTimeStart = timeNow(),
+            dateTimeEnd = timeNow().plusHours(1),
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -155,8 +155,8 @@ class SaveUniqueCompromiseUseCaseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = LocalDate.of(2025, 1, 15),
-            timeStart = LocalTime.of(13, 0),
-            timeEnd = null,
+            dateTimeStart = LocalTime.of(13, 0),
+            dateTimeEnd = null,
             compromiseType = EnumCompromiseType.FIRST
         )
 
@@ -175,8 +175,8 @@ class SaveUniqueCompromiseUseCaseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            timeStart = LocalTime.of(13, 0),
-            timeEnd = LocalTime.of(14, 0),
+            dateTimeStart = LocalTime.of(13, 0),
+            dateTimeEnd = LocalTime.of(14, 0),
             compromiseType = EnumCompromiseType.FIRST,
             observation = "a".repeat(4097)
         )
@@ -196,8 +196,8 @@ class SaveUniqueCompromiseUseCaseTests: BaseUnitTests() {
             professionalPersonId = UUID.randomUUID().toString(),
             professionalType = EnumUserType.PERSONAL_TRAINER,
             scheduledDate = dateNow(),
-            timeStart = LocalTime.of(13, 0),
-            timeEnd = LocalTime.of(14, 0),
+            dateTimeStart = LocalTime.of(13, 0),
+            dateTimeEnd = LocalTime.of(14, 0),
             compromiseType = EnumCompromiseType.FIRST
         )
 

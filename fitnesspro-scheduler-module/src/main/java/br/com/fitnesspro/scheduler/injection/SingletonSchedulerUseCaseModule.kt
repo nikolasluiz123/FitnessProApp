@@ -8,8 +8,8 @@ import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
-import br.com.fitnesspro.scheduler.usecase.scheduler.ConfirmationSchedulerUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.CancelSchedulerUseCase
+import br.com.fitnesspro.scheduler.usecase.scheduler.ConfirmationSchedulerUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseSuggestionUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveRecurrentCompromiseUseCase
@@ -29,8 +29,6 @@ class SingletonSchedulerUseCaseModule {
     fun provideSaveSchedulerUseCase(
         @ApplicationContext context: Context,
         schedulerConfigRepository: SchedulerConfigRepository,
-        userRepository: UserRepository,
-        personRepository: PersonRepository
     ): SaveSchedulerConfigUseCase {
         return SaveSchedulerConfigUseCase(
             context = context,
@@ -87,11 +85,13 @@ class SingletonSchedulerUseCaseModule {
 
     @Provides
     fun provideSaveCompromiseUseCase(
+        @ApplicationContext context: Context,
         uniqueCompromiseUseCase: SaveUniqueCompromiseUseCase,
         recurrentCompromiseUseCase: SaveRecurrentCompromiseUseCase,
         suggestionCompromiseUseCase: SaveCompromiseSuggestionUseCase,
     ): SaveCompromiseUseCase {
         return SaveCompromiseUseCase(
+            context = context,
             uniqueCompromiseUseCase = uniqueCompromiseUseCase,
             recurrentCompromiseUseCase = recurrentCompromiseUseCase,
             suggestionCompromiseUseCase = suggestionCompromiseUseCase,

@@ -6,9 +6,10 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.time.YearMonth
 import java.time.ZoneId
-import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 /**
@@ -24,7 +25,7 @@ fun String.parseToLocalDate(enumDateTimePatterns: EnumDateTimePatterns): LocalDa
 
     return try {
         LocalDate.parse(this, DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
-    } catch (ex: DateTimeException) {
+    } catch (_: DateTimeException) {
         null
     }
 }
@@ -42,9 +43,17 @@ fun String.parseToLocalTime(enumDateTimePatterns: EnumDateTimePatterns): LocalTi
 
     return try {
         LocalTime.parse(this, DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
-    } catch (ex: DateTimeException) {
+    } catch (_: DateTimeException) {
         null
     }
+}
+
+fun String.parseTimeToOffsetDateTime(date: LocalDate, enumDateTimePatterns: EnumDateTimePatterns): OffsetDateTime? {
+    if (this.isEmpty()) return null
+
+    val localTime = parseToLocalTime(enumDateTimePatterns) ?: return null
+
+    return date.getOffsetDateTime(localTime)
 }
 
 /**
@@ -62,7 +71,7 @@ fun String.parseToLocalDateTime(enumDateTimePatterns: EnumDateTimePatterns): Loc
 
     return try {
         LocalDateTime.parse(this, DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
-    } catch (ex: DateTimeException) {
+    } catch (_: DateTimeException) {
         null
     }
 }
@@ -109,24 +118,45 @@ fun YearMonth.format(enumDateTimePatterns: EnumDateTimePatterns): String {
     return this.format(DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
 }
 
-fun timeNow(): LocalTime {
-    return Instant.now().atOffset(ZoneOffset.UTC).toLocalTime()
+fun OffsetDateTime.format(pattern: EnumDateTimePatterns, zoneId: ZoneId? = null): String {
+    val formatter = DateTimeFormatter.ofPattern(pattern.pattern)
+
+    return if (zoneId != null) {
+        this.atZoneSameInstant(zoneId).format(formatter)
+    } else {
+        this.format(formatter)
+    }
 }
 
-fun dateNow(): LocalDate {
-    return Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
+fun timeNow(zoneId: ZoneId): LocalTime {
+    return ZonedDateTime.now(zoneId).toLocalTime()
 }
 
-fun dateTimeNow(): LocalDateTime {
-    return LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC)
+fun dateNow(zoneId: ZoneId): LocalDate {
+    return ZonedDateTime.now(zoneId).toLocalDate()
+}
+
+fun dateTimeNow(zoneId: ZoneId): LocalDateTime {
+    return LocalDateTime.ofInstant(Instant.now(), zoneId)
 }
 
 fun yearMonthNow(): YearMonth {
     return YearMonth.now()
 }
 
+fun offsetDateTimeNow(zoneId: ZoneId): OffsetDateTime {
+    return OffsetDateTime.now(zoneId)
+}
+
 fun LocalDateTime.toEpochMillis(): Long {
     val zoneId = ZoneId.systemDefault()
     val zoneOffset = zoneId.rules.getOffset(this)
     return this.toInstant(zoneOffset).toEpochMilli()
+}
+
+fun LocalDate.getOffsetDateTime(time: LocalTime): OffsetDateTime? {
+    val zoneId = ZoneId.systemDefault()
+    val offset = zoneId.rules.getOffset(this.atTime(time))
+
+    return OffsetDateTime.of(this, time, offset)
 }

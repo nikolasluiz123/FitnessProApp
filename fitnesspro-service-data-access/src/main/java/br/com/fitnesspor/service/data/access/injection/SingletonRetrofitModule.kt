@@ -1,8 +1,6 @@
 package br.com.fitnesspor.service.data.access.injection
 
-import br.com.fitnesspro.core.adapters.LocalDateTimeTypeAdapter
-import br.com.fitnesspro.core.adapters.LocalDateTypeAdapter
-import br.com.fitnesspro.core.adapters.LocalTimeTypeAdapter
+import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.service.data.access.BuildConfig
 import br.com.fitnesspro.shared.communication.constants.Timeouts
 import com.google.gson.GsonBuilder
@@ -14,9 +12,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -27,11 +22,7 @@ class SingletonRetrofitModule {
     @Provides
     @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
-        val gson = GsonBuilder()
-            .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeTypeAdapter())
-            .registerTypeAdapter(LocalDate::class.java, LocalDateTypeAdapter())
-            .registerTypeAdapter(LocalTime::class.java, LocalTimeTypeAdapter())
-            .create()
+        val gson = GsonBuilder().defaultGSon()
 
         return Retrofit
             .Builder()

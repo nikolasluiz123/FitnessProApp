@@ -26,6 +26,7 @@ import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOPerson
+import java.time.ZoneId
 
 open class SavePersonUseCase(
     private val context: Context,
@@ -108,7 +109,7 @@ open class SavePersonUseCase(
         val birthDate = toPerson.birthDate ?: return null
 
         val validationPair = when {
-            birthDate > dateNow() -> {
+            birthDate > dateNow(ZoneId.systemDefault()) -> {
                 val message = context.getString(
                     R.string.validation_msg_invalid_field,
                     context.getString(BIRTH_DATE.labelResId)

@@ -1,10 +1,12 @@
 package br.com.fitnesspor.service.data.access.webclient.common
 
 import android.content.Context
+import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.service.data.access.R
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumErrorType.EXPIRED_TOKEN
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumErrorType.INVALID_TOKEN
+import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumErrorType.NETWORK
 import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
 import br.com.fitnesspro.shared.communication.exception.NotFoundTokenException
 import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
@@ -237,7 +239,10 @@ abstract class FitnessProWebClient(private val context: Context) {
             when (response.errorType) {
                 EXPIRED_TOKEN -> throw ExpiredTokenException(context.getString(R.string.message_expired_token))
                 INVALID_TOKEN -> throw NotFoundTokenException(context.getString(R.string.message_not_foud_token))
-                else -> { }
+                NETWORK -> { }
+                else -> {
+                    throw ServiceException(response.error!!)
+                }
             }
         }
     }

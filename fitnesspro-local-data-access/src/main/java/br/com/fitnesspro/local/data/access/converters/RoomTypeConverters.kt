@@ -9,6 +9,8 @@ import br.com.fitnesspro.core.extensions.parseToLocalTime
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.time.format.DateTimeParseException
 
 class RoomTypeConverters {
     @TypeConverter
@@ -39,6 +41,20 @@ class RoomTypeConverters {
     @TypeConverter
     fun toTimeString(time: LocalTime?): String? {
         return time?.format(EnumDateTimePatterns.TIME)
+    }
+
+    @TypeConverter
+    fun fromOffsetDateTime(value: OffsetDateTime?): String? {
+        return value?.toString()
+    }
+
+    @TypeConverter
+    fun toOffsetDateTime(value: String?): OffsetDateTime? {
+        return try {
+            value?.let { OffsetDateTime.parse(it) }
+        } catch (e: DateTimeParseException) {
+            null
+        }
     }
 }
 

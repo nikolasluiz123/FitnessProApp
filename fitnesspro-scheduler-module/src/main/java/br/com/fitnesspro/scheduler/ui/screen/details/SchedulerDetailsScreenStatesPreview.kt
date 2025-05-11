@@ -5,16 +5,13 @@ import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.ui.state.SchedulerDetailsUIState
 import br.com.fitnesspro.to.TOScheduler
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
+import java.time.OffsetDateTime
 
 internal val toSchedulerAcademyMember = TOScheduler(
     academyMemberName = "Josnei Cardoso Neto",
     professionalName = "Gabriela da Silva",
-    scheduledDate = LocalDate.parse("2024-05-01"),
-    timeStart = LocalTime.parse("08:00"),
-    timeEnd = LocalTime.parse("09:00"),
+    dateTimeStart = OffsetDateTime.now(),
+    dateTimeEnd = OffsetDateTime.now().plusHours(1),
     situation = EnumSchedulerSituation.SCHEDULED,
     compromiseType = EnumCompromiseType.FIRST
 )
@@ -28,9 +25,8 @@ internal val academyMemberState = SchedulerDetailsUIState(
 internal val toSchedulerProfessional = TOScheduler(
     academyMemberName = "Josnei Cardoso Neto",
     professionalName = "Gabriela da Silva",
-    scheduledDate = LocalDate.parse("2024-05-01"),
-    timeStart = LocalTime.parse("08:00"),
-    timeEnd = LocalTime.parse("09:00"),
+    dateTimeStart = OffsetDateTime.now(),
+    dateTimeEnd = OffsetDateTime.now().plusHours(1),
     situation = EnumSchedulerSituation.SCHEDULED,
     compromiseType = EnumCompromiseType.FIRST
 )
@@ -48,29 +44,26 @@ internal val populatedListState = SchedulerDetailsUIState(
         TOScheduler(
             academyMemberName = "Josnei Cardoso Neto",
             professionalName = "Gabriela da Silva",
-            scheduledDate = LocalDate.parse("2024-05-01"),
-            timeStart = LocalTime.parse("08:00"),
-            timeEnd = LocalTime.parse("09:00"),
+            dateTimeStart = OffsetDateTime.now(),
+            dateTimeEnd = OffsetDateTime.now().plusHours(1),
             situation = EnumSchedulerSituation.SCHEDULED,
             compromiseType = EnumCompromiseType.FIRST
         ),
         TOScheduler(
             academyMemberName = "Josnei Cardoso Neto",
             professionalName = "Gabriela da Silva",
-            scheduledDate = LocalDate.parse("2024-05-01"),
-            timeStart = LocalTime.parse("12:00"),
-            timeEnd = LocalTime.parse("12:30"),
+            dateTimeStart = OffsetDateTime.now().plusHours(3),
+            dateTimeEnd = OffsetDateTime.now().plusHours(4),
             situation = EnumSchedulerSituation.CONFIRMED,
             compromiseType = EnumCompromiseType.RECURRENT
         ),
         TOScheduler(
             academyMemberName = "Josnei Cardoso Neto",
             professionalName = "Gabriela da Silva",
-            scheduledDate = LocalDate.parse("2024-05-01"),
-            timeStart = LocalTime.parse("15:00"),
-            timeEnd = LocalTime.parse("16:30"),
+            dateTimeStart = OffsetDateTime.now().plusHours(6),
+            dateTimeEnd = OffsetDateTime.now().plusHours(7),
             situation = EnumSchedulerSituation.CANCELLED,
-            canceledDate = LocalDateTime.parse("2024-05-01T10:15:30"),
+            canceledDate = OffsetDateTime.now().plusDays(1),
             compromiseType = EnumCompromiseType.RECURRENT
         )
     )

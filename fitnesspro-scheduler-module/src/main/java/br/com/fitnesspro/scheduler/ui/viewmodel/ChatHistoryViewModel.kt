@@ -155,6 +155,7 @@ class ChatHistoryViewModel @Inject constructor(
         return personRepository.getListTOPersonWithUserType(
             types = listOf(ACADEMY_MEMBER),
             simpleFilter = filter,
+            schedulerDate = null,
             personsForSchedule = false,
             authenticatedPersonId = authenticatedPerson.id!!
         ).flow
@@ -164,6 +165,7 @@ class ChatHistoryViewModel @Inject constructor(
         return personRepository.getListTOPersonWithUserType(
             types = listOf(NUTRITIONIST, PERSONAL_TRAINER),
             simpleFilter = filter,
+            schedulerDate = null,
             personsForSchedule = false,
             authenticatedPersonId = authenticatedPerson.id!!
         ).flow

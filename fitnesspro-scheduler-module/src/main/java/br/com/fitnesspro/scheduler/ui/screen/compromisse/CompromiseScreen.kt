@@ -296,7 +296,7 @@ private fun showSuccessMessage(
             EnumSchedulerType.UNIQUE -> {
                 context.getString(
                     R.string.compromise_screen_message_success_unique,
-                    state.toScheduler.scheduledDate!!.format(DATE)
+                    state.toScheduler.dateTimeStart!!.format(DATE)
                 )
             }
 

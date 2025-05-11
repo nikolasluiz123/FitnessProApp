@@ -39,6 +39,7 @@ import br.com.fitnesspro.scheduler.ui.screen.chat.callbacks.OnNavigateToChat
 import br.com.fitnesspro.scheduler.ui.screen.chat.enums.EnumChatHistoryScreenTags
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import java.time.ZoneId
 
 @Composable
 fun ChatHistoryItem(
@@ -138,21 +139,21 @@ fun ChatHistoryItem(
 
 internal fun getFormatedMessageDate(context: Context, date: Long): String {
     return when {
-        date.toLocalDate() == dateNow() -> {
+        date.toLocalDate() == dateNow(ZoneId.systemDefault()) -> {
             context.getString(
                 R.string.chat_message_date_now,
                 date.toLocalDateTime().format(EnumDateTimePatterns.TIME)
             )
         }
 
-        date.toLocalDate() == dateTimeNow().minusDays(1).toLocalDate() -> {
+        date.toLocalDate() == dateTimeNow(ZoneId.systemDefault()).minusDays(1).toLocalDate() -> {
             context.getString(
                 R.string.chat_message_date_yesterday,
                 date.toLocalDateTime().format(EnumDateTimePatterns.TIME)
             )
         }
 
-        date.toLocalDate().year == dateNow().year -> {
+        date.toLocalDate().year == dateNow(ZoneId.systemDefault()).year -> {
             date.toLocalDateTime().format(EnumDateTimePatterns.DAY_MONTH_DATE_TIME_SHORT)
         }
 

@@ -25,6 +25,7 @@ import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnDayClick
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.defaultDayStyle
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreenTags.SCHEDULER_SCREEN_DAY_CELL
 import java.time.LocalDate
+import java.time.ZoneId
 
 @Composable
 internal fun DayCell(
@@ -66,7 +67,7 @@ private fun DayCellPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
             DayCell(
-                day = dateNow(),
+                day = dateNow(ZoneId.systemDefault()),
                 style = defaultDayStyle
             )
         }
@@ -79,7 +80,7 @@ private fun DayCellPreviewLight() {
     FitnessProTheme {
         Surface {
             DayCell(
-                day = dateNow(),
+                day = dateNow(ZoneId.systemDefault()),
                 style = defaultDayStyle
             )
         }

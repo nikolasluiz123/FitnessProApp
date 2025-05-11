@@ -13,7 +13,16 @@ abstract class FitnessProCoroutineWorker(
 
     abstract suspend fun onWork()
 
+    open fun getMaxRetryTimeMillis(): Long = 60_000L
+
     override suspend fun doWork(): Result {
+        val startTime = inputData.getLong("startTime", System.currentTimeMillis())
+        val elapsed = System.currentTimeMillis() - startTime
+
+        if (elapsed > getMaxRetryTimeMillis()) {
+            return Result.failure()
+        }
+
         return try {
             onWork()
             Result.success()

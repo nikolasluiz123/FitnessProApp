@@ -102,8 +102,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
             academyMemberPersonId = "3",
             professionalPersonId = "1",
             scheduledDate = LocalDate.of(2025, 1, 19),
-            timeStart = LocalTime.of(13, 30),
-            timeEnd = LocalTime.of(14, 30),
+            dateTimeStart = LocalTime.of(13, 30),
+            dateTimeEnd = LocalTime.of(14, 30),
             situation = EnumSchedulerSituation.SCHEDULED,
             compromiseType = EnumCompromiseType.RECURRENT
         )
@@ -113,8 +113,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
             personId = newScheduler.academyMemberPersonId!!,
             userType = EnumUserType.ACADEMY_MEMBER,
             scheduledDate = newScheduler.scheduledDate!!,
-            start = newScheduler.timeStart!!,
-            end = newScheduler.timeEnd!!
+            start = newScheduler.dateTimeStart!!,
+            end = newScheduler.dateTimeEnd!!
         )
 
         conflict shouldBe true
@@ -129,8 +129,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
             academyMemberPersonId = "3",
             professionalPersonId = "1",
             scheduledDate = LocalDate.of(2025, 1, 19),
-            timeStart = LocalTime.of(9, 30),
-            timeEnd = LocalTime.of(10, 30),
+            dateTimeStart = LocalTime.of(9, 30),
+            dateTimeEnd = LocalTime.of(10, 30),
             situation = EnumSchedulerSituation.SCHEDULED,
             compromiseType = EnumCompromiseType.RECURRENT
         )
@@ -140,8 +140,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
             personId = newScheduler.academyMemberPersonId!!,
             userType = EnumUserType.ACADEMY_MEMBER,
             scheduledDate = newScheduler.scheduledDate!!,
-            start = newScheduler.timeStart!!,
-            end = newScheduler.timeEnd!!
+            start = newScheduler.dateTimeStart!!,
+            end = newScheduler.dateTimeEnd!!
         )
 
         conflict shouldBe true
@@ -156,8 +156,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
             academyMemberPersonId = "3",
             professionalPersonId = "1",
             scheduledDate = LocalDate.of(2025, 1, 24),
-            timeStart = LocalTime.of(9, 30),
-            timeEnd = LocalTime.of(10, 30),
+            dateTimeStart = LocalTime.of(9, 30),
+            dateTimeEnd = LocalTime.of(10, 30),
             situation = EnumSchedulerSituation.SCHEDULED,
             compromiseType = EnumCompromiseType.RECURRENT
         )
@@ -167,8 +167,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
             personId = newScheduler.academyMemberPersonId!!,
             userType = EnumUserType.ACADEMY_MEMBER,
             scheduledDate = newScheduler.scheduledDate!!,
-            start = newScheduler.timeStart!!,
-            end = newScheduler.timeEnd!!
+            start = newScheduler.dateTimeStart!!,
+            end = newScheduler.dateTimeEnd!!
         )
 
         conflict shouldBe false
@@ -246,8 +246,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
                 academyMemberPersonId = persons[2].id,
                 professionalPersonId = persons[0].id,
                 scheduledDate = LocalDate.of(2025, 1, 18),
-                timeStart = LocalTime.of(10, 0),
-                timeEnd = LocalTime.of(11, 30),
+                dateTimeStart = LocalTime.of(10, 0),
+                dateTimeEnd = LocalTime.of(11, 30),
                 situation = EnumSchedulerSituation.CONFIRMED,
                 compromiseType = EnumCompromiseType.RECURRENT
             ),
@@ -256,8 +256,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
                 academyMemberPersonId = persons[2].id,
                 professionalPersonId = persons[0].id,
                 scheduledDate = LocalDate.of(2025, 1, 19),
-                timeStart = LocalTime.of(10, 0),
-                timeEnd = LocalTime.of(11, 30),
+                dateTimeStart = LocalTime.of(10, 0),
+                dateTimeEnd = LocalTime.of(11, 30),
                 situation = EnumSchedulerSituation.SCHEDULED,
                 compromiseType = EnumCompromiseType.RECURRENT
             ),
@@ -266,8 +266,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
                 academyMemberPersonId = persons[2].id,
                 professionalPersonId = persons[1].id,
                 scheduledDate = LocalDate.of(2025, 1, 19),
-                timeStart = LocalTime.of(13, 0),
-                timeEnd = LocalTime.of(14, 30),
+                dateTimeStart = LocalTime.of(13, 0),
+                dateTimeEnd = LocalTime.of(14, 30),
                 situation = EnumSchedulerSituation.SCHEDULED,
                 compromiseType = EnumCompromiseType.RECURRENT
             ),
@@ -276,8 +276,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
                 academyMemberPersonId = persons[2].id,
                 professionalPersonId = persons[1].id,
                 scheduledDate = LocalDate.of(2025, 1, 19),
-                timeStart = LocalTime.of(13, 0),
-                timeEnd = LocalTime.of(14, 30),
+                dateTimeStart = LocalTime.of(13, 0),
+                dateTimeEnd = LocalTime.of(14, 30),
                 situation = EnumSchedulerSituation.SCHEDULED,
                 compromiseType = EnumCompromiseType.RECURRENT,
                 active = false
@@ -287,8 +287,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
                 academyMemberPersonId = persons[2].id,
                 professionalPersonId = persons[0].id,
                 scheduledDate = LocalDate.of(2025, 1, 19),
-                timeStart = LocalTime.of(10, 0),
-                timeEnd = LocalTime.of(11, 30),
+                dateTimeStart = LocalTime.of(10, 0),
+                dateTimeEnd = LocalTime.of(11, 30),
                 situation = EnumSchedulerSituation.CANCELLED,
                 compromiseType = EnumCompromiseType.RECURRENT
             ),
@@ -297,8 +297,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
                 academyMemberPersonId = persons[2].id,
                 professionalPersonId = persons[0].id,
                 scheduledDate = LocalDate.of(2025, 2, 19),
-                timeStart = LocalTime.of(10, 0),
-                timeEnd = LocalTime.of(11, 30),
+                dateTimeStart = LocalTime.of(10, 0),
+                dateTimeEnd = LocalTime.of(11, 30),
                 situation = EnumSchedulerSituation.SCHEDULED,
                 compromiseType = EnumCompromiseType.RECURRENT
             ),
@@ -307,8 +307,8 @@ class SaveSchedulerUseCaseIntegrationRoomTests {
                 academyMemberPersonId = persons[2].id,
                 professionalPersonId = persons[0].id,
                 scheduledDate = LocalDate.of(2025, 2, 20),
-                timeStart = LocalTime.of(10, 0),
-                timeEnd = LocalTime.of(11, 30),
+                dateTimeStart = LocalTime.of(10, 0),
+                dateTimeEnd = LocalTime.of(11, 30),
                 situation = EnumSchedulerSituation.SCHEDULED,
                 compromiseType = EnumCompromiseType.RECURRENT
             ),

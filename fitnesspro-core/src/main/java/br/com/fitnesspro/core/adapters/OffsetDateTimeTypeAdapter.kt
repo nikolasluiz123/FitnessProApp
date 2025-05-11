@@ -7,15 +7,15 @@ import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 import java.lang.reflect.Type
-import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
-class LocalTimeTypeAdapter : JsonSerializer<LocalTime?>, JsonDeserializer<LocalTime?> {
+class OffsetDateTimeTypeAdapter : JsonSerializer<OffsetDateTime?>, JsonDeserializer<OffsetDateTime?> {
 
-    private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME
+    private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
     override fun serialize(
-        src: LocalTime?,
+        src: OffsetDateTime?,
         typeOfSrc: Type?,
         context: JsonSerializationContext?
     ): JsonElement {
@@ -26,7 +26,7 @@ class LocalTimeTypeAdapter : JsonSerializer<LocalTime?>, JsonDeserializer<LocalT
         json: JsonElement?,
         typeOfT: Type?,
         context: JsonDeserializationContext?
-    ): LocalTime? {
-        return LocalTime.parse(json?.asString, formatter)
+    ): OffsetDateTime? {
+        return OffsetDateTime.parse(json?.asString, formatter)
     }
 }

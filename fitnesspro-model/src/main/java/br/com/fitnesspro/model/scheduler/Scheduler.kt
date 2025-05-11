@@ -9,9 +9,7 @@ import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.Person
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.util.UUID
 
 @Entity(
@@ -46,14 +44,12 @@ data class Scheduler(
     var academyMemberPersonId: String? = null,
     @ColumnInfo(name = "professional_person_id", index = true)
     var professionalPersonId: String? = null,
-    @ColumnInfo(name = "scheduled_date")
-    var scheduledDate: LocalDate? = null,
-    @ColumnInfo(name = "time_start")
-    var timeStart: LocalTime? = null,
-    @ColumnInfo(name = "time_end")
-    var timeEnd: LocalTime? = null,
+    @ColumnInfo(name = "date_time_start")
+    var dateTimeStart: OffsetDateTime? = null,
+    @ColumnInfo(name = "date_time_end")
+    var dateTimeEnd: OffsetDateTime? = null,
     @ColumnInfo(name = "canceled_date")
-    var canceledDate: LocalDateTime? = null,
+    var canceledDate: OffsetDateTime? = null,
     @ColumnInfo(name = "cancellation_person_id")
     var cancellationPersonId: String? = null,
     var situation: EnumSchedulerSituation? = null,

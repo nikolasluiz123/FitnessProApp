@@ -20,6 +20,7 @@ import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.tuple.PersonTuple
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 
 
 class PersonRepository(
@@ -184,6 +185,7 @@ class PersonRepository(
     fun getListTOPersonWithUserType(
         types: List<EnumUserType>,
         simpleFilter: String,
+        schedulerDate: LocalDate?,
         personsForSchedule: Boolean,
         authenticatedPersonId: String
     ): Pager<Int, PersonTuple> {
@@ -196,6 +198,7 @@ class PersonRepository(
                 personDAO.getPersonsWithUserType(
                     types = types,
                     simpleFilter = simpleFilter,
+                    schedulerDate = schedulerDate,
                     personsForSchedule = personsForSchedule,
                     authenticatedPersonId = authenticatedPersonId
                 )

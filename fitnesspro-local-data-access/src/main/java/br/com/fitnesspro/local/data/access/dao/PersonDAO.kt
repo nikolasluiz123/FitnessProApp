@@ -12,6 +12,7 @@ import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.tuple.PersonTuple
+import java.time.LocalDate
 import java.util.StringJoiner
 
 @Dao
@@ -26,8 +27,9 @@ abstract class PersonDAO: IntegratedMaintenanceDAO<Person>() {
     fun getPersonsWithUserType(
         types: List<EnumUserType>,
         simpleFilter: String,
+        schedulerDate: LocalDate?,
         personsForSchedule: Boolean,
-        authenticatedPersonId: String
+        authenticatedPersonId: String,
     ): PagingSource<Int, PersonTuple> {
         val params = mutableListOf<Any>()
 
@@ -64,9 +66,15 @@ abstract class PersonDAO: IntegratedMaintenanceDAO<Person>() {
                 add("               or ")
                 add("               pat_auth_person.time_start >= academy_time.time_end ")
                 add("           ) ")
-                add("    )   ")
 
                 params.add(authenticatedPersonId)
+
+                schedulerDate?.dayOfWeek?.let {
+                    add("       and academy_time.day_week = ? ")
+                    params.add(it.name)
+                }
+
+                add("    )   ")
             }
 
             if (simpleFilter.isNotEmpty()) {

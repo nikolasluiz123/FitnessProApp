@@ -141,8 +141,8 @@ class SchedulerScreenStateUITests: BaseAuthenticatedUITest() {
             professionalPersonId = toPersons[0].id!!,
             professionalType = toPersons[0].user?.type!!,
             scheduledDate = dateNow(),
-            timeStart = LocalTime.of(13, 0),
-            timeEnd = LocalTime.of(14, 0),
+            dateTimeStart = LocalTime.of(13, 0),
+            dateTimeEnd = LocalTime.of(14, 0),
             situation = EnumSchedulerSituation.SCHEDULED,
             compromiseType = EnumCompromiseType.FIRST
         )

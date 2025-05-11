@@ -6,8 +6,7 @@ import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.ui.state.CompromiseUIState
 import br.com.fitnesspro.to.TOScheduler
 import br.com.fitnesspro.tuple.PersonTuple
-import java.time.LocalDateTime
-import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.util.UUID
 
 internal val defaultPersonTuple = PersonTuple(
@@ -32,8 +31,8 @@ internal val compromiseAcademyMemberEditionState = CompromiseUIState(
         id = UUID.randomUUID().toString(),
         professionalName = "Gabriela da Silva",
         professionalType = EnumUserType.NUTRITIONIST,
-        timeStart = LocalTime.parse("08:00"),
-        timeEnd = LocalTime.parse("09:00"),
+        dateTimeStart = OffsetDateTime.now(),
+        dateTimeEnd = OffsetDateTime.now().plusHours(1),
         situation = CONFIRMED,
         observation = "Muito bem observado"
     )
@@ -49,10 +48,10 @@ internal val compromiseAcademyMemberCancelatedState = CompromiseUIState(
         id = UUID.randomUUID().toString(),
         professionalName = "Gabriela da Silva",
         professionalType = EnumUserType.NUTRITIONIST,
-        timeStart = LocalTime.parse("08:00"),
-        timeEnd = LocalTime.parse("09:00"),
+        dateTimeStart = OffsetDateTime.now(),
+        dateTimeEnd = OffsetDateTime.now().plusHours(1),
         situation = CANCELLED,
-        canceledDate = LocalDateTime.now(),
+        canceledDate = OffsetDateTime.now().plusHours(2),
         observation = "Muito bem observado"
     )
 )
@@ -64,8 +63,8 @@ internal val compromisePersonalInclusionState = CompromiseUIState(
     toScheduler = TOScheduler(
         professionalName = "Gabriela da Silva",
         professionalType = EnumUserType.PERSONAL_TRAINER,
-        timeStart = LocalTime.parse("08:00"),
-        timeEnd = LocalTime.parse("09:00"),
+        dateTimeStart = OffsetDateTime.now(),
+        dateTimeEnd = OffsetDateTime.now().plusHours(1),
         situation = CONFIRMED
     )
 )

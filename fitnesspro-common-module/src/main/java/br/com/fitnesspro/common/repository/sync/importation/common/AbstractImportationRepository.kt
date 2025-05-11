@@ -15,6 +15,7 @@ import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO: MaintenanceDAO<MODEL>>(context: Context)
     : AbstractSyncRepository<DAO>(context) {
@@ -38,7 +39,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
 
         try {
             do {
-                clientStartDateTime = dateTimeNow()
+                clientStartDateTime = dateTimeNow(ZoneOffset.UTC)
 
                 response = getImportationData(serviceToken, importFilter, pageInfos)
 
@@ -116,7 +117,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
             logPackageId = logPackageId,
             dto = UpdatableExecutionLogPackageInfosDTO(
                 clientExecutionStart = clientStartDateTime,
-                clientExecutionEnd = dateTimeNow(),
+                clientExecutionEnd = dateTimeNow(ZoneOffset.UTC),
                 error = exception.stackTraceToString(),
             )
         )
@@ -160,7 +161,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
             dto = UpdatableExecutionLogPackageInfosDTO(
                 insertedItemsCount = insertionList.size,
                 updatedItemsCount = updateList.size,
-                clientExecutionEnd = dateTimeNow()
+                clientExecutionEnd = dateTimeNow(ZoneOffset.UTC)
             )
         )
     }

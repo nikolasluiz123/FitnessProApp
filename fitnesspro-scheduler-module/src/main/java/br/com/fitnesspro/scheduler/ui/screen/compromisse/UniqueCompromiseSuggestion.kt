@@ -114,8 +114,8 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
             label = stringResource(R.string.compromise_screen_label_hour),
             value = stringResource(
                 R.string.compromise_screen_label_hour_value,
-                state.toScheduler.timeStart!!.format(TIME),
-                state.toScheduler.timeEnd!!.format(TIME)
+                state.toScheduler.dateTimeStart!!.format(TIME),
+                state.toScheduler.dateTimeEnd!!.format(TIME)
             )
         )
 

@@ -36,13 +36,22 @@ class SaveRecurrentCompromiseUseCase(
 
             val professional = personRepository.getTOPersonById(toScheduler.professionalPersonId!!)
 
-            val schedules = scheduleDates.map {
+            val schedules = scheduleDates.map { date ->
+                val newStart = toScheduler.dateTimeStart!!
+                    .withYear(date.year)
+                    .withMonth(date.monthValue)
+                    .withDayOfMonth(date.dayOfMonth)
+
+                val newEnd = toScheduler.dateTimeEnd!!
+                    .withYear(date.year)
+                    .withMonth(date.monthValue)
+                    .withDayOfMonth(date.dayOfMonth)
+
                 TOScheduler(
                     academyMemberPersonId = toScheduler.academyMemberPersonId,
                     professionalPersonId = toScheduler.professionalPersonId,
-                    scheduledDate = it,
-                    timeStart = toScheduler.timeStart,
-                    timeEnd = toScheduler.timeEnd,
+                    dateTimeStart = newStart,
+                    dateTimeEnd = newEnd,
                     professionalType = professional.user?.type!!,
                     situation = EnumSchedulerSituation.SCHEDULED,
                     compromiseType = EnumCompromiseType.RECURRENT,
@@ -144,8 +153,8 @@ class SaveRecurrentCompromiseUseCase(
             config.dateStart,
             config.dateEnd,
             toScheduler.academyMemberPersonId,
-            toScheduler.timeStart,
-            toScheduler.timeEnd
+            toScheduler.dateTimeStart,
+            toScheduler.dateTimeEnd
         )
 
         if (requiredFields.any { it == null }) return null
@@ -175,15 +184,14 @@ class SaveRecurrentCompromiseUseCase(
                 schedulerId = scheduler.id,
                 personId = scheduler.academyMemberPersonId!!,
                 userType = member.user?.type!!,
-                scheduledDate = scheduler.scheduledDate!!,
-                start = scheduler.timeStart!!,
-                end = scheduler.timeEnd!!
+                start = scheduler.dateTimeStart!!,
+                end = scheduler.dateTimeEnd!!
             )
         }
 
         return if (conflicts.isNotEmpty()) {
             val formatedDates = conflicts.joinToString(separator = ", \n") {
-                it.scheduledDate!!.format(EnumDateTimePatterns.DATE)
+                it.dateTimeStart!!.format(EnumDateTimePatterns.DATE)
             }
 
             val message = context.getString(

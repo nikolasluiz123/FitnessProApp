@@ -259,8 +259,8 @@ class MemberCompromiseSuggestionScreenActionsUITests: BaseAuthenticatedUITest() 
             professionalPersonId = toPersons[0].id!!,
             professionalType = toPersons[0].user?.type!!,
             scheduledDate = dateNow().plusDays(1),
-            timeStart = LocalTime.of(7, 0),
-            timeEnd = LocalTime.of(8, 0),
+            dateTimeStart = LocalTime.of(7, 0),
+            dateTimeEnd = LocalTime.of(8, 0),
             situation = EnumSchedulerSituation.SCHEDULED,
             compromiseType = EnumCompromiseType.FIRST
         )
