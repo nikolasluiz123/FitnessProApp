@@ -24,7 +24,7 @@ class DatabaseModule {
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room
             .databaseBuilder(context, AppDatabase::class.java, "fitnesspro.db")
-            .fallbackToDestructiveMigration() // TODO - Remover quando estiver em 'Producao'
+            .fallbackToDestructiveMigration(true) // TODO - Remover quando estiver em 'Producao'
             .build()
     }
 

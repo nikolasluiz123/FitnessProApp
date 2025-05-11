@@ -45,7 +45,7 @@ data class Device(
 
     var active: Boolean = true,
 
-    @ColumnInfo(name = "person_id")
+    @ColumnInfo(name = "person_id", index = true)
     var personId: String? = null,
 
     @ColumnInfo(name = "firebase_messaging_token")

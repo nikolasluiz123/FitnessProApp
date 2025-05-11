@@ -50,7 +50,7 @@ data class Scheduler(
     var dateTimeEnd: OffsetDateTime? = null,
     @ColumnInfo(name = "canceled_date")
     var canceledDate: OffsetDateTime? = null,
-    @ColumnInfo(name = "cancellation_person_id")
+    @ColumnInfo(name = "cancellation_person_id", index = true)
     var cancellationPersonId: String? = null,
     var situation: EnumSchedulerSituation? = null,
     @ColumnInfo(name = "compromise_type")
