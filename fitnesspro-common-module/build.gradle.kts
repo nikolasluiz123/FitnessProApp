@@ -112,16 +112,6 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging)
 
-    testRuntimeOnly(libs.junit.jupter.engine)
-    testImplementation(libs.junit.jupter.api)
-    testImplementation(libs.kotest.assertion)
-    testImplementation(libs.hilt.android.testing)
-    testImplementation(libs.mockk)
-    testImplementation(libs.androidx.test.core)
-    testImplementation(libs.androidx.junit)
-    testImplementation(libs.androidx.ui.test.junit4)
-    kspTest(libs.hilt.compiler)
-
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

@@ -22,11 +22,6 @@ kspVersion = "2.1.20-2.0.0"
 agp = "8.9.2"
 kotlin = "2.1.20"
 coreKtx = "1.16.0"
-junit5 = "5.11.4"
-junit4Version = "4.13.2"
-junitVersion = "1.2.1"
-testCoreVersion = "1.6.1"
-testRunnerVersion = "1.6.2"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
 composeBom = "2025.04.01"
@@ -38,9 +33,6 @@ argon2Version = "1.6.0"
 javafaker = "1.0.2"
 paging = "3.3.6"
 kotestPluginVersion = "5.0.2"
-kotestVersion = "5.9.1"
-mockkVersion = "1.13.16"
-navigationTestVersion = "2.8.9"
 espressoVersion = "3.6.1"
 firebaseBom = "33.13.0"
 gmsVersion = "4.4.2"
@@ -73,19 +65,11 @@ hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltVersion" }
 androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "androidXHiltCompilerVersion" }
 dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
-hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hiltVersion" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWorkVersion" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit-jupter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit5" }
-junit-jupter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit5" }
-androidx-test-core = { group = "androidx.test", name = "core-ktx", version.ref = "testCoreVersion" }
-androidx-junit = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitVersion" }
-androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunnerVersion" }
-androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationTestVersion" }
 androidx-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoVersion" }
-junit4 = { group = "junit", name = "junit", version.ref = "junit4Version" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -94,7 +78,6 @@ androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
@@ -104,16 +87,11 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
 
 kotlin-reflection = { group = "org.jetbrains.kotlin", name="kotlin-reflect", version.ref = "kotlin" }
 argon2 = { group = "com.lambdapioneer.argon2kt", name = "argon2kt", version.ref = "argon2Version"}
 
 java-faker = { group = "com.github.javafaker", name = "javafaker", version.ref = "javafaker" }
-
-kotest-assertion = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotestVersion" }
-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockkVersion" }
-mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockkVersion" }
 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }

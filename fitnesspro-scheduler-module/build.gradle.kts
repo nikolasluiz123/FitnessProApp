@@ -92,21 +92,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
-    testRuntimeOnly(libs.junit.jupter.engine)
-    testImplementation(libs.junit.jupter.api)
-    testImplementation(libs.kotest.assertion)
-    testImplementation(libs.hilt.android.testing)
-    testImplementation(libs.mockk)
-    testImplementation(libs.androidx.test.core)
-    testImplementation(libs.androidx.junit)
-    testImplementation(libs.androidx.ui.test.junit4)
-    kspTest(libs.hilt.compiler)
-
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.hilt.android.testing)
-    androidTestImplementation(libs.mockk.android)
-    kspAndroidTest(libs.hilt.compiler)
-
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

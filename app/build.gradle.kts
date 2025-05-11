@@ -117,20 +117,4 @@ dependencies {
     debugImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.junit4)
-    androidTestImplementation(libs.hilt.android.testing)
-    androidTestImplementation(libs.hilt.navigation.compose)
-    kspAndroidTest(libs.hilt.compiler)
-    androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.room.testing)
-    androidTestImplementation(libs.kotest.assertion)
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.navigation.testing)
-    androidTestImplementation(libs.androidx.espresso)
-
 }
