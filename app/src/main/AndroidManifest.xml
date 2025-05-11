@@ -6,10 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <instrumentation
-        android:name="br.com.fitnesspro.runner.FitnessProCustomTestRunner"
-        android:targetPackage="br.com.fitnesspro" />
-
     <application
         android:name=".FitnessProApplication"
         android:allowBackup="true"
@@ -31,21 +27,21 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:enabled="true"
             android:theme="@style/Theme.FitnessPro"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
-                <data android:scheme="app" android:host="fitnesspro" />
-
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW"/>
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="app" android:host="fitnesspro" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".AndroidTestsActivity" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"
