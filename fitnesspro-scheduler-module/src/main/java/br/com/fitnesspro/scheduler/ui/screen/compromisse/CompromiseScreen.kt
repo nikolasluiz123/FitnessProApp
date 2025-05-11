@@ -2,6 +2,7 @@ package br.com.fitnesspro.scheduler.ui.screen.compromisse
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
@@ -199,22 +200,47 @@ fun CompromiseScreen(
     ) { padding ->
         val scrollState = rememberScrollState()
 
-        Box(
+        Column(
             Modifier
                 .padding(padding)
                 .consumeWindowInsets(padding)
                 .fillMaxSize()
-                .verticalScroll(scrollState)
         ) {
             FitnessProLinearProgressIndicator(state.showLoading)
 
-            FitnessProMessageDialog(state = state.messageDialogState)
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+            ) {
+                FitnessProMessageDialog(state = state.messageDialogState)
 
-            when (state.userType) {
-                EnumUserType.PERSONAL_TRAINER -> {
-                    if (state.recurrent) {
-                        RecurrentCompromise(state)
-                    } else {
+                when (state.userType) {
+                    EnumUserType.PERSONAL_TRAINER -> {
+                        if (state.recurrent) {
+                            RecurrentCompromise(state)
+                        } else {
+                            UniqueCompromise(
+                                state = state,
+                                onKeyboardDone = {
+                                    keyboardController?.hide()
+                                    state.onToggleLoading()
+                                    onSaveCompromiseClick?.onExecute {
+                                        state.onToggleLoading()
+                                        showSuccessMessage(
+                                            enumSchedulerType = it,
+                                            state = state,
+                                            coroutineScope = coroutineScope,
+                                            snackbarHostState = snackbarHostState,
+                                            context = context
+                                        )
+                                    }
+                                }
+                            )
+                        }
+                    }
+
+                    EnumUserType.NUTRITIONIST -> {
                         UniqueCompromise(
                             state = state,
                             onKeyboardDone = {
@@ -233,51 +259,32 @@ fun CompromiseScreen(
                             }
                         )
                     }
-                }
 
-                EnumUserType.NUTRITIONIST -> {
-                    UniqueCompromise(
-                        state = state,
-                        onKeyboardDone = {
-                            keyboardController?.hide()
-                            state.onToggleLoading()
-                            onSaveCompromiseClick?.onExecute {
+                    EnumUserType.ACADEMY_MEMBER -> {
+                        UniqueCompromiseSuggestion(
+                            state = state,
+                            onKeyboardDone = {
+                                keyboardController?.hide()
                                 state.onToggleLoading()
-                                showSuccessMessage(
-                                    enumSchedulerType = it,
-                                    state = state,
-                                    coroutineScope = coroutineScope,
-                                    snackbarHostState = snackbarHostState,
-                                    context = context
-                                )
+                                onSaveCompromiseClick?.onExecute {
+                                    state.onToggleLoading()
+                                    showSuccessMessage(
+                                        enumSchedulerType = it,
+                                        state = state,
+                                        coroutineScope = coroutineScope,
+                                        snackbarHostState = snackbarHostState,
+                                        context = context
+                                    )
+                                }
                             }
-                        }
-                    )
-                }
+                        )
+                    }
 
-                EnumUserType.ACADEMY_MEMBER -> {
-                    UniqueCompromiseSuggestion(
-                        state = state,
-                        onKeyboardDone = {
-                            keyboardController?.hide()
-                            state.onToggleLoading()
-                            onSaveCompromiseClick?.onExecute {
-                                state.onToggleLoading()
-                                showSuccessMessage(
-                                    enumSchedulerType = it,
-                                    state = state,
-                                    coroutineScope = coroutineScope,
-                                    snackbarHostState = snackbarHostState,
-                                    context = context
-                                )
-                            }
-                        }
-                    )
+                    else -> {}
                 }
-
-                else -> {}
             }
         }
+
     }
 }
 
