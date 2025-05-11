@@ -40,6 +40,12 @@ jobs:
           VERSION_NAME=$(grep "versionName" app/build.gradle.kts | head -n1 | sed -E 's/.*versionName\s*=\s*\"([^\"]+)\".*/\1/')
           echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
 
+      - name: Configure Gradle for GitHub Packages
+        run: |
+          mkdir -p ~/.gradle
+          echo "gpr.user=${{ github.actor }}" >> ~/.gradle/gradle.properties
+          echo "gpr.key=${{ secrets.PACKAGES_TOKEN }}" >> ~/.gradle/gradle.properties
+
       - name: Build Debug APK
         run: ./gradlew assembleDebug
 
