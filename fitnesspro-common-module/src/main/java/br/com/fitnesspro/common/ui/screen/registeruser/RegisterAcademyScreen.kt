@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -27,8 +28,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +47,7 @@ import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademy
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademyTestTags.REGISTER_ACADEMY_SCREEN_FIELD_DAY_WEEK
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademyTestTags.REGISTER_ACADEMY_SCREEN_FIELD_END
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademyTestTags.REGISTER_ACADEMY_SCREEN_FIELD_START
+import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademyTestTags.REGISTER_ACADEMY_SCREEN_KEYBOARD_SAVE
 import br.com.fitnesspro.common.ui.state.RegisterAcademyUIState
 import br.com.fitnesspro.common.ui.viewmodel.RegisterAcademyViewModel
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
@@ -147,6 +151,7 @@ fun RegisterAcademyScreen(
         }
     ) { paddingValues ->
         val scrollState = rememberScrollState()
+        val keyboardController = LocalSoftwareKeyboardController.current
 
         ConstraintLayout(
             Modifier
@@ -242,6 +247,21 @@ fun RegisterAcademyScreen(
                     field = state.end,
                     fieldLabel = stringResource(R.string.register_user_screen_label_end),
                     timePickerTitle = stringResource(R.string.register_academy_label_end),
+                    imeAction = ImeAction.Done,
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            keyboardController?.hide()
+                            state.onToggleLoading()
+
+                            Firebase.analytics.logButtonClick(REGISTER_ACADEMY_SCREEN_KEYBOARD_SAVE)
+                            onSaveAcademyClick?.onExecute(
+                                onSaved = {
+                                    state.onToggleLoading()
+                                    showSaveSuccessMessage(coroutineScope, snackbarHostState, context)
+                                }
+                            )
+                        }
+                    ),
                     modifier = Modifier
                         .testTag(REGISTER_ACADEMY_SCREEN_FIELD_END.name)
                         .constrainAs(endRef) {
