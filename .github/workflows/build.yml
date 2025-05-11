@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Build and Release APKs
+    name: Build APKs
     runs-on: ubuntu-latest
 
     steps:
@@ -23,6 +24,9 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Fix Gradle Wrapper Permissions
+        run: chmod +x ./gradlew
+
       - name: Decode Keystore
         if: env.KEYSTORE_BASE64 != ''
         run: |
@@ -33,7 +37,7 @@ jobs:
       - name: Extract Version Name
         id: version
         run: |
-          VERSION_NAME=$(grep "versionName" app/build.gradle.kts | head -n1 | sed -E 's/.*versionName\s*=\s*"([^"]+)".*/\1/')
+          VERSION_NAME=$(grep "versionName" app/build.gradle.kts | head -n1 | sed -E 's/.*versionName\s*=\s*\"([^\"]+)\".*/\1/')
           echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
 
       - name: Build Debug APK
@@ -52,16 +56,39 @@ jobs:
           -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
           -Pandroid.injected.signing.key.password=$KEY_PASSWORD
 
-      - name: Collect APKs
+      - name: Upload APKs as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-apks
+          path: |
+            $(find . -name '*debug*.apk' | head -n1)
+            $(find . -name '*release*.apk' | head -n1)
+
+  release:
+    name: Create Tag and GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Download built APKs
+        uses: actions/download-artifact@v4
+        with:
+          name: built-apks
+
+      - name: Extract Version Name
+        id: version
         run: |
-          mkdir output
-          cp $(find . -name '*debug*.apk' | head -n1) output/app-debug.apk
-          cp $(find . -name '*release*.apk' | head -n1) output/app-release.apk
+          VERSION_NAME=$(grep "versionName" app/build.gradle.kts | head -n1 | sed -E 's/.*versionName\s*=\s*\"([^\"]+)\".*/\1/')
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
 
       - name: Create tag from versionName
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          git fetch --tags
           git tag "v${{ steps.version.outputs.version_name }}"
           git push origin "v${{ steps.version.outputs.version_name }}"
 
@@ -71,7 +98,6 @@ jobs:
           tag_name: v${{ steps.version.outputs.version_name }}
           name: v${{ steps.version.outputs.version_name }}
           files: |
-            output/app-debug.apk
-            output/app-release.apk
+            **/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
