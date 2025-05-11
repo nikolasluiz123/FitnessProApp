@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -85,6 +86,7 @@ fun RegisterUserScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(
         topBar = {
@@ -111,6 +113,7 @@ fun RegisterUserScreen(
                             iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             onClick = {
+                                keyboardController?.hide()
                                 state.onToggleLoading()
                                 Firebase.analytics.logButtonClick(REGISTER_USER_SCREEN_FAB_SAVE)
                                 onSaveUserClick?.onExecute(

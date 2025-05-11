@@ -95,6 +95,7 @@ fun RegisterAcademyScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(
         topBar = {
@@ -113,6 +114,7 @@ fun RegisterAcademyScreen(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         onClick = {
+                            keyboardController?.hide()
                             state.onToggleLoading()
 
                             Firebase.analytics.logButtonClick(REGISTER_ACADEMY_SCREEN_FAB_SAVE)

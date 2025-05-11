@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,6 +71,7 @@ fun SchedulerConfigScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(
         topBar = {
@@ -85,6 +87,7 @@ fun SchedulerConfigScreen(
                     state.onToggleLoading()
                     Firebase.analytics.logButtonClick(SCHEDULER_CONFIG_SCREEN_FAB_SAVE)
                     onSaveClick?.onExecute {
+                        keyboardController?.hide()
                         state.onToggleLoading()
                         showSuccessMessage(
                             coroutineScope = coroutineScope,

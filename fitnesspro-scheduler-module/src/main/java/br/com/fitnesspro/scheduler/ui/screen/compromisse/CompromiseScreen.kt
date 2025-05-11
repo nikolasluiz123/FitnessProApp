@@ -177,6 +177,7 @@ fun CompromiseScreen(
                             iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             onClick = {
+                                keyboardController?.hide()
                                 state.onToggleLoading()
                                 Firebase.analytics.logButtonClick(COMPROMISE_SCREEN_FAB_SAVE)
                                 onSaveCompromiseClick?.onExecute {
