@@ -135,8 +135,10 @@ fun Scheduler.getSchedulerDTO(
     dateEnd: LocalDate?,
     dayWeeks: List<DayOfWeek>
 ): SchedulerDTO {
+    val enumSchedulerType = EnumSchedulerType.valueOf(schedulerType)
+
     return SchedulerDTO(
-        id = id,
+        id = if (enumSchedulerType == EnumSchedulerType.RECURRENT) null else id,
         academyMemberPersonId = academyMemberPersonId,
         professionalPersonId = professionalPersonId,
         dateTimeStart = dateTimeStart,
@@ -147,9 +149,9 @@ fun Scheduler.getSchedulerDTO(
         compromiseType = getServiceCompromiseType(compromiseType!!),
         observation = observation,
         active = active,
-        type = EnumSchedulerType.valueOf(schedulerType),
+        type = enumSchedulerType,
         recurrentConfig = getRecurrentConfigDTO(
-            schedulerType = EnumSchedulerType.valueOf(schedulerType),
+            schedulerType = enumSchedulerType,
             dateStart = dateStart,
             dateEnd = dateEnd,
             dayWeeks = dayWeeks

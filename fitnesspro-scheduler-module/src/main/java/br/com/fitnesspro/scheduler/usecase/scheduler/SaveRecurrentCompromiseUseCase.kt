@@ -69,10 +69,12 @@ class SaveRecurrentCompromiseUseCase(
         return validations
     }
 
-    private fun validateCommonInfosRecurrentCompromise(toScheduler: TOScheduler): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
+    private fun validateCommonInfosRecurrentCompromise(
+        toScheduler: TOScheduler
+    ): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
         val validationResults = mutableListOf(
             validateMember(toScheduler),
-            validateHourStart(toScheduler),
+            validateHourStart(toScheduler, true),
             validateHourEnd(toScheduler),
             validateObservation(toScheduler),
             validateHourPeriod(toScheduler)

@@ -45,6 +45,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,7 +70,7 @@ fun FitnessProDatePickerDialog(
                 ),
                 onClickListener = {
                     datePickerState.selectedDateMillis?.let {
-                        val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                        val localDate = Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate()
                         onConfirm(localDate)
                     }
                 }
@@ -152,11 +153,6 @@ fun TimePickerDialog(
                         timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onSurface,
                         timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                         timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-//                        periodSelectorBorderColor = GREY_200,
-//                        periodSelectorSelectedContentColor = GREY_800,
-//                        periodSelectorSelectedContainerColor = GREY_200,
-//                        clockDialSelectedContentColor = GREY_300,
-//                        clockDialColor = GREY_300
                     )
                 )
 

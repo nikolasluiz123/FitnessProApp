@@ -140,19 +140,27 @@ class SchedulerRepository(
             schedulerDAO.insertBatch(schedulers)
             workoutDAO.insert(workout)
             workoutGroupDAO.insertBatch(workoutGroups)
-        }
 
-        schedulerWebClient.saveScheduler(
-            token = getValidToken(),
-            scheduler = schedulers.first(),
-            schedulerType = EnumSchedulerType.RECURRENT.name,
-            dateStart = workout.dateStart,
-            dateEnd = workout.dateEnd,
-            dayWeeks = workoutGroups.map { it.dayWeek!! }
-        )
+            val response = schedulerWebClient.saveScheduler(
+                token = getValidToken(),
+                scheduler = schedulers.first(),
+                schedulerType = EnumSchedulerType.RECURRENT.name,
+                dateStart = workout.dateStart,
+                dateEnd = workout.dateEnd,
+                dayWeeks = workoutGroups.map { it.dayWeek!! }
+            )
+
+            if (response.success) {
+                val transmittedSchedulers = schedulers.map {
+                    it.copy(transmissionState = EnumTransmissionState.TRANSMITTED)
+                }
+
+                schedulerDAO.updateBatch(transmittedSchedulers)
+            }
+        }
     }
 
-    suspend fun hasSchedulerWithId(id: String): Boolean = withContext(IO) {
+    suspend fun hasSchedulerWithId(id: String?): Boolean = withContext(IO) {
         schedulerDAO.hasSchedulerWithId(id)
     }
 }

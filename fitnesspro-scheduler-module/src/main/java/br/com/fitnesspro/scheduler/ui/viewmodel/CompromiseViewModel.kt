@@ -19,6 +19,7 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME_ONLY_NUMBERS
+import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getOffsetDateTime
@@ -61,6 +62,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.time.LocalDate
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 @HiltViewModel
@@ -179,8 +181,6 @@ class CompromiseViewModel @Inject constructor(
     }
 
     private fun initializeHourEndTimePickerField(): TimePickerTextField {
-        val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
-
         return TimePickerTextField(
             onTimePickerOpenChange = { newOpen ->
                 _uiState.value = _uiState.value.copy(
@@ -194,7 +194,7 @@ class CompromiseViewModel @Inject constructor(
                         errorMessage = ""
                     ),
                     toScheduler = _uiState.value.toScheduler.copy(
-                        dateTimeEnd = args.date!!.getOffsetDateTime(newTime)
+                        dateTimeEnd = getDateFromPeriod().getOffsetDateTime(newTime)
                     )
                 )
             },
@@ -211,7 +211,7 @@ class CompromiseViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         toScheduler = _uiState.value.toScheduler.copy(
-                            dateTimeEnd = text.parseTimeToOffsetDateTime(args.date!!, TIME_ONLY_NUMBERS)
+                            dateTimeEnd = text.parseTimeToOffsetDateTime(getDateFromPeriod(), TIME_ONLY_NUMBERS)
                         )
                     )
                 }
@@ -220,8 +220,6 @@ class CompromiseViewModel @Inject constructor(
     }
 
     private fun initializeHourStartTimePickerField(): TimePickerTextField {
-        val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
-
         return TimePickerTextField(
             onTimePickerOpenChange = { newOpen ->
                 _uiState.value = _uiState.value.copy(
@@ -234,7 +232,7 @@ class CompromiseViewModel @Inject constructor(
                         value = newTime.format(TIME_ONLY_NUMBERS),
                         errorMessage = ""
                     ),
-                    toScheduler = _uiState.value.toScheduler.copy(dateTimeStart = args.date!!.getOffsetDateTime(newTime))
+                    toScheduler = _uiState.value.toScheduler.copy(dateTimeStart = getDateFromPeriod().getOffsetDateTime(newTime))
                 )
             },
             onTimeDismiss = {
@@ -250,12 +248,28 @@ class CompromiseViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         toScheduler = _uiState.value.toScheduler.copy(
-                            dateTimeStart = text.parseTimeToOffsetDateTime(args.date!!, TIME_ONLY_NUMBERS)
+                            dateTimeStart = text.parseTimeToOffsetDateTime(getDateFromPeriod(), TIME_ONLY_NUMBERS)
                         )
                     )
                 }
             }
         )
+    }
+
+    /**
+     * Função criada para retornar a data que usuário clicou no calendário em
+     * [br.com.fitnesspro.scheduler.ui.screen.scheduler.SchedulerScreen] ou a data atual para o cenário
+     * de agendamento recorrente que não tem a data nos argumentos de navegação pois o usuário não
+     * clicou.
+     *
+     * Isso pode ser feito pois no [br.com.fitnesspro.scheduler.usecase.scheduler.SaveRecurrentCompromiseUseCase]
+     * a data é substituída por cada uma das datas encontradas entre
+     * [br.com.fitnesspro.scheduler.usecase.scheduler.CompromiseRecurrentConfig.dateStart] e
+     * [br.com.fitnesspro.scheduler.usecase.scheduler.CompromiseRecurrentConfig.dateEnd]
+     */
+    private fun getDateFromPeriod(): LocalDate {
+        val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
+        return args.date ?: dateNow(ZoneOffset.UTC)
     }
 
     private fun initializeDateEndDatePickerField(): DatePickerTextField {
@@ -270,6 +284,9 @@ class CompromiseViewModel @Inject constructor(
                     dateEnd = _uiState.value.dateEnd.copy(
                         value = newDate.format(DATE_ONLY_NUMBERS),
                         errorMessage = ""
+                    ),
+                    recurrentConfig = _uiState.value.recurrentConfig.copy(
+                        dateEnd = newDate
                     )
                 )
 
@@ -309,6 +326,9 @@ class CompromiseViewModel @Inject constructor(
                         value = newDate.format(DATE_ONLY_NUMBERS),
                         errorMessage = ""
                     ),
+                    recurrentConfig = _uiState.value.recurrentConfig.copy(
+                        dateStart = newDate
+                    )
                 )
 
                 _uiState.value.dateStart.onDatePickerDismiss()

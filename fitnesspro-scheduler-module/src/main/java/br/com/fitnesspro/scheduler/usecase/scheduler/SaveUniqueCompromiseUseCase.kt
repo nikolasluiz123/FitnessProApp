@@ -33,7 +33,7 @@ class SaveUniqueCompromiseUseCase(
     private suspend fun validateUniqueCompromise(toScheduler: TOScheduler): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
         val validationResults = mutableListOf(
             validateMember(toScheduler),
-            validateHourStart(toScheduler),
+            validateHourStart(toScheduler, false),
             validateHourEnd(toScheduler),
             validateObservation(toScheduler),
             validateHourPeriod(toScheduler),

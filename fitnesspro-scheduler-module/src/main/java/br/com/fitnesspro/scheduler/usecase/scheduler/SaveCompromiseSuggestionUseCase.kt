@@ -68,7 +68,7 @@ class SaveCompromiseSuggestionUseCase(
     }
 
     private suspend fun validateSuggestionHourStart(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
-        var validationResult = validateHourStart(scheduler)
+        var validationResult = validateHourStart(scheduler, false)
 
         if (validationResult == null) {
             if (scheduler.professionalPersonId == null) return null

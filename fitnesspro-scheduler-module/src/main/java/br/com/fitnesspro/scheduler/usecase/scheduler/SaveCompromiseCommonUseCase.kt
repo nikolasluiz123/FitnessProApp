@@ -46,7 +46,7 @@ abstract class SaveCompromiseCommonUseCase(
         }
     }
 
-    protected fun validateHourStart(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    protected fun validateHourStart(scheduler: TOScheduler, recurrent: Boolean): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
         val startLocalTime = scheduler.dateTimeStart?.toLocalTime()
         val startZone = scheduler.dateTimeStart?.toZonedDateTime()?.zone
         val startLocalDate = scheduler.dateTimeStart?.toLocalDate()
@@ -68,7 +68,7 @@ abstract class SaveCompromiseCommonUseCase(
                 )
             }
 
-            startLocalTime!! < timeNow!! && startLocalDate == dateNow -> {
+            startLocalTime!! < timeNow!! && startLocalDate == dateNow && recurrent.not() -> {
                 val message = context.getString(R.string.save_compromise_start_hour_require_future)
 
                 FieldValidationError(
@@ -78,7 +78,7 @@ abstract class SaveCompromiseCommonUseCase(
                 )
             }
 
-            startLocalTime <= timeNow.plusHours(1) && startLocalDate == dateNow -> {
+            startLocalTime <= timeNow.plusHours(1) && startLocalDate == dateNow && recurrent.not() -> {
                 val message = context.getString(R.string.save_compromise_start_hour_require_antecedence)
 
                 FieldValidationError(
