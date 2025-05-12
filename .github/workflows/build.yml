@@ -7,8 +7,62 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build APKs
+  build-debug:
+    name: Build Debug APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Fix Gradle Wrapper Permissions
+        run: chmod +x ./gradlew
+
+      - name: Create Google Services File
+        env:
+          GOOGLE_SERVICES_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          echo "$GOOGLE_SERVICES_BASE64" | base64 -d > app/google-services.json
+
+      - name: Create Local Properties File
+        env:
+          LOCAL_PROPERTIES_BASE64: ${{ secrets.LOCAL_PROPERTIES_BASE64 }}
+        run: |
+          echo "$LOCAL_PROPERTIES_BASE64" | base64 -d > local.properties
+
+
+      - name: Extract Version Name
+        id: version
+        run: |
+          VERSION_NAME=$(grep "versionName" app/build.gradle.kts | head -n1 | sed -E 's/.*versionName\s*=\s*\"([^\"]+)\".*/\1/')
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+
+      - name: Configure Gradle for GitHub Packages
+        run: |
+          mkdir -p ~/.gradle
+          echo "gpr.user=${{ github.actor }}" >> ~/.gradle/gradle.properties
+          echo "gpr.key=${{ secrets.PACKAGES_TOKEN }}" >> ~/.gradle/gradle.properties
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Upload Debug APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apks
+          path: $(find . -name '*debug*.apk' | head -n1)
+
+  build-release:
+    name: Build Release APK
     runs-on: ubuntu-latest
 
     steps:
@@ -29,10 +83,10 @@ jobs:
 
       - name: Decode Keystore
         if: env.KEYSTORE_BASE64 != ''
-        run: |
-          echo "$KEYSTORE_BASE64" | base64 -d > keystore.jks
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > keystore.jks
 
       - name: Create Google Services File
         env:
@@ -58,9 +112,6 @@ jobs:
           echo "gpr.user=${{ github.actor }}" >> ~/.gradle/gradle.properties
           echo "gpr.key=${{ secrets.PACKAGES_TOKEN }}" >> ~/.gradle/gradle.properties
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug
-
       - name: Build Release APK
         env:
           KEYSTORE_PATH: keystore.jks
@@ -74,17 +125,15 @@ jobs:
           -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
           -Pandroid.injected.signing.key.password=$KEY_PASSWORD
 
-      - name: Upload APKs as artifacts
+      - name: Upload Release APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: built-apks
-          path: |
-            $(find . -name '*debug*.apk' | head -n1)
-            $(find . -name '*release*.apk' | head -n1)
+          name: release-apks
+          path: $(find . -name '*release*.apk' | head -n1)
 
   release:
     name: Create Tag and GitHub Release
-    needs: build
+    needs: [ build-debug, build-release ]
     runs-on: ubuntu-latest
 
     steps:
@@ -94,7 +143,6 @@ jobs:
       - name: Download built APKs
         uses: actions/download-artifact@v4
         with:
-          name: built-apks
 
       - name: Extract Version Name
         id: version
