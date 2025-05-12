@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: debug-apks
-          path: $(find . -name '*debug*.apk' | head -n1)
+          path: app/build/outputs/apk/debug/
 
   build-release:
     name: Build Release APK
@@ -162,14 +162,14 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git fetch --tags
-          git tag "v${{ steps.version.outputs.version_name }}"
-          git push origin "v${{ steps.version.outputs.version_name }}"
+          git tag "${{ steps.version.outputs.version_name }}"
+          git push origin "${{ steps.version.outputs.version_name }}"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.version.outputs.version_name }}
-          name: v${{ steps.version.outputs.version_name }}
+          tag_name: ${{ steps.version.outputs.version_name }}
+          name: ${{ steps.version.outputs.version_name }}
           files: |
             **/*.apk
         env:
