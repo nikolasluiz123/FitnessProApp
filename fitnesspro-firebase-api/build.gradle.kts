@@ -11,7 +11,7 @@ val localProperties = Properties().apply {
     rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
 }
 
-val webClientId: String = localProperties.getProperty("WEB_CLIENT_ID", "\"default_value\"")
+val webClientId: String = localProperties.getProperty("WEB_CLIENT_ID")
 
 android {
     namespace = "br.com.fitnesspro.firebase.api"
