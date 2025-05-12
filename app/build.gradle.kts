@@ -27,30 +27,13 @@ android {
         }
     }
 
-//    val isCi = System.getenv("GITHUB_ACTIONS") == "true" || System.getenv("CI") == "true"
-//
-//    signingConfigs {
-//        create("ciReleaseSigning") {
-//            storeFile = providers.environmentVariable("KEYSTORE_PATH").orNull?.let(::file)
-//            storePassword = providers.environmentVariable("KEYSTORE_PASSWORD").orNull
-//            keyAlias = providers.environmentVariable("KEY_ALIAS").orNull
-//            keyPassword = providers.environmentVariable("KEY_PASSWORD").orNull
-//        }
-//    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-
-//            if (isCi) {
-//                val ciSigningConfig = signingConfigs.getByName("ciReleaseSigning")
-//                signingConfig = ciSigningConfig
-//            }
         }
         debug {
             isMinifyEnabled = false
-//            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
