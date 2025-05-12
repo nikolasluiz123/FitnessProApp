@@ -137,7 +137,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-apks
-          path: $(find . -name '*release*.apk' | head -n1)
+          path: app/build/outputs/apk/release/
 
   release:
     name: Create Tag and GitHub Release
