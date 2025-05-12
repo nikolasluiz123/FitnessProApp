@@ -45,14 +45,6 @@ android {
 
             if (isCi) {
                 val ciSigningConfig = signingConfigs.getByName("ciReleaseSigning")
-
-                if (ciSigningConfig.storeFile == null ||
-                    ciSigningConfig.storePassword == null ||
-                    ciSigningConfig.keyAlias == null ||
-                    ciSigningConfig.keyPassword == null) {
-                    error("ERRO CRÍTICO: Variáveis de ambiente de signing para CI não definidas ou incompletas! Verifique KEYSTORE_PATH, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD.")
-                }
-
                 signingConfig = ciSigningConfig
             }
         }
