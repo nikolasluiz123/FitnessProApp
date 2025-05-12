@@ -122,7 +122,7 @@ jobs:
 
       - name: Build Release APK
         env:
-          KEYSTORE_PATH: keystore.jks
+          KEYSTORE_PATH: /home/runner/work/FitnessProApp/FitnessProApp/app/keystore.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
