@@ -13,7 +13,7 @@ val localProperties = Properties().apply {
     rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
 }
 
-val appJWT: String = localProperties.getProperty("APP_JWT", "\"default_value\"")
+val appJWT: String = localProperties.getProperty("APP_JWT")
 
 android {
     namespace = "br.com.fitnesspro.common"

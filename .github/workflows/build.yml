@@ -40,6 +40,12 @@ jobs:
         run: |
           echo "$GOOGLE_SERVICES_BASE64" | base64 -d > app/google-services.json
 
+      - name: Create Local Properties File
+        env:
+          LOCAL_PROPERTIES_BASE64: ${{ secrets.LOCAL_PROPERTIES_BASE64 }}
+        run: |
+          echo "$LOCAL_PROPERTIES_BASE64" | base64 -d > local.properties
+
       - name: Extract Version Name
         id: version
         run: |
