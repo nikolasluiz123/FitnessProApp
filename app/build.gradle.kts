@@ -27,10 +27,31 @@ android {
         }
     }
 
+    val isCi = System.getenv("GITHUB_ACTIONS") == "true" || System.getenv("CI") == "true"
+
+    signingConfigs {
+        if (isCi) {
+            create("ciReleaseSigning") {
+                storeFile = file(System.getenv("KEYSTORE_PATH") ?: error("Variável de ambiente KEYSTORE_PATH não definida!"))
+                storePassword = System.getenv("KEYSTORE_PASSWORD") ?: error("Variável de ambiente KEYSTORE_PASSWORD não definida!")
+                keyAlias = System.getenv("KEY_ALIAS") ?: error("Variável de ambiente KEY_ALIAS não definida!")
+                keyPassword = System.getenv("KEY_PASSWORD") ?: error("Variável de ambiente KEY_PASSWORD não definida!")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            if (isCi) {
+                signingConfig = signingConfigs.getByName("ciReleaseSigning")
+            }
+        }
+        debug {
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {

@@ -39,7 +39,6 @@ jobs:
         run: |
           echo "$LOCAL_PROPERTIES_BASE64" | base64 -d > local.properties
 
-
       - name: Extract Version Name
         id: version
         run: |
@@ -64,7 +63,6 @@ jobs:
   build-release:
     name: Build Release APK
     runs-on: ubuntu-latest
-    needs: [ build-debug ]
 
     steps:
       - name: Checkout project
@@ -115,7 +113,7 @@ jobs:
 
       - name: Build Release APK
         env:
-          KEYSTORE_PATH: keystore.jks
+          KEYSTORE_PATH: app/keystore.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
