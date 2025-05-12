@@ -30,13 +30,11 @@ android {
     val isCi = System.getenv("GITHUB_ACTIONS") == "true" || System.getenv("CI") == "true"
 
     signingConfigs {
-        if (isCi) {
-            create("ciReleaseSigning") {
-                storeFile = file(System.getenv("KEYSTORE_PATH") ?: error("Variável de ambiente KEYSTORE_PATH não definida!"))
-                storePassword = System.getenv("KEYSTORE_PASSWORD") ?: error("Variável de ambiente KEYSTORE_PASSWORD não definida!")
-                keyAlias = System.getenv("KEY_ALIAS") ?: error("Variável de ambiente KEY_ALIAS não definida!")
-                keyPassword = System.getenv("KEY_PASSWORD") ?: error("Variável de ambiente KEY_PASSWORD não definida!")
-            }
+        create("ciReleaseSigning") {
+            storeFile = providers.environmentVariable("KEYSTORE_PATH").orNull?.let(::file)
+            storePassword = providers.environmentVariable("KEYSTORE_PASSWORD").orNull
+            keyAlias = providers.environmentVariable("KEY_ALIAS").orNull
+            keyPassword = providers.environmentVariable("KEY_PASSWORD").orNull
         }
     }
 
@@ -46,7 +44,16 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 
             if (isCi) {
-                signingConfig = signingConfigs.getByName("ciReleaseSigning")
+                val ciSigningConfig = signingConfigs.getByName("ciReleaseSigning")
+
+                if (ciSigningConfig.storeFile == null ||
+                    ciSigningConfig.storePassword == null ||
+                    ciSigningConfig.keyAlias == null ||
+                    ciSigningConfig.keyPassword == null) {
+                    error("ERRO CRÍTICO: Variáveis de ambiente de signing para CI não definidas ou incompletas! Verifique KEYSTORE_PATH, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD.")
+                }
+
+                signingConfig = ciSigningConfig
             }
         }
         debug {
