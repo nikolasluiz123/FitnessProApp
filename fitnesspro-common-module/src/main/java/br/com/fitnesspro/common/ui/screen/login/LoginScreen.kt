@@ -25,7 +25,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.common.R
@@ -35,7 +34,6 @@ import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginClick
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginWithGoogle
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_EMAIL_FIELD
-import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_FACEBOOK_BUTTON
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_GOOGLE_BUTTON
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_LOGIN_BUTTON
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_PASSWORD_FIELD
@@ -44,14 +42,12 @@ import br.com.fitnesspro.common.ui.state.LoginUIState
 import br.com.fitnesspro.common.ui.viewmodel.LoginViewModel
 import br.com.fitnesspro.compose.components.buttons.FitnessProButton
 import br.com.fitnesspro.compose.components.buttons.FitnessProOutlinedButton
-import br.com.fitnesspro.compose.components.buttons.RoundedFacebookButton
 import br.com.fitnesspro.compose.components.buttons.RoundedGoogleButton
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.callback.showInformationDialog
 import br.com.fitnesspro.core.extensions.verifyPermissionGranted
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
@@ -134,7 +130,7 @@ fun LoginScreen(
 
                 ConstraintLayout(Modifier.fillMaxWidth()) {
                     val (emailRef, passwordRef, loginButtonRef, registerButtonRef,
-                        googleButtonRef, facebookButtonRef) = createRefs()
+                        googleButtonRef) = createRefs()
 
                     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
 
@@ -209,17 +205,12 @@ fun LoginScreen(
                         }
                     )
 
-                    createHorizontalChain(
-                        googleButtonRef,
-                        facebookButtonRef,
-                        chainStyle = ChainStyle.Packed
-                    )
-
                     RoundedGoogleButton(
                         modifier = Modifier
                             .testTag(LOGIN_SCREEN_GOOGLE_BUTTON.name)
                             .constrainAs(googleButtonRef) {
                                 start.linkTo(parent.start)
+                                end.linkTo(parent.end)
                                 top.linkTo(loginButtonRef.bottom)
                             }
                             .padding(end = 8.dp, top = 8.dp),
@@ -240,23 +231,6 @@ fun LoginScreen(
                             )
                         }
                     )
-
-                    RoundedFacebookButton(
-                        modifier = Modifier
-                            .constrainAs(facebookButtonRef) {
-                                end.linkTo(parent.end)
-                                top.linkTo(loginButtonRef.bottom)
-                            }
-                            .padding(start = 8.dp, top = 8.dp),
-                        onClick = {
-                            Firebase.analytics.logButtonClick(LOGIN_SCREEN_FACEBOOK_BUTTON)
-
-                            state.messageDialogState.onShowDialog?.showInformationDialog(
-                                message = context.getString(R.string.login_screen_facebook_button_message)
-                            )
-                        }
-                    )
-
 
                     if (openBottomSheet) {
                         BottomSheetRegisterUser(
