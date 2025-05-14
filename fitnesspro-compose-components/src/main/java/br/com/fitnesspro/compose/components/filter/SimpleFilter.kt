@@ -1,5 +1,6 @@
 package br.com.fitnesspro.compose.components.filter
 
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +18,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.compose.components.filter.EnumSimpleFilterTestTags.SIMPLE_FILTER_SEARCH_BAR
 import br.com.fitnesspro.compose.components.filter.EnumSimpleFilterTestTags.SIMPLE_FILTER_SEARCH_BAR_INPUT_FIELD
@@ -37,7 +39,9 @@ fun SimpleFilter(
     var text by rememberSaveable { mutableStateOf("") }
 
     SearchBar(
-        modifier = modifier.testTag(SIMPLE_FILTER_SEARCH_BAR.name),
+        modifier = modifier
+            .testTag(SIMPLE_FILTER_SEARCH_BAR.name)
+            .offset(y = (-8).dp),
         colors = SearchBarDefaults.colors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             dividerColor = MaterialTheme.colorScheme.onSecondaryContainer,
