@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.workout.decorator
+package br.com.fitnesspro.workout.ui.screen.dayweekworkout.decorator
 
 data class DayWeekWorkoutItemDecorator(
     val id: String,

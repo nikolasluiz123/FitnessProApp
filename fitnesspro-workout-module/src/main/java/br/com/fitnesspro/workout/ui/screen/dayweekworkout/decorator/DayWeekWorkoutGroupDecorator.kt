@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.workout.decorator
+package br.com.fitnesspro.workout.ui.screen.dayweekworkout.decorator
 
 import br.com.fitnesspro.compose.components.list.grouped.IBasicGroup
 
