@@ -8,5 +8,6 @@ data class DayWeekWorkoutUIState(
     val title: String,
     val subtitle: String,
     val dayWeekWorkoutGroups: List<WorkoutGroupDecorator>,
+    val showFabAddExercise: Boolean = false,
     val messageDialogState: MessageDialogState = MessageDialogState(),
 )

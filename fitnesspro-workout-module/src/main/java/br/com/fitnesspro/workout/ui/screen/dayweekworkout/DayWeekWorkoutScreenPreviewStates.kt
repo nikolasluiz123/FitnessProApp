@@ -5,6 +5,57 @@ import br.com.fitnesspro.workout.ui.screen.dayweekworkout.decorator.WorkoutGroup
 import br.com.fitnesspro.workout.ui.state.DayWeekWorkoutUIState
 import java.time.Duration
 
+internal val defaultDayWeekWorkoutGroups = listOf(
+    WorkoutGroupDecorator(
+        id = "1",
+        label = "Aquecimento",
+        items = listOf(
+            TOExercise(
+                id = "1",
+                name = "Esteira",
+                duration = Duration.ofMinutes(30).toMillis(),
+                sets = null,
+                repetitions = null,
+                rest = null,
+                observation = "Se vier para a academia caminhando não é necessário fazer esse aquecimento"
+            ),
+            TOExercise(
+                id = "2",
+                name = "Manguito Rotador na Polia",
+                duration = null,
+                sets = 4,
+                repetitions = 12,
+                rest = null,
+                observation = "Alternar entre os ombros e utilizar cargas reduzidas"
+            )
+        )
+    ),
+    WorkoutGroupDecorator(
+        id = "2",
+        label = "Peito",
+        items = listOf(
+            TOExercise(
+                id = "1",
+                name = "Supino Inclinado com Halteres",
+                duration = null,
+                sets = 4,
+                repetitions = 12,
+                rest = 45,
+                observation = "Segurar embaixo por 2 segundos em toda repetição"
+            ),
+            TOExercise(
+                id = "2",
+                name = "Crussifixo Reto com Halteres",
+                duration = null,
+                sets = 4,
+                repetitions = 12,
+                rest = 45,
+                observation = null
+            )
+        )
+    )
+)
+
 internal val dayWeekGroupItemEmpty = WorkoutGroupDecorator(
     id = "1",
     label = "Aquecimento",
@@ -44,54 +95,12 @@ internal val dayWeekItem3 = TOExercise(
 internal val dayWeekWorkoutScreenDefaultState = DayWeekWorkoutUIState(
     title = "Treino de Segunda",
     subtitle = "Peito, Ombro e Tríceps",
-    dayWeekWorkoutGroups = listOf(
-        WorkoutGroupDecorator(
-            id = "1",
-            label = "Aquecimento",
-            items = listOf(
-                TOExercise(
-                    id = "1",
-                    name = "Esteira",
-                    duration = Duration.ofMinutes(30).toMillis(),
-                    sets = null,
-                    repetitions = null,
-                    rest = null,
-                    observation = "Se vier para a academia caminhando não é necessário fazer esse aquecimento"
-                ),
-                TOExercise(
-                    id = "2",
-                    name = "Manguito Rotador na Polia",
-                    duration = null,
-                    sets = 4,
-                    repetitions = 12,
-                    rest = null,
-                    observation = "Alternar entre os ombros e utilizar cargas reduzidas"
-                )
-            )
-        ),
-        WorkoutGroupDecorator(
-            id = "2",
-            label = "Peito",
-            items = listOf(
-                TOExercise(
-                    id = "1",
-                    name = "Supino Inclinado com Halteres",
-                    duration = null,
-                    sets = 4,
-                    repetitions = 12,
-                    rest = 45,
-                    observation = "Segurar embaixo por 2 segundos em toda repetição"
-                ),
-                TOExercise(
-                    id = "2",
-                    name = "Crussifixo Reto com Halteres",
-                    duration = null,
-                    sets = 4,
-                    repetitions = 12,
-                    rest = 45,
-                    observation = null
-                )
-            )
-        )
-    ),
+    dayWeekWorkoutGroups = defaultDayWeekWorkoutGroups,
+)
+
+internal val dayWeekWorkoutScreenProfessionalState = DayWeekWorkoutUIState(
+    title = "Segunda",
+    subtitle = "Treino do Nikolas Luiz Schmitt",
+    showFabAddExercise = true,
+    dayWeekWorkoutGroups = defaultDayWeekWorkoutGroups,
 )
