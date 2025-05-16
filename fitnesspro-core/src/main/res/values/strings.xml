@@ -8,7 +8,7 @@
     <string name="transfer_object_helper_msg_not_has_field_to_validate">A classe %1$s não possui campos para validação. É necessário que a classe possua pelo menos um campo com a anotação %2$s.</string>
     <string name="transfer_object_helper_msg_not_has_entity_annotation">A classe %s não é válida. É necessário que possua a anotação %s.</string>
 
-    <plurals name="label_hour">
+    <plurals name="label_hours">
         <item quantity="one">%d hora</item>
         <item quantity="other">%d horas</item>
     </plurals>
@@ -25,4 +25,5 @@
 
     <string name="label_three_times">%s, %s e %s</string>
     <string name="label_two_times">%s e %s</string>
+    <string name="label_and">" e "</string>
 </resources>

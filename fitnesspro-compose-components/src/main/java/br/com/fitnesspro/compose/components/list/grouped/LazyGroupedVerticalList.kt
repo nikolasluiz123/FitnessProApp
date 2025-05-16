@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.GREY_600
 import br.com.fitnesspro.core.theme.GREY_800
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import java.util.UUID
@@ -54,7 +54,7 @@ fun <T, GROUP : IBasicGroup<T>> LazyGroupedVerticalList(
             Text(
                 text = stringResource(id = emptyMessageResId),
                 style = LabelTextStyle,
-                color = GREY_600
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }

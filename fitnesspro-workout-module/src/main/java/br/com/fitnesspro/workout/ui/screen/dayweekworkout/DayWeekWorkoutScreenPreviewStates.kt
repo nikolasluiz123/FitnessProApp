@@ -1,29 +1,29 @@
 package br.com.fitnesspro.workout.ui.screen.dayweekworkout
 
-import br.com.fitnesspro.workout.ui.screen.dayweekworkout.decorator.DayWeekWorkoutGroupDecorator
-import br.com.fitnesspro.workout.ui.screen.dayweekworkout.decorator.DayWeekWorkoutItemDecorator
+import br.com.fitnesspro.to.TOExercise
+import br.com.fitnesspro.workout.ui.screen.dayweekworkout.decorator.WorkoutGroupDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekWorkoutUIState
-import java.time.LocalTime
+import java.time.Duration
 
-internal val dayWeekGroupItemEmpty = DayWeekWorkoutGroupDecorator(
+internal val dayWeekGroupItemEmpty = WorkoutGroupDecorator(
     id = "1",
     label = "Aquecimento",
     items = emptyList()
 )
 
-internal val dayWeekItem1 = DayWeekWorkoutItemDecorator(
+internal val dayWeekItem1 = TOExercise(
     id = "1",
-    exercise = "Esteira",
-    duration = LocalTime.of(0, 30).toSecondOfDay().toLong(),
+    name = "Esteira",
+    duration = Duration.ofMinutes(30).toMillis(),
     sets = null,
     repetitions = null,
     rest = null,
     observation = "Se vier para a academia caminhando não é necessário fazer esse aquecimento"
 )
 
-internal val dayWeekItem2 = DayWeekWorkoutItemDecorator(
+internal val dayWeekItem2 = TOExercise(
     id = "1",
-    exercise = "Manguito Rotador na Polia",
+    name = "Manguito Rotador na Polia",
     duration = null,
     sets = 4,
     repetitions = 12,
@@ -31,9 +31,9 @@ internal val dayWeekItem2 = DayWeekWorkoutItemDecorator(
     observation = "Alternar entre os ombros e utilizar cargas reduzidas"
 )
 
-internal val dayWeekItem3 = DayWeekWorkoutItemDecorator(
+internal val dayWeekItem3 = TOExercise(
     id = "1",
-    exercise = "Supino Inclinado com Halteres",
+    name = "Supino Inclinado com Halteres",
     duration = null,
     sets = 4,
     repetitions = 12,
@@ -45,22 +45,22 @@ internal val dayWeekWorkoutScreenDefaultState = DayWeekWorkoutUIState(
     title = "Treino de Segunda",
     subtitle = "Peito, Ombro e Tríceps",
     dayWeekWorkoutGroups = listOf(
-        DayWeekWorkoutGroupDecorator(
+        WorkoutGroupDecorator(
             id = "1",
             label = "Aquecimento",
             items = listOf(
-                DayWeekWorkoutItemDecorator(
+                TOExercise(
                     id = "1",
-                    exercise = "Esteira",
-                    duration = LocalTime.of(0, 30).toSecondOfDay().toLong(),
+                    name = "Esteira",
+                    duration = Duration.ofMinutes(30).toMillis(),
                     sets = null,
                     repetitions = null,
                     rest = null,
                     observation = "Se vier para a academia caminhando não é necessário fazer esse aquecimento"
                 ),
-                DayWeekWorkoutItemDecorator(
+                TOExercise(
                     id = "2",
-                    exercise = "Manguito Rotador na Polia",
+                    name = "Manguito Rotador na Polia",
                     duration = null,
                     sets = 4,
                     repetitions = 12,
@@ -69,22 +69,22 @@ internal val dayWeekWorkoutScreenDefaultState = DayWeekWorkoutUIState(
                 )
             )
         ),
-        DayWeekWorkoutGroupDecorator(
+        WorkoutGroupDecorator(
             id = "2",
             label = "Peito",
             items = listOf(
-                DayWeekWorkoutItemDecorator(
+                TOExercise(
                     id = "1",
-                    exercise = "Supino Inclinado com Halteres",
+                    name = "Supino Inclinado com Halteres",
                     duration = null,
                     sets = 4,
                     repetitions = 12,
                     rest = 45,
                     observation = "Segurar embaixo por 2 segundos em toda repetição"
                 ),
-                DayWeekWorkoutItemDecorator(
+                TOExercise(
                     id = "2",
-                    exercise = "Crussifixo Reto com Halteres",
+                    name = "Crussifixo Reto com Halteres",
                     duration = null,
                     sets = 4,
                     repetitions = 12,

@@ -48,7 +48,7 @@ fun DayWeekWorkoutScreen(state: DayWeekWorkoutUIState) {
                 groups = state.dayWeekWorkoutGroups,
                 emptyMessageResId = R.string.day_week_workout_empty_message,
                 groupLayout = { groupDecorator ->
-                    DayWeekWorkoutGroupItem(groupDecorator)
+                    WorkoutGroupItem(groupDecorator)
                 },
                 itemLayout = { itemDecorator ->
                     DayWeekWorkoutItem(itemDecorator)

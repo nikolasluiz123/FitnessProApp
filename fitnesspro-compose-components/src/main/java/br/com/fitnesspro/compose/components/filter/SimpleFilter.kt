@@ -1,5 +1,6 @@
 package br.com.fitnesspro.compose.components.filter
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,6 +40,7 @@ fun SimpleFilter(
     var text by rememberSaveable { mutableStateOf("") }
 
     SearchBar(
+        windowInsets = WindowInsets(top = 0.dp),
         modifier = modifier
             .testTag(SIMPLE_FILTER_SEARCH_BAR.name)
             .offset(y = (-8).dp),

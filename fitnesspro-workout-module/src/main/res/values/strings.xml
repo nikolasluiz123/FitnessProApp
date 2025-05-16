@@ -16,4 +16,7 @@
     <string name="members_workout_screen_item_label_name">Nome</string>
     <string name="members_workout_screen_item_label_vencimento">Vencimento</string>
     <string name="members_workout_screen_simple_filter_placeholder">Buscar por Nome</string>
+    <string name="day_week_exercises_item_label_without_rest">Sem Descanso</string>
+    <string name="day_week_exercises_empty_message">Não foram encontrados exercícios definidos nesse treino.</string>
+    <string name="day_week_exercises_simple_filter_placeholder">Buscar por Exercício, Grupo ou Dia da Semana</string>
 </resources>

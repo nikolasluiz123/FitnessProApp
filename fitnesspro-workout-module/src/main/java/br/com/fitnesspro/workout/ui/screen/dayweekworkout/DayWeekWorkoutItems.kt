@@ -19,15 +19,15 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.LabeledText
-import br.com.fitnesspro.core.extensions.toDurationFormatted
+import br.com.fitnesspro.core.extensions.toReadableDuration
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.LabelGroupTextStyle
+import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.R
-import br.com.fitnesspro.workout.ui.screen.dayweekworkout.decorator.DayWeekWorkoutGroupDecorator
-import br.com.fitnesspro.workout.ui.screen.dayweekworkout.decorator.DayWeekWorkoutItemDecorator
+import br.com.fitnesspro.workout.ui.screen.dayweekworkout.decorator.WorkoutGroupDecorator
 
 @Composable
-fun DayWeekWorkoutGroupItem(groupDecorator: DayWeekWorkoutGroupDecorator) {
+fun WorkoutGroupItem(decorator: WorkoutGroupDecorator) {
     Box(
         Modifier
             .fillMaxWidth()
@@ -36,7 +36,7 @@ fun DayWeekWorkoutGroupItem(groupDecorator: DayWeekWorkoutGroupDecorator) {
     ) {
         Text(
             modifier = Modifier.align(alignment = Alignment.Center),
-            text = groupDecorator.label,
+            text = decorator.label,
             style = LabelGroupTextStyle,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -44,7 +44,7 @@ fun DayWeekWorkoutGroupItem(groupDecorator: DayWeekWorkoutGroupDecorator) {
 }
 
 @Composable
-fun DayWeekWorkoutItem(decorator: DayWeekWorkoutItemDecorator) {
+fun DayWeekWorkoutItem(toExercise: TOExercise) {
     val context = LocalContext.current
 
     ConstraintLayout(
@@ -62,10 +62,10 @@ fun DayWeekWorkoutItem(decorator: DayWeekWorkoutItemDecorator) {
                 width = Dimension.fillToConstraints
             },
             label = stringResource(R.string.day_week_workout_screen_exercise),
-            value = decorator.exercise
+            value = toExercise.name!!
         )
 
-        if (decorator.duration != null) {
+        if (toExercise.duration != null) {
             createHorizontalChain(durationRef, restRef)
 
             LabeledText(
@@ -78,7 +78,7 @@ fun DayWeekWorkoutItem(decorator: DayWeekWorkoutItemDecorator) {
                     width = Dimension.fillToConstraints
                 },
                 label = stringResource(R.string.day_week_workout_screen_duration),
-                value = decorator.duration.toDurationFormatted(context)!!
+                value = toExercise.duration!!.toReadableDuration(context)
             )
         } else {
             createHorizontalChain(setsAndRepsRef, restRef)
@@ -95,8 +95,8 @@ fun DayWeekWorkoutItem(decorator: DayWeekWorkoutItemDecorator) {
                 label = stringResource(R.string.day_week_workout_screen_sets_and_repetitions),
                 value = stringResource(
                     R.string.day_week_workout_screen_sets_and_repetitions_value,
-                    decorator.sets!!,
-                    decorator.repetitions!!
+                    toExercise.sets!!,
+                    toExercise.repetitions!!
                 )
             )
         }
@@ -111,14 +111,14 @@ fun DayWeekWorkoutItem(decorator: DayWeekWorkoutItemDecorator) {
                 width = Dimension.fillToConstraints
             },
             label = stringResource(R.string.day_week_workout_screen_rest),
-            value = decorator.rest?.toDurationFormatted(context) ?: stringResource(R.string.day_week_workout_screen_no_rest),
+            value = toExercise.rest?.toReadableDuration(context) ?: stringResource(R.string.day_week_workout_screen_no_rest),
             textAlign = TextAlign.End
         )
 
-        if (!decorator.observation.isNullOrEmpty()) {
+        if (!toExercise.observation.isNullOrEmpty()) {
             LabeledText(
                 modifier = Modifier.constrainAs(observationRef) {
-                    if (decorator.duration != null) {
+                    if (toExercise.duration != null) {
                         top.linkTo(durationRef.bottom, margin = 8.dp)
                     } else {
                         top.linkTo(setsAndRepsRef.bottom, margin = 8.dp)
@@ -130,14 +130,14 @@ fun DayWeekWorkoutItem(decorator: DayWeekWorkoutItemDecorator) {
                     width = Dimension.fillToConstraints
                 },
                 label = stringResource(R.string.day_week_workout_screen_observation),
-                value = decorator.observation,
+                value = toExercise.observation!!,
                 maxLinesValue = 5
             )
         }
 
         HorizontalDivider(
             modifier = Modifier.constrainAs(dividerRef) {
-                if (!decorator.observation.isNullOrEmpty()) {
+                if (!toExercise.observation.isNullOrEmpty()) {
                     top.linkTo(observationRef.bottom, margin = 8.dp)
                 } else {
                     top.linkTo(restRef.bottom, margin = 8.dp)
@@ -155,7 +155,7 @@ fun DayWeekWorkoutItem(decorator: DayWeekWorkoutItemDecorator) {
 private fun GroupItemPreview() {
     FitnessProTheme {
         Surface {
-            DayWeekWorkoutGroupItem(dayWeekGroupItemEmpty)
+            WorkoutGroupItem(dayWeekGroupItemEmpty)
         }
     }
 }
@@ -165,7 +165,7 @@ private fun GroupItemPreview() {
 private fun GroupItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
-            DayWeekWorkoutGroupItem(dayWeekGroupItemEmpty)
+            WorkoutGroupItem(dayWeekGroupItemEmpty)
         }
     }
 }
