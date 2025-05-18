@@ -163,19 +163,19 @@ class LoginViewModel @Inject constructor(
         launch {
             _uiState.value.onToggleLoading()
 
-            val googleAuthResult = googleLoginUseCase()
+            googleLoginUseCase()?.let { googleAuthResult ->
+                when {
+                    googleAuthResult.success.not() -> {
+                        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(googleAuthResult.errorMessage!!)
+                    }
 
-            when {
-                googleAuthResult.success.not() -> {
-                    _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(googleAuthResult.errorMessage!!)
-                }
+                    googleAuthResult.userExists -> {
+                        onSuccess()
+                    }
 
-                googleAuthResult.userExists -> {
-                    onSuccess()
-                }
-
-                else -> {
-                    onUserNotExistsLocal(googleAuthResult.toPerson!!)
+                    else -> {
+                        onUserNotExistsLocal(googleAuthResult.toPerson!!)
+                    }
                 }
             }
 

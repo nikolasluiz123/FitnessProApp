@@ -8,8 +8,10 @@ import br.com.fitnesspro.common.usecase.login.enums.EnumLoginValidationTypes
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.EMAIL
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.PASSWORD
+import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.core.validation.FieldValidationError
+import br.com.fitnesspro.mappers.getTOPerson
 
 class DefaultLoginUseCase(
     private val context: Context,
@@ -87,26 +89,45 @@ class DefaultLoginUseCase(
             return null
         }
 
+        val networkAvailable = context.isNetworkAvailable()
         val invalidLength = emailTrimmed.length > EMAIL.maxLength || passwordTrimmed.length > PASSWORD.maxLength
         val hashedPassword = passwordHasher.hashPassword(passwordTrimmed)
-        var userNotExists = !userRepository.hasUserWithCredentials(emailTrimmed, hashedPassword)
-        val toPersonRemote = personRepository.findPersonByEmailRemote(emailTrimmed, hashedPassword)
+        var userNotExistsLocally = !userRepository.hasUserWithCredentials(emailTrimmed, hashedPassword)
 
+        if (!networkAvailable && userNotExistsLocally) {
+            return FieldValidationError(
+                field = null,
+                message = context.getString(R.string.validation_msg_network_required_login),
+                validationType = EnumLoginValidationTypes.INVALID_CREDENTIALS
+            )
+        }
+
+        val findPersonRemoteResponse = personRepository.findPersonByEmailRemote(emailTrimmed, hashedPassword)
+
+        if (userNotExistsLocally && !findPersonRemoteResponse.success) {
+            return FieldValidationError(
+                field = null,
+                message = findPersonRemoteResponse.error!!,
+                validationType = EnumLoginValidationTypes.INVALID_CREDENTIALS
+            )
+        }
+
+        val toPersonRemote = findPersonRemoteResponse.value?.getTOPerson()
         val authUser = userRepository.getAuthenticatedUser()
         val isSameUser = authUser?.email == emailTrimmed && authUser.password == hashedPassword
 
-        if (userNotExists && toPersonRemote != null) {
+        if (userNotExistsLocally && toPersonRemote != null) {
             personRepository.savePerson(
                 toPerson = toPersonRemote,
                 isRegisterServiceAuth = false,
                 forceInsertLocally = true
             )
 
-            userNotExists = false
+            userNotExistsLocally = false
         }
 
         return when {
-            invalidLength || userNotExists -> {
+            invalidLength || userNotExistsLocally -> {
                 FieldValidationError(
                     field = null,
                     message = context.getString(R.string.validation_msg_invalid_credetials_login),

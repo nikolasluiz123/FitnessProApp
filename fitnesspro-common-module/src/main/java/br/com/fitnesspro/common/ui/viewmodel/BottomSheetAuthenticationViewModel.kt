@@ -125,15 +125,15 @@ class BottomSheetAuthenticationViewModel @Inject constructor(
         launch {
             _uiState.value.onToggleLoading()
 
-            val googleAuthResult = googleLoginUseCase(authAgain = true)
+            googleLoginUseCase(authAgain = true)?.let { googleAuthResult ->
+                when {
+                    googleAuthResult.success.not() -> {
+                        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(googleAuthResult.errorMessage!!)
+                    }
 
-            when {
-                googleAuthResult.success.not() -> {
-                    _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(googleAuthResult.errorMessage!!)
-                }
-
-                else -> {
-                    _uiState.value.onDismissRequest()
+                    else -> {
+                        _uiState.value.onDismissRequest()
+                    }
                 }
             }
 
