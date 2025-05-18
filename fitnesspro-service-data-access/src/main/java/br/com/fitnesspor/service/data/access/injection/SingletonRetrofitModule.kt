@@ -45,10 +45,10 @@ class SingletonRetrofitModule {
     fun provideHttpClient(interceptor: HttpLoggingInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(interceptor)
-            .callTimeout(Timeouts.OPERATION_HIGH_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .connectTimeout(Timeouts.CONNECT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .readTimeout(Timeouts.OPERATION_MEDIUM_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .writeTimeout(Timeouts.OPERATION_HIGH_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .callTimeout(Timeouts.OPERATION_VERY_LOW_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .connectTimeout(Timeouts.OPERATION_VERY_LOW_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .readTimeout(Timeouts.OPERATION_LOW_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .writeTimeout(Timeouts.OPERATION_LOW_TIMEOUT.toLong(), TimeUnit.SECONDS)
             .build()
     }
 }
