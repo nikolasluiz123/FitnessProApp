@@ -29,6 +29,7 @@ import br.com.fitnesspro.compose.components.buttons.SquaredButton
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonAccount
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonLogout
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
+import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.LabelTextStyle
@@ -85,6 +86,7 @@ fun HomeScreen(
                         modifier = Modifier.testTag(HOME_SCREEN_LOGOUT_BUTTON.name),
                         onClick = {
                             onLogoutClick?.onExecute {
+                                state.onToggleLoading()
                                 onNavigateToLogin()
                             }
                         }
@@ -106,7 +108,18 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            val (footerRef, moduleButtonsRef) = createRefs()
+            val (footerRef, moduleButtonsRef, loadingRef) = createRefs()
+
+            FitnessProLinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(loadingRef) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                },
+                show = state.showLoading
+            )
 
             FitnessProMessageDialog(state = state.messageDialogState)
 

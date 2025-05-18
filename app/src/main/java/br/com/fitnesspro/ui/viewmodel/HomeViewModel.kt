@@ -46,6 +46,14 @@ class HomeViewModel @Inject constructor(
         return context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
     }
 
+    override fun onError(throwable: Throwable) {
+        super.onError(throwable)
+
+        if (_uiState.value.showLoading) {
+            _uiState.value.onToggleLoading()
+        }
+    }
+
     private fun initialUIStateLoad() {
         viewModelScope.launch {
             val toPerson = personRepository.getAuthenticatedTOPerson()!!
@@ -59,7 +67,10 @@ class HomeViewModel @Inject constructor(
                     isEnabledWorkoutButton = true,
                     isEnabledNutritionButton = false,
                     isEnabledMoneyButton = false,
-                    messageDialogState = initializeMessageDialogState()
+                    messageDialogState = initializeMessageDialogState(),
+                    onToggleLoading = {
+                        _uiState.value = _uiState.value.copy(showLoading = !_uiState.value.showLoading)
+                    }
                 )
             }
         }
@@ -92,6 +103,8 @@ class HomeViewModel @Inject constructor(
         _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
             message = context.getString(R.string.home_screen_dialog_logout_message)
         ) {
+            _uiState.value.onToggleLoading()
+
             launch {
                 userRepository.logout()
                 onSuccess()
