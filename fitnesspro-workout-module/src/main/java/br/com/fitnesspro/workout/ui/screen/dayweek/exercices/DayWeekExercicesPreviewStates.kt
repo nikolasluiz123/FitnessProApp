@@ -1,8 +1,8 @@
-package br.com.fitnesspro.workout.ui.screen.dayweekexcercices
+package br.com.fitnesspro.workout.ui.screen.dayweek.exercices
 
 import br.com.fitnesspro.to.TOExercise
-import br.com.fitnesspro.workout.ui.screen.dayweekexcercices.decorator.DayWeekExercicesGroupDecorator
-import br.com.fitnesspro.workout.ui.screen.dayweekworkout.decorator.WorkoutGroupDecorator
+import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
+import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekExercisesUIState
 import java.util.UUID
 

@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.dayweekexcercices
+package br.com.fitnesspro.workout.ui.screen.dayweek.exercices
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -24,10 +24,10 @@ import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.R
-import br.com.fitnesspro.workout.ui.screen.dayweekexcercices.decorator.DayWeekExercicesGroupDecorator
-import br.com.fitnesspro.workout.ui.screen.dayweekworkout.DayWeekWorkoutItem
-import br.com.fitnesspro.workout.ui.screen.dayweekworkout.WorkoutGroupItem
-import br.com.fitnesspro.workout.ui.screen.dayweekworkout.decorator.WorkoutGroupDecorator
+import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
+import br.com.fitnesspro.workout.ui.screen.dayweek.workout.DayWeekWorkoutItem
+import br.com.fitnesspro.workout.ui.screen.dayweek.workout.WorkoutGroupItem
+import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekExercisesUIState
 
 @OptIn(ExperimentalMaterial3Api::class)

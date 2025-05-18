@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.currentworkout
+package br.com.fitnesspro.workout.ui.screen.dayweek.workout
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -9,73 +9,82 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
+import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.list.LazyVerticalList
+import br.com.fitnesspro.compose.components.list.grouped.LazyGroupedVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
-import br.com.fitnesspro.workout.ui.state.CurrentWorkoutUIState
+import br.com.fitnesspro.workout.ui.state.DayWeekWorkoutUIState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CurrentWorkoutScreen(
-    state: CurrentWorkoutUIState
-) {
+fun DayWeekWorkoutScreen(state: DayWeekWorkoutUIState) {
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
-                title = state.title!!,
-                subtitle = state.subtitle!!
+                title = state.title,
+                subtitle = state.subtitle
             )
+        },
+        floatingActionButton = {
+            if (state.showFabAddExercise) {
+                FloatingActionButtonAdd(
+                    onClick = {
+
+                    }
+                )
+            }
         }
-    ) { paddingValues ->
+    ) { padding ->
         ConstraintLayout(
             Modifier
-                .padding(paddingValues)
+                .padding(padding)
                 .fillMaxSize()
         ) {
-            val (listRef) = createRefs()
+            val (workoutList) = createRefs()
 
             FitnessProMessageDialog(state = state.messageDialogState)
 
-            LazyVerticalList(
+            LazyGroupedVerticalList(
                 modifier = Modifier
                     .fillMaxSize()
-                    .constrainAs(listRef) {
+                    .constrainAs(workoutList) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         bottom.linkTo(parent.bottom)
                     },
-                items = state.items,
-                emptyMessageResId = R.string.current_workout_empty_message
-            ) {
-                CurrentWorkoutItem(it)
-            }
+                groups = state.dayWeekWorkoutGroups,
+                emptyMessageResId = R.string.day_week_workout_empty_message,
+                groupLayout = { groupDecorator ->
+                    WorkoutGroupItem(groupDecorator)
+                },
+                itemLayout = { itemDecorator ->
+                    DayWeekWorkoutItem(itemDecorator)
+                }
+            )
         }
     }
 }
 
 @Preview(device = "id:small_phone")
 @Composable
-private fun CurrentWorkoutScreenPreview() {
+fun DayWeekWorkoutScreenPreview() {
     FitnessProTheme {
         Surface {
-            CurrentWorkoutScreen(
-                state = currentWorkoutState
-            )
+            DayWeekWorkoutScreen(dayWeekWorkoutScreenDefaultState)
         }
     }
 }
 
-
 @Preview(device = "id:small_phone")
 @Composable
-private fun CurrentWorkoutScreenPreviewDark() {
+fun DayWeekWorkoutScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
-            CurrentWorkoutScreen(
-                state = currentWorkoutState
+            DayWeekWorkoutScreen(
+                state = dayWeekWorkoutScreenDefaultState
             )
         }
     }
@@ -83,23 +92,21 @@ private fun CurrentWorkoutScreenPreviewDark() {
 
 @Preview(device = "id:small_phone")
 @Composable
-private fun CurrentWorkoutScreenEmptyPreview() {
+fun DayWeekWorkoutScreenProfessionalPreview() {
     FitnessProTheme {
         Surface {
-            CurrentWorkoutScreen(
-                state = currentWorkoutEmptyState
-            )
+            DayWeekWorkoutScreen(dayWeekWorkoutScreenProfessionalState)
         }
     }
 }
 
 @Preview(device = "id:small_phone")
 @Composable
-private fun CurrentWorkoutScreenEmptyPreviewDark() {
+fun DayWeekWorkoutScreenProfessionalPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
-            CurrentWorkoutScreen(
-                state = currentWorkoutEmptyState
+            DayWeekWorkoutScreen(
+                state = dayWeekWorkoutScreenProfessionalState
             )
         }
     }

@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.membersworkout
+package br.com.fitnesspro.workout.ui.screen.members.workout
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,7 +17,7 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
-import br.com.fitnesspro.workout.ui.screen.membersworkout.decorator.MemberWorkoutDecorator
+import br.com.fitnesspro.workout.ui.screen.members.workout.decorator.MemberWorkoutDecorator
 
 @Composable
 fun MemberWorkoutItem(decorator: MemberWorkoutDecorator) {

@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.dayweekworkout
+package br.com.fitnesspro.workout.ui.screen.current.workout
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -9,60 +9,73 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
-import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.list.grouped.LazyGroupedVerticalList
+import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
-import br.com.fitnesspro.workout.ui.state.DayWeekWorkoutUIState
+import br.com.fitnesspro.workout.ui.state.CurrentWorkoutUIState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DayWeekWorkoutScreen(state: DayWeekWorkoutUIState) {
+fun CurrentWorkoutScreen(
+    state: CurrentWorkoutUIState
+) {
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
-                title = state.title,
-                subtitle = state.subtitle
+                title = state.title!!,
+                subtitle = state.subtitle!!
             )
-        },
-        floatingActionButton = {
-            if (state.showFabAddExercise) {
-                FloatingActionButtonAdd(
-                    onClick = {
-
-                    }
-                )
-            }
         }
-    ) { padding ->
+    ) { paddingValues ->
         ConstraintLayout(
             Modifier
-                .padding(padding)
+                .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            val (workoutList) = createRefs()
+            val (listRef) = createRefs()
 
             FitnessProMessageDialog(state = state.messageDialogState)
 
-            LazyGroupedVerticalList(
+            LazyVerticalList(
                 modifier = Modifier
                     .fillMaxSize()
-                    .constrainAs(workoutList) {
+                    .constrainAs(listRef) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         bottom.linkTo(parent.bottom)
                     },
-                groups = state.dayWeekWorkoutGroups,
-                emptyMessageResId = R.string.day_week_workout_empty_message,
-                groupLayout = { groupDecorator ->
-                    WorkoutGroupItem(groupDecorator)
-                },
-                itemLayout = { itemDecorator ->
-                    DayWeekWorkoutItem(itemDecorator)
-                }
+                items = state.items,
+                emptyMessageResId = R.string.current_workout_empty_message
+            ) {
+                CurrentWorkoutItem(it)
+            }
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun CurrentWorkoutScreenPreview() {
+    FitnessProTheme {
+        Surface {
+            CurrentWorkoutScreen(
+                state = currentWorkoutState
+            )
+        }
+    }
+}
+
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun CurrentWorkoutScreenPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            CurrentWorkoutScreen(
+                state = currentWorkoutState
             )
         }
     }
@@ -70,21 +83,11 @@ fun DayWeekWorkoutScreen(state: DayWeekWorkoutUIState) {
 
 @Preview(device = "id:small_phone")
 @Composable
-fun DayWeekWorkoutScreenPreview() {
+private fun CurrentWorkoutScreenEmptyPreview() {
     FitnessProTheme {
         Surface {
-            DayWeekWorkoutScreen(dayWeekWorkoutScreenDefaultState)
-        }
-    }
-}
-
-@Preview(device = "id:small_phone")
-@Composable
-fun DayWeekWorkoutScreenPreviewDark() {
-    FitnessProTheme(darkTheme = true) {
-        Surface {
-            DayWeekWorkoutScreen(
-                state = dayWeekWorkoutScreenDefaultState
+            CurrentWorkoutScreen(
+                state = currentWorkoutEmptyState
             )
         }
     }
@@ -92,21 +95,11 @@ fun DayWeekWorkoutScreenPreviewDark() {
 
 @Preview(device = "id:small_phone")
 @Composable
-fun DayWeekWorkoutScreenProfessionalPreview() {
-    FitnessProTheme {
-        Surface {
-            DayWeekWorkoutScreen(dayWeekWorkoutScreenProfessionalState)
-        }
-    }
-}
-
-@Preview(device = "id:small_phone")
-@Composable
-fun DayWeekWorkoutScreenProfessionalPreviewDark() {
+private fun CurrentWorkoutScreenEmptyPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
-            DayWeekWorkoutScreen(
-                state = dayWeekWorkoutScreenProfessionalState
+            CurrentWorkoutScreen(
+                state = currentWorkoutEmptyState
             )
         }
     }

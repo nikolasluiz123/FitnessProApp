@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.membersworkout
+package br.com.fitnesspro.workout.ui.screen.members.workout
 
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize

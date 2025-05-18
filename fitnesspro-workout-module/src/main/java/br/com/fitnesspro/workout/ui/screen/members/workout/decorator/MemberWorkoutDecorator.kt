@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.membersworkout.decorator
+package br.com.fitnesspro.workout.ui.screen.members.workout.decorator
 
 import java.time.LocalDate
 

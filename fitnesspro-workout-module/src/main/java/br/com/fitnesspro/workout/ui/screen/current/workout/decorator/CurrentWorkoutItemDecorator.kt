@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.currentworkout.decorator
+package br.com.fitnesspro.workout.ui.screen.current.workout.decorator
 
 import java.time.DayOfWeek
 

@@ -1,7 +1,7 @@
-package br.com.fitnesspro.workout.ui.screen.dayweekworkout
+package br.com.fitnesspro.workout.ui.screen.dayweek.workout
 
 import br.com.fitnesspro.to.TOExercise
-import br.com.fitnesspro.workout.ui.screen.dayweekworkout.decorator.WorkoutGroupDecorator
+import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekWorkoutUIState
 import java.time.Duration
 

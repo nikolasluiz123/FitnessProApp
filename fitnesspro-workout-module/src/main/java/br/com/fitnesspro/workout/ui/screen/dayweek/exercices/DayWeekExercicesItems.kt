@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.dayweekexcercices
+package br.com.fitnesspro.workout.ui.screen.dayweek.exercices
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.LabelGroupTextStyle
-import br.com.fitnesspro.workout.ui.screen.dayweekexcercices.decorator.DayWeekExercicesGroupDecorator
+import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
 
 @Composable
 fun DayWeekWorkoutGroupItem(decorator: DayWeekExercicesGroupDecorator) {

@@ -1,6 +1,6 @@
-package br.com.fitnesspro.workout.ui.screen.currentworkout
+package br.com.fitnesspro.workout.ui.screen.current.workout
 
-import br.com.fitnesspro.workout.ui.screen.currentworkout.decorator.CurrentWorkoutItemDecorator
+import br.com.fitnesspro.workout.ui.screen.current.workout.decorator.CurrentWorkoutItemDecorator
 import br.com.fitnesspro.workout.ui.state.CurrentWorkoutUIState
 import java.time.DayOfWeek
 

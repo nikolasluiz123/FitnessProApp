@@ -2,7 +2,7 @@ package br.com.fitnesspro.workout.ui.state
 
 import br.com.fitnesspro.core.state.ILoadingUIState
 import br.com.fitnesspro.core.state.MessageDialogState
-import br.com.fitnesspro.workout.ui.screen.dayweekexcercices.decorator.DayWeekExercicesGroupDecorator
+import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
 
 data class DayWeekExercisesUIState(
     var title: String? = null,

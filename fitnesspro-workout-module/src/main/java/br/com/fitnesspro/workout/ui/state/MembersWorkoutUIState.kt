@@ -1,7 +1,7 @@
 package br.com.fitnesspro.workout.ui.state
 
 import br.com.fitnesspro.core.state.MessageDialogState
-import br.com.fitnesspro.workout.ui.screen.membersworkout.decorator.MemberWorkoutDecorator
+import br.com.fitnesspro.workout.ui.screen.members.workout.decorator.MemberWorkoutDecorator
 
 data class MembersWorkoutUIState(
     val messageDialogState: MessageDialogState = MessageDialogState(),
