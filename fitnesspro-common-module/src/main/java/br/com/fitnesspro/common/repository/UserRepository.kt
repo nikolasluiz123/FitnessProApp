@@ -57,7 +57,7 @@ class UserRepository(
     private suspend fun authenticateFirebase(email: String, password: String) {
         try {
             firebaseDefaultAuthenticationService.authenticate(email, password)
-        } catch (ex: FirebaseAuthInvalidCredentialsException) {
+        } catch (_: FirebaseAuthInvalidCredentialsException) {
             firebaseDefaultAuthenticationService.register(email, password)
             firebaseDefaultAuthenticationService.authenticate(email, password)
         } catch (_: FirebaseNetworkException) {
