@@ -178,22 +178,4 @@ class SaveSchedulerConfigUseCase(
 
         return validationPair
     }
-
-    suspend fun createConfigBatch(toPersonList: List<TOPerson>): List<FieldValidationError<EnumValidatedSchedulerConfigFields>> {
-        val configs = toPersonList.map {
-            TOSchedulerConfig(personId = it.id)
-        }
-
-        val userTypes = toPersonList.map { it.user?.type!! }
-
-        val validationResults = configs.flatMapIndexed { index, it ->
-            validateSchedulerConfig(config = it, userType = userTypes[index])
-        }
-
-        if (validationResults.isEmpty()) {
-            schedulerConfigRepository.saveSchedulerConfigBatch(configs)
-        }
-
-        return validationResults
-    }
 }
