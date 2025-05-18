@@ -14,7 +14,6 @@ import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDec
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen.ACADEMY
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen.GENERAL
 import br.com.fitnesspro.common.ui.state.RegisterUserUIState
-import br.com.fitnesspro.common.usecase.person.EnumPersonValidationTypes
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
 import br.com.fitnesspro.compose.components.fields.menu.MenuItem
@@ -448,7 +447,7 @@ class RegisterUserViewModel @Inject constructor(
         }.toMutableList()
     }
 
-    private fun showValidationMessages(validationResults: List<FieldValidationError<EnumValidatedPersonFields, EnumPersonValidationTypes>>) {
+    private fun showValidationMessages(validationResults: List<FieldValidationError<EnumValidatedPersonFields>>) {
         validationResults.forEach {
             when (it.field) {
                 EnumValidatedPersonFields.NAME -> {

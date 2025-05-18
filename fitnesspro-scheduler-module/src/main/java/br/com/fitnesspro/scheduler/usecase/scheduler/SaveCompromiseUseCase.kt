@@ -5,7 +5,6 @@ import br.com.fitnesspro.core.exceptions.NoLoggingException
 import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.scheduler.R
-import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
 import br.com.fitnesspro.to.TOScheduler
@@ -21,7 +20,7 @@ class SaveCompromiseUseCase(
         toScheduler: TOScheduler,
         type: EnumSchedulerType,
         recurrentConfig: CompromiseRecurrentConfig? = null
-    ): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
+    ): MutableList<FieldValidationError<EnumValidatedCompromiseFields>> {
         if (!context.isNetworkAvailable()) {
             throw NoLoggingException(context.getString(R.string.network_required_save_schedule_message))
         }

@@ -10,7 +10,6 @@ import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
-import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
 import br.com.fitnesspro.to.TOScheduler
 import java.time.DayOfWeek
@@ -23,8 +22,8 @@ class SaveRecurrentCompromiseUseCase(
     private val personRepository: PersonRepository
 ): SaveCompromiseCommonUseCase(context, schedulerRepository, userRepository) {
 
-    suspend fun saveRecurrentCompromise(toScheduler: TOScheduler, config: CompromiseRecurrentConfig): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
-        val validations = mutableListOf<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>>()
+    suspend fun saveRecurrentCompromise(toScheduler: TOScheduler, config: CompromiseRecurrentConfig): MutableList<FieldValidationError<EnumValidatedCompromiseFields>> {
+        val validations = mutableListOf<FieldValidationError<EnumValidatedCompromiseFields>>()
         validations.addAll(validateCommonInfosRecurrentCompromise(toScheduler))
         validations.addAll(validateConfigRecurrentCompromise(toScheduler, config))
 
@@ -71,7 +70,7 @@ class SaveRecurrentCompromiseUseCase(
 
     private fun validateCommonInfosRecurrentCompromise(
         toScheduler: TOScheduler
-    ): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
+    ): MutableList<FieldValidationError<EnumValidatedCompromiseFields>> {
         val validationResults = mutableListOf(
             validateMember(toScheduler),
             validateHourStart(toScheduler, true),
@@ -83,7 +82,7 @@ class SaveRecurrentCompromiseUseCase(
         return validationResults.filterNotNull().toMutableList()
     }
 
-    private fun validateConfigRecurrentCompromise(toScheduler: TOScheduler, config: CompromiseRecurrentConfig): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
+    private fun validateConfigRecurrentCompromise(toScheduler: TOScheduler, config: CompromiseRecurrentConfig): MutableList<FieldValidationError<EnumValidatedCompromiseFields>> {
         val validationResults = mutableListOf(
             validateDateStart(config),
             validateDateEnd(config),
@@ -94,7 +93,7 @@ class SaveRecurrentCompromiseUseCase(
         return validationResults.filterNotNull().toMutableList()
     }
 
-    private fun validateDateStart(config: CompromiseRecurrentConfig): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    private fun validateDateStart(config: CompromiseRecurrentConfig): FieldValidationError<EnumValidatedCompromiseFields>? {
         return when {
             config.dateStart == null -> {
                 val message = context.getString(
@@ -104,7 +103,6 @@ class SaveRecurrentCompromiseUseCase(
 
                 FieldValidationError(
                     field = EnumValidatedCompromiseFields.DATE_START,
-                    validationType = EnumCompromiseValidationTypes.REQUIRED_DATE_START,
                     message = message
                 )
             }
@@ -113,7 +111,7 @@ class SaveRecurrentCompromiseUseCase(
         }
     }
 
-    private fun validateDateEnd(config: CompromiseRecurrentConfig): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    private fun validateDateEnd(config: CompromiseRecurrentConfig): FieldValidationError<EnumValidatedCompromiseFields>? {
         return when {
             config.dateEnd == null -> {
                 val message = context.getString(
@@ -123,7 +121,6 @@ class SaveRecurrentCompromiseUseCase(
 
                 FieldValidationError(
                     field = EnumValidatedCompromiseFields.DATE_END,
-                    validationType = EnumCompromiseValidationTypes.REQUIRED_DATE_END,
                     message = message
                 )
             }
@@ -132,7 +129,7 @@ class SaveRecurrentCompromiseUseCase(
         }
     }
 
-    private fun validateDatePeriod(config: CompromiseRecurrentConfig): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    private fun validateDatePeriod(config: CompromiseRecurrentConfig): FieldValidationError<EnumValidatedCompromiseFields>? {
         if (config.dateStart == null || config.dateEnd == null) return null
 
         return when {
@@ -141,7 +138,6 @@ class SaveRecurrentCompromiseUseCase(
 
                 FieldValidationError(
                     field = null,
-                    validationType = EnumCompromiseValidationTypes.INVALID_DATE_PERIOD,
                     message = message
                 )
             }
@@ -150,7 +146,7 @@ class SaveRecurrentCompromiseUseCase(
         }
     }
 
-    private fun validateDayOfWeeks(toScheduler: TOScheduler, config: CompromiseRecurrentConfig): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    private fun validateDayOfWeeks(toScheduler: TOScheduler, config: CompromiseRecurrentConfig): FieldValidationError<EnumValidatedCompromiseFields>? {
         val requiredFields = listOf(
             config.dateStart,
             config.dateEnd,
@@ -170,7 +166,6 @@ class SaveRecurrentCompromiseUseCase(
 
                 FieldValidationError(
                     field = null,
-                    validationType = EnumCompromiseValidationTypes.REQUIRED_DAY_OF_WEEKS,
                     message = message
                 )
             }
@@ -179,7 +174,7 @@ class SaveRecurrentCompromiseUseCase(
         }
     }
 
-    private suspend fun validateSchedulerConflictRecurrentCompromise(schedules: List<TOScheduler>): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    private suspend fun validateSchedulerConflictRecurrentCompromise(schedules: List<TOScheduler>): FieldValidationError<EnumValidatedCompromiseFields>? {
         val member = personRepository.getTOPersonById(schedules.first().academyMemberPersonId!!)
         val conflicts = schedules.filter { scheduler ->
             schedulerRepository.getHasSchedulerConflict(
@@ -203,7 +198,6 @@ class SaveRecurrentCompromiseUseCase(
 
             FieldValidationError(
                 field = null,
-                validationType = EnumCompromiseValidationTypes.RECURRENT_SCHEDULER_CONFLICT,
                 message = message
             )
         } else {

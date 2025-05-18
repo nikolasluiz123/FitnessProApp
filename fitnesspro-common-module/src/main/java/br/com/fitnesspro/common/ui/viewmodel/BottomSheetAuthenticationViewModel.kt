@@ -8,7 +8,6 @@ import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.state.BottomSheetAuthenticationUIState
 import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
 import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
-import br.com.fitnesspro.common.usecase.login.enums.EnumLoginValidationTypes
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.callback.showConfirmationDialog
@@ -141,7 +140,7 @@ class BottomSheetAuthenticationViewModel @Inject constructor(
         }
     }
 
-    private fun showValidationMessages(validationsResult: List<FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>>) {
+    private fun showValidationMessages(validationsResult: List<FieldValidationError<EnumValidatedLoginFields>>) {
         val dialogValidations = validationsResult.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {

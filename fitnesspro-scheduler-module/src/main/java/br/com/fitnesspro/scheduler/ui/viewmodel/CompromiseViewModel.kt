@@ -41,7 +41,6 @@ import br.com.fitnesspro.scheduler.ui.state.CompromiseUIState
 import br.com.fitnesspro.scheduler.usecase.scheduler.CancelSchedulerUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.ConfirmationSchedulerUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseUseCase
-import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.DATE_END
@@ -686,7 +685,7 @@ class CompromiseViewModel @Inject constructor(
         }
     }
 
-    private fun showFieldsValidationMessages(validationResults: MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>>) {
+    private fun showFieldsValidationMessages(validationResults: MutableList<FieldValidationError<EnumValidatedCompromiseFields>>) {
         val dialogValidations = validationResults.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {

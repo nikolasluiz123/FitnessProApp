@@ -4,7 +4,6 @@ import android.content.Context
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.common.usecase.login.enums.EnumLoginValidationTypes
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.EMAIL
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.PASSWORD
@@ -20,7 +19,7 @@ class DefaultLoginUseCase(
     private val personRepository: PersonRepository,
 ) {
 
-    suspend fun execute(email: String?, password: String?, authAgain: Boolean = false): List<FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>> {
+    suspend fun execute(email: String?, password: String?, authAgain: Boolean = false): List<FieldValidationError<EnumValidatedLoginFields>> {
         val validationsResults = mutableListOf(
             validateEmail(email),
             validatePassword(password),
@@ -39,7 +38,7 @@ class DefaultLoginUseCase(
         return validationsResults
     }
 
-    private fun validatePassword(password: String?): FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>? {
+    private fun validatePassword(password: String?): FieldValidationError<EnumValidatedLoginFields>? {
         return when {
             password?.trim().isNullOrEmpty() -> {
                 val message = context.getString(
@@ -50,7 +49,6 @@ class DefaultLoginUseCase(
                 FieldValidationError(
                     field = PASSWORD,
                     message = message,
-                    validationType = EnumLoginValidationTypes.REQUIRED_PASSWORD
                 )
             }
 
@@ -58,7 +56,7 @@ class DefaultLoginUseCase(
         }
     }
 
-    private fun validateEmail(email: String?): FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>? {
+    private fun validateEmail(email: String?): FieldValidationError<EnumValidatedLoginFields>? {
         return when {
             email?.trim().isNullOrEmpty() -> {
                 val message = context.getString(
@@ -69,7 +67,6 @@ class DefaultLoginUseCase(
                 FieldValidationError(
                     field = EMAIL,
                     message = message,
-                    validationType = EnumLoginValidationTypes.REQUIRED_EMAIL
                 )
             }
 
@@ -81,7 +78,7 @@ class DefaultLoginUseCase(
         email: String?,
         password: String?,
         authAgain: Boolean
-    ): FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>? {
+    ): FieldValidationError<EnumValidatedLoginFields>? {
         val emailTrimmed = email?.trim()
         val passwordTrimmed = password?.trim()
 
@@ -98,7 +95,6 @@ class DefaultLoginUseCase(
             return FieldValidationError(
                 field = null,
                 message = context.getString(R.string.validation_msg_network_required_login),
-                validationType = EnumLoginValidationTypes.INVALID_CREDENTIALS
             )
         }
 
@@ -108,7 +104,6 @@ class DefaultLoginUseCase(
             return FieldValidationError(
                 field = null,
                 message = findPersonRemoteResponse.error!!,
-                validationType = EnumLoginValidationTypes.INVALID_CREDENTIALS
             )
         }
 
@@ -131,7 +126,6 @@ class DefaultLoginUseCase(
                 FieldValidationError(
                     field = null,
                     message = context.getString(R.string.validation_msg_invalid_credetials_login),
-                    validationType = EnumLoginValidationTypes.INVALID_CREDENTIALS
                 )
             }
 
@@ -139,7 +133,6 @@ class DefaultLoginUseCase(
                 FieldValidationError(
                     field = null,
                     message = context.getString(R.string.validation_msg_not_same_user_auth_again),
-                    validationType = EnumLoginValidationTypes.RE_AUTHENTICATION_DIFF_USER
                 )
             }
 

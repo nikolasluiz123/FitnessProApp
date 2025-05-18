@@ -8,7 +8,6 @@ import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
-import br.com.fitnesspro.common.usecase.scheduler.enums.EnumSchedulerConfigValidationTypes
 import br.com.fitnesspro.common.usecase.scheduler.enums.EnumValidatedSchedulerConfigFields
 import br.com.fitnesspro.compose.components.fields.state.SwitchButtonField
 import br.com.fitnesspro.compose.components.fields.state.TextField
@@ -188,7 +187,7 @@ class SchedulerConfigViewModel @Inject constructor(
         }
     }
 
-    private fun showValidationMessage(validationResults: MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields, EnumSchedulerConfigValidationTypes>>) {
+    private fun showValidationMessage(validationResults: MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields>>) {
         val dialogValidations = validationResults.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {

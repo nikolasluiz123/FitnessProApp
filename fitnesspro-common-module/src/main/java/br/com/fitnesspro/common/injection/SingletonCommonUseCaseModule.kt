@@ -3,13 +3,10 @@ package br.com.fitnesspro.common.injection
 import android.content.Context
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
-import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeBatchUseCase
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeUseCase
 import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
 import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
-import br.com.fitnesspro.common.usecase.person.SavePersonBatchUseCase
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.core.security.DefaultPasswordHasher
@@ -29,16 +26,14 @@ class SingletonCommonUseCaseModule {
         @ApplicationContext context: Context,
         userRepository: UserRepository,
         personRepository: PersonRepository,
-        saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase,
-        schedulerConfigRepository: SchedulerConfigRepository
+        saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase
     ): SavePersonUseCase {
         return SavePersonUseCase(
             context = context,
             userRepository = userRepository,
             personRepository = personRepository,
             saveSchedulerConfigUseCase = saveSchedulerConfigUseCase,
-            passwordHasher = DefaultPasswordHasher(),
-            schedulerConfigRepository = schedulerConfigRepository
+            passwordHasher = DefaultPasswordHasher()
         )
     }
 
@@ -59,17 +54,6 @@ class SingletonCommonUseCaseModule {
     }
 
     @Provides
-    fun provideSavePersonAcademyTimeBatchUseCase(
-        @ApplicationContext context: Context,
-        academyRepository: AcademyRepository,
-    ): SavePersonAcademyTimeBatchUseCase {
-        return SavePersonAcademyTimeBatchUseCase(
-            context = context,
-            academyRepository = academyRepository,
-        )
-    }
-
-    @Provides
     fun provideLoginUseCase(
         @ApplicationContext context: Context,
         userRepository: UserRepository,
@@ -81,25 +65,6 @@ class SingletonCommonUseCaseModule {
             userRepository = userRepository,
             passwordHasher = passwordHasher,
             personRepository = personRepository
-        )
-    }
-
-    @Provides
-    fun provideSavePersonMockUseCase(
-        @ApplicationContext context: Context,
-        userRepository: UserRepository,
-        personRepository: PersonRepository,
-        saveSchedulerConfigUseCase: SaveSchedulerConfigUseCase,
-        passwordHasher: IPasswordHasher,
-        schedulerConfigRepository: SchedulerConfigRepository
-    ): SavePersonBatchUseCase {
-        return SavePersonBatchUseCase(
-            context = context,
-            userRepository = userRepository,
-            personRepository = personRepository,
-            saveSchedulerConfigUseCase = saveSchedulerConfigUseCase,
-            passwordHasher = passwordHasher,
-            schedulerConfigRepository = schedulerConfigRepository
         )
     }
 
