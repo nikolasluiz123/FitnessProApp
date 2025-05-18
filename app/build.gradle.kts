@@ -22,7 +22,6 @@ android {
         versionName = "1.1.2"
 
         android.buildFeatures.buildConfig = true
-        testInstrumentationRunner = "br.com.fitnesspro.runner.FitnessProCustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }

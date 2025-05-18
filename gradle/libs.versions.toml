@@ -40,7 +40,6 @@ crashlyticsPluginVersion = "3.0.3"
 perfPluginVersion = "1.4.2"
 googlePlayAuthVersion = "21.3.0"
 workVersion = "2.10.1"
-junit = "1.2.1"
 sharedCommunicationVersion = "1.0.2-SNAPSHOT"
 
 [libraries]
@@ -102,7 +101,6 @@ firebase-performance = { group = "com.google.firebase", name = "firebase-perf" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
 work-runtime = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workVersion" }
-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 
 fitnesspro-shared-communication = { group = "br.com", name = "fitnesspro-shared-communication", version.ref = "sharedCommunicationVersion" }
 
