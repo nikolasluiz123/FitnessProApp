@@ -41,7 +41,7 @@ perfPluginVersion = "1.4.2"
 googlePlayAuthVersion = "21.3.0"
 workVersion = "2.10.1"
 junit = "1.2.1"
-sharedCommunicationVersion = "1.0.1-SNAPSHOT"
+sharedCommunicationVersion = "1.0.2-SNAPSHOT"
 
 [libraries]
 splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
