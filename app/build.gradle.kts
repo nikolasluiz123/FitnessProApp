@@ -10,9 +10,26 @@ plugins {
     alias(libs.plugins.firebase.performance)
 }
 
+//val keystoreProperties = Properties()
+//val keystorePropertiesFile = rootProject.file("keystore.properties")
+//if (keystorePropertiesFile.exists()) {
+//    keystoreProperties.load(keystorePropertiesFile.inputStream())
+//}
+
 android {
     namespace = "br.com.fitnesspro"
     compileSdk = 35
+
+//    signingConfigs {
+//        create("release") {
+//            if (keystoreProperties.isNotEmpty()) {
+//                storeFile = file(keystoreProperties["storeFile"] as String)
+//                storePassword = keystoreProperties["storePassword"] as String
+//                keyAlias = keystoreProperties["keyAlias"] as String
+//                keyPassword = keystoreProperties["keyPassword"] as String
+//            }
+//        }
+//    }
 
     defaultConfig {
         applicationId = "br.com.fitnesspro"
@@ -31,6 +48,9 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+//            signingConfig = signingConfigs.getByName("release")
+//            isDebuggable = true
         }
         debug {
             isMinifyEnabled = false
