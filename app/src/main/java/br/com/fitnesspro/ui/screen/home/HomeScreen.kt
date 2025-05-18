@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import br.com.fitnesspro.BuildConfig
 import br.com.fitnesspro.R
 import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.compose.components.buttons.SquaredButton
@@ -280,7 +281,7 @@ fun HomeScreen(
                         width = Dimension.fillToConstraints
                         horizontalChainWeight = 0.5f
                     },
-                    text = stringResource(R.string.home_screen_app_version),
+                    text = BuildConfig.VERSION_NAME,
                     style = LabelTextStyle,
                     textAlign = TextAlign.End
                 )
