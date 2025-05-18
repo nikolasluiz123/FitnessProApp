@@ -17,9 +17,9 @@ import br.com.fitnesspro.shared.communication.responses.ImportationServiceRespon
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
+import java.io.InterruptedIOException
 import java.net.ConnectException
 import java.net.HttpURLConnection
-import java.net.SocketTimeoutException
 
 abstract class FitnessProWebClient(private val context: Context) {
 
@@ -38,13 +38,15 @@ abstract class FitnessProWebClient(private val context: Context) {
                 is ConnectException -> {
                     PersistenceServiceResponse<DTO>(
                         success = false,
-                        error = context.getString(R.string.message_connect_exception)
+                        error = context.getString(R.string.message_connect_exception),
+                        errorType = NETWORK
                     )
                 }
-                is SocketTimeoutException -> {
+                is InterruptedIOException -> {
                     PersistenceServiceResponse<DTO>(
                         success = false,
-                        error = context.getString(R.string.message_socket_timeout_exception)
+                        error = context.getString(R.string.message_connect_exception),
+                        errorType = NETWORK
                     )
                 }
                 else -> customExceptions(exception)
@@ -67,15 +69,17 @@ abstract class FitnessProWebClient(private val context: Context) {
                         executionLogId = "",
                         executionLogPackageId = "",
                         success = false,
-                        error = context.getString(R.string.message_connect_exception)
+                        error = context.getString(R.string.message_connect_exception),
+                        errorType = NETWORK
                     )
                 }
-                is SocketTimeoutException -> {
+                is InterruptedIOException -> {
                     ExportationServiceResponse(
                         executionLogId = "",
                         executionLogPackageId = "",
                         success = false,
-                        error = context.getString(R.string.message_socket_timeout_exception)
+                        error = context.getString(R.string.message_connect_exception),
+                        errorType = NETWORK
                     )
                 }
                 else -> customExceptions(exception)
@@ -97,14 +101,16 @@ abstract class FitnessProWebClient(private val context: Context) {
                     AuthenticationServiceResponse(
                         success = false,
                         error = context.getString(R.string.message_connect_exception),
-                        code = HttpURLConnection.HTTP_BAD_REQUEST
+                        code = HttpURLConnection.HTTP_BAD_REQUEST,
+                        errorType = NETWORK
                     )
                 }
-                is SocketTimeoutException -> {
+                is InterruptedIOException -> {
                     AuthenticationServiceResponse(
                         success = false,
-                        error = context.getString(R.string.message_socket_timeout_exception),
-                        code = HttpURLConnection.HTTP_UNAVAILABLE
+                        error = context.getString(R.string.message_connect_exception),
+                        code = HttpURLConnection.HTTP_UNAVAILABLE,
+                        errorType = NETWORK
                     )
                 }
                 else -> customExceptions(exception)
@@ -127,15 +133,17 @@ abstract class FitnessProWebClient(private val context: Context) {
                         values = emptyList(),
                         success = false,
                         error = context.getString(R.string.message_connect_exception),
-                        code = HttpURLConnection.HTTP_BAD_REQUEST
+                        code = HttpURLConnection.HTTP_BAD_REQUEST,
+                        errorType = NETWORK
                     )
                 }
-                is SocketTimeoutException -> {
+                is InterruptedIOException -> {
                     ReadServiceResponse(
                         values = emptyList(),
                         success = false,
-                        error = context.getString(R.string.message_socket_timeout_exception),
-                        code = HttpURLConnection.HTTP_UNAVAILABLE
+                        error = context.getString(R.string.message_connect_exception),
+                        code = HttpURLConnection.HTTP_UNAVAILABLE,
+                        errorType = NETWORK
                     )
                 }
                 else -> customExceptions(exception)
@@ -160,17 +168,19 @@ abstract class FitnessProWebClient(private val context: Context) {
                         values = emptyList(),
                         success = false,
                         error = context.getString(R.string.message_connect_exception),
-                        code = HttpURLConnection.HTTP_BAD_REQUEST
+                        code = HttpURLConnection.HTTP_BAD_REQUEST,
+                        errorType = NETWORK
                     )
                 }
-                is SocketTimeoutException -> {
+                is InterruptedIOException -> {
                     ImportationServiceResponse(
                         executionLogId = "",
                         executionLogPackageId = "",
                         values = emptyList(),
                         success = false,
-                        error = context.getString(R.string.message_socket_timeout_exception),
-                        code = HttpURLConnection.HTTP_UNAVAILABLE
+                        error = context.getString(R.string.message_connect_exception),
+                        code = HttpURLConnection.HTTP_UNAVAILABLE,
+                        errorType = NETWORK
                     )
                 }
                 else -> customExceptions(exception)
@@ -191,13 +201,15 @@ abstract class FitnessProWebClient(private val context: Context) {
                 is ConnectException -> {
                     SingleValueServiceResponse<DTO>(
                         success = false,
-                        error = context.getString(R.string.message_connect_exception)
+                        error = context.getString(R.string.message_connect_exception),
+                        errorType = NETWORK
                     )
                 }
-                is SocketTimeoutException -> {
+                is InterruptedIOException -> {
                     SingleValueServiceResponse<DTO>(
                         success = false,
-                        error = context.getString(R.string.message_socket_timeout_exception)
+                        error = context.getString(R.string.message_connect_exception),
+                        errorType = NETWORK
                     )
                 }
                 else -> customExceptions(exception)
@@ -219,14 +231,16 @@ abstract class FitnessProWebClient(private val context: Context) {
                     FitnessProServiceResponse(
                         success = false,
                         error = context.getString(R.string.message_connect_exception),
-                        code = HttpURLConnection.HTTP_BAD_REQUEST
+                        code = HttpURLConnection.HTTP_BAD_REQUEST,
+                        errorType = NETWORK
                     )
                 }
-                is SocketTimeoutException -> {
+                is InterruptedIOException -> {
                     FitnessProServiceResponse(
                         success = false,
-                        error = context.getString(R.string.message_socket_timeout_exception),
-                        code = HttpURLConnection.HTTP_UNAVAILABLE
+                        error = context.getString(R.string.message_connect_exception),
+                        code = HttpURLConnection.HTTP_UNAVAILABLE,
+                        errorType = NETWORK
                     )
                 }
                 else -> customExceptions(exception)

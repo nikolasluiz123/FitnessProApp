@@ -28,6 +28,7 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 @Composable
 fun RoundedGoogleButton(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     colors: IconButtonColors = IconButtonDefaults.iconButtonColors(
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -39,7 +40,8 @@ fun RoundedGoogleButton(
     IconButton(
         modifier = modifier.size(48.dp),
         onClick = onClick,
-        colors = colors
+        colors = colors,
+        enabled = enabled
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_google),

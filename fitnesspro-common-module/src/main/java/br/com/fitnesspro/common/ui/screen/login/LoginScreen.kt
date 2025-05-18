@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -21,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +35,7 @@ import br.com.fitnesspro.common.ui.bottomsheet.registeruser.OnNavigateToRegister
 import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginClick
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginWithGoogle
+import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_EMAIL_FIELD
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_GOOGLE_BUTTON
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_LOGIN_BUTTON
@@ -84,13 +87,13 @@ fun LoginScreen(
     onLoginWithGoogleClick: OnLoginWithGoogle? = null
 ) {
     val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
                 title = stringResource(R.string.login_screen_title),
                 showNavigationIcon = false,
-                showMenu = true
             )
         }
     ) { padding ->
@@ -164,6 +167,13 @@ fun LoginScreen(
                         field = state.password,
                         label = stringResource(R.string.login_screen_label_password),
                         keyboardOptions = LastPasswordKeyboardOptions,
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                keyboardController?.hide()
+                                Firebase.analytics.logButtonClick(EnumLoginScreenTags.LOGIN_SCREEN_DONE_BUTTON)
+                                onLoginClick?.onExecute(onNavigateToHome)
+                            }
+                        )
                     )
 
                     createHorizontalChain(registerButtonRef, loginButtonRef)
@@ -181,6 +191,7 @@ fun LoginScreen(
                             }
                             .padding(start = 8.dp),
                         label = stringResource(R.string.login_screen_label_button_login),
+                        enabled = state.showLoading.not(),
                         onClickListener = {
                             Firebase.analytics.logButtonClick(LOGIN_SCREEN_LOGIN_BUTTON)
                             onLoginClick?.onExecute(onNavigateToHome)
@@ -199,6 +210,7 @@ fun LoginScreen(
                                 width = Dimension.fillToConstraints
                             },
                         label = stringResource(R.string.login_screen_label_button_register),
+                        enabled = state.showLoading.not(),
                         onClickListener = {
                             Firebase.analytics.logButtonClick(LOGIN_SCREEN_REGISTER_BUTTON)
                             openBottomSheet = true
@@ -214,6 +226,7 @@ fun LoginScreen(
                                 top.linkTo(loginButtonRef.bottom)
                             }
                             .padding(end = 8.dp, top = 8.dp),
+                        enabled = state.showLoading.not(),
                         onClick = {
                             Firebase.analytics.logButtonClick(LOGIN_SCREEN_GOOGLE_BUTTON)
 
@@ -239,7 +252,6 @@ fun LoginScreen(
                         )
                     }
                 }
-
             }
         }
     }
@@ -270,6 +282,44 @@ private fun LoginScreenPreview() {
     FitnessProTheme {
         Surface {
             LoginScreen(state = LoginUIState())
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun LoginScreenDarkPreview() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            LoginScreen(state = LoginUIState())
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun LoginScreenDarkDisabledPreview() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            LoginScreen(
+                state = LoginUIState(
+                    showLoading = true
+                )
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun LoginScreenDisabledPreview() {
+    FitnessProTheme() {
+        Surface {
+            LoginScreen(
+                state = LoginUIState(
+                    showLoading = true
+                )
+            )
         }
     }
 }

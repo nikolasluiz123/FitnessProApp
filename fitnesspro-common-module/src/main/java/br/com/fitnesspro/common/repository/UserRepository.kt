@@ -16,6 +16,7 @@ import br.com.fitnesspro.mappers.getTOUser
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.shared.communication.dtos.general.AuthenticationDTO
 import br.com.fitnesspro.to.TOUser
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import kotlinx.coroutines.Dispatchers.IO
@@ -56,9 +57,11 @@ class UserRepository(
     private suspend fun authenticateFirebase(email: String, password: String) {
         try {
             firebaseDefaultAuthenticationService.authenticate(email, password)
-        } catch (ex: FirebaseAuthInvalidCredentialsException) {
+        } catch (_: FirebaseAuthInvalidCredentialsException) {
             firebaseDefaultAuthenticationService.register(email, password)
             firebaseDefaultAuthenticationService.authenticate(email, password)
+        } catch (_: FirebaseNetworkException) {
+            // Nao realizamos nenhuma acao pois o app deve funcionar offline
         }
     }
 

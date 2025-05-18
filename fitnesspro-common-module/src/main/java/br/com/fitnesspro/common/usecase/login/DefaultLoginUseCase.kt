@@ -4,12 +4,13 @@ import android.content.Context
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.common.usecase.login.enums.EnumLoginValidationTypes
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.EMAIL
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.PASSWORD
+import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.core.validation.FieldValidationError
+import br.com.fitnesspro.mappers.getTOPerson
 
 class DefaultLoginUseCase(
     private val context: Context,
@@ -18,7 +19,7 @@ class DefaultLoginUseCase(
     private val personRepository: PersonRepository,
 ) {
 
-    suspend fun execute(email: String?, password: String?, authAgain: Boolean = false): List<FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>> {
+    suspend fun execute(email: String?, password: String?, authAgain: Boolean = false): List<FieldValidationError<EnumValidatedLoginFields>> {
         val validationsResults = mutableListOf(
             validateEmail(email),
             validatePassword(password),
@@ -37,7 +38,7 @@ class DefaultLoginUseCase(
         return validationsResults
     }
 
-    private fun validatePassword(password: String?): FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>? {
+    private fun validatePassword(password: String?): FieldValidationError<EnumValidatedLoginFields>? {
         return when {
             password?.trim().isNullOrEmpty() -> {
                 val message = context.getString(
@@ -48,7 +49,6 @@ class DefaultLoginUseCase(
                 FieldValidationError(
                     field = PASSWORD,
                     message = message,
-                    validationType = EnumLoginValidationTypes.REQUIRED_PASSWORD
                 )
             }
 
@@ -56,7 +56,7 @@ class DefaultLoginUseCase(
         }
     }
 
-    private fun validateEmail(email: String?): FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>? {
+    private fun validateEmail(email: String?): FieldValidationError<EnumValidatedLoginFields>? {
         return when {
             email?.trim().isNullOrEmpty() -> {
                 val message = context.getString(
@@ -67,7 +67,6 @@ class DefaultLoginUseCase(
                 FieldValidationError(
                     field = EMAIL,
                     message = message,
-                    validationType = EnumLoginValidationTypes.REQUIRED_EMAIL
                 )
             }
 
@@ -79,7 +78,7 @@ class DefaultLoginUseCase(
         email: String?,
         password: String?,
         authAgain: Boolean
-    ): FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>? {
+    ): FieldValidationError<EnumValidatedLoginFields>? {
         val emailTrimmed = email?.trim()
         val passwordTrimmed = password?.trim()
 
@@ -87,30 +86,46 @@ class DefaultLoginUseCase(
             return null
         }
 
+        val networkAvailable = context.isNetworkAvailable()
         val invalidLength = emailTrimmed.length > EMAIL.maxLength || passwordTrimmed.length > PASSWORD.maxLength
         val hashedPassword = passwordHasher.hashPassword(passwordTrimmed)
-        var userNotExists = !userRepository.hasUserWithCredentials(emailTrimmed, hashedPassword)
-        val toPersonRemote = personRepository.findPersonByEmailRemote(emailTrimmed, hashedPassword)
+        var userNotExistsLocally = !userRepository.hasUserWithCredentials(emailTrimmed, hashedPassword)
 
+        if (!networkAvailable && userNotExistsLocally) {
+            return FieldValidationError(
+                field = null,
+                message = context.getString(R.string.validation_msg_network_required_login),
+            )
+        }
+
+        val findPersonRemoteResponse = personRepository.findPersonByEmailRemote(emailTrimmed, hashedPassword)
+
+        if (userNotExistsLocally && !findPersonRemoteResponse.success) {
+            return FieldValidationError(
+                field = null,
+                message = findPersonRemoteResponse.error!!,
+            )
+        }
+
+        val toPersonRemote = findPersonRemoteResponse.value?.getTOPerson()
         val authUser = userRepository.getAuthenticatedUser()
         val isSameUser = authUser?.email == emailTrimmed && authUser.password == hashedPassword
 
-        if (userNotExists && toPersonRemote != null) {
+        if (userNotExistsLocally && toPersonRemote != null) {
             personRepository.savePerson(
                 toPerson = toPersonRemote,
                 isRegisterServiceAuth = false,
                 forceInsertLocally = true
             )
 
-            userNotExists = false
+            userNotExistsLocally = false
         }
 
         return when {
-            invalidLength || userNotExists -> {
+            invalidLength || userNotExistsLocally -> {
                 FieldValidationError(
                     field = null,
                     message = context.getString(R.string.validation_msg_invalid_credetials_login),
-                    validationType = EnumLoginValidationTypes.INVALID_CREDENTIALS
                 )
             }
 
@@ -118,7 +133,6 @@ class DefaultLoginUseCase(
                 FieldValidationError(
                     field = null,
                     message = context.getString(R.string.validation_msg_not_same_user_auth_again),
-                    validationType = EnumLoginValidationTypes.RE_AUTHENTICATION_DIFF_USER
                 )
             }
 

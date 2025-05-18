@@ -8,7 +8,6 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
-import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
 import br.com.fitnesspro.to.TOScheduler
@@ -20,7 +19,7 @@ class SaveUniqueCompromiseUseCase(
     private val personRepository: PersonRepository
 ): SaveCompromiseCommonUseCase(context, schedulerRepository, userRepository) {
 
-    suspend fun saveUniqueCompromise(toScheduler: TOScheduler): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
+    suspend fun saveUniqueCompromise(toScheduler: TOScheduler): MutableList<FieldValidationError<EnumValidatedCompromiseFields>> {
         val validationResults = validateUniqueCompromise(toScheduler)
 
         if (validationResults.isEmpty()) {
@@ -30,7 +29,7 @@ class SaveUniqueCompromiseUseCase(
         return validationResults
     }
 
-    private suspend fun validateUniqueCompromise(toScheduler: TOScheduler): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
+    private suspend fun validateUniqueCompromise(toScheduler: TOScheduler): MutableList<FieldValidationError<EnumValidatedCompromiseFields>> {
         val validationResults = mutableListOf(
             validateMember(toScheduler),
             validateHourStart(toScheduler, false),
@@ -43,7 +42,7 @@ class SaveUniqueCompromiseUseCase(
         return validationResults.filterNotNull().toMutableList()
     }
 
-    private suspend fun validateSchedulerConflictMember(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    private suspend fun validateSchedulerConflictMember(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields>? {
         val requiredFields = listOf(
             scheduler.dateTimeStart,
             scheduler.dateTimeEnd,
@@ -74,7 +73,6 @@ class SaveUniqueCompromiseUseCase(
 
                 FieldValidationError(
                     field = null,
-                    validationType = EnumCompromiseValidationTypes.SCHEDULER_CONFLICT_MEMBER,
                     message = message
                 )
             }

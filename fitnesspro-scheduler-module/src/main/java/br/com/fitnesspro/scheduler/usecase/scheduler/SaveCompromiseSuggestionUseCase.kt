@@ -9,9 +9,6 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
-import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes
-import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.RECURRENT_SCHEDULER_CONFLICT
-import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumCompromiseValidationTypes.REQUIRED_PROFESSIONAL
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields.PROFESSIONAL
@@ -25,7 +22,7 @@ class SaveCompromiseSuggestionUseCase(
     private val personRepository: PersonRepository
 ): SaveCompromiseCommonUseCase(context, schedulerRepository, userRepository) {
 
-    suspend fun saveCompromiseSuggestion(toScheduler: TOScheduler): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
+    suspend fun saveCompromiseSuggestion(toScheduler: TOScheduler): MutableList<FieldValidationError<EnumValidatedCompromiseFields>> {
         val validationResults = validateCompromiseSuggestion(toScheduler)
 
         if (validationResults.isEmpty()) {
@@ -35,7 +32,7 @@ class SaveCompromiseSuggestionUseCase(
         return validationResults
     }
 
-    private suspend fun validateCompromiseSuggestion(toScheduler: TOScheduler): MutableList<FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>> {
+    private suspend fun validateCompromiseSuggestion(toScheduler: TOScheduler): MutableList<FieldValidationError<EnumValidatedCompromiseFields>> {
         val validationResults = mutableListOf(
             validateProfessional(toScheduler),
             validateSuggestionHourStart(toScheduler),
@@ -48,7 +45,7 @@ class SaveCompromiseSuggestionUseCase(
         return validationResults.filterNotNull().toMutableList()
     }
 
-    private fun validateProfessional(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    private fun validateProfessional(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields>? {
         return when {
             scheduler.professionalPersonId.isNullOrEmpty() -> {
                 val message = context.getString(
@@ -58,7 +55,6 @@ class SaveCompromiseSuggestionUseCase(
 
                 FieldValidationError(
                     field = PROFESSIONAL,
-                    validationType = REQUIRED_PROFESSIONAL,
                     message = message
                 )
             }
@@ -67,7 +63,7 @@ class SaveCompromiseSuggestionUseCase(
         }
     }
 
-    private suspend fun validateSuggestionHourStart(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    private suspend fun validateSuggestionHourStart(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields>? {
         var validationResult = validateHourStart(scheduler, false)
 
         if (validationResult == null) {
@@ -94,7 +90,6 @@ class SaveCompromiseSuggestionUseCase(
 
                     FieldValidationError(
                         field = EnumValidatedCompromiseFields.HOUR_START,
-                        validationType = EnumCompromiseValidationTypes.START_HOUR_OUT_OF_WORK_TIME_RANGE,
                         message = message
                     )
                 }
@@ -106,7 +101,7 @@ class SaveCompromiseSuggestionUseCase(
         return validationResult
     }
 
-    private suspend fun validateSuggestionHourEnd(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    private suspend fun validateSuggestionHourEnd(scheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields>? {
         var validationResult = validateHourEnd(scheduler)
 
         if (validationResult == null) {
@@ -132,7 +127,6 @@ class SaveCompromiseSuggestionUseCase(
 
                     FieldValidationError(
                         field = EnumValidatedCompromiseFields.HOUR_END,
-                        validationType = EnumCompromiseValidationTypes.END_HOUR_OUT_OF_WORK_TIME_RANGE,
                         message = message
                     )
                 }
@@ -144,7 +138,7 @@ class SaveCompromiseSuggestionUseCase(
         return validationResult
     }
 
-    private suspend fun validateSchedulerConflictProfessional(toScheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields, EnumCompromiseValidationTypes>? {
+    private suspend fun validateSchedulerConflictProfessional(toScheduler: TOScheduler): FieldValidationError<EnumValidatedCompromiseFields>? {
         val requiredFields = listOf(
             toScheduler.dateTimeStart,
             toScheduler.dateTimeEnd,
@@ -175,7 +169,6 @@ class SaveCompromiseSuggestionUseCase(
 
                 FieldValidationError(
                     field = null,
-                    validationType = RECURRENT_SCHEDULER_CONFLICT,
                     message = message
                 )
             }

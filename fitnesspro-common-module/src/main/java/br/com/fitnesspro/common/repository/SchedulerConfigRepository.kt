@@ -47,41 +47,6 @@ class SchedulerConfigRepository(
         }
     }
 
-    suspend fun saveSchedulerConfigBatch(toSchedulerConfigs: List<TOSchedulerConfig>) = withContext(IO) {
-        saveSchedulerConfigBatchLocally(toSchedulerConfigs)
-        saveSchedulerConfigBatchRemote(toSchedulerConfigs)
-    }
-
-    private suspend fun saveSchedulerConfigBatchLocally(toSchedulerConfigs: List<TOSchedulerConfig>) {
-        val insertionList = mutableListOf<SchedulerConfig>()
-        val updateList = mutableListOf<SchedulerConfig>()
-
-        toSchedulerConfigs.forEach { toSchedulerConfig ->
-            val schedulerConfig = toSchedulerConfig.getSchedulerConfig()
-
-            if (toSchedulerConfig.id == null) {
-                insertionList.add(schedulerConfig)
-            } else {
-                updateList.add(schedulerConfig)
-            }
-        }
-
-        if (insertionList.isNotEmpty()) {
-            schedulerConfigDAO.insertBatch(insertionList)
-        }
-
-        if (updateList.isNotEmpty()) {
-            schedulerConfigDAO.updateBatch(updateList)
-        }
-    }
-
-    private suspend fun saveSchedulerConfigBatchRemote(toSchedulerConfigs: List<TOSchedulerConfig>) {
-        schedulerWebClient.saveSchedulerConfigBatch(
-            token = getValidToken(),
-            schedulerConfigList = toSchedulerConfigs.map { it.getSchedulerConfig() }
-        )
-    }
-
     suspend fun getTOSchedulerConfigByPersonId(personId: String): TOSchedulerConfig? = withContext(IO) {
          schedulerConfigDAO.findSchedulerConfigByPersonId(personId)?.let(SchedulerConfig::getTOSchedulerConfig)
     }

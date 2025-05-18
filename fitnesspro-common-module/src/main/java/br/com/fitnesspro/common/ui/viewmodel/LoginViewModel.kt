@@ -7,7 +7,6 @@ import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.state.LoginUIState
 import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
 import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
-import br.com.fitnesspro.common.usecase.login.enums.EnumLoginValidationTypes
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.callback.showConfirmationDialog
@@ -163,19 +162,19 @@ class LoginViewModel @Inject constructor(
         launch {
             _uiState.value.onToggleLoading()
 
-            val googleAuthResult = googleLoginUseCase()
+            googleLoginUseCase()?.let { googleAuthResult ->
+                when {
+                    googleAuthResult.success.not() -> {
+                        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(googleAuthResult.errorMessage!!)
+                    }
 
-            when {
-                googleAuthResult.success.not() -> {
-                    _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(googleAuthResult.errorMessage!!)
-                }
+                    googleAuthResult.userExists -> {
+                        onSuccess()
+                    }
 
-                googleAuthResult.userExists -> {
-                    onSuccess()
-                }
-
-                else -> {
-                    onUserNotExistsLocal(googleAuthResult.toPerson!!)
+                    else -> {
+                        onUserNotExistsLocal(googleAuthResult.toPerson!!)
+                    }
                 }
             }
 
@@ -183,7 +182,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun showValidationMessages(validationsResult: List<FieldValidationError<EnumValidatedLoginFields, EnumLoginValidationTypes>>) {
+    private fun showValidationMessages(validationsResult: List<FieldValidationError<EnumValidatedLoginFields>>) {
         val dialogValidations = validationsResult.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {

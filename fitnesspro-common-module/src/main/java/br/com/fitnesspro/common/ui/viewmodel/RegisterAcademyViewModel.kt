@@ -11,7 +11,6 @@ import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.navigation.RegisterAcademyScreenArgs
 import br.com.fitnesspro.common.ui.state.RegisterAcademyUIState
-import br.com.fitnesspro.common.usecase.academy.EnumAcademyValidationTypes
 import br.com.fitnesspro.common.usecase.academy.EnumValidatedAcademyFields
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeUseCase
 import br.com.fitnesspro.compose.components.fields.menu.MenuItem
@@ -357,7 +356,7 @@ class RegisterAcademyViewModel @Inject constructor(
         }
     }
 
-    private fun showValidationMessages(validationResults: List<FieldValidationError<EnumValidatedAcademyFields, EnumAcademyValidationTypes>>) {
+    private fun showValidationMessages(validationResults: List<FieldValidationError<EnumValidatedAcademyFields>>) {
         val dialogValidations = validationResults.firstOrNull { it.field == null }
 
         if (dialogValidations != null) {

@@ -5,7 +5,6 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
-import br.com.fitnesspro.common.injection.ICommonWorkersEntryPoint
 import br.com.fitnesspro.common.workers.common.AbstractImportationWorker
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.scheduler.injection.IScheduleWorkersEntryPoint
@@ -21,10 +20,8 @@ class SchedulerModuleImportationWorker @AssistedInject constructor(
 ) : AbstractImportationWorker(context, workerParams) {
 
     private val scheduleEntryPoint = EntryPointAccessors.fromApplication(context, IScheduleWorkersEntryPoint::class.java)
-    private val commonEntryPoint = EntryPointAccessors.fromApplication(context, ICommonWorkersEntryPoint::class.java)
 
     override suspend fun onImport(serviceToken: String, lastUpdateDate: LocalDateTime?) {
-        commonEntryPoint.getSchedulerConfigImportationRepository().import(serviceToken, lastUpdateDate)
         scheduleEntryPoint.getSchedulerImportationRepository().import(serviceToken, lastUpdateDate)
     }
 

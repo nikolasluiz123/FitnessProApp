@@ -5,7 +5,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
-import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
@@ -16,6 +15,8 @@ import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
+import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
+import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.tuple.PersonTuple
 import kotlinx.coroutines.Dispatchers.IO
@@ -50,9 +51,9 @@ class PersonRepository(
 
     private suspend fun saveUserOnFirebase(user: User, isRegisterServiceAuth: Boolean) {
         val isAuthenticated = getAuthenticatedUser() != null
-        val toPersonRemote = findPersonByEmailRemote(user.email!!, user.password!!)
+        val findPersonResponse = findPersonByEmailRemote(user.email!!, user.password!!)
 
-        if (isAuthenticated || isRegisterServiceAuth || toPersonRemote != null) {
+        if (isAuthenticated || isRegisterServiceAuth || findPersonResponse.value != null) {
             firebaseDefaultAuthenticationService.updateUserInfos(context, user)
         } else {
             firebaseDefaultAuthenticationService.register(user.email!!, user.password!!)
@@ -214,17 +215,11 @@ class PersonRepository(
         personDAO.findPersonByUserId(userId)
     }
 
-    suspend fun findPersonByEmailRemote(email: String, password: String?): TOPerson? = withContext(IO) {
-        if (context.isNetworkAvailable()) {
-            val response =  personWebClient.findPersonByEmail(
-                token = getValidToken(withoutAuthentication = true),
-                email = email,
-                password = password
-            )
-
-            if (response.success) response.value?.getTOPerson() else null
-        } else {
-            null
-        }
+    suspend fun findPersonByEmailRemote(email: String, password: String?): SingleValueServiceResponse<PersonDTO?> = withContext(IO) {
+        personWebClient.findPersonByEmail(
+            token = getValidToken(withoutAuthentication = true),
+            email = email,
+            password = password
+        )
     }
 }

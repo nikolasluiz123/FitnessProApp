@@ -22,7 +22,7 @@ android {
     defaultConfig {
         minSdk = 26
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
         consumerProguardFiles("consumer-rules.pro")
         android.buildFeatures.buildConfig = true
     }
@@ -64,12 +64,6 @@ android {
             )
         }
     }
-}
-
-tasks.withType<Test> {
-    jvmArgs("--add-opens=java.base/java.time=ALL-UNNAMED")
-
-    useJUnitPlatform()
 }
 
 dependencies {
