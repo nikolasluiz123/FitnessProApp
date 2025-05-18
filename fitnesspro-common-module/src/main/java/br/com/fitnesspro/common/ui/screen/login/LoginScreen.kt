@@ -90,7 +90,6 @@ fun LoginScreen(
             SimpleFitnessProTopAppBar(
                 title = stringResource(R.string.login_screen_title),
                 showNavigationIcon = false,
-                showMenu = true
             )
         }
     ) { padding ->

@@ -210,8 +210,4 @@ class BottomSheetAuthenticationViewModel @Inject constructor(
             )
         )
     })
-
-    companion object {
-        const val TAG = "BottomSheetAuthenticationViewModel"
-    }
 }
