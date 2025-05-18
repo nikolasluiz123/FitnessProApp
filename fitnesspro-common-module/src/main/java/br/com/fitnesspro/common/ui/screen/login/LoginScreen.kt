@@ -180,6 +180,7 @@ fun LoginScreen(
                             }
                             .padding(start = 8.dp),
                         label = stringResource(R.string.login_screen_label_button_login),
+                        enabled = state.showLoading.not(),
                         onClickListener = {
                             Firebase.analytics.logButtonClick(LOGIN_SCREEN_LOGIN_BUTTON)
                             onLoginClick?.onExecute(onNavigateToHome)
@@ -198,6 +199,7 @@ fun LoginScreen(
                                 width = Dimension.fillToConstraints
                             },
                         label = stringResource(R.string.login_screen_label_button_register),
+                        enabled = state.showLoading.not(),
                         onClickListener = {
                             Firebase.analytics.logButtonClick(LOGIN_SCREEN_REGISTER_BUTTON)
                             openBottomSheet = true
@@ -213,6 +215,7 @@ fun LoginScreen(
                                 top.linkTo(loginButtonRef.bottom)
                             }
                             .padding(end = 8.dp, top = 8.dp),
+                        enabled = state.showLoading.not(),
                         onClick = {
                             Firebase.analytics.logButtonClick(LOGIN_SCREEN_GOOGLE_BUTTON)
 
@@ -238,7 +241,6 @@ fun LoginScreen(
                         )
                     }
                 }
-
             }
         }
     }
@@ -269,6 +271,44 @@ private fun LoginScreenPreview() {
     FitnessProTheme {
         Surface {
             LoginScreen(state = LoginUIState())
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun LoginScreenDarkPreview() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            LoginScreen(state = LoginUIState())
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun LoginScreenDarkDisabledPreview() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            LoginScreen(
+                state = LoginUIState(
+                    showLoading = true
+                )
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun LoginScreenDisabledPreview() {
+    FitnessProTheme() {
+        Surface {
+            LoginScreen(
+                state = LoginUIState(
+                    showLoading = true
+                )
+            )
         }
     }
 }
