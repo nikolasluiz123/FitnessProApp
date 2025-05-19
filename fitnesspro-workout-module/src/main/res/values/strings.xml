@@ -19,4 +19,14 @@
     <string name="day_week_exercises_item_label_without_rest">Sem Descanso</string>
     <string name="day_week_exercises_empty_message">Não foram encontrados exercícios definidos nesse treino.</string>
     <string name="day_week_exercises_simple_filter_placeholder">Buscar por Exercício, Grupo ou Dia da Semana</string>
+    <string name="exercise_screen_label_group">Grupo *</string>
+    <string name="exercise_screen_label_exercise">Exercício *</string>
+    <string name="exercise_screen_exercises_empty_message">Nenhum Exercício foi encontrado</string>
+    <string name="exercise_screen_label_sets">Séries</string>
+    <string name="exercise_screen_label_reps">Repetições</string>
+    <string name="exercise_screen_label_rest">Descanso</string>
+    <string name="exercise_screen_label_unit">Unidade</string>
+    <string name="exercise_screen_label_duration">Duração</string>
+    <string name="exercise_screen_label_observation">Observação</string>
+    <string name="exercise_screen_exercises_place_holder">Buscar por Nome</string>
 </resources>
