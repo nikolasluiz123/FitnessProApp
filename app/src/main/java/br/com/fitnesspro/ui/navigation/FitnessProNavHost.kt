@@ -25,6 +25,8 @@ import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerDetailsScree
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerDetailsScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerScreen
+import br.com.fitnesspro.workout.ui.navigation.membersWorkoutScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToMembersWorkoutScreen
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -68,6 +70,7 @@ fun FitnessProNavHost(
         homeScreen(
             onNavigateToAccountInformation = navController::navigateToRegisterUserScreen,
             onNavigateToSchedule = navController::navigateToScheduleScreen,
+            onNavigateToMembersWorkoutScreen = navController::navigateToMembersWorkoutScreen,
             onNavigateToLogin = {
                 navController.navigateToLoginScreen(
                     navOptions = navOptions {
@@ -105,6 +108,10 @@ fun FitnessProNavHost(
         )
 
         chatScreen(
+            onBackClick = navController::popBackStack
+        )
+
+        membersWorkoutScreen(
             onBackClick = navController::popBackStack
         )
     }

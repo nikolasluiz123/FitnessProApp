@@ -8,6 +8,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,16 +21,32 @@ import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.state.MembersWorkoutUIState
+import br.com.fitnesspro.workout.ui.viewmodel.MembersWorkoutViewModel
+
+@Composable
+fun MembersWorkoutScreen(
+    viewModel: MembersWorkoutViewModel,
+    onBackClick: () -> Unit
+) {
+    val state by viewModel.uiState.collectAsState()
+
+    MembersWorkoutScreen(
+        state = state,
+        onBackClick = onBackClick
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MembersWorkoutScreen(
-    state: MembersWorkoutUIState
+    state: MembersWorkoutUIState,
+    onBackClick: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
                 title = stringResource(R.string.members_workout_screen_title),
+                onBackClick = onBackClick
             )
         }
     ) { paddingValues ->
@@ -46,10 +64,10 @@ fun MembersWorkoutScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(filterRef) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
                 onSimpleFilterChange = { },
                 onExpandedChange = { },
                 expanded = false,
