@@ -68,14 +68,12 @@ fun MembersWorkoutScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                onSimpleFilterChange = { },
-                onExpandedChange = { },
-                expanded = false,
+                state = state.simpleFilterState,
                 placeholderResId = R.string.members_workout_screen_simple_filter_placeholder
             ) {
                 LazyVerticalList(
                     modifier = Modifier.fillMaxSize(),
-                    items = state.members,
+                    items = state.workouts,
                     emptyMessageResId = R.string.members_workout_screen_empty_message
                 ) {
                     MemberWorkoutItem(it)
@@ -89,7 +87,7 @@ fun MembersWorkoutScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                items = state.members,
+                items = state.workouts,
                 emptyMessageResId = R.string.members_workout_screen_empty_message
             ) {
                 MemberWorkoutItem(it)

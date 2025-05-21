@@ -10,10 +10,6 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -30,14 +26,34 @@ import br.com.fitnesspro.core.theme.ValueTextStyle
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleFilter(
-    modifier: Modifier = Modifier,
-    onSimpleFilterChange: (String) -> Unit,
-    onExpandedChange: (Boolean) -> Unit,
-    expanded: Boolean,
+    state: SimpleFilterState,
     placeholderResId: Int,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    var text by rememberSaveable { mutableStateOf("") }
+    SimpleFilter(
+        expanded = state.simpleFilterExpanded,
+        quickFilter = state.quickFilter,
+        placeholderResId = placeholderResId,
+        onSimpleFilterChange = state.onSimpleFilterChange,
+        onExpandedChange = state.onExpandedChange,
+        modifier = modifier,
+        content = content
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SimpleFilter(
+    expanded: Boolean,
+    quickFilter: String,
+    placeholderResId: Int,
+    onSimpleFilterChange: (String) -> Unit,
+    onExpandedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+//    var text by rememberSaveable { mutableStateOf("") }
 
     SearchBar(
         windowInsets = WindowInsets(top = 0.dp),
@@ -67,13 +83,12 @@ fun SimpleFilter(
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 },
-                query = text,
+                query = quickFilter,
                 onQueryChange = {
-                    text = it
-                    onSimpleFilterChange(text)
+                    onSimpleFilterChange(it)
                 },
                 onSearch = {
-                    onSimpleFilterChange(text)
+                    onSimpleFilterChange(it)
                 },
                 expanded = expanded,
                 onExpandedChange = onExpandedChange
@@ -89,10 +104,47 @@ fun SimpleFilter(
 
 @Preview(device = "id:small_phone")
 @Composable
+private fun SimpleFilterPreviewWithTextDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            SimpleFilter(
+                quickFilter = "Teste",
+                onSimpleFilterChange = {},
+                placeholderResId = R.string.label_placeholder_example,
+                expanded = false,
+                onExpandedChange = {}
+            ) {
+
+            }
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun SimpleFilterPreviewWithLight() {
+    FitnessProTheme {
+        Surface {
+            SimpleFilter(
+                quickFilter = "Teste",
+                onSimpleFilterChange = {},
+                placeholderResId = R.string.label_placeholder_example,
+                expanded = false,
+                onExpandedChange = {}
+            ) {
+
+            }
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
 private fun SimpleFilterPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
             SimpleFilter(
+                quickFilter = "",
                 onSimpleFilterChange = {},
                 placeholderResId = R.string.label_placeholder_example,
                 expanded = false,
@@ -110,6 +162,7 @@ private fun SimpleFilterPreviewLight() {
     FitnessProTheme {
         Surface {
             SimpleFilter(
+                quickFilter = "",
                 onSimpleFilterChange = {},
                 placeholderResId = R.string.label_placeholder_example,
                 expanded = false,

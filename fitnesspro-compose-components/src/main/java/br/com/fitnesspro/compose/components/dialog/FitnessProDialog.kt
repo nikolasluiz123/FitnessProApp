@@ -255,6 +255,7 @@ fun <T : ITupleListItem> FitnessProPagedListDialog(
                         .padding(8.dp)
                         .fillMaxWidth(),
                     placeholderResId = simpleFilterPlaceholderResId,
+                    quickFilter = filterText,
                     onSimpleFilterChange = {
                         filterText = it
                         onSimpleFilterChange(it)

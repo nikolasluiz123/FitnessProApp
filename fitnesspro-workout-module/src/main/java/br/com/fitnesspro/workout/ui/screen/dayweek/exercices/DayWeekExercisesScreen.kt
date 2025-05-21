@@ -84,6 +84,7 @@ fun DayWeekExercisesScreen(state: DayWeekExercisesUIState = DayWeekExercisesUISt
 
                 },
                 expanded = false,
+                quickFilter = "",
                 placeholderResId = R.string.day_week_exercises_simple_filter_placeholder
             ) {
 

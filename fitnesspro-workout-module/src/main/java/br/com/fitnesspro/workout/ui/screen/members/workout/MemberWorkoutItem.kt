@@ -16,11 +16,11 @@ import br.com.fitnesspro.compose.components.LabeledText
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.workout.R
-import br.com.fitnesspro.workout.ui.screen.members.workout.decorator.MemberWorkoutDecorator
 
 @Composable
-fun MemberWorkoutItem(decorator: MemberWorkoutDecorator) {
+fun MemberWorkoutItem(toWorkout: TOWorkout) {
     ConstraintLayout(Modifier.fillMaxWidth()) {
         val (nameRef, dateRef, lineRef) = createRefs()
 
@@ -37,7 +37,7 @@ fun MemberWorkoutItem(decorator: MemberWorkoutDecorator) {
                     horizontalChainWeight = 0.6f
                 },
             label = stringResource(R.string.members_workout_screen_item_label_name),
-            value = decorator.memberName
+            value = toWorkout.memberName
         )
 
         LabeledText(
@@ -51,7 +51,7 @@ fun MemberWorkoutItem(decorator: MemberWorkoutDecorator) {
                     horizontalChainWeight = 0.4f
                 },
             label = stringResource(R.string.members_workout_screen_item_label_vencimento),
-            value = decorator.workoutEndDate.format(EnumDateTimePatterns.DATE),
+            value = toWorkout.dateEnd?.format(EnumDateTimePatterns.DATE)!!,
             textAlign = TextAlign.End
         )
 
@@ -73,7 +73,7 @@ private fun MemberWorkoutItemPreview() {
     FitnessProTheme {
         Surface {
             MemberWorkoutItem(
-                decorator = defaultMemberWorkoutItem
+                toWorkout = defaultMemberWorkoutItem
             )
         }
     }
@@ -85,7 +85,7 @@ private fun MemberWorkoutItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
             MemberWorkoutItem(
-                decorator = defaultMemberWorkoutItem
+                toWorkout = defaultMemberWorkoutItem
             )
         }
     }
