@@ -2,7 +2,10 @@ package br.com.fitnesspro.workout.injection
 
 import android.content.Context
 import br.com.fitnesspro.common.repository.PersonRepository
+import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
+import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
 import dagger.Module
 import dagger.Provides
@@ -24,6 +27,19 @@ class SingletonWorkoutRepositoryModule {
             context = context,
             workoutDAO = workoutDAO,
             personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideWorkoutGroupRepository(
+        @ApplicationContext context: Context,
+        workoutGroupDAO: WorkoutGroupDAO,
+        exerciseDAO: ExerciseDAO
+    ): WorkoutGroupRepository {
+        return WorkoutGroupRepository(
+            context = context,
+            workoutGroupDAO = workoutGroupDAO,
+            exerciseDAO = exerciseDAO
         )
     }
 }

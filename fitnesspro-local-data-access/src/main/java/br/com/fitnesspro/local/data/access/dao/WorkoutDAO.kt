@@ -1,6 +1,7 @@
 package br.com.fitnesspro.local.data.access.dao
 
 import androidx.room.Dao
+import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -61,4 +62,7 @@ abstract class WorkoutDAO: IntegratedMaintenanceDAO<Workout>() {
 
     @RawQuery
     abstract suspend fun executeQueryWorkoutsFromPersonalTrainer(query: SupportSQLiteQuery): List<TOWorkout>
+
+    @Query("select * from workout where id = :id")
+    abstract suspend fun findWorkoutById(id: String): Workout?
 }

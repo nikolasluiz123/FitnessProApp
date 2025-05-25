@@ -27,7 +27,7 @@ fun WorkoutGroup.getWorkoutGroupDTO(): WorkoutGroupDTO {
     )
 }
 
-fun Workout.geTOWorkout(memberName: String, professionalName: String): TOWorkout {
+fun Workout.geTOWorkout(memberName: String?, professionalName: String?): TOWorkout {
     return TOWorkout(
         id = id,
         active = active,

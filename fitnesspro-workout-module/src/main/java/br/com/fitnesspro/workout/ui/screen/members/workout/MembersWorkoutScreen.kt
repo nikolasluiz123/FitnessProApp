@@ -20,19 +20,23 @@ import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.ui.navigation.DayWeekExercisesScreenArgs
+import br.com.fitnesspro.workout.ui.screen.members.workout.callbacks.OnNavigateDayWeekExercises
 import br.com.fitnesspro.workout.ui.state.MembersWorkoutUIState
 import br.com.fitnesspro.workout.ui.viewmodel.MembersWorkoutViewModel
 
 @Composable
 fun MembersWorkoutScreen(
     viewModel: MembersWorkoutViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateDayWeekExercises: OnNavigateDayWeekExercises
 ) {
     val state by viewModel.uiState.collectAsState()
 
     MembersWorkoutScreen(
         state = state,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onNavigateDayWeekExercises = onNavigateDayWeekExercises
     )
 }
 
@@ -40,7 +44,8 @@ fun MembersWorkoutScreen(
 @Composable
 fun MembersWorkoutScreen(
     state: MembersWorkoutUIState,
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onNavigateDayWeekExercises: OnNavigateDayWeekExercises? = null
 ) {
     Scaffold(
         topBar = {
@@ -76,7 +81,12 @@ fun MembersWorkoutScreen(
                     items = state.workouts,
                     emptyMessageResId = R.string.members_workout_screen_empty_message
                 ) {
-                    MemberWorkoutItem(it)
+                    MemberWorkoutItem(
+                        toWorkout = it,
+                        onItemClick = {
+                            onNavigateDayWeekExercises?.onExecute(DayWeekExercisesScreenArgs(it.id!!))
+                        }
+                    )
                 }
             }
 
@@ -90,7 +100,12 @@ fun MembersWorkoutScreen(
                 items = state.workouts,
                 emptyMessageResId = R.string.members_workout_screen_empty_message
             ) {
-                MemberWorkoutItem(it)
+                MemberWorkoutItem(
+                    toWorkout = it,
+                    onItemClick = {
+                        onNavigateDayWeekExercises?.onExecute(DayWeekExercisesScreenArgs(it.id!!))
+                    }
+                )
             }
         }
     }

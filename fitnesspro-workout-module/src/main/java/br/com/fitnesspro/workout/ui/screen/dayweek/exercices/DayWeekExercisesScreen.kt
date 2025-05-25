@@ -11,12 +11,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.filter.SimpleFilter
 import br.com.fitnesspro.compose.components.list.grouped.nested.NestedGroupedList
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
@@ -29,18 +32,32 @@ import br.com.fitnesspro.workout.ui.screen.dayweek.workout.DayWeekWorkoutItem
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.WorkoutGroupItem
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekExercisesUIState
+import br.com.fitnesspro.workout.ui.viewmodel.DayWeekExercisesViewModel
+
+@Composable
+fun DayWeekExercisesScreen(
+    viewModel: DayWeekExercisesViewModel,
+    onBackClick: () -> Unit,
+) {
+    val state by viewModel.uiState.collectAsState()
+    DayWeekExercisesScreen(
+        state = state,
+        onBackClick = onBackClick
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DayWeekExercisesScreen(state: DayWeekExercisesUIState = DayWeekExercisesUIState()) {
+fun DayWeekExercisesScreen(
+    state: DayWeekExercisesUIState = DayWeekExercisesUIState(),
+    onBackClick: () -> Unit = { }
+) {
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
-                title = state.title!!,
+                title = state.title,
                 subtitle = state.subtitle,
-                onBackClick = {
-
-                }
+                onBackClick = onBackClick
             )
         },
         bottomBar = {
@@ -74,6 +91,8 @@ fun DayWeekExercisesScreen(state: DayWeekExercisesUIState = DayWeekExercisesUISt
                 .fillMaxSize()
         ) {
             FitnessProLinearProgressIndicator(state.showLoading)
+
+            FitnessProMessageDialog(state.messageDialogState)
 
             SimpleFilter(
                 modifier = Modifier.fillMaxWidth(),

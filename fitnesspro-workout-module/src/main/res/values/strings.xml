@@ -29,4 +29,5 @@
     <string name="exercise_screen_label_duration">Duração</string>
     <string name="exercise_screen_label_observation">Observação</string>
     <string name="exercise_screen_exercises_place_holder">Buscar por Nome</string>
+    <string name="workout_group_default_name">Nome do Grupo Indefinido</string>
 </resources>

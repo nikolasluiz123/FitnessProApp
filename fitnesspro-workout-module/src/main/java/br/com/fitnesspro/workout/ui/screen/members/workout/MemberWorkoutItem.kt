@@ -1,5 +1,6 @@
 package br.com.fitnesspro.workout.ui.screen.members.workout
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
@@ -20,8 +21,12 @@ import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.workout.R
 
 @Composable
-fun MemberWorkoutItem(toWorkout: TOWorkout) {
-    ConstraintLayout(Modifier.fillMaxWidth()) {
+fun MemberWorkoutItem(toWorkout: TOWorkout, onItemClick: (TOWorkout) -> Unit = { }) {
+    ConstraintLayout(
+        Modifier
+            .fillMaxWidth()
+            .clickable { onItemClick(toWorkout) }
+    ) {
         val (nameRef, dateRef, lineRef) = createRefs()
 
         createHorizontalChain(nameRef, dateRef)
@@ -37,7 +42,7 @@ fun MemberWorkoutItem(toWorkout: TOWorkout) {
                     horizontalChainWeight = 0.6f
                 },
             label = stringResource(R.string.members_workout_screen_item_label_name),
-            value = toWorkout.memberName
+            value = toWorkout.memberName!!
         )
 
         LabeledText(

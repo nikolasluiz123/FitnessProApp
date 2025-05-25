@@ -75,4 +75,8 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideServiceTokenDao(appDatabase: AppDatabase) = appDatabase.serviceTokenDAO()
+
+    @Provides
+    @Singleton
+    fun provideExerciseDao(appDatabase: AppDatabase) = appDatabase.exerciseDAO()
 }
