@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.ui.screen.dayweek.workout
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,12 +28,16 @@ import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
 
 @Composable
-fun WorkoutGroupItem(decorator: WorkoutGroupDecorator) {
+fun WorkoutGroupItem(
+    decorator: WorkoutGroupDecorator,
+    onItemClick: (WorkoutGroupDecorator) -> Unit = {}
+) {
     Box(
         Modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.surfaceVariant)
             .padding(8.dp)
+            .clickable { onItemClick(decorator) }
     ) {
         Text(
             modifier = Modifier.align(alignment = Alignment.Center),
@@ -72,11 +77,11 @@ fun DayWeekWorkoutItem(toExercise: TOExercise) {
                 modifier = Modifier
                     .padding(start = 8.dp)
                     .constrainAs(durationRef) {
-                    top.linkTo(exerciseRef.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
+                        top.linkTo(exerciseRef.bottom, margin = 8.dp)
+                        start.linkTo(parent.start)
 
-                    width = Dimension.fillToConstraints
-                },
+                        width = Dimension.fillToConstraints
+                    },
                 label = stringResource(R.string.day_week_workout_screen_duration),
                 value = toExercise.duration!!.toReadableDuration(context)
             )
@@ -87,11 +92,11 @@ fun DayWeekWorkoutItem(toExercise: TOExercise) {
                 modifier = Modifier
                     .padding(start = 8.dp)
                     .constrainAs(setsAndRepsRef) {
-                    top.linkTo(exerciseRef.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
+                        top.linkTo(exerciseRef.bottom, margin = 8.dp)
+                        start.linkTo(parent.start)
 
-                    width = Dimension.fillToConstraints
-                },
+                        width = Dimension.fillToConstraints
+                    },
                 label = stringResource(R.string.day_week_workout_screen_sets_and_repetitions),
                 value = stringResource(
                     R.string.day_week_workout_screen_sets_and_repetitions_value,
@@ -105,11 +110,11 @@ fun DayWeekWorkoutItem(toExercise: TOExercise) {
             modifier = Modifier
                 .padding(end = 8.dp)
                 .constrainAs(restRef) {
-                top.linkTo(exerciseRef.bottom, margin = 8.dp)
-                end.linkTo(parent.end)
+                    top.linkTo(exerciseRef.bottom, margin = 8.dp)
+                    end.linkTo(parent.end)
 
-                width = Dimension.fillToConstraints
-            },
+                    width = Dimension.fillToConstraints
+                },
             label = stringResource(R.string.day_week_workout_screen_rest),
             value = toExercise.rest?.toReadableDuration(context) ?: stringResource(R.string.day_week_workout_screen_no_rest),
             textAlign = TextAlign.End

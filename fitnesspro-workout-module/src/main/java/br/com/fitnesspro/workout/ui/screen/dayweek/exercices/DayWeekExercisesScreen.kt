@@ -27,22 +27,27 @@ import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.ui.navigation.DayWeekWorkoutScreenArgs
+import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.callbacks.OnNavigateDayWeekWorkout
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.DayWeekWorkoutItem
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.WorkoutGroupItem
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekExercisesUIState
 import br.com.fitnesspro.workout.ui.viewmodel.DayWeekExercisesViewModel
+import java.time.DayOfWeek
 
 @Composable
 fun DayWeekExercisesScreen(
     viewModel: DayWeekExercisesViewModel,
     onBackClick: () -> Unit,
+    onNavigateDayWeekWorkout: OnNavigateDayWeekWorkout
 ) {
     val state by viewModel.uiState.collectAsState()
     DayWeekExercisesScreen(
         state = state,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onNavigateDayWeekWorkout = onNavigateDayWeekWorkout
     )
 }
 
@@ -50,7 +55,8 @@ fun DayWeekExercisesScreen(
 @Composable
 fun DayWeekExercisesScreen(
     state: DayWeekExercisesUIState = DayWeekExercisesUIState(),
-    onBackClick: () -> Unit = { }
+    onBackClick: () -> Unit = { },
+    onNavigateDayWeekWorkout: OnNavigateDayWeekWorkout? = null
 ) {
     Scaffold(
         topBar = {
@@ -116,12 +122,32 @@ fun DayWeekExercisesScreen(
                     when (depth) {
                         0 -> {
                             group as DayWeekExercicesGroupDecorator
-                            DayWeekWorkoutGroupItem(group)
+                            DayWeekWorkoutGroupItem(
+                                decorator = group,
+                                onItemClick = {
+                                    val args = DayWeekWorkoutScreenArgs(
+                                        workoutId = state.workout?.id!!,
+                                        dayWeek = DayOfWeek.valueOf(it.id)
+                                    )
+
+                                    onNavigateDayWeekWorkout?.onExecute(args)
+                                }
+                            )
                         }
 
                         1 -> {
                             group as WorkoutGroupDecorator
-                            WorkoutGroupItem(group)
+                            WorkoutGroupItem(
+                                decorator = group,
+                                onItemClick = {
+                                    val args = DayWeekWorkoutScreenArgs(
+                                        workoutId = state.workout?.id!!,
+                                        workoutGroupId = it.id,
+                                    )
+
+                                    onNavigateDayWeekWorkout?.onExecute(args)
+                                }
+                            )
                         }
                     }
                 },

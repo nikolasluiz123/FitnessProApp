@@ -6,6 +6,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -16,15 +18,33 @@ import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.state.DayWeekWorkoutUIState
+import br.com.fitnesspro.workout.ui.viewmodel.DayWeekWorkoutViewModel
+
+@Composable
+fun DayWeekWorkoutScreen(
+    viewModel: DayWeekWorkoutViewModel,
+    onBackClick: () -> Unit,
+) {
+    val state by viewModel.uiState.collectAsState()
+
+    DayWeekWorkoutScreen(
+        state = state,
+        onBackClick = onBackClick
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DayWeekWorkoutScreen(state: DayWeekWorkoutUIState) {
+fun DayWeekWorkoutScreen(
+    state: DayWeekWorkoutUIState,
+    onBackClick: () -> Unit = {}
+) {
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
                 title = state.title,
-                subtitle = state.subtitle
+                subtitle = state.subtitle,
+                onBackClick = onBackClick
             )
         },
         floatingActionButton = {

@@ -5,9 +5,9 @@ import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGrou
 
 
 data class DayWeekWorkoutUIState(
-    val title: String,
-    val subtitle: String,
-    val dayWeekWorkoutGroups: List<WorkoutGroupDecorator>,
+    val title: String = "",
+    val subtitle: String= "",
+    val dayWeekWorkoutGroups: List<WorkoutGroupDecorator> = emptyList(),
     val showFabAddExercise: Boolean = false,
     val messageDialogState: MessageDialogState = MessageDialogState(),
 )

@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.ui.screen.dayweek.exercices
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,12 +18,16 @@ import br.com.fitnesspro.core.theme.LabelGroupTextStyle
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
 
 @Composable
-fun DayWeekWorkoutGroupItem(decorator: DayWeekExercicesGroupDecorator) {
+fun DayWeekWorkoutGroupItem(
+    decorator: DayWeekExercicesGroupDecorator,
+    onItemClick: (DayWeekExercicesGroupDecorator) -> Unit = {}
+) {
     Box(
         Modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.inverseSurface)
             .padding(8.dp)
+            .clickable { onItemClick(decorator) }
     ) {
         Text(
             modifier = Modifier.align(alignment = Alignment.Center),
