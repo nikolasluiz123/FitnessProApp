@@ -10,8 +10,8 @@ import br.com.fitnesspro.to.TOWorkoutGroup
 import java.time.temporal.ChronoUnit
 
 data class ExerciseUIState(
-    var title: String? = null,
-    var subtitle: String? = null,
+    var title: String = "",
+    var subtitle: String = "",
     val group: DropDownTextField<TOWorkoutGroup> = DropDownTextField(),
     val exercise: PagedDialogListTextField<TOExercise> = PagedDialogListTextField(),
     val sets: TextField = TextField(),

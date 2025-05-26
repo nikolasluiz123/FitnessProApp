@@ -27,9 +27,10 @@ import br.com.fitnesspro.scheduler.ui.navigation.schedulerDetailsScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerScreen
 import br.com.fitnesspro.workout.ui.navigation.dayWeekExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.dayWeekWorkoutScreen
+import br.com.fitnesspro.workout.ui.navigation.exercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.membersWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekExercisesScreen
-import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekWorkoutScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToMembersWorkoutScreen
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -126,7 +127,11 @@ fun FitnessProNavHost(
 
         dayWeekExercisesScreen(
             onBackClick = navController::popBackStack,
-            onNavigateDayWeekWorkout = navController::navigateToDayWeekWorkoutScreen
+            onNavigateExercise = navController::navigateToExercisesScreen
+        )
+
+        exercisesScreen(
+            onBackClick = navController::popBackStack
         )
     }
 }

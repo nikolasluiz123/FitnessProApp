@@ -13,6 +13,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -32,18 +34,33 @@ import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
+import br.com.fitnesspro.workout.ui.viewmodel.ExerciseViewModel
+
+@Composable
+fun ExerciseScreen(
+    viewModel: ExerciseViewModel,
+    onBackClick: () -> Unit
+) {
+    val state by viewModel.uiState.collectAsState()
+
+    ExerciseScreen(
+        state = state,
+        onBackClick = onBackClick
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExerciseScreen(state: ExerciseUIState = ExerciseUIState()) {
+fun ExerciseScreen(
+    state: ExerciseUIState = ExerciseUIState(),
+    onBackClick: () -> Unit = {}
+) {
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
-                title = state.title!!,
+                title = state.title,
                 subtitle = state.subtitle,
-                onBackClick = {
-
-                }
+                onBackClick = onBackClick
             )
         },
         bottomBar = {
@@ -126,12 +143,12 @@ fun ExerciseScreen(state: ExerciseUIState = ExerciseUIState()) {
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .constrainAs(setsRef) {
-                        start.linkTo(parent.start)
-                        top.linkTo(exerciseRef.bottom, margin = 8.dp)
+                            start.linkTo(parent.start)
+                            top.linkTo(exerciseRef.bottom, margin = 8.dp)
 
-                        width = Dimension.fillToConstraints
-                        horizontalChainWeight = 0.5f
-                    },
+                            width = Dimension.fillToConstraints
+                            horizontalChainWeight = 0.5f
+                        },
                     field = state.sets,
                     label = stringResource(R.string.exercise_screen_label_sets),
 
@@ -155,12 +172,12 @@ fun ExerciseScreen(state: ExerciseUIState = ExerciseUIState()) {
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .constrainAs(restRef) {
-                        start.linkTo(parent.start)
-                        top.linkTo(setsRef.bottom, margin = 8.dp)
+                            start.linkTo(parent.start)
+                            top.linkTo(setsRef.bottom, margin = 8.dp)
 
-                        width = Dimension.fillToConstraints
-                        horizontalChainWeight = 0.5f
-                    },
+                            width = Dimension.fillToConstraints
+                            horizontalChainWeight = 0.5f
+                        },
                     field = state.rest,
                     label = stringResource(R.string.exercise_screen_label_rest),
 
@@ -184,12 +201,12 @@ fun ExerciseScreen(state: ExerciseUIState = ExerciseUIState()) {
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .constrainAs(durationRef) {
-                        start.linkTo(parent.start)
-                        top.linkTo(restRef.bottom, margin = 8.dp)
+                            start.linkTo(parent.start)
+                            top.linkTo(restRef.bottom, margin = 8.dp)
 
-                        width = Dimension.fillToConstraints
-                        horizontalChainWeight = 0.5f
-                    },
+                            width = Dimension.fillToConstraints
+                            horizontalChainWeight = 0.5f
+                        },
                     field = state.duration,
                     label = stringResource(R.string.exercise_screen_label_duration),
                 )
