@@ -2,22 +2,45 @@ package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
-import br.com.fitnesspro.common.R
+import androidx.paging.PagingData
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
+import br.com.fitnesspro.compose.components.fields.menu.MenuItem
+import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
+import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
+import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
+import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.callback.showErrorDialog
+import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
+import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
+import br.com.fitnesspro.core.extensions.toIntOrNull
+import br.com.fitnesspro.to.TOExercise
+import br.com.fitnesspro.to.TOWorkoutGroup
+import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
+import br.com.fitnesspro.workout.repository.ExerciseRepository
+import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
+import br.com.fitnesspro.workout.ui.navigation.ExerciseScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.exerciseScreenArguments
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 @HiltViewModel
 class ExerciseViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val globalEvents: GlobalEvents,
+    private val exerciseRepository: ExerciseRepository,
+    private val personRepository: PersonRepository,
+    private val exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
+    private val workoutGroupRepository: WorkoutGroupRepository,
     savedStateHandle: SavedStateHandle
 ): FitnessProViewModel() {
 
@@ -31,21 +54,338 @@ class ExerciseViewModel @Inject constructor(
         loadUIStateWithDatabaseInfos()
     }
 
-    private fun initialLoadUIState() {
-
-    }
-
-    private fun loadUIStateWithDatabaseInfos() {
-
-    }
-
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun getErrorMessageFrom(throwable: Throwable): String {
-        return context.getString(R.string.unknown_error_message)
+        return context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
     }
 
     override fun onShowErrorDialog(message: String) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
+    }
+
+    private fun initialLoadUIState() {
+        _uiState.update {
+            it.copy(
+                group = initializeDropDownTextFieldGroup(),
+                exercise = initializePagedDialogListTextFieldExercise(),
+                sets = initializeTextFieldSets(),
+                reps = initializeTextFieldReps(),
+                rest = initializeTextFieldRest(),
+                unitRest = initializeDropDownTextFieldUnitRest(),
+                duration = initializeTextFieldDuration(),
+                unitDuration = initializeDropDownTextFieldUnitDuration(),
+                observation = initializeTextFieldObservation(),
+            )
+        }
+    }
+
+    private fun initializeDropDownTextFieldGroup(): DropDownTextField<TOWorkoutGroup> {
+        return DropDownTextField(
+            onDropDownDismissRequest = {
+                _uiState.value = _uiState.value.copy(
+                    group = _uiState.value.group.copy(expanded = false)
+                )
+            },
+            onDropDownExpandedChange = {
+                _uiState.value = _uiState.value.copy(
+                    group = _uiState.value.group.copy(expanded = it)
+                )
+            },
+            onDataListItemClick = {
+                _uiState.value = _uiState.value.copy(
+                    group = _uiState.value.group.copy(
+                        value = it.value.name!!,
+                        expanded = false,
+                        errorMessage = ""
+                    ),
+                    toExercise = _uiState.value.toExercise.copy(workoutGroupId = it.value.id)
+                )
+            }
+        )
+    }
+
+    private fun initializePagedDialogListTextFieldExercise(): PagedDialogListTextField<TOExercise> {
+        return PagedDialogListTextField(
+            dialogListState = PagedDialogListState(
+                dialogTitle = context.getString(R.string.exercise_screen_exercise_dialog_list_title),
+                onShow = {
+                    _uiState.value = _uiState.value.copy(
+                        exercise = _uiState.value.exercise.copy(
+                            dialogListState = _uiState.value.exercise.dialogListState.copy(show = true)
+                        )
+                    )
+                },
+                onHide = {
+                    _uiState.value = _uiState.value.copy(
+                        exercise = _uiState.value.exercise.copy(
+                            dialogListState = _uiState.value.exercise.dialogListState.copy(show = false)
+                        )
+                    )
+                },
+                onDataListItemClick = { item ->
+                    _uiState.value = _uiState.value.copy(
+                        exercise = _uiState.value.exercise.copy(
+                            value = item.getLabel(),
+                            errorMessage = ""
+                        ),
+                        toExercise = item
+                    )
+
+                    _uiState.value.exercise.dialogListState.onHide()
+                },
+                onSimpleFilterChange = { filter ->
+                    _uiState.value = _uiState.value.copy(
+                        exercise = _uiState.value.exercise.copy(
+                            dialogListState = _uiState.value.exercise.dialogListState.copy(
+                                dataList = getListExercisesPreDefinition(simpleFilter = filter)
+                            )
+                        )
+                    )
+                },
+            ),
+            onChange = { newText ->
+                if (_uiState.value.toExercise.id != null) {
+                    _uiState.value = _uiState.value.copy(
+                        toExercise = TOExercise()
+                    )
+                }
+
+                _uiState.value = _uiState.value.copy(
+                    exercise = _uiState.value.exercise.copy(
+                        value = newText,
+                        errorMessage = ""
+                    ),
+                    toExercise = _uiState.value.toExercise.copy(
+                        name = newText
+                    )
+                )
+            }
+        )
+    }
+
+    private fun getListExercisesPreDefinition(simpleFilter: String): Flow<PagingData<TOExercise>> {
+        return exercisePreDefinitionRepository.getExercisesPreDefinitionFromWorkoutGroup(
+            workoutGroupName = _uiState.value.exercise.value,
+            authenticatedPersonId = _uiState.value.authenticatedPerson.id!!,
+            simpleFilter = simpleFilter
+        ).flow
+    }
+
+    private fun initializeTextFieldSets(): TextField {
+        return TextField(
+           onChange = {
+               _uiState.value = _uiState.value.copy(
+                   sets = _uiState.value.sets.copy(
+                       value = it,
+                       errorMessage = ""
+                   ),
+                   toExercise = _uiState.value.toExercise.copy(sets = it.toIntOrNull())
+               )
+           }
+        )
+    }
+
+    private fun initializeTextFieldReps(): TextField {
+        return TextField(
+            onChange = {
+                _uiState.value = _uiState.value.copy(
+                    reps = _uiState.value.reps.copy(
+                        value = it,
+                        errorMessage = ""
+                    ),
+                    toExercise = _uiState.value.toExercise.copy(repetitions = it.toIntOrNull())
+                )
+            }
+        )
+    }
+
+    private fun initializeTextFieldRest(): TextField {
+        return TextField(
+            onChange = {
+                _uiState.value = _uiState.value.copy(
+                    rest = _uiState.value.rest.copy(
+                        value = it,
+                        errorMessage = ""
+                    )
+                )
+            }
+        )
+    }
+
+    private fun initializeDropDownTextFieldUnitRest(): DropDownTextField<ChronoUnit> {
+        val items = getChronoUnitMenuItems()
+
+        return DropDownTextField(
+            dataList = items,
+            dataListFiltered = items,
+            onDropDownDismissRequest = {
+                _uiState.value = _uiState.value.copy(
+                    unitRest = _uiState.value.unitRest.copy(expanded = false)
+                )
+            },
+            onDropDownExpandedChange = {
+                _uiState.value = _uiState.value.copy(
+                    unitRest = _uiState.value.unitRest.copy(expanded = it)
+                )
+            },
+            onDataListItemClick = {
+                _uiState.value = _uiState.value.copy(
+                    unitRest = _uiState.value.unitRest.copy(
+                        value = it.label,
+                        errorMessage = ""
+                    )
+                )
+
+                _uiState.value.unitRest.onDropDownDismissRequest()
+            }
+        )
+    }
+
+    private fun initializeTextFieldDuration(): TextField {
+        return TextField(
+            onChange = {
+                _uiState.value = _uiState.value.copy(
+                    duration = _uiState.value.duration.copy(
+                        value = it,
+                        errorMessage = ""
+                    )
+                )
+            }
+        )
+    }
+
+    private fun initializeDropDownTextFieldUnitDuration(): DropDownTextField<ChronoUnit> {
+        val items = getChronoUnitMenuItems()
+
+        return DropDownTextField(
+            dataList = items,
+            dataListFiltered = items,
+            onDropDownDismissRequest = {
+                _uiState.value = _uiState.value.copy(
+                    unitDuration = _uiState.value.unitDuration.copy(expanded = false)
+                )
+            },
+            onDropDownExpandedChange = {
+                _uiState.value = _uiState.value.copy(
+                    unitDuration = _uiState.value.unitDuration.copy(expanded = it)
+                )
+            },
+            onDataListItemClick = {
+                _uiState.value = _uiState.value.copy(
+                    unitDuration = _uiState.value.unitDuration.copy(
+                        value = it.label,
+                        errorMessage = ""
+                    )
+                )
+
+                _uiState.value.unitDuration.onDropDownDismissRequest()
+            }
+        )
+    }
+
+    private fun getChronoUnitMenuItems(): List<MenuItem<ChronoUnit>> {
+        val units = ChronoUnit.entries.slice(ChronoUnit.SECONDS.ordinal..ChronoUnit.HOURS.ordinal)
+
+        return units.map { unit ->
+            MenuItem(
+                label = getLabelFromChronoUnit(unit),
+                value = unit
+            )
+        }
+    }
+
+    private fun initializeTextFieldObservation(): TextField {
+        return TextField(
+            onChange = {
+                _uiState.value = _uiState.value.copy(
+                    observation = _uiState.value.observation.copy(
+                        value = it,
+                        errorMessage = ""
+                    )
+                )
+            }
+        )
+    }
+
+    private fun loadUIStateWithDatabaseInfos() {
+        loadTopBarInfos()
+        loadWorkoutGroups()
+    }
+
+    private fun loadTopBarInfos() {
+        launch {
+            val authenticatedPerson = personRepository.getAuthenticatedTOPerson()!!
+
+            _uiState.value = _uiState.value.copy(
+                title = getTitle(),
+                subtitle = context.getString(
+                    R.string.exercise_screen_subtitle,
+                    authenticatedPerson.name
+                ),
+                authenticatedPerson = authenticatedPerson
+            )
+        }
+    }
+
+    private fun loadWorkoutGroups() {
+        launch {
+            val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
+            val groups = workoutGroupRepository.getWorkoutGroupsFromWorkout(
+                workoutId = args.workoutId,
+                dayOfWeek = args.dayWeek,
+                workoutGroupId = args.workoutGroupId
+            )
+            val menuItems = groups.map {
+                MenuItem(
+                    label = it.name ?: context.getString(R.string.workout_group_default_name),
+                    value = it
+                )
+            }
+
+            val selectedMenuItem = menuItems.find { it.value.id == args.workoutGroupId }
+
+            _uiState.value = _uiState.value.copy(
+                group = _uiState.value.group.copy(
+                    dataList = menuItems,
+                    dataListFiltered = menuItems,
+                    value = selectedMenuItem?.label ?: ""
+                ),
+                toExercise = _uiState.value.toExercise.copy(workoutGroupId = selectedMenuItem?.value?.id)
+            )
+        }
+    }
+
+    private fun getLabelFromChronoUnit(unit: ChronoUnit): String {
+        return when (unit) {
+            ChronoUnit.SECONDS -> context.getString(R.string.exercise_screen_chrono_unit_seconds)
+            ChronoUnit.MINUTES -> context.getString(R.string.exercise_screen_chrono_unit_minutes)
+            ChronoUnit.HOURS -> context.getString(R.string.exercise_screen_chrono_unit_hours)
+            else -> throw IllegalArgumentException("Valor invalido para recuperar um label de ChronoUnit")
+        }
+    }
+
+    private suspend fun getTitle(): String {
+        val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
+
+        return if (_uiState.value.toExercise.id != null) {
+            val exercise = exerciseRepository.findById(_uiState.value.toExercise.id!!)
+
+            if (args.dayWeek != null) {
+                "${exercise.name} - ${args.dayWeek.getFirstPartFullDisplayName()}"
+            } else {
+                exercise.name!!
+            }
+
+        } else {
+            if (args.dayWeek != null) {
+                context.getString(
+                    R.string.exercise_screen_title_new_from_day_week,
+                    args.dayWeek.getFirstPartFullDisplayName()
+                )
+            } else {
+                context.getString(R.string.exercise_screen_title_new)
+            }
+        }
     }
 }

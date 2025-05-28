@@ -8,6 +8,7 @@ import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.ApplicationDAO
 import br.com.fitnesspro.local.data.access.dao.DeviceDAO
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
+import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO
 import br.com.fitnesspro.local.data.access.dao.ImportationHistoryDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
@@ -87,5 +88,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun serviceTokenDAO(): ServiceTokenDAO
 
     abstract fun exerciseDAO(): ExerciseDAO
+
+    abstract fun exercisePreDefinitionDAO(): ExercisePreDefinitionDAO
 
 }

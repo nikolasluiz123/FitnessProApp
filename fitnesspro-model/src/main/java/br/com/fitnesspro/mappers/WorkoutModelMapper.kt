@@ -5,6 +5,7 @@ import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
 import br.com.fitnesspro.to.TOWorkout
+import br.com.fitnesspro.to.TOWorkoutGroup
 
 fun Workout.getWorkoutDTO(): WorkoutDTO {
     return WorkoutDTO(
@@ -19,6 +20,16 @@ fun Workout.getWorkoutDTO(): WorkoutDTO {
 
 fun WorkoutGroup.getWorkoutGroupDTO(): WorkoutGroupDTO {
     return WorkoutGroupDTO(
+        id = id,
+        name = name,
+        active = active,
+        workoutId = workoutId,
+        dayWeek = dayWeek,
+    )
+}
+
+fun WorkoutGroup.getTOWorkoutGroup(): TOWorkoutGroup {
+    return TOWorkoutGroup(
         id = id,
         name = name,
         active = active,

@@ -30,4 +30,11 @@
     <string name="exercise_screen_label_observation">Observação</string>
     <string name="exercise_screen_exercises_place_holder">Buscar por Nome</string>
     <string name="workout_group_default_name">Nome do Grupo Indefinido</string>
+    <string name="exercise_screen_subtitle">Treino de %1$s</string>
+    <string name="exercise_screen_title_new_from_day_week">Novo Exercício - %s</string>
+    <string name="exercise_screen_title_new">Novo Exercício</string>
+    <string name="exercise_screen_exercise_dialog_list_title">Exercícios</string>
+    <string name="exercise_screen_chrono_unit_seconds">Segundos</string>
+    <string name="exercise_screen_chrono_unit_minutes">Minutos</string>
+    <string name="exercise_screen_chrono_unit_hours">Horas</string>
 </resources>

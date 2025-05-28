@@ -6,6 +6,7 @@ import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.state.ILoadingUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.to.TOExercise
+import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOWorkoutGroup
 import java.time.temporal.ChronoUnit
 
@@ -22,6 +23,8 @@ data class ExerciseUIState(
     val unitDuration: DropDownTextField<ChronoUnit> = DropDownTextField(),
     val observation: TextField = TextField(),
     val messageDialogState: MessageDialogState = MessageDialogState(),
+    val toExercise: TOExercise = TOExercise(),
+    val authenticatedPerson: TOPerson = TOPerson(),
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = { },
 ): ILoadingUIState

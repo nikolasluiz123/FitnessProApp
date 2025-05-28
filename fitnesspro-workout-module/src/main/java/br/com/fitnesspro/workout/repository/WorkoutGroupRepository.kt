@@ -5,9 +5,13 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
+import br.com.fitnesspro.mappers.getTOWorkoutGroup
+import br.com.fitnesspro.model.workout.WorkoutGroup
+import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
+import java.time.DayOfWeek
 
 class WorkoutGroupRepository(
     context: Context,
@@ -40,5 +44,17 @@ class WorkoutGroupRepository(
                 items = groupsDecorator
             )
         }
+    }
+
+    suspend fun getWorkoutGroupsFromWorkout(
+        workoutId: String,
+        dayOfWeek: DayOfWeek? = null,
+        workoutGroupId: String? = null
+    ): List<TOWorkoutGroup> {
+        return workoutGroupDAO.getWorkoutGroupsFromWorkout(
+            workoutId = workoutId,
+            dayOfWeek = dayOfWeek,
+            workoutGroupId = workoutGroupId
+        ).map(WorkoutGroup::getTOWorkoutGroup)
     }
 }

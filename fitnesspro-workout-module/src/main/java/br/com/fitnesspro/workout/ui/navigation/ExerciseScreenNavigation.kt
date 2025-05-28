@@ -37,5 +37,6 @@ fun NavController.navigateToExercisesScreen(args: ExerciseScreenArgs, navOptions
 data class ExerciseScreenArgs(
     val workoutId: String,
     val workoutGroupId: String? = null,
-    val dayWeek: DayOfWeek? = null
+    val dayWeek: DayOfWeek? = null,
+    val exerciseId: String? = null
 )

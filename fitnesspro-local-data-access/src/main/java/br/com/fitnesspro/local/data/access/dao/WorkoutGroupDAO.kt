@@ -1,14 +1,64 @@
 package br.com.fitnesspro.local.data.access.dao
 
 import androidx.room.Dao
-import androidx.room.Query
+import androidx.room.RawQuery
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.model.workout.WorkoutGroup
+import java.time.DayOfWeek
+import java.util.StringJoiner
 
 @Dao
 abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
 
-    @Query("select * from workout_group where workout_id = :workoutId and active = 1")
-    abstract suspend fun getWorkoutGroupsFromWorkout(workoutId: String): List<WorkoutGroup>
+    suspend fun getWorkoutGroupsFromWorkout(
+        workoutId: String,
+        dayOfWeek: DayOfWeek? = null,
+        workoutGroupId: String? = null
+    ): List<WorkoutGroup> {
+        val queryParams = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select * ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from workout_group ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where workout_id = ? ")
+            add(" and active = 1 ")
+
+            queryParams.add(workoutId)
+
+            workoutGroupId?.let {
+                add(" and id = ? ")
+                queryParams.add(it)
+            }
+
+            dayOfWeek?.let {
+                add(" and day_week = ? ")
+                queryParams.add(it.name)
+            }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            // TODO - Precisa criar um campo de ordem na tabela WorkoutGroup
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(orderBy.toString())
+        }
+
+        return executeQueryWorkoutGroupsFromWorkout(SimpleSQLiteQuery(sql.toString(), queryParams.toTypedArray()))
+    }
+
+    @RawQuery
+    abstract suspend fun executeQueryWorkoutGroupsFromWorkout(query: SupportSQLiteQuery): List<WorkoutGroup>
 
 }
