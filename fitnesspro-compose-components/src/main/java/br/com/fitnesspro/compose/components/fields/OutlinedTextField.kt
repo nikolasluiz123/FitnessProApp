@@ -37,12 +37,14 @@ import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCalendar
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonSearch
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonTime
 import br.com.fitnesspro.compose.components.dialog.FitnessProDatePickerDialog
+import br.com.fitnesspro.compose.components.dialog.FitnessProListDialog
 import br.com.fitnesspro.compose.components.dialog.FitnessProPagedListDialog
 import br.com.fitnesspro.compose.components.dialog.TimePickerDialog
 import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_ERROR_MESSAGE
 import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_ERROR_TRAILING_ICON
 import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_TRAILING_ICON
 import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
+import br.com.fitnesspro.compose.components.fields.state.DialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.ITextField
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.TextField
@@ -475,6 +477,39 @@ fun <T: ITupleListItem> PagedListDialogOutlinedTextFieldValidation(
 
     if (field.dialogListState.show) {
         FitnessProPagedListDialog(
+            state = field.dialogListState,
+            simpleFilterPlaceholderResId = simpleFilterPlaceholderResId,
+            emptyMessage = emptyMessage,
+            itemLayout = itemLayout
+        )
+    }
+}
+
+@Composable
+fun <T: ITupleListItem> ListDialogOutlinedTextFieldValidation(
+    field: DialogListTextField<T>,
+    fieldLabel: String,
+    simpleFilterPlaceholderResId: Int,
+    emptyMessage: Int,
+    itemLayout: @Composable (T) -> Unit,
+    modifier: Modifier = Modifier,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+) {
+    OutlinedTextFieldValidation(
+        field = field,
+        label = fieldLabel,
+        modifier = modifier,
+        keyboardOptions = keyboardOptions,
+        trailingIcon = {
+            IconButtonSearch(
+                onClick = field.dialogListState.onShow,
+                iconColor = MaterialTheme.colorScheme.secondary
+            )
+        }
+    )
+
+    if (field.dialogListState.show) {
+        FitnessProListDialog(
             state = field.dialogListState,
             simpleFilterPlaceholderResId = simpleFilterPlaceholderResId,
             emptyMessage = emptyMessage,

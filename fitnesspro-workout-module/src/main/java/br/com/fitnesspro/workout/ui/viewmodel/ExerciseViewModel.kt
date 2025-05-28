@@ -8,6 +8,8 @@ import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.menu.MenuItem
 import br.com.fitnesspro.compose.components.fields.menu.getLabelOrEmptyIfNullValue
+import br.com.fitnesspro.compose.components.fields.state.DialogListState
+import br.com.fitnesspro.compose.components.fields.state.DialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
@@ -16,6 +18,7 @@ import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.extensions.toIntOrNull
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.R
@@ -68,7 +71,7 @@ class ExerciseViewModel @Inject constructor(
     private fun initialLoadUIState() {
         _uiState.update {
             it.copy(
-                group = initializeDropDownTextFieldGroup(),
+                group = initializeDialogListTextFieldGroup(),
                 exercise = initializePagedDialogListTextFieldExercise(),
                 sets = initializeTextFieldSets(),
                 reps = initializeTextFieldReps(),
@@ -77,32 +80,100 @@ class ExerciseViewModel @Inject constructor(
                 duration = initializeTextFieldDuration(),
                 unitDuration = initializeDropDownTextFieldUnitDuration(),
                 observation = initializeTextFieldObservation(),
+                messageDialogState = initializeMessageDialogState()
             )
         }
     }
 
-    private fun initializeDropDownTextFieldGroup(): DropDownTextField<TOWorkoutGroup> {
-        return DropDownTextField(
-            onDropDownDismissRequest = {
+    private fun initializeMessageDialogState(): MessageDialogState {
+        return MessageDialogState(
+            onShowDialog = { type, message, onConfirm, onCancel ->
                 _uiState.value = _uiState.value.copy(
-                    group = _uiState.value.group.copy(expanded = false)
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        dialogType = type,
+                        dialogMessage = message,
+                        showDialog = true,
+                        onConfirm = onConfirm,
+                        onCancel = onCancel
+                    )
                 )
             },
-            onDropDownExpandedChange = {
+            onHideDialog = {
                 _uiState.value = _uiState.value.copy(
-                    group = _uiState.value.group.copy(expanded = it)
-                )
-            },
-            onDataListItemClick = {
-                _uiState.value = _uiState.value.copy(
-                    group = _uiState.value.group.copy(
-                        value = it.label,
-                        expanded = false,
-                        errorMessage = ""
-                    ),
-                    toExercise = _uiState.value.toExercise.copy(workoutGroupId = it.value?.id)
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        showDialog = false
+                    )
                 )
             }
+        )
+    }
+
+    private fun initializeDialogListTextFieldGroup(): DialogListTextField<TOWorkoutGroup> {
+        return DialogListTextField(
+            dialogListState = DialogListState(
+                dialogTitle = context.getString(R.string.exercise_screen_group_dialog_list_title),
+                onShow = {
+                    _uiState.value = _uiState.value.copy(
+                        group = _uiState.value.group.copy(
+                            dialogListState = _uiState.value.group.dialogListState.copy(show = true)
+                        )
+                    )
+                },
+                onHide = {
+                    _uiState.value = _uiState.value.copy(
+                        group = _uiState.value.group.copy(
+                            dialogListState = _uiState.value.group.dialogListState.copy(show = false)
+                        )
+                    )
+                },
+                onDataListItemClick = { item ->
+                    _uiState.value = _uiState.value.copy(
+                        group = _uiState.value.group.copy(
+                            value = item.getLabel(),
+                            errorMessage = ""
+                        ),
+                        toExercise = _uiState.value.toExercise.copy(
+                            workoutGroupId = item.id,
+                            workoutGroupName = item.name
+                        )
+                    )
+
+                    _uiState.value.group.dialogListState.onHide()
+                },
+                onSimpleFilterChange = { filter ->
+                    launch {
+                        _uiState.value = _uiState.value.copy(
+                            group = _uiState.value.group.copy(
+                                dialogListState = _uiState.value.group.dialogListState.copy(
+                                    dataList = getListWorkoutGroups(simpleFilter = filter)
+                                )
+                            )
+                        )
+                    }
+                },
+            ),
+            onChange = {
+                _uiState.value = _uiState.value.copy(
+                    group = _uiState.value.group.copy(
+                        value = it,
+                    ),
+                    toExercise = _uiState.value.toExercise.copy(
+                        workoutGroupId = null,
+                        workoutGroupName = it
+                    )
+                )
+            }
+        )
+    }
+
+    private suspend fun getListWorkoutGroups(simpleFilter: String): List<TOWorkoutGroup> {
+        val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
+
+        return workoutGroupRepository.getWorkoutGroupsFromWorkout(
+            workoutId = args.workoutId,
+            dayOfWeek = args.dayWeek,
+            workoutGroupId = args.workoutGroupId,
+            simpleFilter = simpleFilter
         )
     }
 
@@ -337,23 +408,26 @@ class ExerciseViewModel @Inject constructor(
                 dayOfWeek = args.dayWeek,
                 workoutGroupId = args.workoutGroupId
             )
-            val menuItems = groups.map {
-                MenuItem<TOWorkoutGroup?>(
-                    label = it.name ?: context.getString(R.string.workout_group_default_name),
-                    value = it
-                )
-            }
-
-            val selectedMenuItem = menuItems.find { it.value?.id == args.workoutGroupId }
 
             _uiState.value = _uiState.value.copy(
                 group = _uiState.value.group.copy(
-                    dataList = menuItems,
-                    dataListFiltered = menuItems,
-                    value = selectedMenuItem?.label ?: ""
-                ),
-                toExercise = _uiState.value.toExercise.copy(workoutGroupId = selectedMenuItem?.value?.id)
+                    dialogListState = _uiState.value.group.dialogListState.copy(
+                        dataList = groups
+                    )
+                )
             )
+
+            groups.firstOrNull { it.id == args.workoutGroupId }?.let { selectedGroup ->
+                _uiState.value = _uiState.value.copy(
+                    group = _uiState.value.group.copy(
+                        value = selectedGroup.name!!
+                    ),
+                    toExercise = _uiState.value.toExercise.copy(
+                        workoutGroupId = selectedGroup.id,
+                        workoutGroupName = selectedGroup.name
+                    )
+                )
+            }
         }
     }
 

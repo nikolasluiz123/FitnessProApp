@@ -38,5 +38,16 @@
     <string name="exercise_screen_chrono_unit_minutes">Minutos</string>
     <string name="exercise_screen_chrono_unit_hours">Horas</string>
     <string name="exercise_screen_label_clear_unit">Nenhuma</string>
-    <string name="exercise_screen_label_clear_group">Nenhum</string>
+    <string name="enum_exercise_group">Grupo</string>
+    <string name="enum_exercise">Exercício</string>
+    <string name="enum_exercise_sets">Séries</string>
+    <string name="enum_exercise_repetitions">Repetições</string>
+    <string name="enum_exercise_rest">Descanso</string>
+    <string name="enum_exercise_unit_rest">Unidade do Descanso</string>
+    <string name="enum_exercise_duration">Duração</string>
+    <string name="enum_exercise_unit_duration">Unidade da Duração</string>
+    <string name="enum_exercise_observation">Observação</string>
+    <string name="exercise_screen_group_dialog_list_title">Grupos dos Exercícios</string>
+    <string name="exercise_screen_group_place_holder">Buscar por Nome</string>
+    <string name="exercise_screen_group_empty_message">Nenhum Grupo de Exercício encontrado</string>
 </resources>

@@ -3,7 +3,7 @@ package br.com.fitnesspro.mappers
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.to.TOExercise
 
-fun Exercise.getTOExercise(): TOExercise {
+fun Exercise.getTOExercise(workoutGroupName: String? = null): TOExercise {
     return TOExercise(
         id = id,
         name = name,
@@ -13,6 +13,7 @@ fun Exercise.getTOExercise(): TOExercise {
         rest = rest,
         observation = observation,
         workoutGroupId = workoutGroupId,
+        workoutGroupName = workoutGroupName,
         active = active,
     )
 }

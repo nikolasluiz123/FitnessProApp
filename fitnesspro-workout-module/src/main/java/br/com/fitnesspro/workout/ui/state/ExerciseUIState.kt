@@ -1,5 +1,6 @@
 package br.com.fitnesspro.workout.ui.state
 
+import br.com.fitnesspro.compose.components.fields.state.DialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.TextField
@@ -13,7 +14,7 @@ import java.time.temporal.ChronoUnit
 data class ExerciseUIState(
     var title: String = "",
     var subtitle: String = "",
-    val group: DropDownTextField<TOWorkoutGroup> = DropDownTextField(),
+    val group: DialogListTextField<TOWorkoutGroup> = DialogListTextField(),
     val exercise: PagedDialogListTextField<TOExercise> = PagedDialogListTextField(),
     val sets: TextField = TextField(),
     val reps: TextField = TextField(),

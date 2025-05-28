@@ -11,6 +11,7 @@ data class TOExercise(
     var rest: Long? = null,
     var observation: String? = null,
     var workoutGroupId: String? = null,
+    var workoutGroupName: String? = null,
     var active: Boolean = true
 ): BaseTO, ITupleListItem {
 

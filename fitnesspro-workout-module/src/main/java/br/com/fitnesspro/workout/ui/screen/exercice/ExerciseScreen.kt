@@ -26,6 +26,7 @@ import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
+import br.com.fitnesspro.compose.components.fields.ListDialogOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
@@ -108,7 +109,7 @@ fun ExerciseScreen(
                 val (groupRef, exerciseRef, setsRef, repsRef, restRef, unitRestRef,
                     durationRef, unitDurationRef, observationRef) = createRefs()
 
-                DefaultExposedDropdownMenu(
+                ListDialogOutlinedTextFieldValidation(
                     modifier = Modifier
                         .fillMaxWidth()
                         .constrainAs(groupRef) {
@@ -117,9 +118,15 @@ fun ExerciseScreen(
                             end.linkTo(parent.end)
                         },
                     field = state.group,
-                    labelResId = R.string.exercise_screen_label_group,
-                    showClearOption = true,
-                    clearOptionText = stringResource(R.string.exercise_screen_label_clear_group)
+                    fieldLabel = stringResource(R.string.exercise_screen_label_group),
+                    simpleFilterPlaceholderResId = R.string.exercise_screen_group_place_holder,
+                    emptyMessage = R.string.exercise_screen_group_empty_message,
+                    itemLayout = {
+                        GroupDialogItem(
+                            toWorkoutGroup = it,
+                            onItemClick = state.group.dialogListState.onDataListItemClick
+                        )
+                    }
                 )
 
                 PagedListDialogOutlinedTextFieldValidation(
@@ -135,7 +142,10 @@ fun ExerciseScreen(
                     simpleFilterPlaceholderResId = R.string.exercise_screen_exercises_place_holder,
                     emptyMessage = R.string.exercise_screen_exercises_empty_message,
                     itemLayout = {
-                        ExercisePagedDialogItem(it)
+                        ExercisePagedDialogItem(
+                            toExercise = it,
+                            onItemClick = state.exercise.dialogListState.onDataListItemClick
+                        )
                     }
                 )
 

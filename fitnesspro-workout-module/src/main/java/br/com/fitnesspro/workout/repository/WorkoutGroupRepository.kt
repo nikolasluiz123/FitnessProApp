@@ -6,7 +6,6 @@ import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.getTOWorkoutGroup
-import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
@@ -20,7 +19,9 @@ class WorkoutGroupRepository(
 ): FitnessProRepository(context) {
 
     suspend fun getListDayWeekExercisesGroupDecorator(workoutId: String): List<DayWeekExercicesGroupDecorator> {
-        val workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(workoutId)
+        val workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(workoutId).onEach {
+            it.name = it.name ?: context.getString(R.string.workout_group_default_name)
+        }
         val weeks = workoutGroups.map { it.dayWeek!! }.distinct()
 
         val workoutGroupIds = workoutGroups.map { it.id }
@@ -33,7 +34,7 @@ class WorkoutGroupRepository(
             val groupsDecorator = groupsFromWeek.map { workoutGroup ->
                 WorkoutGroupDecorator(
                     id = workoutGroup.id,
-                    label = workoutGroup.name ?: context.getString(R.string.workout_group_default_name),
+                    label = workoutGroup.name!!,
                     items = exercisesByGroupId[workoutGroup.id] ?: emptyList()
                 )
             }
@@ -49,12 +50,19 @@ class WorkoutGroupRepository(
     suspend fun getWorkoutGroupsFromWorkout(
         workoutId: String,
         dayOfWeek: DayOfWeek? = null,
-        workoutGroupId: String? = null
+        workoutGroupId: String? = null,
+        simpleFilter: String? = null
     ): List<TOWorkoutGroup> {
         return workoutGroupDAO.getWorkoutGroupsFromWorkout(
             workoutId = workoutId,
             dayOfWeek = dayOfWeek,
-            workoutGroupId = workoutGroupId
-        ).map(WorkoutGroup::getTOWorkoutGroup)
+            workoutGroupId = workoutGroupId,
+            simpleFilter = simpleFilter
+        ).map {
+            val to = it.getTOWorkoutGroup()
+            to.name = it.name ?: context.getString(R.string.workout_group_default_name)
+
+            to
+        }
     }
 }

@@ -1,6 +1,7 @@
 package br.com.fitnesspro.local.data.access.dao
 
 import androidx.room.Dao
+import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -12,10 +13,14 @@ import java.util.StringJoiner
 @Dao
 abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
 
+    @Query("select * from workout_group where id = :workoutGroupId and active = 1")
+    abstract suspend fun findById(workoutGroupId: String?): WorkoutGroup?
+
     suspend fun getWorkoutGroupsFromWorkout(
         workoutId: String,
         dayOfWeek: DayOfWeek? = null,
-        workoutGroupId: String? = null
+        workoutGroupId: String? = null,
+        simpleFilter: String? = null
     ): List<WorkoutGroup> {
         val queryParams = mutableListOf<Any>()
 
@@ -41,6 +46,11 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
             dayOfWeek?.let {
                 add(" and day_week = ? ")
                 queryParams.add(it.name)
+            }
+
+            if (!simpleFilter.isNullOrEmpty()) {
+                add(" and lower(name) like ? ")
+                queryParams.add("%${simpleFilter.lowercase()}%")
             }
         }
 

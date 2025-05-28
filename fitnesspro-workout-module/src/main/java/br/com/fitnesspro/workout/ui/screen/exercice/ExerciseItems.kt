@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.ValueTextStyle
 import br.com.fitnesspro.to.TOExercise
+import br.com.fitnesspro.to.TOWorkoutGroup
 
 @Composable
 fun ExercisePagedDialogItem(toExercise: TOExercise, onItemClick: (TOExercise) -> Unit = { }) {
@@ -28,6 +29,24 @@ fun ExercisePagedDialogItem(toExercise: TOExercise, onItemClick: (TOExercise) ->
         Text(
             modifier = Modifier.padding(12.dp),
             text = toExercise.name!!,
+            style = ValueTextStyle.copy(fontSize = 16.sp)
+        )
+    }
+
+    HorizontalDivider()
+}
+
+@Composable
+fun GroupDialogItem(toWorkoutGroup: TOWorkoutGroup, onItemClick: (TOWorkoutGroup) -> Unit = { }) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clickable { onItemClick(toWorkoutGroup) },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            modifier = Modifier.padding(12.dp),
+            text = toWorkoutGroup.name!!,
             style = ValueTextStyle.copy(fontSize = 16.sp)
         )
     }
@@ -49,11 +68,35 @@ private fun ExercisePagedDialogItemPreview() {
 
 @Preview(device = "id:small_phone")
 @Composable
+private fun GroupDialogItemPreview() {
+    FitnessProTheme {
+        Surface {
+            GroupDialogItem(
+                toWorkoutGroup = dialogGroupItem
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
 private fun ExercisePagedDialogItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
             ExercisePagedDialogItem(
                 toExercise = pagedDialogExerciseItem
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun GroupDialogItemPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            GroupDialogItem(
+                toWorkoutGroup = dialogGroupItem
             )
         }
     }
