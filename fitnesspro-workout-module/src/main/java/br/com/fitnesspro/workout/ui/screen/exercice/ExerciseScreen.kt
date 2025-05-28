@@ -124,7 +124,7 @@ fun ExerciseScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .constrainAs(exerciseRef) {
-                            top.linkTo(groupRef.bottom)
+                            top.linkTo(groupRef.bottom, margin = 8.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         },
@@ -137,46 +137,40 @@ fun ExerciseScreen(
                     }
                 )
 
-                createHorizontalChain(setsRef, repsRef)
-
                 OutlinedTextFieldValidation(
                     modifier = Modifier
-                        .padding(end = 8.dp)
                         .constrainAs(setsRef) {
                             start.linkTo(parent.start)
+                            end.linkTo(parent.end)
                             top.linkTo(exerciseRef.bottom, margin = 8.dp)
 
                             width = Dimension.fillToConstraints
-                            horizontalChainWeight = 0.5f
                         },
                     field = state.sets,
                     label = stringResource(R.string.exercise_screen_label_sets),
 
-                    )
+                )
 
                 OutlinedTextFieldValidation(
                     modifier = Modifier.constrainAs(repsRef) {
+                        start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                        top.linkTo(exerciseRef.bottom, margin = 8.dp)
+                        top.linkTo(setsRef.bottom, margin = 8.dp)
 
                         width = Dimension.fillToConstraints
-                        horizontalChainWeight = 0.5f
                     },
                     field = state.reps,
                     label = stringResource(R.string.exercise_screen_label_reps),
                 )
 
-                createHorizontalChain(restRef, unitRestRef)
-
                 OutlinedTextFieldValidation(
                     modifier = Modifier
-                        .padding(end = 8.dp)
                         .constrainAs(restRef) {
                             start.linkTo(parent.start)
-                            top.linkTo(setsRef.bottom, margin = 8.dp)
+                            end.linkTo(parent.end)
+                            top.linkTo(repsRef.bottom, margin = 8.dp)
 
                             width = Dimension.fillToConstraints
-                            horizontalChainWeight = 0.5f
                         },
                     field = state.rest,
                     label = stringResource(R.string.exercise_screen_label_rest),
@@ -185,27 +179,24 @@ fun ExerciseScreen(
 
                 DefaultExposedDropdownMenu(
                     modifier = Modifier.constrainAs(unitRestRef) {
+                        start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                        top.linkTo(repsRef.bottom, margin = 8.dp)
+                        top.linkTo(restRef.bottom, margin = 8.dp)
 
                         width = Dimension.fillToConstraints
-                        horizontalChainWeight = 0.5f
                     },
                     field = state.unitRest,
                     labelResId = R.string.exercise_screen_label_unit,
                 )
 
-                createHorizontalChain(durationRef, unitDurationRef)
-
                 OutlinedTextFieldValidation(
                     modifier = Modifier
-                        .padding(end = 8.dp)
                         .constrainAs(durationRef) {
                             start.linkTo(parent.start)
-                            top.linkTo(restRef.bottom, margin = 8.dp)
+                            end.linkTo(parent.end)
+                            top.linkTo(unitRestRef.bottom, margin = 8.dp)
 
                             width = Dimension.fillToConstraints
-                            horizontalChainWeight = 0.5f
                         },
                     field = state.duration,
                     label = stringResource(R.string.exercise_screen_label_duration),
@@ -213,11 +204,11 @@ fun ExerciseScreen(
 
                 DefaultExposedDropdownMenu(
                     modifier = Modifier.constrainAs(unitDurationRef) {
+                        start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                        top.linkTo(unitRestRef.bottom, margin = 8.dp)
+                        top.linkTo(durationRef.bottom, margin = 8.dp)
 
                         width = Dimension.fillToConstraints
-                        horizontalChainWeight = 0.5f
                     },
                     field = state.unitDuration,
                     labelResId = R.string.exercise_screen_label_unit,
@@ -229,7 +220,7 @@ fun ExerciseScreen(
                         .constrainAs(observationRef) {
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                            top.linkTo(durationRef.bottom, margin = 8.dp)
+                            top.linkTo(unitDurationRef.bottom, margin = 8.dp)
                         },
                     field = state.duration,
                     label = stringResource(R.string.exercise_screen_label_observation),
