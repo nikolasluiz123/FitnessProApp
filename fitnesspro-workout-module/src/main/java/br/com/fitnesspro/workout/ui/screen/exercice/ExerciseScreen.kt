@@ -117,7 +117,9 @@ fun ExerciseScreen(
                             end.linkTo(parent.end)
                         },
                     field = state.group,
-                    labelResId = R.string.exercise_screen_label_group
+                    labelResId = R.string.exercise_screen_label_group,
+                    showClearOption = true,
+                    clearOptionText = stringResource(R.string.exercise_screen_label_clear_group)
                 )
 
                 PagedListDialogOutlinedTextFieldValidation(
@@ -187,6 +189,8 @@ fun ExerciseScreen(
                     },
                     field = state.unitRest,
                     labelResId = R.string.exercise_screen_label_unit,
+                    showClearOption = true,
+                    clearOptionText = stringResource(R.string.exercise_screen_label_clear_unit)
                 )
 
                 OutlinedTextFieldValidation(
@@ -212,6 +216,8 @@ fun ExerciseScreen(
                     },
                     field = state.unitDuration,
                     labelResId = R.string.exercise_screen_label_unit,
+                    showClearOption = true,
+                    clearOptionText = stringResource(R.string.exercise_screen_label_clear_unit)
                 )
 
                 OutlinedTextFieldValidation(

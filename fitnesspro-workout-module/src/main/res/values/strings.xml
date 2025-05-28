@@ -37,4 +37,6 @@
     <string name="exercise_screen_chrono_unit_seconds">Segundos</string>
     <string name="exercise_screen_chrono_unit_minutes">Minutos</string>
     <string name="exercise_screen_chrono_unit_hours">Horas</string>
+    <string name="exercise_screen_label_clear_unit">Nenhuma</string>
+    <string name="exercise_screen_label_clear_group">Nenhum</string>
 </resources>

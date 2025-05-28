@@ -197,9 +197,9 @@ class RegisterAcademyViewModel @Inject constructor(
         )
     }
 
-    private fun initializeDayWeekDropDownTextField(): DropDownTextField<DayOfWeek> {
+    private fun initializeDayWeekDropDownTextField(): DropDownTextField<DayOfWeek?> {
         val items = DayOfWeek.entries.map { dayOfWeek ->
-            MenuItem(
+            MenuItem<DayOfWeek?>(
                 label = dayOfWeek.getFirstPartFullDisplayName(),
                 value = dayOfWeek
             )

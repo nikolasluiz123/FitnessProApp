@@ -23,7 +23,7 @@ data class RegisterUserUIState(
     val password: TextField = TextField(),
     val birthDate: DatePickerTextField = DatePickerTextField(),
     val phone: TextField = TextField(),
-    val userType: DropDownTextField<EnumUserType> = DropDownTextField(),
+    val userType: DropDownTextField<EnumUserType?> = DropDownTextField(),
     val isVisibleFieldPhone: Boolean = false,
     val isRegisterServiceAuth: Boolean = false,
     val academies: List<AcademyGroupDecorator> = mutableListOf(),

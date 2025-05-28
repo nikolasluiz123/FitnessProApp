@@ -25,7 +25,9 @@ import br.com.fitnesspro.compose.components.fields.state.ITextField
 fun <T> DefaultExposedDropdownMenu(
     field: DropDownTextField<T>,
     labelResId: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showClearOption: Boolean = false,
+    clearOptionText: String = ""
 ) {
     DefaultExposedDropdownMenu(
         field = field,
@@ -35,7 +37,9 @@ fun <T> DefaultExposedDropdownMenu(
         onMenuDismissRequest = field.onDropDownDismissRequest,
         onItemClick = field.onDataListItemClick,
         items = field.dataListFiltered,
-        modifier = modifier
+        modifier = modifier,
+        showClearOption = showClearOption,
+        clearOptionText = clearOptionText
     )
 }
 
@@ -47,9 +51,11 @@ fun <T> DefaultExposedDropdownMenu(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
     onMenuDismissRequest: () -> Unit,
-    onItemClick: (MenuItem<T>) -> Unit,
-    items: List<MenuItem<T>>,
-    modifier: Modifier = Modifier
+    onItemClick: (MenuItem<T?>) -> Unit,
+    items: List<MenuItem<T?>>,
+    modifier: Modifier = Modifier,
+    showClearOption: Boolean = false,
+    clearOptionText: String = ""
 ) {
     ExposedDropdownMenuBox(
         modifier = modifier,
@@ -82,6 +88,17 @@ fun <T> DefaultExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = onMenuDismissRequest
         ) {
+            if (showClearOption) {
+                DropdownMenuItem(
+                    modifier = Modifier.testTag(DROP_DOWN_MENU_ITEM.name),
+                    text = { Text(text = clearOptionText) },
+                    onClick = {
+                        items.selectValue(null)
+                        onItemClick(MenuItem<T?>(clearOptionText, null))
+                    }
+                )
+            }
+
             items.forEach { item ->
                 DropdownMenuItem(
                     modifier = Modifier.testTag(DROP_DOWN_MENU_ITEM.name),
@@ -96,7 +113,11 @@ fun <T> DefaultExposedDropdownMenu(
     }
 }
 
-fun <T> List<MenuItem<T>>.selectValue(value: T) {
+fun <T> List<MenuItem<T?>>.selectValue(value: T?) {
     forEach { it.selected = false }
-    first { it.value == value }.selected = true
+    firstOrNull { it.value == value }?.selected = true
+}
+
+fun <T> MenuItem<T?>.getLabelOrEmptyIfNullValue(): String {
+    return if (value == null) "" else label
 }

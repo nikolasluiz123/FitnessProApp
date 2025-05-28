@@ -7,6 +7,7 @@ import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.menu.MenuItem
+import br.com.fitnesspro.compose.components.fields.menu.getLabelOrEmptyIfNullValue
 import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
@@ -95,11 +96,11 @@ class ExerciseViewModel @Inject constructor(
             onDataListItemClick = {
                 _uiState.value = _uiState.value.copy(
                     group = _uiState.value.group.copy(
-                        value = it.value.name!!,
+                        value = it.label,
                         expanded = false,
                         errorMessage = ""
                     ),
-                    toExercise = _uiState.value.toExercise.copy(workoutGroupId = it.value.id)
+                    toExercise = _uiState.value.toExercise.copy(workoutGroupId = it.value?.id)
                 )
             }
         )
@@ -213,7 +214,7 @@ class ExerciseViewModel @Inject constructor(
         )
     }
 
-    private fun initializeDropDownTextFieldUnitRest(): DropDownTextField<ChronoUnit> {
+    private fun initializeDropDownTextFieldUnitRest(): DropDownTextField<ChronoUnit?> {
         val items = getChronoUnitMenuItems()
 
         return DropDownTextField(
@@ -232,7 +233,7 @@ class ExerciseViewModel @Inject constructor(
             onDataListItemClick = {
                 _uiState.value = _uiState.value.copy(
                     unitRest = _uiState.value.unitRest.copy(
-                        value = it.label,
+                        value = it.getLabelOrEmptyIfNullValue(),
                         errorMessage = ""
                     )
                 )
@@ -255,7 +256,7 @@ class ExerciseViewModel @Inject constructor(
         )
     }
 
-    private fun initializeDropDownTextFieldUnitDuration(): DropDownTextField<ChronoUnit> {
+    private fun initializeDropDownTextFieldUnitDuration(): DropDownTextField<ChronoUnit?> {
         val items = getChronoUnitMenuItems()
 
         return DropDownTextField(
@@ -274,7 +275,7 @@ class ExerciseViewModel @Inject constructor(
             onDataListItemClick = {
                 _uiState.value = _uiState.value.copy(
                     unitDuration = _uiState.value.unitDuration.copy(
-                        value = it.label,
+                        value = it.getLabelOrEmptyIfNullValue(),
                         errorMessage = ""
                     )
                 )
@@ -284,7 +285,7 @@ class ExerciseViewModel @Inject constructor(
         )
     }
 
-    private fun getChronoUnitMenuItems(): List<MenuItem<ChronoUnit>> {
+    private fun getChronoUnitMenuItems(): List<MenuItem<ChronoUnit?>> {
         val units = ChronoUnit.entries.slice(ChronoUnit.SECONDS.ordinal..ChronoUnit.HOURS.ordinal)
 
         return units.map { unit ->
@@ -337,13 +338,13 @@ class ExerciseViewModel @Inject constructor(
                 workoutGroupId = args.workoutGroupId
             )
             val menuItems = groups.map {
-                MenuItem(
+                MenuItem<TOWorkoutGroup?>(
                     label = it.name ?: context.getString(R.string.workout_group_default_name),
                     value = it
                 )
             }
 
-            val selectedMenuItem = menuItems.find { it.value.id == args.workoutGroupId }
+            val selectedMenuItem = menuItems.find { it.value?.id == args.workoutGroupId }
 
             _uiState.value = _uiState.value.copy(
                 group = _uiState.value.group.copy(
