@@ -64,3 +64,16 @@ fun TOWorkout.getWorkout(): Workout {
 
     return model
 }
+
+fun TOWorkoutGroup.getWorkoutGroup(): WorkoutGroup {
+    val model = WorkoutGroup(
+        name = name,
+        active = active,
+        workoutId = workoutId,
+        dayWeek = dayWeek,
+    )
+
+    id?.let { model.id = it }
+
+    return model
+}

@@ -2,6 +2,7 @@ package br.com.fitnesspro.local.data.access.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
+import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -71,5 +72,8 @@ abstract class ExercisePreDefinitionDAO: IntegratedMaintenanceDAO<ExercisePreDef
 
     @RawQuery(observedEntities = [ExercisePreDefinition::class, WorkoutGroupPreDefinition::class])
     abstract fun executeExercisesFromWorkoutGroup(query: SupportSQLiteQuery): PagingSource<Int, TOExercise>
+
+    @Query("select * from exercise_pre_definition where lower(name) = lower(:name) and active = 1")
+    abstract suspend fun findExercisePreDefinitionByName(name: String): ExercisePreDefinition?
 
 }

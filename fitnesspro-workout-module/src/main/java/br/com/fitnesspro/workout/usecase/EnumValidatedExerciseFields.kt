@@ -4,8 +4,8 @@ import br.com.fitnesspro.workout.R
 
 
 enum class EnumValidatedExerciseFields(val labelResId: Int, val maxLength: Int = 0) {
-    EXERCISE_GROUP(R.string.enum_exercise_group, 0),
-    EXERCISE(R.string.enum_exercise, 0),
+    EXERCISE_GROUP(R.string.enum_exercise_group, 255),
+    EXERCISE(R.string.enum_exercise, 255),
     SETS(R.string.enum_exercise_sets, 0),
     REPETITIONS(R.string.enum_exercise_repetitions, 0),
     REST(R.string.enum_exercise_rest, 0),

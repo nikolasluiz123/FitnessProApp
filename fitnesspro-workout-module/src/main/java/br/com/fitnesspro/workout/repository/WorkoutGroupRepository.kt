@@ -6,6 +6,8 @@ import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.getTOWorkoutGroup
+import br.com.fitnesspro.mappers.getWorkoutGroup
+import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
@@ -64,5 +66,32 @@ class WorkoutGroupRepository(
 
             to
         }
+    }
+
+    suspend fun findWorkoutGroupByName(workoutId: String, name: String): WorkoutGroup? {
+        return workoutGroupDAO.findWorkoutGroupByName(workoutId, name)
+    }
+
+    suspend fun findWorkoutGroupById(workoutGroupId: String?): WorkoutGroup? {
+        return workoutGroupDAO.findById(workoutGroupId)
+    }
+
+    suspend fun saveWorkoutGroup(toWorkoutGroup: TOWorkoutGroup) {
+        saveWorkoutGroupLocally(toWorkoutGroup)
+        saveWorkoutGroupRemote(toWorkoutGroup)
+    }
+
+    private suspend fun saveWorkoutGroupLocally(toWorkoutGroup: TOWorkoutGroup) {
+        val workoutGroup = toWorkoutGroup.getWorkoutGroup()
+
+        if (toWorkoutGroup.id == null) {
+            workoutGroupDAO.insert(workoutGroup)
+        } else {
+            workoutGroupDAO.update(workoutGroup)
+        }
+    }
+
+    private suspend fun saveWorkoutGroupRemote(toWorkoutGroup: TOWorkoutGroup) {
+
     }
 }

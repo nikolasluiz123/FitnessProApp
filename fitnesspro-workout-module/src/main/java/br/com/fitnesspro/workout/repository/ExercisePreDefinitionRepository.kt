@@ -5,7 +5,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO
+import br.com.fitnesspro.mappers.getTOExercisePreDefinition
 import br.com.fitnesspro.to.TOExercise
+import br.com.fitnesspro.to.TOExercisePreDefinition
 
 class ExercisePreDefinitionRepository(
     context: Context,
@@ -30,5 +32,9 @@ class ExercisePreDefinitionRepository(
                 )
             }
         )
+    }
+
+    suspend fun findExercisePreDefinitionByName(name: String): TOExercisePreDefinition? {
+        return exercisePreDefinitionDAO.findExercisePreDefinitionByName(name)?.getTOExercisePreDefinition()
     }
 }

@@ -3,20 +3,56 @@ package br.com.fitnesspro.workout.repository
 import android.content.Context
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
-import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
+import br.com.fitnesspro.mappers.getExercise
 import br.com.fitnesspro.mappers.getTOExercise
+import br.com.fitnesspro.mappers.getTOWorkoutGroup
 import br.com.fitnesspro.to.TOExercise
 
 class ExerciseRepository(
     context: Context,
     private val exerciseDAO: ExerciseDAO,
-    private val workoutGroupDAO: WorkoutGroupDAO
+    private val workoutGroupRepository: WorkoutGroupRepository
 ): FitnessProRepository(context) {
 
     suspend fun findById(id: String): TOExercise {
         val exercise = exerciseDAO.findById(id)
-        val workoutGroupName = workoutGroupDAO.findById(exercise.workoutGroupId)?.name
+        val workoutGroupName = workoutGroupRepository.findWorkoutGroupById(exercise.workoutGroupId)?.name
 
         return exercise.getTOExercise(workoutGroupName)
     }
+
+    suspend fun saveExercise(toExercise: TOExercise) {
+        runInTransaction {
+            saveExerciseLocally(toExercise)
+            saveExerciseRemote(toExercise)
+        }
+    }
+
+    private suspend fun saveExerciseLocally(toExercise: TOExercise) {
+        saveExerciseWorkoutGroup(toExercise)
+        insertOrUpdateExercise(toExercise)
+    }
+
+    private suspend fun insertOrUpdateExercise(toExercise: TOExercise) {
+        val exercise = toExercise.getExercise()
+
+        if (toExercise.id == null) {
+            exerciseDAO.insert(exercise)
+        } else {
+            exerciseDAO.update(exercise)
+        }
+    }
+
+    private suspend fun saveExerciseWorkoutGroup(toExercise: TOExercise) {
+        workoutGroupRepository.findWorkoutGroupById(toExercise.workoutGroupId)?.apply {
+            name = toExercise.name
+            workoutGroupRepository.saveWorkoutGroup(this.getTOWorkoutGroup())
+        }
+    }
+
+    private suspend fun saveExerciseRemote(toExercise: TOExercise) {
+
+
+    }
+
 }

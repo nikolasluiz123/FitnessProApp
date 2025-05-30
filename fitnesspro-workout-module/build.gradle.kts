@@ -41,6 +41,7 @@ dependencies {
     implementation(project(":fitnesspro-model"))
     implementation(project(":fitnesspro-local-data-access"))
     implementation(project(":fitnesspro-common-module"))
+    implementation(project(":fitnesspro-firebase-api"))
 
     implementation(libs.google.gson)
 
@@ -51,6 +52,9 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     implementation(libs.room.paging)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

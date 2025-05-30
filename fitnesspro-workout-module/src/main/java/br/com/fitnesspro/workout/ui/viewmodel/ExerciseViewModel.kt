@@ -19,15 +19,20 @@ import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.extensions.toIntOrNull
 import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.fitnesspro.core.validation.FieldValidationTypedError
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
+import br.com.fitnesspro.workout.repository.WorkoutRepository
 import br.com.fitnesspro.workout.ui.navigation.ExerciseScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.exerciseScreenArguments
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
+import br.com.fitnesspro.workout.usecase.EnumValidatedExerciseFields
+import br.com.fitnesspro.workout.usecase.EnumValidatedExerciseType
+import br.com.fitnesspro.workout.usecase.SaveExerciseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -45,6 +50,8 @@ class ExerciseViewModel @Inject constructor(
     private val personRepository: PersonRepository,
     private val exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
     private val workoutGroupRepository: WorkoutGroupRepository,
+    private val workoutRepository: WorkoutRepository,
+    private val saveExerciseUseCase: SaveExerciseUseCase,
     savedStateHandle: SavedStateHandle
 ): FitnessProViewModel() {
 
@@ -69,6 +76,8 @@ class ExerciseViewModel @Inject constructor(
     }
 
     private fun initialLoadUIState() {
+        val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
+
         _uiState.update {
             it.copy(
                 group = initializeDialogListTextFieldGroup(),
@@ -80,7 +89,8 @@ class ExerciseViewModel @Inject constructor(
                 duration = initializeTextFieldDuration(),
                 unitDuration = initializeDropDownTextFieldUnitDuration(),
                 observation = initializeTextFieldObservation(),
-                messageDialogState = initializeMessageDialogState()
+                messageDialogState = initializeMessageDialogState(),
+                toExercise = _uiState.value.toExercise.copy(workoutId = args.workoutId)
             )
         }
     }
@@ -387,13 +397,15 @@ class ExerciseViewModel @Inject constructor(
 
     private fun loadTopBarInfos() {
         launch {
+            val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
             val authenticatedPerson = personRepository.getAuthenticatedTOPerson()!!
+            val workout = workoutRepository.findWorkoutById(args.workoutId)
 
             _uiState.value = _uiState.value.copy(
                 title = getTitle(),
                 subtitle = context.getString(
                     R.string.exercise_screen_subtitle,
-                    authenticatedPerson.name
+                    workout?.memberName
                 ),
                 authenticatedPerson = authenticatedPerson
             )
@@ -462,5 +474,125 @@ class ExerciseViewModel @Inject constructor(
                 context.getString(R.string.exercise_screen_title_new)
             }
         }
+    }
+
+    fun saveExercise(onSuccess: () -> Unit) {
+        launch {
+            val validationResults = saveExerciseUseCase(_uiState.value.toExercise)
+
+            if (validationResults.isEmpty()) {
+                onSuccess()
+            } else {
+                _uiState.value.onToggleLoading()
+                showFieldsValidationMessages(validationResults.toMutableList())
+            }
+        }
+    }
+
+    private fun showFieldsValidationMessages(validationResults: MutableList<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>>) {
+        val dialogValidations = validationResults.filter(::isGlobalFieldsValidation)
+        validationResults.removeAll(::isGlobalFieldsValidation)
+
+        if (dialogValidations.isNotEmpty()) {
+            _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(dialogValidations.first().message)
+            return
+        }
+
+        val fieldValidations = validationResults.filter(::isFieldValidation)
+        validationResults.removeAll(::isFieldValidation)
+
+        fieldValidations.forEach {
+            when (it.field!!) {
+                EnumValidatedExerciseFields.EXERCISE_GROUP -> {
+                    _uiState.value = _uiState.value.copy(
+                        group = _uiState.value.group.copy(
+                            errorMessage = it.message
+                        )
+                    )
+                }
+
+                EnumValidatedExerciseFields.EXERCISE -> {
+                    _uiState.value = _uiState.value.copy(
+                        exercise = _uiState.value.exercise.copy(
+                            errorMessage = it.message
+                        )
+                    )
+                }
+
+                EnumValidatedExerciseFields.SETS -> {
+                    _uiState.value = _uiState.value.copy(
+                        sets = _uiState.value.sets.copy(
+                            errorMessage = it.message
+                        )
+                    )
+                }
+
+                EnumValidatedExerciseFields.REPETITIONS -> {
+                    _uiState.value = _uiState.value.copy(
+                        reps = _uiState.value.reps.copy(
+                            errorMessage = it.message
+                        )
+                    )
+                }
+
+                EnumValidatedExerciseFields.REST -> {
+                    _uiState.value = _uiState.value.copy(
+                        rest = _uiState.value.rest.copy(
+                            errorMessage = it.message
+                        )
+                    )
+                }
+
+                EnumValidatedExerciseFields.UNIT_REST -> {
+                    _uiState.value = _uiState.value.copy(
+                        unitRest = _uiState.value.unitRest.copy(
+                            errorMessage = it.message
+                        )
+                    )
+                }
+
+                EnumValidatedExerciseFields.DURATION -> {
+                    _uiState.value = _uiState.value.copy(
+                        duration = _uiState.value.duration.copy(
+                            errorMessage = it.message
+                        )
+                    )
+                }
+
+                EnumValidatedExerciseFields.UNIT_DURATION -> {
+                    _uiState.value = _uiState.value.copy(
+                        unitDuration = _uiState.value.unitDuration.copy(
+                            errorMessage = it.message
+                        )
+                    )
+                }
+
+                EnumValidatedExerciseFields.OBSERVATION -> {
+                    _uiState.value = _uiState.value.copy(
+                        observation = _uiState.value.observation.copy(
+                            errorMessage = it.message
+                        )
+                    )
+                }
+            }
+        }
+
+        if (fieldValidations.isEmpty()) {
+            val typedValidations = validationResults.filter(::isTypedValidation)
+
+            // TODO - Exibir essas validações de algum jeito
+        }
+    }
+
+    private fun isTypedValidation(error: FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>): Boolean {
+        return error.type != null
+    }
+
+    private fun isFieldValidation(error: FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>): Boolean {
+        return error.field != null
+    }
+
+    private fun isGlobalFieldsValidation(error: FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>): Boolean {
+        return error.field == null && error.type == null
     }
 }

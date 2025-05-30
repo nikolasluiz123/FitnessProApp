@@ -1,5 +1,6 @@
 package br.com.fitnesspro.workout.ui.screen.exercice
 
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,16 +8,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,20 +43,29 @@ import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMe
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.core.theme.SnackBarTextStyle
+import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.ui.screen.exercice.callbacks.OnSaveExerciseClick
+import br.com.fitnesspro.workout.ui.screen.exercice.enums.EnumExerciseScreenTags
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
 import br.com.fitnesspro.workout.ui.viewmodel.ExerciseViewModel
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun ExerciseScreen(
     viewModel: ExerciseViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     val state by viewModel.uiState.collectAsState()
 
     ExerciseScreen(
         state = state,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onSaveExerciseClick = viewModel::saveExercise
     )
 }
 
@@ -54,8 +73,14 @@ fun ExerciseScreen(
 @Composable
 fun ExerciseScreen(
     state: ExerciseUIState = ExerciseUIState(),
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onSaveExerciseClick: OnSaveExerciseClick? = null
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
@@ -79,18 +104,21 @@ fun ExerciseScreen(
                         iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         onClick = {
-
+                            onSave(keyboardController, state, onSaveExerciseClick, coroutineScope, snackbarHostState, context)
                         }
                     )
                 }
             )
         },
         snackbarHost = {
-
+            SnackbarHost(hostState = snackbarHostState) {
+                Snackbar(modifier = Modifier.padding(8.dp)) {
+                    Text(text = it.visuals.message, style = SnackBarTextStyle)
+                }
+            }
         }
     ) { paddings ->
         val scrollState = rememberScrollState()
-        val keyboardController = LocalSoftwareKeyboardController.current
 
         Column(Modifier.fillMaxSize()) {
             FitnessProLinearProgressIndicator(state.showLoading)
@@ -240,9 +268,39 @@ fun ExerciseScreen(
                         },
                     field = state.duration,
                     label = stringResource(R.string.exercise_screen_label_observation),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            onSave(keyboardController, state, onSaveExerciseClick, coroutineScope, snackbarHostState, context)
+                        }
+                    )
                 )
             }
         }
+    }
+}
+
+private fun onSave(
+    keyboardController: SoftwareKeyboardController?,
+    state: ExerciseUIState,
+    onSaveExerciseClick: OnSaveExerciseClick?,
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+    context: Context
+) {
+    keyboardController?.hide()
+    state.onToggleLoading()
+    Firebase.analytics.logButtonClick(EnumExerciseScreenTags.EXERCISE_SCREEN_KEYBOARD_SAVE)
+
+    onSaveExerciseClick?.onExecute {
+        state.onToggleLoading()
+        showSuccessMessage(coroutineScope, snackbarHostState, context)
+    }
+}
+
+fun showSuccessMessage(coroutineScope: CoroutineScope, snackbarHostState: SnackbarHostState, context: Context) {
+    coroutineScope.launch {
+        val message = context.getString(R.string.exercise_screen_success_message)
+        snackbarHostState.showSnackbar(message = message)
     }
 }
 

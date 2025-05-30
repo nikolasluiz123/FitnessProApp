@@ -50,4 +50,9 @@
     <string name="exercise_screen_group_dialog_list_title">Grupos dos Exercícios</string>
     <string name="exercise_screen_group_place_holder">Buscar por Nome</string>
     <string name="exercise_screen_group_empty_message">Nenhum Grupo de Exercício encontrado</string>
+    <string name="validation_msg_new_workout_group_creation">O grupo %s ainda não exite no treino, você deseja que ele seja criado?</string>
+    <string name="validation_msg_invalid_rest_or_unit">Ao preencher o Descanso ou a Unidade dele ambos devem ser preenchidos</string>
+    <string name="validation_msg_invalid_duration_or_unit">Ao preencher a Duração ou a Unidade dela ambos devem ser preenchidos</string>
+    <string name="validation_msg_new_exercise_creation">O exercício %s ainda não exite nas suas pré definições, você deseja que ele seja criado como uma pré definição?</string>
+    <string name="exercise_screen_success_message">Exercício salvo com sucesso</string>
 </resources>

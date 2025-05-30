@@ -71,4 +71,13 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
     @RawQuery
     abstract suspend fun executeQueryWorkoutGroupsFromWorkout(query: SupportSQLiteQuery): List<WorkoutGroup>
 
+    @Query("""
+        select *                         
+        from workout_group 
+        where workout_id = :workoutId 
+        and lower(name) = lower(:name) 
+        and active = 1
+    """)
+    abstract suspend fun findWorkoutGroupByName(workoutId: String, name: String): WorkoutGroup?
+
 }

@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 
 fun Long.toLocalDate(): LocalDate {
     return Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()).toLocalDate()
@@ -41,4 +42,9 @@ fun Long.toReadableDuration(context: Context): String {
             add(context.resources.getQuantityString(R.plurals.label_seconds, seconds.toInt(), seconds))
         }
     }.joinToString(context.getString(R.string.label_and))
+}
+
+fun Long.toMillis(unit: ChronoUnit): Long {
+    require(unit.duration.isZero.not()) { "Valor de unidade inválido: $unit" }
+    return unit.duration.multipliedBy(this).toMillis()
 }
