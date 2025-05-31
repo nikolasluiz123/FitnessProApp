@@ -168,7 +168,6 @@ class ExerciseViewModel @Inject constructor(
                         value = it,
                     ),
                     toExercise = _uiState.value.toExercise.copy(
-                        workoutGroupId = null,
                         workoutGroupName = it
                     )
                 )
