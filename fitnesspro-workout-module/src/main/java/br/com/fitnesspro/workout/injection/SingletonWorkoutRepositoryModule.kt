@@ -50,12 +50,12 @@ class SingletonWorkoutRepositoryModule {
     fun provideExerciseRepository(
         @ApplicationContext context: Context,
         exerciseDAO: ExerciseDAO,
-        workoutGroupDAO: WorkoutGroupDAO
+        workoutGroupRepository: WorkoutGroupRepository
     ): ExerciseRepository {
         return ExerciseRepository(
             context = context,
             exerciseDAO = exerciseDAO,
-            workoutGroupDAO = workoutGroupDAO
+            workoutGroupRepository = workoutGroupRepository
         )
     }
 
