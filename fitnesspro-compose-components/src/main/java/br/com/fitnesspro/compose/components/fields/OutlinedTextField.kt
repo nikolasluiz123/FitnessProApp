@@ -80,7 +80,7 @@ fun OutlinedTextFieldValidation(
             )
     },
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
@@ -134,7 +134,7 @@ fun OutlinedTextFieldValidation(
             )
     },
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
@@ -215,7 +215,7 @@ fun OutlinedTextFieldValidation(
             )
     },
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
@@ -339,7 +339,7 @@ fun OutlinedTextFieldPasswordValidation(
     modifier: Modifier = Modifier,
     label: @Composable (() -> Unit)? = null,
     error: String = "",
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
     maxLength: Int? = null,
     keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
