@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -53,8 +54,6 @@ fun SimpleFilter(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-//    var text by rememberSaveable { mutableStateOf("") }
-
     SearchBar(
         windowInsets = WindowInsets(top = 0.dp),
         modifier = modifier
@@ -62,7 +61,7 @@ fun SimpleFilter(
             .offset(y = (-8).dp),
         colors = SearchBarDefaults.colors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            dividerColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            dividerColor = Color.Transparent,
         ),
         shape = SearchBarDefaults.fullScreenShape,
         inputField = {
