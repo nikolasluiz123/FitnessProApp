@@ -1,7 +1,7 @@
 package br.com.fitnesspro.compose.components.filter
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -58,7 +58,7 @@ fun SimpleFilter(
         windowInsets = WindowInsets(top = 0.dp),
         modifier = modifier
             .testTag(SIMPLE_FILTER_SEARCH_BAR.name)
-            .offset(y = (-8).dp),
+            .background(color = MaterialTheme.colorScheme.secondaryContainer),
         colors = SearchBarDefaults.colors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             dividerColor = Color.Transparent,

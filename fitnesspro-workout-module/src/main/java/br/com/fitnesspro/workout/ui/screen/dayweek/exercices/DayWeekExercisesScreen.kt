@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -16,7 +15,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
@@ -113,7 +111,7 @@ fun DayWeekExercisesScreen(
                 placeholderResId = R.string.day_week_exercises_simple_filter_placeholder
             ) {
                 NestedGroupedList(
-                    modifier = Modifier.fillMaxSize().offset(y = (-8).dp),
+                    modifier = Modifier.fillMaxSize(),
                     rootGroups = state.filteredGroups,
                     onGroup = { group, depth ->
                         when (depth) {
@@ -167,7 +165,7 @@ fun DayWeekExercisesScreen(
             }
 
             NestedGroupedList(
-                modifier = Modifier.fillMaxSize().offset(y = (-8).dp),
+                modifier = Modifier.fillMaxSize(),
                 rootGroups = state.filteredGroups,
                 onGroup = { group, depth ->
                     when (depth) {
