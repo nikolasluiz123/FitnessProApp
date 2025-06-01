@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -47,7 +48,8 @@ fun DayWeekExercisesScreen(
     DayWeekExercisesScreen(
         state = state,
         onBackClick = onBackClick,
-        onNavigateExercise = onNavigateExercise
+        onNavigateExercise = onNavigateExercise,
+        onUpdateExercises = viewModel::updateExercises
     )
 }
 
@@ -56,7 +58,8 @@ fun DayWeekExercisesScreen(
 fun DayWeekExercisesScreen(
     state: DayWeekExercisesUIState = DayWeekExercisesUIState(),
     onBackClick: () -> Unit = { },
-    onNavigateExercise: OnNavigateExercise? = null
+    onNavigateExercise: OnNavigateExercise? = null,
+    onUpdateExercises: () -> Unit = { }
 ) {
     Scaffold(
         topBar = {
@@ -96,28 +99,76 @@ fun DayWeekExercisesScreen(
                 .consumeWindowInsets(paddings)
                 .fillMaxSize()
         ) {
+            LaunchedEffect(Unit) {
+                onUpdateExercises()
+            }
+
             FitnessProLinearProgressIndicator(state.showLoading)
 
             FitnessProMessageDialog(state.messageDialogState)
 
             SimpleFilter(
                 modifier = Modifier.fillMaxWidth(),
-                onSimpleFilterChange = {
-
-                },
-                onExpandedChange = {
-
-                },
-                expanded = false,
-                quickFilter = "",
+                state = state.simpleFilterState,
                 placeholderResId = R.string.day_week_exercises_simple_filter_placeholder
             ) {
+                NestedGroupedList(
+                    modifier = Modifier.fillMaxSize().offset(y = (-8).dp),
+                    rootGroups = state.filteredGroups,
+                    onGroup = { group, depth ->
+                        when (depth) {
+                            0 -> {
+                                group as DayWeekExercicesGroupDecorator
+                                DayWeekWorkoutGroupItem(
+                                    decorator = group,
+                                    onItemClick = {
+                                        val args = ExerciseScreenArgs(
+                                            workoutId = state.workout?.id!!,
+                                            dayWeek = DayOfWeek.valueOf(it.id)
+                                        )
 
+                                        onNavigateExercise?.onExecute(args)
+                                    }
+                                )
+                            }
+
+                            1 -> {
+                                group as WorkoutGroupDecorator
+                                WorkoutGroupItem(
+                                    decorator = group,
+                                    onItemClick = {
+                                        val args = ExerciseScreenArgs(
+                                            workoutId = state.workout?.id!!,
+                                            workoutGroupId = it.id,
+                                        )
+
+                                        onNavigateExercise?.onExecute(args)
+                                    }
+                                )
+                            }
+                        }
+                    },
+                    onItem = { item, depth ->
+                        item as TOExercise
+                        DayWeekWorkoutItem(
+                            toExercise = item,
+                            onItemClick = {
+                                val args = ExerciseScreenArgs(
+                                    workoutId = state.workout?.id!!,
+                                    exerciseId = it.id
+                                )
+
+                                onNavigateExercise?.onExecute(args)
+                            }
+                        )
+                    },
+                    emptyMessageResId = R.string.day_week_exercises_empty_message
+                )
             }
 
             NestedGroupedList(
                 modifier = Modifier.fillMaxSize().offset(y = (-8).dp),
-                rootGroups = state.groups,
+                rootGroups = state.filteredGroups,
                 onGroup = { group, depth ->
                     when (depth) {
                         0 -> {

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -132,7 +133,8 @@ fun ChatHistoryItem(
                 end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
             },
-            thickness = 0.5.dp
+            thickness = 0.5.dp,
+            color = MaterialTheme.colorScheme.outline
         )
     }
 }

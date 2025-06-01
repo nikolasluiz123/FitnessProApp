@@ -12,6 +12,7 @@ data class DayWeekExercisesUIState(
     var isOverDue: Boolean = false,
     var deleteEnabled: Boolean = false,
     var groups: List<DayWeekExercicesGroupDecorator> = emptyList(),
+    var filteredGroups: List<DayWeekExercicesGroupDecorator> = emptyList(),
     var messageDialogState: MessageDialogState = MessageDialogState(),
     val simpleFilterState: SimpleFilterState = SimpleFilterState(),
     val workout: TOWorkout? = null,

@@ -80,6 +80,7 @@ fun ExerciseScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
+    val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
@@ -118,7 +119,6 @@ fun ExerciseScreen(
             }
         }
     ) { paddings ->
-        val scrollState = rememberScrollState()
 
         Column(Modifier.fillMaxSize()) {
             FitnessProLinearProgressIndicator(state.showLoading)

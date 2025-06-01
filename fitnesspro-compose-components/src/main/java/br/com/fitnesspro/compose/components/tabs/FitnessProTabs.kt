@@ -51,7 +51,7 @@ fun FitnessProTabRow(
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
         divider = {
-            HorizontalDivider(color = MaterialTheme.colorScheme.onPrimary)
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
         },
         indicator = { tabPositions ->
             val selectedIndex = tabState.tabs.first { it.selected }.enum.index

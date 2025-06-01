@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -158,7 +159,8 @@ internal fun SchedulerDetailItem(
 
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-            }
+            },
+            color = MaterialTheme.colorScheme.outline
         )
     }
 }

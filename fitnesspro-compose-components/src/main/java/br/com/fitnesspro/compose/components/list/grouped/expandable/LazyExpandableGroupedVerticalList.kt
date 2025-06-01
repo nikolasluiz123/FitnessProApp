@@ -165,7 +165,8 @@ fun BasicExpandableSection(
             modifier = Modifier.constrainAs(dividerRef) {
                 bottom.linkTo(parent.bottom)
                 top.linkTo(textRef.bottom, margin = 8.dp)
-            }
+            },
+            color = MaterialTheme.colorScheme.outline
         )
     }
 }

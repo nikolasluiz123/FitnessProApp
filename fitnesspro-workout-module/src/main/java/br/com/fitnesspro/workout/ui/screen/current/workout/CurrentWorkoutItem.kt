@@ -3,6 +3,7 @@ package br.com.fitnesspro.workout.ui.screen.current.workout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -61,7 +62,8 @@ fun CurrentWorkoutItem(decorator: CurrentWorkoutItemDecorator) {
                 end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
                 top.linkTo(dayWeekRef.bottom, margin = 8.dp)
-            }
+            },
+            color = MaterialTheme.colorScheme.outline
         )
     }
 }

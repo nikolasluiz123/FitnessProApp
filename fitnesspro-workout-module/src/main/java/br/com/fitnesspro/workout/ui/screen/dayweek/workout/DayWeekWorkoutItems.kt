@@ -151,7 +151,8 @@ fun DayWeekWorkoutItem(toExercise: TOExercise, onItemClick: (TOExercise) -> Unit
 
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-            }
+            },
+            color = MaterialTheme.colorScheme.outline
         )
     }
 }
