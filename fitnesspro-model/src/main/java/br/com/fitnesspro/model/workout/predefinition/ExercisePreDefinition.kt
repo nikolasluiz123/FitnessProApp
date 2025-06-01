@@ -34,7 +34,7 @@ data class ExercisePreDefinition(
     var name: String? = null,
     var duration: Long? = null,
     var repetitions: Int? = null,
-    var series: Int? = null,
+    var sets: Int? = null,
     var rest: Long? = null,
     @ColumnInfo(name = "personal_trainer_person_id", index = true)
     var personalTrainerPersonId: String? = null,

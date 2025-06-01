@@ -72,8 +72,8 @@ class WorkoutGroupRepository(
         return workoutGroupDAO.findWorkoutGroupByName(workoutId, name)
     }
 
-    suspend fun findWorkoutGroupById(workoutGroupId: String?): WorkoutGroup? {
-        return workoutGroupDAO.findById(workoutGroupId)
+    suspend fun findWorkoutGroupById(workoutGroupId: String?): TOWorkoutGroup? {
+        return workoutGroupDAO.findById(workoutGroupId)?.getTOWorkoutGroup()
     }
 
     suspend fun saveWorkoutGroup(toWorkoutGroup: TOWorkoutGroup) {
@@ -89,6 +89,8 @@ class WorkoutGroupRepository(
         } else {
             workoutGroupDAO.update(workoutGroup)
         }
+
+        toWorkoutGroup.id = workoutGroup.id
     }
 
     private suspend fun saveWorkoutGroupRemote(toWorkoutGroup: TOWorkoutGroup) {

@@ -5,8 +5,8 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.mappers.getExercise
 import br.com.fitnesspro.mappers.getTOExercise
-import br.com.fitnesspro.mappers.getTOWorkoutGroup
 import br.com.fitnesspro.to.TOExercise
+import br.com.fitnesspro.to.TOWorkoutGroup
 
 class ExerciseRepository(
     context: Context,
@@ -44,9 +44,21 @@ class ExerciseRepository(
     }
 
     private suspend fun saveExerciseWorkoutGroup(toExercise: TOExercise) {
-        workoutGroupRepository.findWorkoutGroupById(toExercise.workoutGroupId)?.apply {
-            name = toExercise.name
-            workoutGroupRepository.saveWorkoutGroup(this.getTOWorkoutGroup())
+        val toWorkoutGroup = if (toExercise.workoutGroupId == null) {
+            TOWorkoutGroup(
+                name = toExercise.workoutGroupName,
+                workoutId = toExercise.workoutId,
+                dayWeek = toExercise.dayOfWeek
+            )
+        } else {
+            workoutGroupRepository.findWorkoutGroupById(toExercise.workoutGroupId)?.apply {
+                name = toExercise.workoutGroupName
+            }
+        }
+
+        toWorkoutGroup?.let { to ->
+            workoutGroupRepository.saveWorkoutGroup(to)
+            toExercise.workoutGroupId = to.id
         }
     }
 

@@ -90,7 +90,10 @@ class ExerciseViewModel @Inject constructor(
                 unitDuration = initializeDropDownTextFieldUnitDuration(),
                 observation = initializeTextFieldObservation(),
                 messageDialogState = initializeMessageDialogState(),
-                toExercise = _uiState.value.toExercise.copy(workoutId = args.workoutId)
+                toExercise = _uiState.value.toExercise.copy(
+                    workoutId = args.workoutId,
+                    dayOfWeek = args.dayWeek
+                )
             )
         }
     }
@@ -216,13 +219,15 @@ class ExerciseViewModel @Inject constructor(
                     _uiState.value.exercise.dialogListState.onHide()
                 },
                 onSimpleFilterChange = { filter ->
-                    _uiState.value = _uiState.value.copy(
-                        exercise = _uiState.value.exercise.copy(
-                            dialogListState = _uiState.value.exercise.dialogListState.copy(
-                                dataList = getListExercisesPreDefinition(simpleFilter = filter)
+                    launch {
+                        _uiState.value = _uiState.value.copy(
+                            exercise = _uiState.value.exercise.copy(
+                                dialogListState = _uiState.value.exercise.dialogListState.copy(
+                                    dataList = getListExercisesAndPreDefinitions(simpleFilter = filter)
+                                )
                             )
                         )
-                    )
+                    }
                 },
             ),
             onChange = { newText ->
@@ -245,11 +250,13 @@ class ExerciseViewModel @Inject constructor(
         )
     }
 
-    private fun getListExercisesPreDefinition(simpleFilter: String): Flow<PagingData<TOExercise>> {
-        return exercisePreDefinitionRepository.getExercisesPreDefinitionFromWorkoutGroup(
-            workoutGroupName = _uiState.value.exercise.value,
+    private fun getListExercisesAndPreDefinitions(simpleFilter: String = ""): Flow<PagingData<TOExercise>> {
+        val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
+
+        return exercisePreDefinitionRepository.getExercisesAndPreDefinitions(
             authenticatedPersonId = _uiState.value.authenticatedPerson.id!!,
-            simpleFilter = simpleFilter
+            simpleFilter = simpleFilter,
+            workoutId = args.workoutId
         ).flow
     }
 
@@ -288,7 +295,8 @@ class ExerciseViewModel @Inject constructor(
                     rest = _uiState.value.rest.copy(
                         value = it,
                         errorMessage = ""
-                    )
+                    ),
+                    toExercise = _uiState.value.toExercise.copy(rest = it.toLongOrNull())
                 )
             }
         )
@@ -315,6 +323,9 @@ class ExerciseViewModel @Inject constructor(
                     unitRest = _uiState.value.unitRest.copy(
                         value = it.getLabelOrEmptyIfNullValue(),
                         errorMessage = ""
+                    ),
+                    toExercise = _uiState.value.toExercise.copy(
+                        unitRest = it.value
                     )
                 )
 
@@ -330,7 +341,8 @@ class ExerciseViewModel @Inject constructor(
                     duration = _uiState.value.duration.copy(
                         value = it,
                         errorMessage = ""
-                    )
+                    ),
+                    toExercise = _uiState.value.toExercise.copy(duration = it.toLongOrNull())
                 )
             }
         )
@@ -357,6 +369,9 @@ class ExerciseViewModel @Inject constructor(
                     unitDuration = _uiState.value.unitDuration.copy(
                         value = it.getLabelOrEmptyIfNullValue(),
                         errorMessage = ""
+                    ),
+                    toExercise = _uiState.value.toExercise.copy(
+                        unitDuration = it.value
                     )
                 )
 
@@ -390,55 +405,69 @@ class ExerciseViewModel @Inject constructor(
     }
 
     private fun loadUIStateWithDatabaseInfos() {
-        loadTopBarInfos()
-        loadWorkoutGroups()
-    }
-
-    private fun loadTopBarInfos() {
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
-            val authenticatedPerson = personRepository.getAuthenticatedTOPerson()!!
-            val workout = workoutRepository.findWorkoutById(args.workoutId)
 
-            _uiState.value = _uiState.value.copy(
-                title = getTitle(),
-                subtitle = context.getString(
-                    R.string.exercise_screen_subtitle,
-                    workout?.memberName
-                ),
-                authenticatedPerson = authenticatedPerson
-            )
+            loadAuthenticatedPerson()
+            loadTopBar(args)
+            loadGroups(args)
+            loadExercises()
         }
     }
 
-    private fun loadWorkoutGroups() {
-        launch {
-            val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
-            val groups = workoutGroupRepository.getWorkoutGroupsFromWorkout(
-                workoutId = args.workoutId,
-                dayOfWeek = args.dayWeek,
-                workoutGroupId = args.workoutGroupId
-            )
+    private suspend fun loadTopBar(args: ExerciseScreenArgs) {
+        val workout = workoutRepository.findWorkoutById(args.workoutId)
 
+        _uiState.value = _uiState.value.copy(
+            title = getTitle(),
+            subtitle = context.getString(
+                R.string.exercise_screen_subtitle,
+                workout?.memberName
+            )
+        )
+    }
+
+    private fun loadExercises() {
+        _uiState.value = _uiState.value.copy(
+            exercise = _uiState.value.exercise.copy(
+                dialogListState = _uiState.value.exercise.dialogListState.copy(
+                    dataList = getListExercisesAndPreDefinitions()
+                )
+            )
+        )
+    }
+
+    private suspend fun loadAuthenticatedPerson() {
+        _uiState.value = _uiState.value.copy(
+            authenticatedPerson = personRepository.getAuthenticatedTOPerson()!!
+        )
+    }
+
+    private suspend fun loadGroups(args: ExerciseScreenArgs) {
+        val groups = workoutGroupRepository.getWorkoutGroupsFromWorkout(
+            workoutId = args.workoutId,
+            dayOfWeek = args.dayWeek,
+            workoutGroupId = args.workoutGroupId
+        )
+
+        _uiState.value = _uiState.value.copy(
+            group = _uiState.value.group.copy(
+                dialogListState = _uiState.value.group.dialogListState.copy(
+                    dataList = groups
+                )
+            )
+        )
+
+        groups.firstOrNull { it.id == args.workoutGroupId }?.let { selectedGroup ->
             _uiState.value = _uiState.value.copy(
                 group = _uiState.value.group.copy(
-                    dialogListState = _uiState.value.group.dialogListState.copy(
-                        dataList = groups
-                    )
+                    value = selectedGroup.name!!
+                ),
+                toExercise = _uiState.value.toExercise.copy(
+                    workoutGroupId = selectedGroup.id,
+                    workoutGroupName = selectedGroup.name
                 )
             )
-
-            groups.firstOrNull { it.id == args.workoutGroupId }?.let { selectedGroup ->
-                _uiState.value = _uiState.value.copy(
-                    group = _uiState.value.group.copy(
-                        value = selectedGroup.name!!
-                    ),
-                    toExercise = _uiState.value.toExercise.copy(
-                        workoutGroupId = selectedGroup.id,
-                        workoutGroupName = selectedGroup.name
-                    )
-                )
-            }
         }
     }
 

@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,6 +18,7 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.ValueTextStyle
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
+import br.com.fitnesspro.workout.R
 
 @Composable
 fun ExercisePagedDialogItem(toExercise: TOExercise, onItemClick: (TOExercise) -> Unit = { }) {
@@ -28,12 +30,21 @@ fun ExercisePagedDialogItem(toExercise: TOExercise, onItemClick: (TOExercise) ->
     ) {
         Text(
             modifier = Modifier.padding(12.dp),
-            text = toExercise.name!!,
+            text = getExerciseName(toExercise),
             style = ValueTextStyle.copy(fontSize = 16.sp)
         )
     }
 
     HorizontalDivider()
+}
+
+@Composable
+private fun getExerciseName(toExercise: TOExercise): String {
+    return if (toExercise.preDefinition) {
+        stringResource(R.string.exercise_screen_exercise_name_pre_definition, toExercise.name!!)
+    } else {
+        toExercise.name!!
+    }
 }
 
 @Composable

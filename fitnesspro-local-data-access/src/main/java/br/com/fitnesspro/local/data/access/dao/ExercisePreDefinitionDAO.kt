@@ -15,14 +15,49 @@ import java.util.StringJoiner
 @Dao
 abstract class ExercisePreDefinitionDAO: IntegratedMaintenanceDAO<ExercisePreDefinition>() {
 
-    fun getExercisesPreDefinitionFromWorkoutGroup(
-        workoutGroupName: String,
+    fun getExercisesAndPreDefinitions(
+        workoutId: String,
         authenticatedPersonId: String,
         simpleFilter: String
     ): PagingSource<Int, TOExercise> {
         val queryParams = mutableListOf<Any>()
 
-        val select = StringJoiner(QR_NL).apply {
+        val selectPreDef = StringJoiner(QR_NL).apply {
+            add(" select exercisePreDef.id as id, ")
+            add("        exercisePreDef.name as name, ")
+            add("        exercisePreDef.duration as duration, ")
+            add("        exercisePreDef.repetitions as repetitions, ")
+            add("        exercisePreDef.sets as sets, ")
+            add("        exercisePreDef.rest as rest, ")
+            add("        null as observation, ")
+            add("        exercisePreDef.workout_group_pre_definition_id as workoutGroupId, ")
+            add("        exercisePreDef.active as active, ")
+            add("        1 as preDefinition ")
+        }
+
+        val fromPreDef = StringJoiner(QR_NL).apply {
+            add(" from exercise_pre_definition exercisePreDef ")
+        }
+
+        val wherePreDef = StringJoiner(QR_NL).apply {
+            add(" where exercisePreDef.personal_trainer_person_id = ? ")
+            add(" and exercisePreDef.active = 1 ")
+
+            queryParams.add(authenticatedPersonId)
+
+            if (simpleFilter.isNotEmpty()) {
+                add(" and lower(exercisePreDef.name) like ? ")
+                queryParams.add("%${simpleFilter.lowercase()}%")
+            }
+        }
+
+        val sqlPreDef = StringJoiner(QR_NL).apply {
+            add(selectPreDef.toString())
+            add(fromPreDef.toString())
+            add(wherePreDef.toString())
+        }
+
+        val selectExercise = StringJoiner(QR_NL).apply {
             add(" select exercise.id as id, ")
             add("        exercise.name as name, ")
             add("        exercise.duration as duration, ")
@@ -31,24 +66,20 @@ abstract class ExercisePreDefinitionDAO: IntegratedMaintenanceDAO<ExercisePreDef
             add("        exercise.rest as rest, ")
             add("        exercise.observation as observation, ")
             add("        exercise.workout_group_id as workoutGroupId, ")
-            add("        exercise.active as active ")
+            add("        exercise.active as active, ")
+            add("        0 as preDefinition ")
         }
 
-        val from = StringJoiner(QR_NL).apply {
-            add(" from exercise_pre_definition exercise ")
-            add(" inner join workout_group_pre_definition workout_group on workout_group.id = exercise.workout_group_pre_definition_id ")
+        val fromExercise = StringJoiner(QR_NL).apply {
+            add(" from exercise exercise ")
+            add(" inner join workout_group workoutGroup on workoutGroup.id = exercise.workout_group_id ")
         }
 
-        val where = StringJoiner(QR_NL).apply {
-            add(" where exercise.personal_trainer_person_id = ? ")
+        val whereExercise = StringJoiner(QR_NL).apply {
+            add(" where workoutGroup.workout_id = ? ")
             add(" and exercise.active = 1 ")
 
-            queryParams.add(authenticatedPersonId)
-
-            if (workoutGroupName.isNotEmpty()) {
-                add(" and lower(workout_group.name) = ? ")
-                queryParams.add(workoutGroupName.lowercase())
-            }
+            queryParams.add(workoutId)
 
             if (simpleFilter.isNotEmpty()) {
                 add(" and lower(exercise.name) like ? ")
@@ -56,14 +87,20 @@ abstract class ExercisePreDefinitionDAO: IntegratedMaintenanceDAO<ExercisePreDef
             }
         }
 
+        val sqlExercise = StringJoiner(QR_NL).apply {
+            add(selectExercise.toString())
+            add(fromExercise.toString())
+            add(whereExercise.toString())
+        }
+
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by exercise.name ")
+            add(" order by preDefinition, name ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
-            add(select.toString())
-            add(from.toString())
-            add(where.toString())
+            add(sqlPreDef.toString())
+            add(" union all ")
+            add(sqlExercise.toString())
             add(orderBy.toString())
         }
 

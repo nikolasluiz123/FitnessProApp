@@ -67,7 +67,7 @@ fun DayWeekWorkoutItem(toExercise: TOExercise) {
                 width = Dimension.fillToConstraints
             },
             label = stringResource(R.string.day_week_workout_screen_exercise),
-            value = toExercise.name!!
+            value = toExercise.name ?: ""
         )
 
         if (toExercise.duration != null) {
@@ -83,7 +83,7 @@ fun DayWeekWorkoutItem(toExercise: TOExercise) {
                         width = Dimension.fillToConstraints
                     },
                 label = stringResource(R.string.day_week_workout_screen_duration),
-                value = toExercise.duration!!.toReadableDuration(context)
+                value = toExercise.duration?.toReadableDuration(context) ?: ""
             )
         } else {
             createHorizontalChain(setsAndRepsRef, restRef)
@@ -100,8 +100,8 @@ fun DayWeekWorkoutItem(toExercise: TOExercise) {
                 label = stringResource(R.string.day_week_workout_screen_sets_and_repetitions),
                 value = stringResource(
                     R.string.day_week_workout_screen_sets_and_repetitions_value,
-                    toExercise.sets!!,
-                    toExercise.repetitions!!
+                    toExercise.sets ?: 0,
+                    toExercise.repetitions ?: 0
                 )
             )
         }

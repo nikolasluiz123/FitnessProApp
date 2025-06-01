@@ -14,8 +14,8 @@ class ExercisePreDefinitionRepository(
     private val exercisePreDefinitionDAO: ExercisePreDefinitionDAO
 ): FitnessProRepository(context) {
 
-    fun getExercisesPreDefinitionFromWorkoutGroup(
-        workoutGroupName: String,
+    fun getExercisesAndPreDefinitions(
+        workoutId: String,
         authenticatedPersonId: String,
         simpleFilter: String
     ): Pager<Int, TOExercise> {
@@ -25,10 +25,10 @@ class ExercisePreDefinitionRepository(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
-                exercisePreDefinitionDAO.getExercisesPreDefinitionFromWorkoutGroup(
-                    workoutGroupName = workoutGroupName,
+                exercisePreDefinitionDAO.getExercisesAndPreDefinitions(
                     authenticatedPersonId = authenticatedPersonId,
-                    simpleFilter = simpleFilter
+                    simpleFilter = simpleFilter,
+                    workoutId = workoutId
                 )
             }
         )

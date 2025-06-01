@@ -55,4 +55,5 @@
     <string name="validation_msg_invalid_duration_or_unit">Ao preencher a Duração ou a Unidade dela ambos devem ser preenchidos</string>
     <string name="validation_msg_new_exercise_creation">O exercício %s ainda não exite nas suas pré definições, você deseja que ele seja criado como uma pré definição?</string>
     <string name="exercise_screen_success_message">Exercício salvo com sucesso</string>
+    <string name="exercise_screen_exercise_name_pre_definition">%1$s (Pre-Definição)</string>
 </resources>
