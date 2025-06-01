@@ -401,7 +401,8 @@ class ExerciseViewModel @Inject constructor(
                     observation = _uiState.value.observation.copy(
                         value = it,
                         errorMessage = ""
-                    )
+                    ),
+                    toExercise = _uiState.value.toExercise.copy(observation = it)
                 )
             }
         )
