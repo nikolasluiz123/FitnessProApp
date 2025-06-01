@@ -56,4 +56,6 @@
     <string name="validation_msg_new_exercise_creation">O exercício %s ainda não exite nas suas pré definições, você deseja que ele seja criado como uma pré definição?</string>
     <string name="exercise_screen_success_message">Exercício salvo com sucesso</string>
     <string name="exercise_screen_exercise_name_pre_definition">%1$s (Pre-Definição)</string>
+    <string name="day_week_workout_screen_sets">Séries</string>
+    <string name="day_week_workout_screen_repetitions">Repetições</string>
 </resources>

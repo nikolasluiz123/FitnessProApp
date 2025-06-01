@@ -71,24 +71,7 @@ fun DayWeekWorkoutItem(toExercise: TOExercise, onItemClick: (TOExercise) -> Unit
             value = toExercise.name ?: ""
         )
 
-        if (toExercise.duration != null) {
-            createHorizontalChain(durationRef, restRef)
-
-            LabeledText(
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .constrainAs(durationRef) {
-                        top.linkTo(exerciseRef.bottom, margin = 8.dp)
-                        start.linkTo(parent.start)
-
-                        width = Dimension.fillToConstraints
-                    },
-                label = stringResource(R.string.day_week_workout_screen_duration),
-                value = toExercise.duration?.toReadableDuration(context) ?: ""
-            )
-        } else {
-            createHorizontalChain(setsAndRepsRef, restRef)
-
+        if (isShowSetsAndReps(toExercise)) {
             LabeledText(
                 modifier = Modifier
                     .padding(start = 8.dp)
@@ -98,13 +81,36 @@ fun DayWeekWorkoutItem(toExercise: TOExercise, onItemClick: (TOExercise) -> Unit
 
                         width = Dimension.fillToConstraints
                     },
-                label = stringResource(R.string.day_week_workout_screen_sets_and_repetitions),
-                value = stringResource(
-                    R.string.day_week_workout_screen_sets_and_repetitions_value,
-                    toExercise.sets ?: 0,
-                    toExercise.repetitions ?: 0
-                )
+                label = getLabelSetsAndReps(toExercise),
+                value = getValueSetsAndReps(toExercise)
             )
+
+            createHorizontalChain(setsAndRepsRef, restRef)
+        }
+
+        if (isShowDuration(toExercise)) {
+            LabeledText(
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .constrainAs(durationRef) {
+                        if (isShowSetsAndReps(toExercise)) {
+                            top.linkTo(setsAndRepsRef.bottom, margin = 8.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        } else {
+                            top.linkTo(exerciseRef.bottom, margin = 8.dp)
+                            start.linkTo(parent.start)
+                        }
+
+                        width = Dimension.fillToConstraints
+                    },
+                label = stringResource(R.string.day_week_workout_screen_duration),
+                value = toExercise.duration?.toReadableDuration(context) ?: ""
+            )
+
+            if (!isShowSetsAndReps(toExercise)) {
+                createHorizontalChain(durationRef, restRef)
+            }
         }
 
         LabeledText(
@@ -121,10 +127,10 @@ fun DayWeekWorkoutItem(toExercise: TOExercise, onItemClick: (TOExercise) -> Unit
             textAlign = TextAlign.End
         )
 
-        if (!toExercise.observation.isNullOrEmpty()) {
+        if (isShowObservation(toExercise)) {
             LabeledText(
                 modifier = Modifier.constrainAs(observationRef) {
-                    if (toExercise.duration != null) {
+                    if (isShowDuration(toExercise)) {
                         top.linkTo(durationRef.bottom, margin = 8.dp)
                     } else {
                         top.linkTo(setsAndRepsRef.bottom, margin = 8.dp)
@@ -143,10 +149,18 @@ fun DayWeekWorkoutItem(toExercise: TOExercise, onItemClick: (TOExercise) -> Unit
 
         HorizontalDivider(
             modifier = Modifier.constrainAs(dividerRef) {
-                if (!toExercise.observation.isNullOrEmpty()) {
-                    top.linkTo(observationRef.bottom, margin = 8.dp)
-                } else {
-                    top.linkTo(restRef.bottom, margin = 8.dp)
+                when {
+                    isShowObservation(toExercise) -> {
+                        top.linkTo(observationRef.bottom, margin = 8.dp)
+                    }
+
+                    isShowDuration(toExercise) -> {
+                        top.linkTo(durationRef.bottom, margin = 8.dp)
+                    }
+
+                    else -> {
+                        top.linkTo(restRef.bottom, margin = 8.dp)
+                    }
                 }
 
                 start.linkTo(parent.start)
@@ -154,6 +168,60 @@ fun DayWeekWorkoutItem(toExercise: TOExercise, onItemClick: (TOExercise) -> Unit
             },
             color = MaterialTheme.colorScheme.outline
         )
+    }
+}
+
+private fun isShowObservation(toExercise: TOExercise): Boolean {
+    return !toExercise.observation.isNullOrEmpty()
+}
+
+private fun isShowDuration(toExercise: TOExercise): Boolean {
+    return toExercise.duration != null
+}
+
+private fun isShowSetsAndReps(toExercise: TOExercise): Boolean {
+    return toExercise.sets != null || toExercise.repetitions != null
+}
+
+@Composable
+private fun getValueSetsAndReps(toExercise: TOExercise): String {
+    return when {
+        toExercise.sets != null && toExercise.repetitions != null -> {
+            stringResource(
+                R.string.day_week_workout_screen_sets_and_repetitions_value,
+                toExercise.sets!!,
+                toExercise.repetitions!!
+            )
+        }
+
+        toExercise.sets != null -> {
+            toExercise.sets.toString()
+        }
+
+        toExercise.repetitions != null -> {
+            toExercise.repetitions.toString()
+        }
+
+        else -> ""
+    }
+}
+
+@Composable
+private fun getLabelSetsAndReps(toExercise: TOExercise): String {
+    return when {
+        toExercise.sets != null && toExercise.repetitions != null -> {
+            stringResource(R.string.day_week_workout_screen_sets_and_repetitions)
+        }
+
+        toExercise.sets != null -> {
+            stringResource(R.string.day_week_workout_screen_sets)
+        }
+
+        toExercise.repetitions != null -> {
+            stringResource(R.string.day_week_workout_screen_repetitions)
+        }
+
+        else -> ""
     }
 }
 
@@ -233,6 +301,26 @@ private fun DayWeekWorkoutItem3PreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
             DayWeekWorkoutItem(dayWeekItem3)
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun DayWeekWorkoutItem4Preview() {
+    FitnessProTheme {
+        Surface {
+            DayWeekWorkoutItem(dayWeekItem4)
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun DayWeekWorkoutItem4PreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            DayWeekWorkoutItem(dayWeekItem4)
         }
     }
 }

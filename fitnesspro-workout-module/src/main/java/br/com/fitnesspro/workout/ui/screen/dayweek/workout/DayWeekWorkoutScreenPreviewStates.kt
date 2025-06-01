@@ -92,6 +92,14 @@ internal val dayWeekItem3 = TOExercise(
     observation = null
 )
 
+internal val dayWeekItem4 = TOExercise(
+    id = "1",
+    name = "Prancha",
+    duration = Duration.ofMinutes(1).toMillis(),
+    sets = 4,
+    rest = 45,
+)
+
 internal val dayWeekWorkoutScreenDefaultState = DayWeekWorkoutUIState(
     title = "Treino de Segunda",
     subtitle = "Peito, Ombro e Tríceps",
