@@ -85,55 +85,58 @@ fun DayWeekWorkoutItem(toExercise: TOExercise, onItemClick: (TOExercise) -> Unit
                 value = getValueSetsAndReps(toExercise)
             )
 
+            LabeledText(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .constrainAs(restRef) {
+                        top.linkTo(exerciseRef.bottom, margin = 8.dp)
+                        end.linkTo(parent.end)
+
+                        width = Dimension.fillToConstraints
+                    },
+                label = stringResource(R.string.day_week_workout_screen_rest),
+                value = toExercise.rest?.toReadableDuration(context) ?: stringResource(R.string.day_week_workout_screen_no_rest),
+                textAlign = TextAlign.End
+            )
+
             createHorizontalChain(setsAndRepsRef, restRef)
         }
 
         if (isShowDuration(toExercise)) {
             LabeledText(
                 modifier = Modifier
-                    .padding(start = 8.dp)
                     .constrainAs(durationRef) {
                         if (isShowSetsAndReps(toExercise)) {
                             top.linkTo(setsAndRepsRef.bottom, margin = 8.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
                         } else {
                             top.linkTo(exerciseRef.bottom, margin = 8.dp)
-                            start.linkTo(parent.start)
                         }
+
+                        start.linkTo(parent.start, margin = 8.dp)
+                        end.linkTo(parent.end)
 
                         width = Dimension.fillToConstraints
                     },
                 label = stringResource(R.string.day_week_workout_screen_duration),
                 value = toExercise.duration?.toReadableDuration(context) ?: ""
             )
-
-            if (!isShowSetsAndReps(toExercise)) {
-                createHorizontalChain(durationRef, restRef)
-            }
         }
-
-        LabeledText(
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .constrainAs(restRef) {
-                    top.linkTo(exerciseRef.bottom, margin = 8.dp)
-                    end.linkTo(parent.end)
-
-                    width = Dimension.fillToConstraints
-                },
-            label = stringResource(R.string.day_week_workout_screen_rest),
-            value = toExercise.rest?.toReadableDuration(context) ?: stringResource(R.string.day_week_workout_screen_no_rest),
-            textAlign = TextAlign.End
-        )
 
         if (isShowObservation(toExercise)) {
             LabeledText(
                 modifier = Modifier.constrainAs(observationRef) {
-                    if (isShowDuration(toExercise)) {
-                        top.linkTo(durationRef.bottom, margin = 8.dp)
-                    } else {
-                        top.linkTo(setsAndRepsRef.bottom, margin = 8.dp)
+                    when {
+                        isShowDuration(toExercise) -> {
+                            top.linkTo(durationRef.bottom, margin = 8.dp)
+                        }
+
+                        isShowSetsAndReps(toExercise) -> {
+                            top.linkTo(setsAndRepsRef.bottom, margin = 8.dp)
+                        }
+
+                        else -> {
+                            top.linkTo(exerciseRef.bottom, margin = 8.dp)
+                        }
                     }
 
                     start.linkTo(parent.start, margin = 8.dp)
@@ -158,8 +161,12 @@ fun DayWeekWorkoutItem(toExercise: TOExercise, onItemClick: (TOExercise) -> Unit
                         top.linkTo(durationRef.bottom, margin = 8.dp)
                     }
 
+                    isShowSetsAndReps(toExercise) -> {
+                        top.linkTo(setsAndRepsRef.bottom, margin = 8.dp)
+                    }
+
                     else -> {
-                        top.linkTo(restRef.bottom, margin = 8.dp)
+                        top.linkTo(exerciseRef.bottom, margin = 8.dp)
                     }
                 }
 
