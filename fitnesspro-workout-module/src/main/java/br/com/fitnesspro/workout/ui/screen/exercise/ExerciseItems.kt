@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.exercice
+package br.com.fitnesspro.workout.ui.screen.exercise
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row

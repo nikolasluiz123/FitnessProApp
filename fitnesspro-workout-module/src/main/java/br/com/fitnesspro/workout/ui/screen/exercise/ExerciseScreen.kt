@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.exercice
+package br.com.fitnesspro.workout.ui.screen.exercise
 
 import android.content.Context
 import androidx.compose.foundation.layout.Column
@@ -46,8 +46,8 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.workout.R
-import br.com.fitnesspro.workout.ui.screen.exercice.callbacks.OnSaveExerciseClick
-import br.com.fitnesspro.workout.ui.screen.exercice.enums.EnumExerciseScreenTags
+import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnSaveExerciseClick
+import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumExerciseScreenTags
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
 import br.com.fitnesspro.workout.ui.viewmodel.ExerciseViewModel
 import com.google.firebase.analytics.ktx.analytics

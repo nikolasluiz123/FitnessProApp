@@ -48,3 +48,21 @@ fun Long.toMillis(unit: ChronoUnit): Long {
     require(unit.duration.isZero.not()) { "Valor de unidade inválido: $unit" }
     return unit.duration.multipliedBy(this).toMillis()
 }
+
+fun Long.millisTo(unit: ChronoUnit): Long {
+    require(unit.duration.toMillis() != 0L) { "Valor de unidade inválido: $unit" }
+    return this / unit.duration.toMillis()
+}
+
+fun Long.bestChronoUnit(): ChronoUnit {
+    val secondLimit = 59 * ChronoUnit.SECONDS.duration.toMillis()
+    val minuteLimit = 59 * ChronoUnit.MINUTES.duration.toMillis()
+    val hourLimit = 23 * ChronoUnit.HOURS.duration.toMillis()
+
+    return when {
+        this <= secondLimit -> ChronoUnit.SECONDS
+        this <= minuteLimit -> ChronoUnit.MINUTES
+        this <= hourLimit -> ChronoUnit.HOURS
+        else -> throw IllegalArgumentException("No suitable ChronoUnit for value: $this ms")
+    }
+}

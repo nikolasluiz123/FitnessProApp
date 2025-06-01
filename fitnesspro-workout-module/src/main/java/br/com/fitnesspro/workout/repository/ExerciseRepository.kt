@@ -16,9 +16,9 @@ class ExerciseRepository(
 
     suspend fun findById(id: String): TOExercise {
         val exercise = exerciseDAO.findById(id)
-        val workoutGroupName = workoutGroupRepository.findWorkoutGroupById(exercise.workoutGroupId)?.name
+        val workoutGroup = workoutGroupRepository.findWorkoutGroupById(exercise.workoutGroupId)
 
-        return exercise.getTOExercise(workoutGroupName)
+        return exercise.getTOExercise(workoutGroup)
     }
 
     suspend fun saveExercise(toExercise: TOExercise) {
@@ -48,7 +48,7 @@ class ExerciseRepository(
             TOWorkoutGroup(
                 name = toExercise.workoutGroupName,
                 workoutId = toExercise.workoutId,
-                dayWeek = toExercise.dayOfWeek
+                dayWeek = toExercise.dayWeek
             )
         } else {
             workoutGroupRepository.findWorkoutGroupById(toExercise.workoutGroupId)?.apply {

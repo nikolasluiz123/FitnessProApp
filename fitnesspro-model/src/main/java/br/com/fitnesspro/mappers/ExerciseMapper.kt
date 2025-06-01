@@ -4,18 +4,21 @@ import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.predefinition.ExercisePreDefinition
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOExercisePreDefinition
+import br.com.fitnesspro.to.TOWorkoutGroup
 
-fun Exercise.getTOExercise(workoutGroupName: String? = null): TOExercise {
+fun Exercise.getTOExercise(toWorkoutGroup: TOWorkoutGroup? = null): TOExercise {
     return TOExercise(
         id = id,
         name = name,
         duration = duration,
         repetitions = repetitions,
-        sets = this@getTOExercise.sets,
+        sets = sets,
         rest = rest,
         observation = observation,
+        workoutId = toWorkoutGroup?.workoutId,
         workoutGroupId = workoutGroupId,
-        workoutGroupName = workoutGroupName,
+        workoutGroupName = toWorkoutGroup?.name,
+        dayWeek = toWorkoutGroup?.dayWeek,
         active = active,
     )
 }

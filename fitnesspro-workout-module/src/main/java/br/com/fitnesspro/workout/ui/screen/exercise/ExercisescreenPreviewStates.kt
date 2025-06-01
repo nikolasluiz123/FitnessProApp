@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.ui.screen.exercice
+package br.com.fitnesspro.workout.ui.screen.exercise
 
 import br.com.fitnesspro.compose.components.fields.state.DialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.DropDownTextField

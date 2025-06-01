@@ -153,7 +153,17 @@ fun DayWeekExercisesScreen(
                 },
                 onItem = { item, depth ->
                     item as TOExercise
-                    DayWeekWorkoutItem(item)
+                    DayWeekWorkoutItem(
+                        toExercise = item,
+                        onItemClick = {
+                            val args = ExerciseScreenArgs(
+                                workoutId = state.workout?.id!!,
+                                exerciseId = it.id
+                            )
+
+                            onNavigateExercise?.onExecute(args)
+                        }
+                    )
                 },
                 emptyMessageResId = R.string.day_week_exercises_empty_message
             )

@@ -15,9 +15,12 @@ import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.callback.showErrorDialog
+import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
+import br.com.fitnesspro.core.extensions.millisTo
 import br.com.fitnesspro.core.extensions.toIntOrNull
+import br.com.fitnesspro.core.extensions.toStringOrEmpty
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationTypedError
 import br.com.fitnesspro.to.TOExercise
@@ -92,7 +95,7 @@ class ExerciseViewModel @Inject constructor(
                 messageDialogState = initializeMessageDialogState(),
                 toExercise = _uiState.value.toExercise.copy(
                     workoutId = args.workoutId,
-                    dayOfWeek = args.dayWeek
+                    dayWeek = args.dayWeek
                 )
             )
         }
@@ -412,6 +415,7 @@ class ExerciseViewModel @Inject constructor(
             loadTopBar(args)
             loadGroups(args)
             loadExercises()
+            loadEdition(args)
         }
     }
 
@@ -435,6 +439,63 @@ class ExerciseViewModel @Inject constructor(
                 )
             )
         )
+    }
+
+    private suspend fun loadEdition(args: ExerciseScreenArgs) {
+        args.exerciseId?.let { exerciseId ->
+            val toExercise = exerciseRepository.findById(exerciseId)
+            toExercise.unitRest = toExercise.rest?.bestChronoUnit()
+            toExercise.unitDuration = toExercise.duration?.bestChronoUnit()
+
+            _uiState.value = _uiState.value.copy(
+                toExercise = toExercise,
+                group = _uiState.value.group.copy(
+                    value = toExercise.workoutGroupName!!
+                ),
+                exercise = _uiState.value.exercise.copy(
+                    value = toExercise.name!!
+                ),
+                sets = _uiState.value.sets.copy(
+                    value = toExercise.sets.toStringOrEmpty()
+                ),
+                reps = _uiState.value.reps.copy(
+                    value = toExercise.repetitions.toStringOrEmpty()
+                ),
+                rest = _uiState.value.rest.copy(
+                    value = getConvertedRestFrom(toExercise)
+                ),
+                unitRest = _uiState.value.unitRest.copy(
+                    value = getUnitRestFrom(toExercise)
+                ),
+                duration = _uiState.value.duration.copy(
+                    value = getConvertedDurationFrom(toExercise)
+                ),
+                unitDuration = _uiState.value.unitDuration.copy(
+                    value = getUnitDurationFrom(toExercise)
+                ),
+                observation = _uiState.value.observation.copy(
+                    value = toExercise.observation ?: ""
+                )
+            )
+
+            loadTopBar(args)
+        }
+    }
+
+    private fun getUnitDurationFrom(toExercise: TOExercise): String {
+        return toExercise.duration?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
+    }
+
+    private fun getUnitRestFrom(toExercise: TOExercise): String {
+        return toExercise.rest?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
+    }
+
+    private fun getConvertedDurationFrom(toExercise: TOExercise): String {
+        return toExercise.unitDuration?.let { toExercise.duration?.millisTo(it) }.toStringOrEmpty()
+    }
+
+    private fun getConvertedRestFrom(toExercise: TOExercise): String {
+        return toExercise.unitRest?.let { toExercise.rest?.millisTo(it) }.toStringOrEmpty()
     }
 
     private suspend fun loadAuthenticatedPerson() {

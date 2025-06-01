@@ -19,7 +19,7 @@ data class TOExercise(
     var workoutGroupName: String? = null,
     var active: Boolean = true,
     var preDefinition: Boolean = false,
-    var dayOfWeek: DayOfWeek? = null
+    var dayWeek: DayOfWeek? = null
 ): BaseTO, ITupleListItem {
 
     override fun getLabel(): String {

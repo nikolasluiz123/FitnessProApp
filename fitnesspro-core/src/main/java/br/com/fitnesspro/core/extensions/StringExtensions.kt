@@ -59,6 +59,8 @@ fun String.toIntOrNull(): Int? {
     }
 }
 
+fun Any?.toStringOrEmpty() = this?.toString() ?: ""
+
 fun String?.searchWordsInText(search: String?): Boolean {
     if (this == null || search == null) {
         return false

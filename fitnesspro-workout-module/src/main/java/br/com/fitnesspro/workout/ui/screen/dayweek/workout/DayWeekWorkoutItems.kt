@@ -49,12 +49,13 @@ fun WorkoutGroupItem(
 }
 
 @Composable
-fun DayWeekWorkoutItem(toExercise: TOExercise) {
+fun DayWeekWorkoutItem(toExercise: TOExercise, onItemClick: (TOExercise) -> Unit = { }) {
     val context = LocalContext.current
 
     ConstraintLayout(
         Modifier
             .fillMaxWidth()
+            .clickable { onItemClick(toExercise) }
     ) {
         val (exerciseRef, durationRef, setsAndRepsRef, restRef, observationRef, dividerRef) = createRefs()
 
