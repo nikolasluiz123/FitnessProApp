@@ -266,7 +266,7 @@ fun ExerciseScreen(
                             end.linkTo(parent.end)
                             top.linkTo(unitDurationRef.bottom, margin = 8.dp)
                         },
-                    field = state.duration,
+                    field = state.observation,
                     label = stringResource(R.string.exercise_screen_label_observation),
                     keyboardActions = KeyboardActions(
                         onDone = {
