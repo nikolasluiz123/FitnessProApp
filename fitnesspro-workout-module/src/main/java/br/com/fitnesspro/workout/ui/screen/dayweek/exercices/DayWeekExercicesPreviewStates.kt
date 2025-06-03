@@ -81,12 +81,14 @@ internal val dayWeekExercisesDefaultEmptyState = DayWeekExercisesUIState(
 internal val dayWeekExercisesDefaultState = DayWeekExercisesUIState(
     title = "Treino do Nikolas Luiz Schmitt",
     subtitle = "01/05/2024 até 01/07/2024",
-    groups = defaultDayWeekExercisesGroupsList
+    groups = defaultDayWeekExercisesGroupsList,
+    filteredGroups = defaultDayWeekExercisesGroupsList
 )
 
 internal val dayWeekExercisesOverDueState = DayWeekExercisesUIState(
     title = "Treino do Nikolas Luiz Schmitt",
     subtitle = "Vencido em 01/07/2024",
     isOverDue = true,
-    groups = defaultDayWeekExercisesGroupsList
+    groups = defaultDayWeekExercisesGroupsList,
+    filteredGroups = defaultDayWeekExercisesGroupsList
 )
