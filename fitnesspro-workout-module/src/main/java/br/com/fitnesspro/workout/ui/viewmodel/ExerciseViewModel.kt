@@ -33,9 +33,9 @@ import br.com.fitnesspro.workout.repository.WorkoutRepository
 import br.com.fitnesspro.workout.ui.navigation.ExerciseScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.exerciseScreenArguments
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
-import br.com.fitnesspro.workout.usecase.EnumValidatedExerciseFields
-import br.com.fitnesspro.workout.usecase.EnumValidatedExerciseType
-import br.com.fitnesspro.workout.usecase.SaveExerciseUseCase
+import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields
+import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseType
+import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow

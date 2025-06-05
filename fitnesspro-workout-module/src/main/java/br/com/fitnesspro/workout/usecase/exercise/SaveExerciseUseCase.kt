@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.usecase
+package br.com.fitnesspro.workout.usecase.exercise
 
 import android.content.Context
 import br.com.fitnesspro.core.extensions.toMillis
@@ -8,9 +8,9 @@ import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
-import br.com.fitnesspro.workout.usecase.EnumValidatedExerciseFields.EXERCISE
-import br.com.fitnesspro.workout.usecase.EnumValidatedExerciseFields.EXERCISE_GROUP
-import br.com.fitnesspro.workout.usecase.EnumValidatedExerciseFields.OBSERVATION
+import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.EXERCISE
+import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.EXERCISE_GROUP
+import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.OBSERVATION
 import java.time.temporal.ChronoUnit
 
 class SaveExerciseUseCase(
@@ -26,7 +26,10 @@ class SaveExerciseUseCase(
         validateExercise(toExercise).let(validationResults::addAll)
 
         if (validationResults.isEmpty()) {
-            exerciseRepository.saveExercise(toExercise)
+            workoutGroupRepository.runInTransaction {
+                workoutGroupRepository.saveExerciseWorkoutGroup(toExercise)
+                exerciseRepository.saveExercise(toExercise)
+            }
         }
 
         return validationResults

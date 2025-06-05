@@ -4,6 +4,7 @@ import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekExercisesUIState
+import br.com.fitnesspro.workout.ui.state.WorkoutGroupEditDialogUIState
 import java.util.UUID
 
 internal val defaultDayWeekExercisesGroupsList = listOf(
@@ -91,4 +92,8 @@ internal val dayWeekExercisesOverDueState = DayWeekExercisesUIState(
     isOverDue = true,
     groups = defaultDayWeekExercisesGroupsList,
     filteredGroups = defaultDayWeekExercisesGroupsList
+)
+
+internal val workoutGroupEditDialogDefaultState = WorkoutGroupEditDialogUIState(
+    title = "Grupo Aquecimento"
 )

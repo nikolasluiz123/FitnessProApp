@@ -32,4 +32,5 @@
     <string name="paged_list_dialog_empty_message">Sem Registros</string>
     <string name="outlined_textfield_validation_error_icon_description">Erro de Validação</string>
     <string name="label_cancel_event">Cancelar Evento</string>
+    <string name="label_close">Fechar</string>
 </resources>

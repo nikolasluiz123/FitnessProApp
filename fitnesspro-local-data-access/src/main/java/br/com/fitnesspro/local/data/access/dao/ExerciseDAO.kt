@@ -59,4 +59,7 @@ abstract class ExerciseDAO: IntegratedMaintenanceDAO<Exercise>() {
     @Query("select * from exercise where id = :id")
     abstract suspend fun findById(id: String): Exercise
 
+    @Query("select * from exercise where workout_group_id = :workoutGroupId")
+    abstract suspend fun findExerciesFromWorkoutGroup(workoutGroupId: String): List<Exercise>
+
 }

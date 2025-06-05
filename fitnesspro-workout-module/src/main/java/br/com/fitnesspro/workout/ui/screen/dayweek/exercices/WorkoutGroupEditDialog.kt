@@ -1,0 +1,256 @@
+package br.com.fitnesspro.workout.ui.screen.dayweek.exercices
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import br.com.fitnesspro.compose.components.buttons.icons.IconButtonClose
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
+import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
+import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
+import br.com.fitnesspro.compose.components.loading.FitnessProCircularBlockUIProgressIndicator
+import br.com.fitnesspro.core.theme.DialogTitleTextStyle
+import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.callbacks.OnInactivateWorkoutGroupClick
+import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.callbacks.OnSaveWorkoutGroupClick
+import br.com.fitnesspro.workout.ui.state.WorkoutGroupEditDialogUIState
+import br.com.fitnesspro.workout.ui.viewmodel.WorkoutGroupEditDialogViewModel
+
+@Composable
+fun WorkoutGroupEditDialog(
+    viewModel: WorkoutGroupEditDialogViewModel,
+    workoutGroupId: String,
+    onDismissRequest: () -> Unit,
+    onSaveClick: () -> Unit,
+    onInactivateClick: () -> Unit
+) {
+    val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadUIStateWithDatabaseInfos(workoutGroupId)
+    }
+
+    WorkoutGroupEditDialog(
+        state = state,
+        onSaveClick = { onSuccess ->
+            viewModel.onSave {
+                onSuccess()
+                onSaveClick()
+            }
+        },
+        onInactivateClick = { onSuccess ->
+            viewModel.onInactivate {
+                onSuccess()
+                onInactivateClick()
+            }
+        },
+        onDismissRequest = onDismissRequest
+    )
+}
+
+@Composable
+fun WorkoutGroupEditDialog(
+    state: WorkoutGroupEditDialogUIState,
+    onSaveClick: OnSaveWorkoutGroupClick? = null,
+    onInactivateClick: OnInactivateWorkoutGroupClick? = null,
+    onDismissRequest: () -> Unit = { }
+) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            ConstraintLayout(
+                Modifier
+                    .fillMaxWidth()
+            ) {
+                val (headerRef, nameRef, dayWeekRef, buttonsContainerRef, loadingRef) = createRefs()
+
+                FitnessProCircularBlockUIProgressIndicator(
+                    show = state.showLoading,
+                    label = stringResource(R.string.workout_group_edit_dialog_loading_label),
+                    modifier = Modifier.constrainAs(loadingRef) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                    }
+                )
+
+                FitnessProMessageDialog(state = state.messageDialogState)
+
+                ConstraintLayout(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                        .constrainAs(headerRef) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                ) {
+                    val (titleRef, closeButtonRef) = createRefs()
+
+                    Text(
+                        text = state.title,
+                        style = DialogTitleTextStyle,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.constrainAs(titleRef) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(closeButtonRef.start)
+
+                            width = Dimension.fillToConstraints
+                        }
+                    )
+
+                    IconButtonClose(
+                        iconColor = MaterialTheme.colorScheme.onSurface,
+                        onClick = onDismissRequest,
+                        modifier = Modifier.constrainAs(closeButtonRef) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
+                        }
+                    )
+                }
+
+                OutlinedTextFieldValidation(
+                    field = state.name,
+                    label = stringResource(R.string.workout_group_edit_dialog_name_label),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next
+                    ),
+                    modifier = Modifier.constrainAs(nameRef) {
+                        top.linkTo(headerRef.bottom, margin = 8.dp)
+                        start.linkTo(parent.start, margin = 16.dp)
+                        end.linkTo(parent.end, margin = 16.dp)
+
+                        width = Dimension.fillToConstraints
+                    }
+                )
+
+                DefaultExposedDropdownMenu(
+                    field = state.dayWeek,
+                    labelResId = R.string.workout_group_edit_dialog_day_week_label,
+                    modifier = Modifier.constrainAs(dayWeekRef) {
+                        top.linkTo(nameRef.bottom, 8.dp)
+                        start.linkTo(parent.start, margin = 16.dp)
+                        end.linkTo(parent.end, margin = 16.dp)
+                        bottom.linkTo(buttonsContainerRef.top)
+
+                        width = Dimension.fillToConstraints
+                    }
+                )
+
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .constrainAs(buttonsContainerRef) {
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                        }
+                ) {
+                    DialogTextButton(
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        labelResId = R.string.workout_group_edit_dialog_inactivate_button,
+                        onClick = {
+                            state.onToggleLoading()
+                            onInactivateClick?.onExecute {
+                                onDismissRequest()
+                            }
+                        }
+                    )
+
+
+                    DialogTextButton(
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        labelResId = R.string.workout_group_edit_dialog_save_button,
+                        onClick = {
+                            state.onToggleLoading()
+                            onSaveClick?.onExecute {
+                                onDismissRequest()
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DialogTextButton(
+    labelResId: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TextButton(
+        modifier = modifier,
+        colors = ButtonDefaults.textButtonColors(
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+        ),
+        onClick = {
+            onClick()
+        }
+    ) {
+        Text(text = stringResource(id = labelResId))
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun WorkoutGroupEditDialogPreview() {
+    FitnessProTheme {
+        Surface {
+            WorkoutGroupEditDialog(
+                state = workoutGroupEditDialogDefaultState
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun WorkoutGroupEditDialogPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            WorkoutGroupEditDialog(
+                state = workoutGroupEditDialogDefaultState
+            )
+        }
+    }
+}

@@ -8,6 +8,7 @@ import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.getTOWorkoutGroup
 import br.com.fitnesspro.mappers.getWorkoutGroup
 import br.com.fitnesspro.model.workout.WorkoutGroup
+import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
@@ -87,7 +88,7 @@ class WorkoutGroupRepository(
         if (toWorkoutGroup.id == null) {
             workoutGroupDAO.insert(workoutGroup)
         } else {
-            workoutGroupDAO.update(workoutGroup)
+            workoutGroupDAO.update(workoutGroup, true)
         }
 
         toWorkoutGroup.id = workoutGroup.id
@@ -95,5 +96,40 @@ class WorkoutGroupRepository(
 
     private suspend fun saveWorkoutGroupRemote(toWorkoutGroup: TOWorkoutGroup) {
 
+    }
+
+    suspend fun inactivateWorkoutGroup(workoutGroupId: String) {
+        inactivateWorkoutGroupLocally(workoutGroupId)
+        inactivateWorkoutGroupRemote(workoutGroupId)
+    }
+
+    private suspend fun inactivateWorkoutGroupLocally(workoutGroupId: String) {
+        workoutGroupDAO.findById(workoutGroupId)?.let {
+            it.active = false
+            workoutGroupDAO.update(it, true)
+        }
+    }
+
+    private suspend fun inactivateWorkoutGroupRemote(workoutGroupId: String) {
+
+    }
+
+    suspend fun saveExerciseWorkoutGroup(toExercise: TOExercise) {
+        val toWorkoutGroup = if (toExercise.workoutGroupId == null) {
+            TOWorkoutGroup(
+                name = toExercise.workoutGroupName,
+                workoutId = toExercise.workoutId,
+                dayWeek = toExercise.dayWeek
+            )
+        } else {
+            findWorkoutGroupById(toExercise.workoutGroupId)?.apply {
+                name = toExercise.workoutGroupName
+            }
+        }
+
+        toWorkoutGroup?.let { to ->
+            saveWorkoutGroup(to)
+            toExercise.workoutGroupId = to.id
+        }
     }
 }

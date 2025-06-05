@@ -4,7 +4,9 @@ import android.content.Context
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
-import br.com.fitnesspro.workout.usecase.SaveExerciseUseCase
+import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseUseCase
+import br.com.fitnesspro.workout.usecase.workout.EditWorkoutGroupUseCase
+import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutGroupUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,6 +28,28 @@ class SingletonWorkoutUseCaseModule {
             context = context,
             workoutGroupRepository = workoutGroupRepository,
             exercisePreDefinitionRepository = exercisePreDefinitionRepository,
+            exerciseRepository = exerciseRepository
+        )
+    }
+
+    @Provides
+    fun provideEditWorkoutGroupUseCase(
+        @ApplicationContext context: Context,
+        workoutGroupRepository: WorkoutGroupRepository
+    ): EditWorkoutGroupUseCase {
+        return EditWorkoutGroupUseCase(
+            context = context,
+            workoutGroupRepository = workoutGroupRepository
+        )
+    }
+
+    @Provides
+    fun provideInactivateWorkoutGroupUseCase(
+        workoutGroupRepository: WorkoutGroupRepository,
+        exerciseRepository: ExerciseRepository
+    ): InactivateWorkoutGroupUseCase {
+        return InactivateWorkoutGroupUseCase(
+            workoutGroupRepository = workoutGroupRepository,
             exerciseRepository = exerciseRepository
         )
     }

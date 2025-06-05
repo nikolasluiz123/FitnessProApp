@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
@@ -34,6 +35,7 @@ import br.com.fitnesspro.workout.ui.screen.dayweek.workout.WorkoutGroupItem
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekExercisesUIState
 import br.com.fitnesspro.workout.ui.viewmodel.DayWeekExercisesViewModel
+import br.com.fitnesspro.workout.ui.viewmodel.WorkoutGroupEditDialogViewModel
 import java.time.DayOfWeek
 
 @Composable
@@ -91,6 +93,8 @@ fun DayWeekExercisesScreen(
             }
         }
     ) { paddings ->
+        val workoutGroupEditDialogViewModel = hiltViewModel<WorkoutGroupEditDialogViewModel>()
+
         Column(
             Modifier
                 .padding(paddings)
@@ -104,6 +108,16 @@ fun DayWeekExercisesScreen(
             FitnessProLinearProgressIndicator(state.showLoading)
 
             FitnessProMessageDialog(state.messageDialogState)
+
+            if (state.showWorkoutGroupEditDialog) {
+                WorkoutGroupEditDialog(
+                    viewModel = workoutGroupEditDialogViewModel,
+                    workoutGroupId = state.workoutGroupIdEdited!!,
+                    onDismissRequest = state.onDismissWorkoutGroupEditDialog,
+                    onSaveClick = { onUpdateExercises() },
+                    onInactivateClick = { onUpdateExercises() }
+                )
+            }
 
             SimpleFilter(
                 modifier = Modifier.fillMaxWidth(),
@@ -195,6 +209,10 @@ fun DayWeekExercisesScreen(
                                     )
 
                                     onNavigateExercise?.onExecute(args)
+                                },
+                                onItemLongClick = {
+                                    state.workoutGroupIdEdited = it.id
+                                    state.onShowWorkoutGroupEditDialog()
                                 }
                             )
                         }

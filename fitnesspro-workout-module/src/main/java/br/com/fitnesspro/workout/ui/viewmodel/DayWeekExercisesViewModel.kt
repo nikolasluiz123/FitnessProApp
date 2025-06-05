@@ -13,6 +13,7 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.to.TOWorkout
+import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
 import br.com.fitnesspro.workout.ui.navigation.DayWeekExercisesScreenArgs
@@ -61,6 +62,17 @@ class DayWeekExercisesViewModel @Inject constructor(
             currentState.copy(
                 simpleFilterState = initializeSimpleFilterState(),
                 messageDialogState = initializeMessageDialogState(),
+                onShowWorkoutGroupEditDialog = {
+                    _uiState.value = _uiState.value.copy(
+                        showWorkoutGroupEditDialog = true
+                    )
+                },
+                onDismissWorkoutGroupEditDialog = {
+                    _uiState.value = _uiState.value.copy(
+                        showWorkoutGroupEditDialog = false,
+                        workoutGroupIdEdited = null
+                    )
+                }
             )
         }
     }
@@ -175,6 +187,12 @@ class DayWeekExercisesViewModel @Inject constructor(
                 groups = groups,
                 filteredGroups = groups.toMutableList().filter(_uiState.value.simpleFilterState.quickFilter)
             )
+        }
+    }
+
+    fun onChangeWorkoutGroup(workoutGroupId: String, onLoaded: (TOWorkoutGroup) -> Unit) {
+        launch {
+            workoutGroupRepository.findWorkoutGroupById(workoutGroupId)?.let(onLoaded)
         }
     }
 

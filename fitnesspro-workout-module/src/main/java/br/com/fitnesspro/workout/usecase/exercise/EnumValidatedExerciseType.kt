@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.usecase
+package br.com.fitnesspro.workout.usecase.exercise
 
 
 enum class EnumValidatedExerciseType {

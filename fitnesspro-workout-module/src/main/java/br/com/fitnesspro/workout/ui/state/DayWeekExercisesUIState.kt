@@ -15,6 +15,10 @@ data class DayWeekExercisesUIState(
     var filteredGroups: List<DayWeekExercicesGroupDecorator> = emptyList(),
     var messageDialogState: MessageDialogState = MessageDialogState(),
     val simpleFilterState: SimpleFilterState = SimpleFilterState(),
+    var workoutGroupIdEdited: String? = null,
+    val showWorkoutGroupEditDialog: Boolean = false,
+    val onShowWorkoutGroupEditDialog: () -> Unit = { },
+    val onDismissWorkoutGroupEditDialog: () -> Unit = { },
     val workout: TOWorkout? = null,
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = { }

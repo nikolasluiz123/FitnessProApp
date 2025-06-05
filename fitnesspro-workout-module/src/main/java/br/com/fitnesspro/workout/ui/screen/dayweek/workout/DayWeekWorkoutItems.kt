@@ -2,6 +2,7 @@ package br.com.fitnesspro.workout.ui.screen.dayweek.workout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,14 +31,22 @@ import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGrou
 @Composable
 fun WorkoutGroupItem(
     decorator: WorkoutGroupDecorator,
-    onItemClick: (WorkoutGroupDecorator) -> Unit = {}
+    onItemClick: (WorkoutGroupDecorator) -> Unit = {},
+    onItemLongClick: (WorkoutGroupDecorator) -> Unit = {}
 ) {
     Box(
         Modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.surfaceVariant)
             .padding(8.dp)
-            .clickable { onItemClick(decorator) }
+            .combinedClickable(
+                onClick = {
+                    onItemClick(decorator)
+                },
+                onLongClick = {
+                    onItemLongClick(decorator)
+                }
+            )
     ) {
         Text(
             modifier = Modifier.align(alignment = Alignment.Center),

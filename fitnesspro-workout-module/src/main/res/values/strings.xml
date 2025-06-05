@@ -58,4 +58,14 @@
     <string name="exercise_screen_exercise_name_pre_definition">%1$s (Pre-Definição)</string>
     <string name="day_week_workout_screen_sets">Séries</string>
     <string name="day_week_workout_screen_repetitions">Repetições</string>
+    <string name="workout_group_edit_dialog_name_label">Nome *</string>
+    <string name="workout_group_edit_dialog_day_week_label">Dia da Semana *</string>
+    <string name="workout_group_edit_dialog_save_button">Salvar</string>
+    <string name="workout_group_edit_dialog_cancel_button">Cancelar</string>
+    <string name="workout_group_edit_dialog_inactivate_button">Excluir</string>
+    <string name="workout_group_edit_dialog_title">Grupo %s</string>
+    <string name="enum_workout_group_name">Nome</string>
+    <string name="enum_workout_group_day_week">Dia da Semana</string>
+    <string name="workout_group_inactivate_dialog_message">Deseja realmente excluir o Grupo %s? Essa ação não poderá ser desfeita.</string>
+    <string name="workout_group_edit_dialog_loading_label">Processando...</string>
 </resources>
