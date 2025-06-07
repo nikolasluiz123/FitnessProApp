@@ -71,21 +71,7 @@ class SaveExerciseUseCase(
                 )
             }
 
-            existentWorkoutGroup == null -> {
-//                val message = context.getString(
-//                    R.string.validation_msg_new_workout_group_creation,
-//                    toExercise.workoutGroupName
-//                )
-//
-//                FieldValidationTypedError(
-//                    type = EnumValidatedExerciseType.NEW_WORKOUT_GROUP,
-//                    field = null,
-//                    message = message
-//                )
-                null
-            }
-
-            toExercise.workoutGroupId.isNullOrEmpty() -> {
+            toExercise.workoutGroupId.isNullOrEmpty() && existentWorkoutGroup != null -> {
                 toExercise.workoutGroupId = existentWorkoutGroup.id
                 toExercise.workoutGroupName = existentWorkoutGroup.name
 
@@ -139,21 +125,7 @@ class SaveExerciseUseCase(
                 )
             }
 
-            existentExercisePreDefinition == null -> {
-//                val message = context.getString(
-//                    R.string.validation_msg_new_exercise_creation,
-//                    toExercise.name
-//                )
-//
-//                FieldValidationTypedError(
-//                    type = EnumValidatedExerciseType.NEW_EXERCISE_PRE_DEFINITION,
-//                    field = null,
-//                    message = message
-//                )
-                null
-            }
-
-            else -> {
+            existentExercisePreDefinition != null -> {
                 toExercise.sets = existentExercisePreDefinition.sets
                 toExercise.repetitions = existentExercisePreDefinition.repetitions
                 toExercise.rest = existentExercisePreDefinition.rest
@@ -163,6 +135,8 @@ class SaveExerciseUseCase(
 
                 null
             }
+
+            else -> null
         }
     }
 

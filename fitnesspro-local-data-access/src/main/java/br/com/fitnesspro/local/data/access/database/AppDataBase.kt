@@ -18,6 +18,7 @@ import br.com.fitnesspro.local.data.access.dao.ServiceTokenDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutGroupPreDefinitionDAO
 import br.com.fitnesspro.model.authentication.Application
 import br.com.fitnesspro.model.authentication.Device
 import br.com.fitnesspro.model.authentication.ServiceToken
@@ -90,5 +91,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun exerciseDAO(): ExerciseDAO
 
     abstract fun exercisePreDefinitionDAO(): ExercisePreDefinitionDAO
+
+    abstract fun workoutGroupPreDefinitionDAO(): WorkoutGroupPreDefinitionDAO
 
 }

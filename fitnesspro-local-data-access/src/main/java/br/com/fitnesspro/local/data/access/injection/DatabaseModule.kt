@@ -84,4 +84,8 @@ class DatabaseModule {
     @Singleton
     fun provideExercisePreDefinitionDao(appDatabase: AppDatabase) = appDatabase.exercisePreDefinitionDAO()
 
+    @Provides
+    @Singleton
+    fun provideWorkoutGroupPreDefinitionDao(appDatabase: AppDatabase) = appDatabase.workoutGroupPreDefinitionDAO()
+
 }

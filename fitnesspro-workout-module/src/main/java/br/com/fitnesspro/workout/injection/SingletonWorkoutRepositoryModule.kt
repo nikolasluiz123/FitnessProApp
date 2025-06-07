@@ -6,8 +6,10 @@ import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutGroupPreDefinitionDAO
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
+import br.com.fitnesspro.workout.repository.WorkoutGroupPreDefinitionRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
 import dagger.Module
@@ -67,6 +69,17 @@ class SingletonWorkoutRepositoryModule {
         return ExercisePreDefinitionRepository(
             context = context,
             exercisePreDefinitionDAO = exercisePreDefinitionDAO
+        )
+    }
+
+    @Provides
+    fun provideWorkoutGroupPreDefinitionRepository(
+        @ApplicationContext context: Context,
+        workoutGroupPreDefinitionDAO: WorkoutGroupPreDefinitionDAO
+    ): WorkoutGroupPreDefinitionRepository {
+        return WorkoutGroupPreDefinitionRepository(
+            context = context,
+            workoutGroupPreDefinitionDAO = workoutGroupPreDefinitionDAO
         )
     }
 }
