@@ -14,6 +14,7 @@ class EditWorkoutGroupUseCase(
         val validationResults = mutableListOf<FieldValidationError<EnumValidatedWorkoutGroupFields>>()
         validateName(toWorkoutGroup)?.let(validationResults::add)
         validateDayWeek(toWorkoutGroup)?.let(validationResults::add)
+        validateWorkoutGroupOrder(toWorkoutGroup)?.let(validationResults::add)
 
         if (validationResults.isEmpty()) {
             workoutGroupRepository.saveWorkoutGroup(toWorkoutGroup)
@@ -63,6 +64,36 @@ class EditWorkoutGroupUseCase(
 
                 FieldValidationError(
                     field = EnumValidatedWorkoutGroupFields.DAY_WEEK,
+                    message = message
+                )
+            }
+
+            else -> null
+        }
+    }
+
+    private fun validateWorkoutGroupOrder(toWorkoutGroup: TOWorkoutGroup): FieldValidationError<EnumValidatedWorkoutGroupFields>? {
+        return when {
+            toWorkoutGroup.order == null -> {
+                val message = context.getString(
+                    R.string.validation_msg_required_field,
+                    context.getString(EnumValidatedWorkoutGroupFields.EXERCISE_GROUP_ORDER.labelResId)
+                )
+
+                FieldValidationError(
+                    field = EnumValidatedWorkoutGroupFields.EXERCISE_GROUP_ORDER,
+                    message = message
+                )
+            }
+
+            toWorkoutGroup.order!! <= 0 -> {
+                val message = context.getString(
+                    R.string.validation_msg_invalid_field,
+                    context.getString(EnumValidatedWorkoutGroupFields.EXERCISE_GROUP_ORDER.labelResId),
+                )
+
+                FieldValidationError(
+                    field = EnumValidatedWorkoutGroupFields.EXERCISE_GROUP_ORDER,
                     message = message
                 )
             }

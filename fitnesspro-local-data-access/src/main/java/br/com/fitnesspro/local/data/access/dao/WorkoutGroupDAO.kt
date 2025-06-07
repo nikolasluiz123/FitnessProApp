@@ -33,29 +33,29 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where workout_id = ? ")
-            add(" and active = 1 ")
+            add(" where workout_group.workout_id = ? ")
+            add(" and workout_group.active = 1 ")
 
             queryParams.add(workoutId)
 
             workoutGroupId?.let {
-                add(" and id = ? ")
+                add(" and workout_group.id = ? ")
                 queryParams.add(it)
             }
 
             dayOfWeek?.let {
-                add(" and day_week = ? ")
+                add(" and workout_group.day_week = ? ")
                 queryParams.add(it.name)
             }
 
             if (!simpleFilter.isNullOrEmpty()) {
-                add(" and lower(name) like ? ")
+                add(" and lower(workout_group.name) like ? ")
                 queryParams.add("%${simpleFilter.lowercase()}%")
             }
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            // TODO - Precisa criar um campo de ordem na tabela WorkoutGroup
+            add(" order by workout_group.group_order ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

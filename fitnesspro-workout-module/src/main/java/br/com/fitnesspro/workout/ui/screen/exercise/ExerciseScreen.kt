@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -137,7 +138,7 @@ fun ExerciseScreen(
                     .imePadding()
             ) {
                 val (groupRef, exerciseRef, setsRef, repsRef, restRef, unitRestRef,
-                    durationRef, unitDurationRef, observationRef) = createRefs()
+                    durationRef, unitDurationRef, observationRef, groupOrderRef, exerciseOrderRef) = createRefs()
 
                 ListDialogOutlinedTextFieldValidation(
                     modifier = Modifier
@@ -159,11 +160,28 @@ fun ExerciseScreen(
                     }
                 )
 
+                OutlinedTextFieldValidation(
+                    modifier = Modifier
+                        .constrainAs(groupOrderRef) {
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            top.linkTo(groupRef.bottom, margin = 8.dp)
+
+                            width = Dimension.fillToConstraints
+                        },
+                    field = state.groupOrder,
+                    label = stringResource(R.string.exercise_screen_label_group_order),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    )
+                )
+
                 PagedListDialogOutlinedTextFieldValidation(
                     modifier = Modifier
                         .fillMaxWidth()
                         .constrainAs(exerciseRef) {
-                            top.linkTo(groupRef.bottom, margin = 8.dp)
+                            top.linkTo(groupOrderRef.bottom, margin = 8.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         },
@@ -181,10 +199,27 @@ fun ExerciseScreen(
 
                 OutlinedTextFieldValidation(
                     modifier = Modifier
-                        .constrainAs(setsRef) {
+                        .constrainAs(exerciseOrderRef) {
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                             top.linkTo(exerciseRef.bottom, margin = 8.dp)
+
+                            width = Dimension.fillToConstraints
+                        },
+                    field = state.exerciseOrder,
+                    label = stringResource(R.string.exercise_screen_label_exercise_order),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    )
+                )
+
+                OutlinedTextFieldValidation(
+                    modifier = Modifier
+                        .constrainAs(setsRef) {
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            top.linkTo(exerciseOrderRef.bottom, margin = 8.dp)
 
                             width = Dimension.fillToConstraints
                         },

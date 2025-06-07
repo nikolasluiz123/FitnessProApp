@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -90,7 +92,7 @@ fun WorkoutGroupEditDialog(
                 Modifier
                     .fillMaxWidth()
             ) {
-                val (headerRef, nameRef, dayWeekRef, buttonsContainerRef, loadingRef) = createRefs()
+                val (headerRef, nameRef, dayWeekRef, orderRef, buttonsContainerRef, loadingRef) = createRefs()
 
                 FitnessProCircularBlockUIProgressIndicator(
                     show = state.showLoading,
@@ -123,6 +125,7 @@ fun WorkoutGroupEditDialog(
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier.constrainAs(titleRef) {
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
@@ -160,11 +163,27 @@ fun WorkoutGroupEditDialog(
                     }
                 )
 
+                OutlinedTextFieldValidation(
+                    field = state.order,
+                    label = stringResource(R.string.workout_group_edit_dialog_order_label),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Next,
+                        keyboardType = KeyboardType.Number
+                    ),
+                    modifier = Modifier.constrainAs(orderRef) {
+                        top.linkTo(nameRef.bottom, margin = 8.dp)
+                        start.linkTo(parent.start, margin = 16.dp)
+                        end.linkTo(parent.end, margin = 16.dp)
+
+                        width = Dimension.fillToConstraints
+                    }
+                )
+
                 DefaultExposedDropdownMenu(
                     field = state.dayWeek,
                     labelResId = R.string.workout_group_edit_dialog_day_week_label,
                     modifier = Modifier.constrainAs(dayWeekRef) {
-                        top.linkTo(nameRef.bottom, 8.dp)
+                        top.linkTo(orderRef.bottom, 8.dp)
                         start.linkTo(parent.start, margin = 16.dp)
                         end.linkTo(parent.end, margin = 16.dp)
                         bottom.linkTo(buttonsContainerRef.top)
@@ -189,6 +208,7 @@ fun WorkoutGroupEditDialog(
                         onClick = {
                             state.onToggleLoading()
                             onInactivateClick?.onExecute {
+                                state.onToggleLoading()
                                 onDismissRequest()
                             }
                         }
@@ -201,6 +221,7 @@ fun WorkoutGroupEditDialog(
                         onClick = {
                             state.onToggleLoading()
                             onSaveClick?.onExecute {
+                                state.onToggleLoading()
                                 onDismissRequest()
                             }
                         }

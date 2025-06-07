@@ -35,6 +35,7 @@ fun WorkoutGroup.getTOWorkoutGroup(): TOWorkoutGroup {
         active = active,
         workoutId = workoutId,
         dayWeek = dayWeek,
+        order = groupOrder
     )
 }
 
@@ -71,6 +72,7 @@ fun TOWorkoutGroup.getWorkoutGroup(): WorkoutGroup {
         active = active,
         workoutId = workoutId,
         dayWeek = dayWeek,
+        groupOrder = order
     )
 
     id?.let { model.id = it }

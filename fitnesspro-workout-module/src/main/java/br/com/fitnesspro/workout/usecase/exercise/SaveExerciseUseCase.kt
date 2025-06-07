@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.usecase.exercise
 
 import android.content.Context
+import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.core.extensions.toMillis
 import br.com.fitnesspro.core.validation.FieldValidationTypedError
 import br.com.fitnesspro.to.TOExercise
@@ -10,8 +11,9 @@ import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.EXERCISE
 import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.EXERCISE_GROUP
+import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.EXERCISE_GROUP_ORDER
+import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.EXERCISE_ORDER
 import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.OBSERVATION
-import java.time.temporal.ChronoUnit
 
 class SaveExerciseUseCase(
     private val context: Context,
@@ -22,8 +24,8 @@ class SaveExerciseUseCase(
 ) {
     suspend operator fun invoke(toExercise: TOExercise): List<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>> {
         val validationResults = mutableListOf<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>>()
-        validateWorkoutGroup(toExercise)?.let(validationResults::add)
-        validateExercise(toExercise).let(validationResults::addAll)
+        validationResults.addAll(validateWorkoutGroup(toExercise))
+        validationResults.addAll(validateExercise(toExercise))
 
         if (validationResults.isEmpty()) {
             workoutGroupRepository.runInTransaction {
@@ -35,14 +37,19 @@ class SaveExerciseUseCase(
         return validationResults
     }
 
-    private suspend fun validateWorkoutGroup(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
-        val existentWorkoutGroup = toExercise.workoutGroupName?.let {
-            workoutGroupRepository.findWorkoutGroupByName(
-                workoutId = toExercise.workoutId!!,
-                name = it
-            )
+    private suspend fun validateWorkoutGroup(toExercise: TOExercise): List<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>> {
+        val validationResults = mutableListOf<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>?>()
+        validationResults.add(validateWorkoutGroupName(toExercise))
+        validationResults.add(validateWorkoutGroupOrder(toExercise))
+
+        if (validationResults.isEmpty()) {
+            validateWorkoutGroupId(toExercise)
         }
 
+        return validationResults.filterNotNull()
+    }
+
+    private fun validateWorkoutGroupName(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
         return when {
             toExercise.workoutGroupName.isNullOrEmpty() -> {
                 val message = context.getString(
@@ -71,32 +78,72 @@ class SaveExerciseUseCase(
                 )
             }
 
-            toExercise.workoutGroupId.isNullOrEmpty() && existentWorkoutGroup != null -> {
-                toExercise.workoutGroupId = existentWorkoutGroup.id
-                toExercise.workoutGroupName = existentWorkoutGroup.name
+            else -> null
+        }
+    }
 
-                null
+    private fun validateWorkoutGroupOrder(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
+        return when {
+            toExercise.groupOrder == null -> {
+                val message = context.getString(
+                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
+                    context.getString(EXERCISE_GROUP_ORDER.labelResId)
+                )
+
+                FieldValidationTypedError(
+                    type = null,
+                    field = EXERCISE_GROUP_ORDER,
+                    message = message
+                )
+            }
+
+            toExercise.groupOrder!! <= 0 -> {
+                val message = context.getString(
+                    br.com.fitnesspro.common.R.string.validation_msg_invalid_field,
+                    context.getString(EXERCISE_GROUP_ORDER.labelResId),
+                )
+
+                FieldValidationTypedError(
+                    type = null,
+                    field = EXERCISE_GROUP_ORDER,
+                    message = message
+                )
             }
 
             else -> null
         }
     }
 
+    private suspend fun validateWorkoutGroupId(toExercise: TOExercise) {
+        val existentWorkoutGroup = toExercise.workoutGroupName?.let {
+            workoutGroupRepository.findWorkoutGroupByName(
+                workoutId = toExercise.workoutId!!,
+                name = it
+            )
+        }
+
+        if (toExercise.workoutGroupId.isNullOrEmpty() && existentWorkoutGroup != null) {
+            toExercise.workoutGroupId = existentWorkoutGroup.id
+            toExercise.workoutGroupName = existentWorkoutGroup.name
+        }
+    }
+
     private suspend fun validateExercise(toExercise: TOExercise): List<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>> {
         val validationResults = mutableListOf<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>>()
         validateExerciseName(toExercise)?.let(validationResults::add)
+        validateExerciseOrder(toExercise)?.let(validationResults::add)
         validateExerciseRest(toExercise)?.let(validationResults::add)
         validateExerciseDuration(toExercise)?.let(validationResults::add)
         validateExerciseObservation(toExercise)?.let(validationResults::add)
 
+        if (validationResults.isEmpty()) {
+            validateExercisePreDefinition(toExercise)
+        }
+
         return validationResults
     }
 
-    private suspend fun validateExerciseName(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
-        val existentExercisePreDefinition = toExercise.name?.let {
-            exercisePreDefinitionRepository.findExercisePreDefinitionByName(it)
-        }
-
+    private fun validateExerciseName(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
         return when {
             toExercise.name.isNullOrEmpty() -> {
                 val message = context.getString(
@@ -125,15 +172,51 @@ class SaveExerciseUseCase(
                 )
             }
 
-            existentExercisePreDefinition != null -> {
-                toExercise.sets = existentExercisePreDefinition.sets
-                toExercise.repetitions = existentExercisePreDefinition.repetitions
-                toExercise.rest = existentExercisePreDefinition.rest
-                toExercise.duration = existentExercisePreDefinition.duration
-                toExercise.unitDuration = ChronoUnit.SECONDS
-                toExercise.unitRest = ChronoUnit.SECONDS
+            else -> null
+        }
+    }
 
-                null
+    private suspend fun validateExercisePreDefinition(toExercise: TOExercise) {
+        val existentExercisePreDefinition = toExercise.name?.let {
+            exercisePreDefinitionRepository.findExercisePreDefinitionByName(it)
+        }
+
+        existentExercisePreDefinition?.let {
+            toExercise.sets = it.sets
+            toExercise.repetitions = it.repetitions
+            toExercise.rest = it.rest
+            toExercise.duration = it.duration
+            toExercise.unitDuration = it.duration?.bestChronoUnit()
+            toExercise.unitRest = it.rest?.bestChronoUnit()
+        }
+    }
+
+    private fun validateExerciseOrder(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
+        return when {
+            toExercise.exerciseOrder == null -> {
+                val message = context.getString(
+                    br.com.fitnesspro.common.R.string.validation_msg_required_field,
+                    context.getString(EXERCISE_ORDER.labelResId)
+                )
+
+                FieldValidationTypedError(
+                    type = null,
+                    field = EXERCISE_ORDER,
+                    message = message
+                )
+            }
+
+            toExercise.exerciseOrder!! <= 0 -> {
+                val message = context.getString(
+                    br.com.fitnesspro.common.R.string.validation_msg_invalid_field,
+                    context.getString(EXERCISE_ORDER.labelResId),
+                )
+
+                FieldValidationTypedError(
+                    type = null,
+                    field = EXERCISE_ORDER,
+                    message = message
+                )
             }
 
             else -> null
@@ -155,7 +238,7 @@ class SaveExerciseUseCase(
             else -> null
         }
 
-        if (validationError == null && toExercise.rest != null) {
+        if (validationError == null && toExercise.rest != null && toExercise.id == null) {
             toExercise.rest = toExercise.rest!!.toMillis(toExercise.unitRest!!)
         }
 
@@ -177,7 +260,7 @@ class SaveExerciseUseCase(
             else -> null
         }
 
-        if (validationError == null && toExercise.duration != null) {
+        if (validationError == null && toExercise.duration != null && toExercise.id == null) {
             toExercise.duration = toExercise.duration!!.toMillis(toExercise.unitDuration!!)
         }
 

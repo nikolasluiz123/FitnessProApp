@@ -41,13 +41,14 @@ abstract class ExerciseDAO: IntegratedMaintenanceDAO<Exercise>() {
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            // TODO - Nao fiz a ordem de execucao dos exercicios
+            add(" order by exercise.exercise_order ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         return executeExercisesFromWorkoutGroup(SimpleSQLiteQuery(sql.toString(), queryParams.toTypedArray()))

@@ -16,6 +16,8 @@ data class ExerciseUIState(
     var subtitle: String = "",
     val group: DialogListTextField<TOWorkoutGroup> = DialogListTextField(),
     val exercise: PagedDialogListTextField<TOExercise> = PagedDialogListTextField(),
+    val groupOrder: TextField = TextField(),
+    val exerciseOrder: TextField = TextField(),
     val sets: TextField = TextField(),
     val reps: TextField = TextField(),
     val rest: TextField = TextField(),

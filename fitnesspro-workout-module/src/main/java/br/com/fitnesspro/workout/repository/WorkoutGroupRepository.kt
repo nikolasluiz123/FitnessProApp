@@ -25,7 +25,7 @@ class WorkoutGroupRepository(
         val workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(workoutId).onEach {
             it.name = it.name ?: context.getString(R.string.workout_group_default_name)
         }
-        val weeks = workoutGroups.map { it.dayWeek!! }.distinct()
+        val weeks = workoutGroups.map { it.dayWeek!! }.distinct().sortedBy { it.ordinal }
 
         val workoutGroupIds = workoutGroups.map { it.id }
         val allExercises = exerciseDAO.getExercisesFromWorkoutGroup(workoutGroupIds)
@@ -119,11 +119,13 @@ class WorkoutGroupRepository(
             TOWorkoutGroup(
                 name = toExercise.workoutGroupName,
                 workoutId = toExercise.workoutId,
-                dayWeek = toExercise.dayWeek
+                dayWeek = toExercise.dayWeek,
+                order = toExercise.groupOrder
             )
         } else {
             findWorkoutGroupById(toExercise.workoutGroupId)?.apply {
                 name = toExercise.workoutGroupName
+                order = toExercise.groupOrder
             }
         }
 

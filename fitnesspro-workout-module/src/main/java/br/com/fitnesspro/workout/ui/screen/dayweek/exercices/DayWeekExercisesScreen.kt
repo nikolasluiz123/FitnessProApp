@@ -45,11 +45,14 @@ fun DayWeekExercisesScreen(
     onNavigateExercise: OnNavigateExercise
 ) {
     val state by viewModel.uiState.collectAsState()
+    val workoutGroupEditDialogViewModel = hiltViewModel<WorkoutGroupEditDialogViewModel>()
+
     DayWeekExercisesScreen(
         state = state,
         onBackClick = onBackClick,
         onNavigateExercise = onNavigateExercise,
-        onUpdateExercises = viewModel::updateExercises
+        onUpdateExercises = viewModel::updateExercises,
+        workoutGroupEditDialogViewModel = workoutGroupEditDialogViewModel
     )
 }
 
@@ -59,7 +62,8 @@ fun DayWeekExercisesScreen(
     state: DayWeekExercisesUIState = DayWeekExercisesUIState(),
     onBackClick: () -> Unit = { },
     onNavigateExercise: OnNavigateExercise? = null,
-    onUpdateExercises: () -> Unit = { }
+    onUpdateExercises: () -> Unit = { },
+    workoutGroupEditDialogViewModel: WorkoutGroupEditDialogViewModel? = null
 ) {
     Scaffold(
         topBar = {
@@ -93,7 +97,6 @@ fun DayWeekExercisesScreen(
             }
         }
     ) { paddings ->
-        val workoutGroupEditDialogViewModel = hiltViewModel<WorkoutGroupEditDialogViewModel>()
 
         Column(
             Modifier
@@ -111,7 +114,7 @@ fun DayWeekExercisesScreen(
 
             if (state.showWorkoutGroupEditDialog) {
                 WorkoutGroupEditDialog(
-                    viewModel = workoutGroupEditDialogViewModel,
+                    viewModel = workoutGroupEditDialogViewModel!!,
                     workoutGroupId = state.workoutGroupIdEdited!!,
                     onDismissRequest = state.onDismissWorkoutGroupEditDialog,
                     onSaveClick = { onUpdateExercises() },

@@ -10,6 +10,7 @@ import java.time.DayOfWeek
 data class WorkoutGroupEditDialogUIState(
     val title: String = "",
     val name: TextField = TextField(),
+    val order: TextField = TextField(),
     val dayWeek: DropDownTextField<DayOfWeek> = DropDownTextField(),
     val toWorkoutGroup: TOWorkoutGroup = TOWorkoutGroup(),
     val messageDialogState: MessageDialogState = MessageDialogState(),

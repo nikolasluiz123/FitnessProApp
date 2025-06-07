@@ -20,6 +20,8 @@ fun Exercise.getTOExercise(toWorkoutGroup: TOWorkoutGroup? = null): TOExercise {
         workoutGroupName = toWorkoutGroup?.name,
         dayWeek = toWorkoutGroup?.dayWeek,
         active = active,
+        exerciseOrder = exerciseOrder,
+        groupOrder = toWorkoutGroup?.order
     )
 }
 
@@ -47,6 +49,7 @@ fun TOExercise.getExercise(): Exercise {
         observation = observation,
         workoutGroupId = workoutGroupId,
         active = active,
+        exerciseOrder = exerciseOrder
     )
 
     id?.let { model.id = it }

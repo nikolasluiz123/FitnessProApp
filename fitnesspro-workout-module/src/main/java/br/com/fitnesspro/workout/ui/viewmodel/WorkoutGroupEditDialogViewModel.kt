@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
+import androidx.core.text.isDigitsOnly
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.menu.MenuItem
@@ -10,6 +11,7 @@ import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
+import br.com.fitnesspro.core.extensions.toIntOrNull
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOWorkoutGroup
@@ -69,7 +71,8 @@ class WorkoutGroupEditDialogViewModel @Inject constructor(
                 toWorkoutGroup = toWorkoutGroup,
                 title = getTitle(toWorkoutGroup),
                 name = _uiState.value.name.copy(value = getWorkoutGroupNameOrDefault(toWorkoutGroup)),
-                dayWeek = _uiState.value.dayWeek.copy(value = toWorkoutGroup.dayWeek?.getFirstPartFullDisplayName()!!)
+                dayWeek = _uiState.value.dayWeek.copy(value = toWorkoutGroup.dayWeek?.getFirstPartFullDisplayName()!!),
+                order = _uiState.value.order.copy(value = toWorkoutGroup.order.toString())
             )
         }
     }
@@ -129,6 +132,7 @@ class WorkoutGroupEditDialogViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 name = initializeTextFieldName(),
+                order = initializeTextFieldOrder(),
                 dayWeek = initializeDropDownTextFieldDayWeek(),
                 messageDialogState = initializeMessageDialogState(),
                 onToggleLoading = {
@@ -150,6 +154,22 @@ class WorkoutGroupEditDialogViewModel @Inject constructor(
                     ),
                     toWorkoutGroup = _uiState.value.toWorkoutGroup.copy(name = text.ifEmpty { null })
                 )
+            }
+        )
+    }
+
+    private fun initializeTextFieldOrder(): TextField {
+        return TextField(
+            onChange = { text ->
+                if (text.isDigitsOnly()) {
+                    _uiState.value = _uiState.value.copy(
+                        order = _uiState.value.order.copy(
+                            value = text,
+                            errorMessage = ""
+                        ),
+                        toWorkoutGroup = _uiState.value.toWorkoutGroup.copy(order = text.toIntOrNull())
+                    )
+                }
             }
         )
     }

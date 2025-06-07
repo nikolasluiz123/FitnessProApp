@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
 import br.com.fitnesspro.common.repository.PersonRepository
@@ -84,7 +85,9 @@ class ExerciseViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 group = initializeDialogListTextFieldGroup(),
+                groupOrder = initializeTextFieldGroupOrder(),
                 exercise = initializePagedDialogListTextFieldExercise(),
+                exerciseOrder = initializeTextFieldExerciseOrder(),
                 sets = initializeTextFieldSets(),
                 reps = initializeTextFieldReps(),
                 rest = initializeTextFieldRest(),
@@ -177,6 +180,38 @@ class ExerciseViewModel @Inject constructor(
                         workoutGroupName = it
                     )
                 )
+            }
+        )
+    }
+
+    private fun initializeTextFieldGroupOrder(): TextField {
+        return TextField(
+            onChange = {
+                if (it.isDigitsOnly()) {
+                    _uiState.value = _uiState.value.copy(
+                        groupOrder = _uiState.value.groupOrder.copy(
+                            value = it,
+                            errorMessage = ""
+                        ),
+                        toExercise = _uiState.value.toExercise.copy(groupOrder = it.toIntOrNull())
+                    )
+                }
+            }
+        )
+    }
+
+    private fun initializeTextFieldExerciseOrder(): TextField {
+        return TextField(
+            onChange = {
+                if (it.isDigitsOnly()) {
+                    _uiState.value = _uiState.value.copy(
+                        exerciseOrder = _uiState.value.exerciseOrder.copy(
+                            value = it,
+                            errorMessage = ""
+                        ),
+                        toExercise = _uiState.value.toExercise.copy(exerciseOrder = it.toIntOrNull())
+                    )
+                }
             }
         )
     }
@@ -453,8 +488,14 @@ class ExerciseViewModel @Inject constructor(
                 group = _uiState.value.group.copy(
                     value = toExercise.workoutGroupName!!
                 ),
+                groupOrder = _uiState.value.groupOrder.copy(
+                    value = toExercise.groupOrder.toStringOrEmpty()
+                ),
                 exercise = _uiState.value.exercise.copy(
                     value = toExercise.name!!
+                ),
+                exerciseOrder = _uiState.value.exerciseOrder.copy(
+                    value = toExercise.exerciseOrder.toStringOrEmpty()
                 ),
                 sets = _uiState.value.sets.copy(
                     value = toExercise.sets.toStringOrEmpty()
@@ -525,9 +566,13 @@ class ExerciseViewModel @Inject constructor(
                 group = _uiState.value.group.copy(
                     value = selectedGroup.name!!
                 ),
+                groupOrder = _uiState.value.groupOrder.copy(
+                    value = selectedGroup.order.toStringOrEmpty()
+                ),
                 toExercise = _uiState.value.toExercise.copy(
                     workoutGroupId = selectedGroup.id,
-                    workoutGroupName = selectedGroup.name
+                    workoutGroupName = selectedGroup.name,
+                    groupOrder = selectedGroup.order
                 )
             )
         }
@@ -601,9 +646,25 @@ class ExerciseViewModel @Inject constructor(
                     )
                 }
 
+                EnumValidatedExerciseFields.EXERCISE_GROUP_ORDER -> {
+                    _uiState.value = _uiState.value.copy(
+                        groupOrder = _uiState.value.groupOrder.copy(
+                            errorMessage = it.message
+                        )
+                    )
+                }
+
                 EnumValidatedExerciseFields.EXERCISE -> {
                     _uiState.value = _uiState.value.copy(
                         exercise = _uiState.value.exercise.copy(
+                            errorMessage = it.message
+                        )
+                    )
+                }
+
+                EnumValidatedExerciseFields.EXERCISE_ORDER -> {
+                    _uiState.value = _uiState.value.copy(
+                        exerciseOrder = _uiState.value.exerciseOrder.copy(
                             errorMessage = it.message
                         )
                     )

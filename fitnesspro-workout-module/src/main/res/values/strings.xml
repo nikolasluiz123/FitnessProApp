@@ -68,4 +68,10 @@
     <string name="enum_workout_group_day_week">Dia da Semana</string>
     <string name="workout_group_inactivate_dialog_message">Deseja realmente excluir o Grupo %s? Essa ação não poderá ser desfeita.</string>
     <string name="workout_group_edit_dialog_loading_label">Processando...</string>
+    <string name="exercise_screen_label_group_order">Ordem do Grupo *</string>
+    <string name="exercise_screen_label_exercise_order">Ordem do Exercício *</string>
+    <string name="enum_exercise_group_order">Ordem do Grupo</string>
+    <string name="enum_exercise_order">Ordem do Exercício</string>
+    <string name="workout_group_edit_dialog_order_label">Ordem *</string>
+    <string name="enum_workout_group_exercise_group_order">Ordem</string>
 </resources>

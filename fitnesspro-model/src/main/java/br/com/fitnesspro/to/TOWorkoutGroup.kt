@@ -8,6 +8,7 @@ data class TOWorkoutGroup(
     var name: String? = null,
     var workoutId: String? = null,
     var dayWeek: DayOfWeek? = null,
+    var order: Int? = null,
     var active: Boolean = true
 ): BaseTO, ITupleListItem {
 
