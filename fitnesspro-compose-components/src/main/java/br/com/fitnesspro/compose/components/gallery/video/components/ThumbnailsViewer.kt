@@ -23,11 +23,10 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 
 @Composable
 internal fun ThumbnailsViewer(
-    mode: VideoGalleryViewMode,
     state: VideoGalleryState,
     onVideoClick: (Uri) -> Unit
 ) {
-    when (mode) {
+    when (state.viewMode) {
         VideoGalleryViewMode.COLLAPSED -> {
             VideosCarousel(state, onVideoClick)
         }
@@ -90,7 +89,6 @@ private fun ThumbnailsViewerCollapsedPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
             ThumbnailsViewer(
-                mode = VideoGalleryViewMode.COLLAPSED,
                 state = videoGalleryCollapsedWithOneValueState,
                 onVideoClick = {}
             )
@@ -104,7 +102,6 @@ private fun ThumbnailsViewerCollapsedPreviewLight() {
     FitnessProTheme(darkTheme = false) {
         Surface {
             ThumbnailsViewer(
-                mode = VideoGalleryViewMode.COLLAPSED,
                 state = videoGalleryCollapsedWithOneValueState,
                 onVideoClick = {}
             )
@@ -118,7 +115,6 @@ private fun ThumbnailsViewerExpandedPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
             ThumbnailsViewer(
-                mode = VideoGalleryViewMode.EXPANDED,
                 state = videoGalleryExpandedWithOneValueState,
                 onVideoClick = {}
             )
@@ -132,7 +128,6 @@ private fun ThumbnailsViewerExpandedManyValuesPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
             ThumbnailsViewer(
-                mode = VideoGalleryViewMode.EXPANDED,
                 state = videoGalleryExpandedWithManyValuesState,
                 onVideoClick = {}
             )
@@ -146,7 +141,6 @@ private fun ThumbnailsViewerExpandedPreviewLight() {
     FitnessProTheme(darkTheme = false) {
         Surface {
             ThumbnailsViewer(
-                mode = VideoGalleryViewMode.EXPANDED,
                 state = videoGalleryExpandedWithOneValueState,
                 onVideoClick = {}
             )
@@ -160,7 +154,6 @@ private fun ThumbnailsViewerExpandedManyValuesPreviewLight() {
     FitnessProTheme(darkTheme = false) {
         Surface {
             ThumbnailsViewer(
-                mode = VideoGalleryViewMode.EXPANDED,
                 state = videoGalleryExpandedWithManyValuesState,
                 onVideoClick = {}
             )

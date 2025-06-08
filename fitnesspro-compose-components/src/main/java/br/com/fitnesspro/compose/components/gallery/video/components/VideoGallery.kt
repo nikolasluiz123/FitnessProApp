@@ -1,11 +1,9 @@
 package br.com.fitnesspro.compose.components.gallery.video.components
 
 import android.net.Uri
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,8 +28,6 @@ import br.com.fitnesspro.core.R
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.VideoGalleryTitleStyle
 
-private const val VIDEO_GALLERY_TRANSITION = "VideoGalleryTransition"
-
 @Composable
 fun VideoGallery(
     state: VideoGalleryState,
@@ -39,44 +36,38 @@ fun VideoGallery(
     onVideoClick: (Uri) -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    // Trocado ConstraintLayout por Column
+    val isExpanded = state.viewMode == VideoGalleryViewMode.EXPANDED
+    val targetHeight = if (isExpanded) 400.dp else 240.dp
+
+    val animatedHeight by animateDpAsState(
+        targetValue = targetHeight,
+        animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing),
+        label = "GalleryHeight"
+    )
+
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .height(animatedHeight)
             .background(
                 color = MaterialTheme.colorScheme.surfaceVariant,
                 shape = MaterialTheme.shapes.extraSmall
             )
     ) {
-        val isExpanded = state.viewMode == VideoGalleryViewMode.EXPANDED
-
         VideoGalleryHeader(
             title = state.title,
             modifier = Modifier.fillMaxWidth()
         )
 
-        val contentModifier = if (isExpanded) {
-            Modifier
+        Box(
+            modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
-        } else {
-            Modifier
-                .fillMaxWidth()
-                .height(120.dp)
-        }
-
-        AnimatedContent(
-            targetState = state.viewMode,
-            transitionSpec = {
-                fadeIn(animationSpec = tween(300)).togetherWith(fadeOut(animationSpec = tween(300)))
-            },
-            modifier = contentModifier,
-            label = VIDEO_GALLERY_TRANSITION
-        ) { mode ->
+                .weight(1f, fill = true)
+        ) {
             if (state.videoUris.isEmpty()) {
                 EmptyState(emptyMessage)
             } else {
-                ThumbnailsViewer(mode, state, onVideoClick)
+                ThumbnailsViewer(state, onVideoClick)
             }
         }
 
@@ -98,7 +89,7 @@ fun VideoGallery(
 fun VideoGalleryHeader(title: String, modifier: Modifier) {
     Box(
         modifier
-            .padding(vertical = 16.dp, horizontal = 8.dp),
+            .padding(top = 16.dp, bottom = 4.dp, start = 8.dp, end = 8.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
