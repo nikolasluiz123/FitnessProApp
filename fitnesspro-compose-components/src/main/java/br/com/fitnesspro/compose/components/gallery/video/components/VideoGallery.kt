@@ -2,17 +2,16 @@ package br.com.fitnesspro.compose.components.gallery.video.components
 
 import android.net.Uri
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryViewMode
 import br.com.fitnesspro.core.R
@@ -33,7 +31,6 @@ import br.com.fitnesspro.core.theme.VideoGalleryTitleStyle
 
 private const val VIDEO_GALLERY_TRANSITION = "VideoGalleryTransition"
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun VideoGallery(
     state: VideoGalleryState,
@@ -42,7 +39,8 @@ fun VideoGallery(
     onVideoClick: (Uri) -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    ConstraintLayout(
+    // Trocado ConstraintLayout por Column
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .background(
@@ -50,33 +48,29 @@ fun VideoGallery(
                 shape = MaterialTheme.shapes.extraSmall
             )
     ) {
-        val (headerRef, contentRef, dividerRef, actionsRef) = createRefs()
-
         val isExpanded = state.viewMode == VideoGalleryViewMode.EXPANDED
 
         VideoGalleryHeader(
             title = state.title,
-            modifier = Modifier
-                .constrainAs(headerRef) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
+            modifier = Modifier.fillMaxWidth()
         )
+
+        val contentModifier = if (isExpanded) {
+            Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        } else {
+            Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+        }
 
         AnimatedContent(
             targetState = state.viewMode,
             transitionSpec = {
                 fadeIn(animationSpec = tween(300)).togetherWith(fadeOut(animationSpec = tween(300)))
             },
-            modifier = Modifier
-                .then(Modifier.defineSize(isExpanded))
-                .constrainAs(contentRef) {
-                    top.linkTo(headerRef.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(dividerRef.top)
-                },
+            modifier = contentModifier,
             label = VIDEO_GALLERY_TRANSITION
         ) { mode ->
             if (state.videoUris.isEmpty()) {
@@ -87,22 +81,11 @@ fun VideoGallery(
         }
 
         HorizontalDivider(
-            color = MaterialTheme.colorScheme.outline,
-            modifier = Modifier
-                .constrainAs(dividerRef) {
-                    bottom.linkTo(actionsRef.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
+            color = MaterialTheme.colorScheme.outline
         )
 
         ActionsBottomBar(
             modifier = Modifier
-                .constrainAs(actionsRef) {
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 4.dp),
             state = state,
@@ -115,8 +98,7 @@ fun VideoGallery(
 fun VideoGalleryHeader(title: String, modifier: Modifier) {
     Box(
         modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp, start = 8.dp, end = 8.dp),
+            .padding(vertical = 16.dp, horizontal = 8.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -126,14 +108,6 @@ fun VideoGalleryHeader(title: String, modifier: Modifier) {
     }
 }
 
-@Composable
-private fun Modifier.defineSize(isExpanded: Boolean): Modifier {
-    return if (isExpanded) {
-        fillMaxWidth().heightIn(min = 120.dp)
-    } else {
-        fillMaxWidth().height(120.dp)
-    }
-}
 
 @Preview(device = "id:small_phone")
 @Composable

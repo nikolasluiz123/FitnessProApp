@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
+import android.net.Uri
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
@@ -14,7 +15,10 @@ import br.com.fitnesspro.compose.components.fields.state.DialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
+import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.fields.state.TextField
+import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
+import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
@@ -33,6 +37,7 @@ import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
 import br.com.fitnesspro.workout.ui.navigation.ExerciseScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.exerciseScreenArguments
+import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumTabsExerciseScreen
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
 import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields
 import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseType
@@ -95,6 +100,8 @@ class ExerciseViewModel @Inject constructor(
                 duration = initializeTextFieldDuration(),
                 unitDuration = initializeDropDownTextFieldUnitDuration(),
                 observation = initializeTextFieldObservation(),
+                videoGalleryState = initializeVideoGalleryState(),
+                tabState = initializeTabState(),
                 messageDialogState = initializeMessageDialogState(),
                 toExercise = _uiState.value.toExercise.copy(
                     workoutId = args.workoutId,
@@ -102,6 +109,46 @@ class ExerciseViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    private fun initializeTabState(): TabState {
+        return TabState(
+            tabs = getTabsWithDefaultState(),
+            onSelectTab = { selectedTab ->
+                _uiState.value = _uiState.value.copy(
+                    tabState = _uiState.value.tabState.copy(
+                        tabs = getTabListWithSelectedTab(selectedTab)
+                    )
+                )
+            }
+        )
+    }
+
+    private fun getTabsWithDefaultState(): MutableList<Tab> {
+        return mutableListOf(
+            Tab(
+                enum = EnumTabsExerciseScreen.GENERAL,
+                selected = true,
+                enabled = true
+            ),
+            Tab(
+                enum = EnumTabsExerciseScreen.VIDEOS,
+                selected = false,
+                enabled = false
+            )
+        )
+    }
+
+    private fun getTabListWithSelectedTab(selectedTab: Tab): MutableList<Tab> {
+        return _uiState.value.tabState.tabs.map { tab ->
+            tab.copy(selected = tab.enum == selectedTab.enum)
+        }.toMutableList()
+    }
+
+    private fun getTabListAllEnabled(): MutableList<Tab> {
+        return _uiState.value.tabState.tabs.map { tab ->
+            tab.copy(enabled = true)
+        }.toMutableList()
     }
 
     private fun initializeMessageDialogState(): MessageDialogState {
@@ -443,6 +490,26 @@ class ExerciseViewModel @Inject constructor(
         )
     }
 
+    private fun initializeVideoGalleryState(): VideoGalleryState {
+        return VideoGalleryState(
+            title = context.getString(R.string.exercise_screen_video_gallery_title),
+            onViewModeChange = {
+                _uiState.value = _uiState.value.copy(
+                    videoGalleryState = _uiState.value.videoGalleryState.copy(
+                        viewMode = it
+                    )
+                )
+            },
+            videoUris = listOf(
+                Uri.fromParts("", "", ""),
+                Uri.fromParts("", "", ""),
+                Uri.fromParts("", "", ""),
+                Uri.fromParts("", "", ""),
+                Uri.fromParts("", "", "")
+            )
+        )
+    }
+
     private fun loadUIStateWithDatabaseInfos() {
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
@@ -517,7 +584,8 @@ class ExerciseViewModel @Inject constructor(
                 ),
                 observation = _uiState.value.observation.copy(
                     value = toExercise.observation ?: ""
-                )
+                ),
+                tabState = _uiState.value.tabState.copy(tabs = getTabListAllEnabled())
             )
 
             loadTopBar(args)

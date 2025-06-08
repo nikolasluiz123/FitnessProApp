@@ -59,6 +59,7 @@ private fun VideosCarousel(state: VideoGalleryState, onVideoClick: (Uri) -> Unit
 @Composable
 private fun VideosGrid(state: VideoGalleryState, onVideoClick: (Uri) -> Unit) {
     LazyVerticalGrid(
+        modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)

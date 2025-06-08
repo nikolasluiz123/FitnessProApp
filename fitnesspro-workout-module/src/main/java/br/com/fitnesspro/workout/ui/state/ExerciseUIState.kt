@@ -3,7 +3,9 @@ package br.com.fitnesspro.workout.ui.state
 import br.com.fitnesspro.compose.components.fields.state.DialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
+import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.fields.state.TextField
+import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
 import br.com.fitnesspro.core.state.ILoadingUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.to.TOExercise
@@ -14,6 +16,7 @@ import java.time.temporal.ChronoUnit
 data class ExerciseUIState(
     var title: String = "",
     var subtitle: String = "",
+    val tabState: TabState = TabState(),
     val group: DialogListTextField<TOWorkoutGroup> = DialogListTextField(),
     val exercise: PagedDialogListTextField<TOExercise> = PagedDialogListTextField(),
     val groupOrder: TextField = TextField(),
@@ -28,6 +31,7 @@ data class ExerciseUIState(
     val messageDialogState: MessageDialogState = MessageDialogState(),
     val toExercise: TOExercise = TOExercise(),
     val authenticatedPerson: TOPerson = TOPerson(),
+    val videoGalleryState: VideoGalleryState = VideoGalleryState(),
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = { },
 ): ILoadingUIState

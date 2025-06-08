@@ -4,13 +4,9 @@ import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -28,9 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -39,11 +32,8 @@ import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.fields.ListDialogOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
+import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
+import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
@@ -51,6 +41,7 @@ import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnSaveExerciseClick
 import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumExerciseScreenTags
+import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumTabsExerciseScreen
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
 import br.com.fitnesspro.workout.ui.viewmodel.ExerciseViewModel
 import com.google.firebase.analytics.ktx.analytics
@@ -83,7 +74,6 @@ fun ExerciseScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
-    val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
@@ -122,196 +112,62 @@ fun ExerciseScreen(
             }
         }
     ) { paddings ->
-
-        Column(Modifier.fillMaxSize()) {
-            FitnessProLinearProgressIndicator(state.showLoading)
-
+        Column(
+            Modifier
+                .padding(paddings)
+                .consumeWindowInsets(paddings)
+                .fillMaxSize()
+        ) {
             FitnessProMessageDialog(state.messageDialogState)
 
             ConstraintLayout(
                 Modifier
                     .fillMaxSize()
-                    .padding(paddings)
-                    .padding(horizontal = 8.dp)
-                    .consumeWindowInsets(paddings)
-                    .verticalScroll(scrollState)
-                    .imePadding()
             ) {
-                val (groupRef, exerciseRef, setsRef, repsRef, restRef, unitRestRef,
-                    durationRef, unitDurationRef, observationRef, groupOrderRef, exerciseOrderRef) = createRefs()
+                val (tabRowRef, horizontalPagerRef) = createRefs()
 
-                ListDialogOutlinedTextFieldValidation(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(groupRef) {
-                            top.linkTo(parent.top, margin = 8.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        },
-                    field = state.group,
-                    fieldLabel = stringResource(R.string.exercise_screen_label_group),
-                    simpleFilterPlaceholderResId = R.string.exercise_screen_group_place_holder,
-                    emptyMessage = R.string.exercise_screen_group_empty_message,
-                    itemLayout = {
-                        GroupDialogItem(
-                            toWorkoutGroup = it,
-                            onItemClick = state.group.dialogListState.onDataListItemClick
-                        )
-                    }
-                )
+                val pagerState = rememberPagerState(pageCount = state.tabState::tabsSize)
 
-                OutlinedTextFieldValidation(
-                    modifier = Modifier
-                        .constrainAs(groupOrderRef) {
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            top.linkTo(groupRef.bottom, margin = 8.dp)
-
-                            width = Dimension.fillToConstraints
-                        },
-                    field = state.groupOrder,
-                    label = stringResource(R.string.exercise_screen_label_group_order),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    )
-                )
-
-                PagedListDialogOutlinedTextFieldValidation(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(exerciseRef) {
-                            top.linkTo(groupOrderRef.bottom, margin = 8.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        },
-                    field = state.exercise,
-                    fieldLabel = stringResource(R.string.exercise_screen_label_exercise),
-                    simpleFilterPlaceholderResId = R.string.exercise_screen_exercises_place_holder,
-                    emptyMessage = R.string.exercise_screen_exercises_empty_message,
-                    itemLayout = {
-                        ExercisePagedDialogItem(
-                            toExercise = it,
-                            onItemClick = state.exercise.dialogListState.onDataListItemClick
-                        )
-                    }
-                )
-
-                OutlinedTextFieldValidation(
-                    modifier = Modifier
-                        .constrainAs(exerciseOrderRef) {
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            top.linkTo(exerciseRef.bottom, margin = 8.dp)
-
-                            width = Dimension.fillToConstraints
-                        },
-                    field = state.exerciseOrder,
-                    label = stringResource(R.string.exercise_screen_label_exercise_order),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    )
-                )
-
-                OutlinedTextFieldValidation(
-                    modifier = Modifier
-                        .constrainAs(setsRef) {
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            top.linkTo(exerciseOrderRef.bottom, margin = 8.dp)
-
-                            width = Dimension.fillToConstraints
-                        },
-                    field = state.sets,
-                    label = stringResource(R.string.exercise_screen_label_sets),
-
-                )
-
-                OutlinedTextFieldValidation(
-                    modifier = Modifier.constrainAs(repsRef) {
+                FitnessProTabRow(
+                    modifier = Modifier.constrainAs(tabRowRef) {
                         start.linkTo(parent.start)
+                        top.linkTo(parent.top)
                         end.linkTo(parent.end)
-                        top.linkTo(setsRef.bottom, margin = 8.dp)
-
-                        width = Dimension.fillToConstraints
                     },
-                    field = state.reps,
-                    label = stringResource(R.string.exercise_screen_label_reps),
+                    tabState = state.tabState,
+                    coroutineScope = coroutineScope,
+                    pagerState = pagerState
                 )
 
-                OutlinedTextFieldValidation(
-                    modifier = Modifier
-                        .constrainAs(restRef) {
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            top.linkTo(repsRef.bottom, margin = 8.dp)
-
-                            width = Dimension.fillToConstraints
-                        },
-                    field = state.rest,
-                    label = stringResource(R.string.exercise_screen_label_rest),
-
-                    )
-
-                DefaultExposedDropdownMenu(
-                    modifier = Modifier.constrainAs(unitRestRef) {
+                FitnessProHorizontalPager(
+                    modifier = Modifier.constrainAs(horizontalPagerRef) {
                         start.linkTo(parent.start)
+                        top.linkTo(tabRowRef.bottom)
                         end.linkTo(parent.end)
-                        top.linkTo(restRef.bottom, margin = 8.dp)
+                        bottom.linkTo(parent.bottom)
 
-                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
                     },
-                    field = state.unitRest,
-                    labelResId = R.string.exercise_screen_label_unit,
-                    showClearOption = true,
-                    clearOptionText = stringResource(R.string.exercise_screen_label_clear_unit)
-                )
+                    pagerState = pagerState,
+                    tabState = state.tabState
+                ) { index ->
+                    val enum = EnumTabsExerciseScreen.entries.first { it.index == index }
 
-                OutlinedTextFieldValidation(
-                    modifier = Modifier
-                        .constrainAs(durationRef) {
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            top.linkTo(unitRestRef.bottom, margin = 8.dp)
-
-                            width = Dimension.fillToConstraints
-                        },
-                    field = state.duration,
-                    label = stringResource(R.string.exercise_screen_label_duration),
-                )
-
-                DefaultExposedDropdownMenu(
-                    modifier = Modifier.constrainAs(unitDurationRef) {
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        top.linkTo(durationRef.bottom, margin = 8.dp)
-
-                        width = Dimension.fillToConstraints
-                    },
-                    field = state.unitDuration,
-                    labelResId = R.string.exercise_screen_label_unit,
-                    showClearOption = true,
-                    clearOptionText = stringResource(R.string.exercise_screen_label_clear_unit)
-                )
-
-                OutlinedTextFieldValidation(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(observationRef) {
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            top.linkTo(unitDurationRef.bottom, margin = 8.dp)
-                        },
-                    field = state.observation,
-                    label = stringResource(R.string.exercise_screen_label_observation),
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            onSave(keyboardController, state, onSaveExerciseClick, coroutineScope, snackbarHostState, context)
+                    when (enum) {
+                        EnumTabsExerciseScreen.GENERAL -> {
+                            ExerciseScreenTabGeneral(
+                                state = state,
+                                onDone = {
+                                    onSave(keyboardController, state, onSaveExerciseClick, coroutineScope, snackbarHostState, context)
+                                }
+                            )
                         }
-                    )
-                )
+
+                        EnumTabsExerciseScreen.VIDEOS -> {
+                            ExerciseScreenTabVideos(state = state)
+                        }
+                    }
+                }
             }
         }
     }
@@ -372,7 +228,7 @@ private fun ExerciseScreenPreview() {
     FitnessProTheme {
         Surface {
             ExerciseScreen(
-                state = exerciseUIState
+                state = exerciseTabGeneralUIState
             )
         }
     }
@@ -384,7 +240,31 @@ private fun ExerciseScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
             ExerciseScreen(
-                state = exerciseUIState
+                state = exerciseTabGeneralUIState
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun ExerciseScreenTabVideosPreview() {
+    FitnessProTheme {
+        Surface {
+            ExerciseScreen(
+                state = exerciseTabVideosUIState
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+private fun ExerciseScreenTabVideosPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            ExerciseScreen(
+                state = exerciseTabVideosUIState
             )
         }
     }

@@ -76,4 +76,6 @@
     <string name="enum_workout_group_exercise_group_order">Ordem</string>
     <string name="exercise_screen_videos_empty_message">Não foi encontrado nenhum vídeo de execução desse exercício</string>
     <string name="exercise_screen_video_gallery_title">Vídeos da Execução</string>
+    <string name="exercise_screen_label_tab_general">Geral</string>
+    <string name="exercise_screen_label_tab_videos">Vídeos</string>
 </resources>
