@@ -26,4 +26,6 @@
     <string name="label_three_times">%s, %s e %s</string>
     <string name="label_two_times">%s e %s</string>
     <string name="label_and">" e "</string>
+    <string name="video_gallery_empty_message">Nenhum vídeo encontrado.</string>
+    <string name="play_icon_content_description">Reproduzir o vídeo</string>
 </resources>
