@@ -1,7 +1,6 @@
 package br.com.fitnesspro.compose.components.gallery.video.components
 
 import android.graphics.Bitmap
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,21 +16,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.core.theme.FitnessProTheme
 
 @Composable
 fun VideoThumbnail(
-    uri: Uri,
-    bitmap: Bitmap?,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    bitmap: Bitmap? = null,
+    onClick: () -> Unit = { }
 ) {
     Box(
         modifier = modifier
             .padding(horizontal = 8.dp)
-            .width(180.dp)
+            .width(120.dp)
             .height(90.dp)
             .clip(MaterialTheme.shapes.small)
             .background(MaterialTheme.colorScheme.onSurfaceVariant)
@@ -42,10 +41,13 @@ fun VideoThumbnail(
             Image(
                 bitmap = it.asImageBitmap(),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
         }
-        PlayIconOverlay()
+        PlayIconOverlay(
+            hasThumbnail = bitmap != null
+        )
     }
 }
 
@@ -54,11 +56,7 @@ fun VideoThumbnail(
 private fun VideoThumbnailPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface {
-            VideoThumbnail(
-                uri = Uri.fromParts("", "", ""),
-                bitmap = null,
-                onClick = {}
-            )
+            VideoThumbnail()
         }
     }
 }
@@ -68,11 +66,7 @@ private fun VideoThumbnailPreviewDark() {
 private fun VideoThumbnailPreviewLight() {
     FitnessProTheme(darkTheme = false) {
         Surface {
-            VideoThumbnail(
-                uri = Uri.fromParts("", "", ""),
-                bitmap = null,
-                onClick = {}
-            )
+            VideoThumbnail()
         }
     }
 }

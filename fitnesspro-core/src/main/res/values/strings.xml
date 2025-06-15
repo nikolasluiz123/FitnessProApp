@@ -28,4 +28,5 @@
     <string name="label_and">" e "</string>
     <string name="video_gallery_empty_message">Nenhum vídeo encontrado.</string>
     <string name="play_icon_content_description">Reproduzir o vídeo</string>
+    <string name="open_video_player_message">Escolha um Player</string>
 </resources>

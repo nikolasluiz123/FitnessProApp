@@ -78,4 +78,7 @@
     <string name="exercise_screen_video_gallery_title">Vídeos da Execução</string>
     <string name="exercise_screen_label_tab_general">Geral</string>
     <string name="exercise_screen_label_tab_videos">Vídeos</string>
+    <string name="exercise_video_message_max_video_count">Limite de vídeos por exercício atingido. Você pode ter até 3 vídeos por exercício.</string>
+    <string name="exercise_video_message_max_video_duration">Duração máxima do vídeo atiginda. Você pode adicionar vídeos de no máximo 1 minuto de duração.</string>
+    <string name="exercise_video_message_max_video_size">Seu vídeo excedeu muito o tamanho máximo de 15MB, mesmo realizando uma compressão não foi possível salvá-lo. Tente gravar um vídeo mais curto ou com uma qualidade um pouco menor.</string>
 </resources>

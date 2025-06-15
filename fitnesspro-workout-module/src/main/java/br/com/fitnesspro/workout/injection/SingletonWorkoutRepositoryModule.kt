@@ -4,11 +4,14 @@ import android.content.Context
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO
+import br.com.fitnesspro.local.data.access.dao.VideoDAO
+import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupPreDefinitionDAO
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
+import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupPreDefinitionRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
@@ -80,6 +83,19 @@ class SingletonWorkoutRepositoryModule {
         return WorkoutGroupPreDefinitionRepository(
             context = context,
             workoutGroupPreDefinitionDAO = workoutGroupPreDefinitionDAO
+        )
+    }
+
+    @Provides
+    fun provideVideoRepository(
+        @ApplicationContext context: Context,
+        videoDAO: VideoDAO,
+        videoExerciseDAO: VideoExerciseDAO
+    ): VideoRepository {
+        return VideoRepository(
+            context = context,
+            videoDAO = videoDAO,
+            videoExerciseDAO = videoExerciseDAO
         )
     }
 }

@@ -1,6 +1,5 @@
 package br.com.fitnesspro.compose.components.gallery.video.components
 
-import android.net.Uri
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -19,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,15 +33,17 @@ fun VideoGallery(
     state: VideoGalleryState,
     modifier: Modifier = Modifier,
     emptyMessage: String = stringResource(id = R.string.video_gallery_empty_message),
-    onVideoClick: (Uri) -> Unit = {},
+    onVideoClick: (String) -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {}
 ) {
+    val screenHeight = LocalWindowInfo.current.containerSize.height.dp
+
     val isExpanded = state.viewMode == VideoGalleryViewMode.EXPANDED
-    val targetHeight = if (isExpanded) 400.dp else 240.dp
+    val targetHeight = if (isExpanded) screenHeight else 210.dp
 
     val animatedHeight by animateDpAsState(
         targetValue = targetHeight,
-        animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 400, easing = FastOutSlowInEasing),
         label = "GalleryHeight"
     )
 
@@ -64,7 +66,7 @@ fun VideoGallery(
                 .fillMaxWidth()
                 .weight(1f, fill = true)
         ) {
-            if (state.videoUris.isEmpty()) {
+            if (state.videoPaths.isEmpty()) {
                 EmptyState(emptyMessage)
             } else {
                 ThumbnailsViewer(state, onVideoClick)

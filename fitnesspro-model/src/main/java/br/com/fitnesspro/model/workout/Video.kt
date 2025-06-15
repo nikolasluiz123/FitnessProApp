@@ -17,21 +17,11 @@ data class Video(
     @ColumnInfo(name = "transmission_state", defaultValue = "PENDING")
     override var transmissionState: EnumTransmissionState = EnumTransmissionState.PENDING,
     var extension: String? = null,
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    var data: ByteArray? = null,
+    @ColumnInfo(name = "file_path")
+    var filePath: String? = null,
     var date: LocalDateTime = LocalDateTime.now(),
-) : IntegratedModel {
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Video
-
-        return id == other.id
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-}
+    var kbSize: Long? = null,
+    var seconds: Long? = null,
+    var width: Int? = null,
+    var height: Int? = null
+) : IntegratedModel

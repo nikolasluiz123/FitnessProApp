@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +27,7 @@ import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.BuildConfig
 import br.com.fitnesspro.R
 import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
+import br.com.fitnesspro.common.ui.screen.login.RequestAllPermissions
 import br.com.fitnesspro.compose.components.buttons.SquaredButton
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonAccount
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonLogout
@@ -60,6 +62,9 @@ fun HomeScreen(
     onNavigateToMembersWorkoutScreen: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    RequestAllPermissions(context)
 
     HomeScreen(
         state = state,

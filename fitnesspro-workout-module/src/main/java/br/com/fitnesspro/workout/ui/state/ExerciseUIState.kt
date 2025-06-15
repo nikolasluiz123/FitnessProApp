@@ -10,7 +10,9 @@ import br.com.fitnesspro.core.state.ILoadingUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOPerson
+import br.com.fitnesspro.to.TOVideoExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
+import java.io.File
 import java.time.temporal.ChronoUnit
 
 data class ExerciseUIState(
@@ -32,6 +34,7 @@ data class ExerciseUIState(
     val toExercise: TOExercise = TOExercise(),
     val authenticatedPerson: TOPerson = TOPerson(),
     val videoGalleryState: VideoGalleryState = VideoGalleryState(),
+    var newVideoFileFromCamera: File? = null,
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = { },
 ): ILoadingUIState

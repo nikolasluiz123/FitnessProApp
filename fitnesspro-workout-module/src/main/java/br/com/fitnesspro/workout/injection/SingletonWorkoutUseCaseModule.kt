@@ -3,8 +3,11 @@ package br.com.fitnesspro.workout.injection
 import android.content.Context
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
+import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseUseCase
+import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseVideoFromGalleryUseCase
+import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseVideoUseCase
 import br.com.fitnesspro.workout.usecase.workout.EditWorkoutGroupUseCase
 import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutGroupUseCase
 import dagger.Module
@@ -51,6 +54,28 @@ class SingletonWorkoutUseCaseModule {
         return InactivateWorkoutGroupUseCase(
             workoutGroupRepository = workoutGroupRepository,
             exerciseRepository = exerciseRepository
+        )
+    }
+
+    @Provides
+    fun provideSaveExerciseVideoUseCase(
+        @ApplicationContext context: Context,
+        videoRepository: VideoRepository,
+    ): SaveExerciseVideoUseCase {
+        return SaveExerciseVideoUseCase(
+            context = context,
+            videoRepository = videoRepository
+        )
+    }
+
+    @Provides
+    fun provideSaveExerciseVideoFromGalleryUseCase(
+        @ApplicationContext context: Context,
+        saveExerciseVideoUseCase: SaveExerciseVideoUseCase,
+    ): SaveExerciseVideoFromGalleryUseCase {
+        return SaveExerciseVideoFromGalleryUseCase(
+            context = context,
+            saveExerciseVideoUseCase = saveExerciseVideoUseCase,
         )
     }
 }

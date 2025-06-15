@@ -133,8 +133,11 @@ fun ExerciseScreenTabGeneral(
                     },
                 field = state.sets,
                 label = stringResource(R.string.exercise_screen_label_sets),
-
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
                 )
+            )
 
             OutlinedTextFieldValidation(
                 modifier = Modifier.constrainAs(repsRef) {
@@ -146,6 +149,10 @@ fun ExerciseScreenTabGeneral(
                 },
                 field = state.reps,
                 label = stringResource(R.string.exercise_screen_label_reps),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                )
             )
 
             OutlinedTextFieldValidation(
@@ -159,6 +166,10 @@ fun ExerciseScreenTabGeneral(
                     },
                 field = state.rest,
                 label = stringResource(R.string.exercise_screen_label_rest),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                )
 
                 )
 

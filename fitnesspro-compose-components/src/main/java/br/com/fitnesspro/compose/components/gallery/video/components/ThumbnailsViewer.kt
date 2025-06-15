@@ -1,15 +1,15 @@
 package br.com.fitnesspro.compose.components.gallery.video.components
 
-import android.net.Uri
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -24,7 +24,7 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 @Composable
 internal fun ThumbnailsViewer(
     state: VideoGalleryState,
-    onVideoClick: (Uri) -> Unit
+    onVideoClick: (String) -> Unit
 ) {
     when (state.viewMode) {
         VideoGalleryViewMode.COLLAPSED -> {
@@ -38,36 +38,34 @@ internal fun ThumbnailsViewer(
 }
 
 @Composable
-private fun VideosCarousel(state: VideoGalleryState, onVideoClick: (Uri) -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .then(Modifier.appendScroll(state)),
-        verticalAlignment = Alignment.CenterVertically
+private fun VideosCarousel(state: VideoGalleryState, onVideoClick: (String) -> Unit) {
+    LazyRow(
+        modifier = Modifier.fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        userScrollEnabled = state.isScrollEnabled
     ) {
-        state.videoUris.forEach { uri ->
+        items(state.videoPaths) { videoPath ->
             VideoThumbnail(
-                uri = uri,
-                bitmap = state.thumbCache[uri],
-                onClick = { onVideoClick(uri) }
+                bitmap = state.thumbCache[videoPath],
+                onClick = { onVideoClick(videoPath) }
             )
         }
     }
 }
 
 @Composable
-private fun VideosGrid(state: VideoGalleryState, onVideoClick: (Uri) -> Unit) {
+private fun VideosGrid(state: VideoGalleryState, onVideoClick: (String) -> Unit) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
     ) {
-        items(state.videoUris) { uri ->
+        items(state.videoPaths) { videoPath ->
             VideoThumbnail(
-                uri = uri,
-                bitmap = state.thumbCache[uri],
-                onClick = { onVideoClick(uri) },
+                bitmap = state.thumbCache[videoPath],
+                onClick = { onVideoClick(videoPath) },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -76,7 +74,7 @@ private fun VideosGrid(state: VideoGalleryState, onVideoClick: (Uri) -> Unit) {
 
 @Composable
 private fun Modifier.appendScroll(state: VideoGalleryState): Modifier {
-    return if (state.isScrollEnabled && state.videoUris.isNotEmpty()) {
+    return if (state.isScrollEnabled && state.videoPaths.isNotEmpty()) {
         horizontalScroll(rememberScrollState())
     } else {
         Modifier

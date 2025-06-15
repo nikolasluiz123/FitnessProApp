@@ -3,7 +3,7 @@ package br.com.fitnesspro.workout.usecase.exercise
 import android.content.Context
 import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.core.extensions.toMillis
-import br.com.fitnesspro.core.validation.FieldValidationTypedError
+import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
@@ -22,8 +22,8 @@ class SaveExerciseUseCase(
     private val exerciseRepository: ExerciseRepository
 
 ) {
-    suspend operator fun invoke(toExercise: TOExercise): List<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>> {
-        val validationResults = mutableListOf<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>>()
+    suspend operator fun invoke(toExercise: TOExercise): List<FieldValidationError<EnumValidatedExerciseFields>> {
+        val validationResults = mutableListOf<FieldValidationError<EnumValidatedExerciseFields>>()
         validationResults.addAll(validateWorkoutGroup(toExercise))
         validationResults.addAll(validateExercise(toExercise))
 
@@ -37,8 +37,8 @@ class SaveExerciseUseCase(
         return validationResults
     }
 
-    private suspend fun validateWorkoutGroup(toExercise: TOExercise): List<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>> {
-        val validationResults = mutableListOf<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>?>()
+    private suspend fun validateWorkoutGroup(toExercise: TOExercise): List<FieldValidationError<EnumValidatedExerciseFields>> {
+        val validationResults = mutableListOf<FieldValidationError<EnumValidatedExerciseFields>?>()
         validationResults.add(validateWorkoutGroupName(toExercise))
         validationResults.add(validateWorkoutGroupOrder(toExercise))
 
@@ -49,7 +49,7 @@ class SaveExerciseUseCase(
         return validationResults.filterNotNull()
     }
 
-    private fun validateWorkoutGroupName(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
+    private fun validateWorkoutGroupName(toExercise: TOExercise): FieldValidationError<EnumValidatedExerciseFields>? {
         return when {
             toExercise.workoutGroupName.isNullOrEmpty() -> {
                 val message = context.getString(
@@ -57,8 +57,7 @@ class SaveExerciseUseCase(
                     context.getString(EXERCISE_GROUP.labelResId)
                 )
 
-                FieldValidationTypedError(
-                    type = null,
+                FieldValidationError(
                     field = EXERCISE_GROUP,
                     message = message
                 )
@@ -71,8 +70,7 @@ class SaveExerciseUseCase(
                     EXERCISE_GROUP.maxLength
                 )
 
-                FieldValidationTypedError(
-                    type = null,
+                FieldValidationError(
                     field = EXERCISE_GROUP,
                     message = message
                 )
@@ -82,7 +80,7 @@ class SaveExerciseUseCase(
         }
     }
 
-    private fun validateWorkoutGroupOrder(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
+    private fun validateWorkoutGroupOrder(toExercise: TOExercise): FieldValidationError<EnumValidatedExerciseFields>? {
         return when {
             toExercise.groupOrder == null -> {
                 val message = context.getString(
@@ -90,8 +88,7 @@ class SaveExerciseUseCase(
                     context.getString(EXERCISE_GROUP_ORDER.labelResId)
                 )
 
-                FieldValidationTypedError(
-                    type = null,
+                FieldValidationError(
                     field = EXERCISE_GROUP_ORDER,
                     message = message
                 )
@@ -103,8 +100,7 @@ class SaveExerciseUseCase(
                     context.getString(EXERCISE_GROUP_ORDER.labelResId),
                 )
 
-                FieldValidationTypedError(
-                    type = null,
+                FieldValidationError(
                     field = EXERCISE_GROUP_ORDER,
                     message = message
                 )
@@ -128,8 +124,8 @@ class SaveExerciseUseCase(
         }
     }
 
-    private suspend fun validateExercise(toExercise: TOExercise): List<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>> {
-        val validationResults = mutableListOf<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>>()
+    private suspend fun validateExercise(toExercise: TOExercise): List<FieldValidationError<EnumValidatedExerciseFields>> {
+        val validationResults = mutableListOf<FieldValidationError<EnumValidatedExerciseFields>>()
         validateExerciseName(toExercise)?.let(validationResults::add)
         validateExerciseOrder(toExercise)?.let(validationResults::add)
         validateExerciseRest(toExercise)?.let(validationResults::add)
@@ -143,7 +139,7 @@ class SaveExerciseUseCase(
         return validationResults
     }
 
-    private fun validateExerciseName(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
+    private fun validateExerciseName(toExercise: TOExercise): FieldValidationError<EnumValidatedExerciseFields>? {
         return when {
             toExercise.name.isNullOrEmpty() -> {
                 val message = context.getString(
@@ -151,8 +147,7 @@ class SaveExerciseUseCase(
                     context.getString(EXERCISE.labelResId)
                 )
 
-                FieldValidationTypedError(
-                    type = null,
+                FieldValidationError(
                     field = EXERCISE,
                     message = message
                 )
@@ -165,8 +160,7 @@ class SaveExerciseUseCase(
                     EXERCISE.maxLength
                 )
 
-                FieldValidationTypedError(
-                    type = null,
+                FieldValidationError(
                     field = EXERCISE,
                     message = message
                 )
@@ -191,7 +185,7 @@ class SaveExerciseUseCase(
         }
     }
 
-    private fun validateExerciseOrder(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
+    private fun validateExerciseOrder(toExercise: TOExercise): FieldValidationError<EnumValidatedExerciseFields>? {
         return when {
             toExercise.exerciseOrder == null -> {
                 val message = context.getString(
@@ -199,8 +193,7 @@ class SaveExerciseUseCase(
                     context.getString(EXERCISE_ORDER.labelResId)
                 )
 
-                FieldValidationTypedError(
-                    type = null,
+                FieldValidationError(
                     field = EXERCISE_ORDER,
                     message = message
                 )
@@ -212,8 +205,7 @@ class SaveExerciseUseCase(
                     context.getString(EXERCISE_ORDER.labelResId),
                 )
 
-                FieldValidationTypedError(
-                    type = null,
+                FieldValidationError(
                     field = EXERCISE_ORDER,
                     message = message
                 )
@@ -223,13 +215,12 @@ class SaveExerciseUseCase(
         }
     }
 
-    private fun validateExerciseRest(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
+    private fun validateExerciseRest(toExercise: TOExercise): FieldValidationError<EnumValidatedExerciseFields>? {
         val validationError = when {
             (toExercise.rest != null) != (toExercise.unitRest != null) -> {
                 val message = context.getString(R.string.validation_msg_invalid_rest_or_unit)
 
-                FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>(
-                    type = null,
+                FieldValidationError<EnumValidatedExerciseFields>(
                     field = null,
                     message = message
                 )
@@ -245,13 +236,12 @@ class SaveExerciseUseCase(
         return validationError
     }
 
-    private fun validateExerciseDuration(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
+    private fun validateExerciseDuration(toExercise: TOExercise): FieldValidationError<EnumValidatedExerciseFields>? {
         val validationError = when {
             (toExercise.duration != null) != (toExercise.unitDuration != null) -> {
                 val message = context.getString(R.string.validation_msg_invalid_duration_or_unit)
 
-                FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>(
-                    type = null,
+                FieldValidationError<EnumValidatedExerciseFields>(
                     field = null,
                     message = message
                 )
@@ -267,7 +257,7 @@ class SaveExerciseUseCase(
         return validationError
     }
 
-    private fun validateExerciseObservation(toExercise: TOExercise): FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>? {
+    private fun validateExerciseObservation(toExercise: TOExercise): FieldValidationError<EnumValidatedExerciseFields>? {
         return when {
             !toExercise.observation.isNullOrEmpty() && toExercise.observation!!.length > OBSERVATION.maxLength -> {
                 val message = context.getString(
@@ -276,8 +266,7 @@ class SaveExerciseUseCase(
                     OBSERVATION.maxLength
                 )
 
-                FieldValidationTypedError(
-                    type = null,
+                FieldValidationError(
                     field = OBSERVATION,
                     message = message
                 )

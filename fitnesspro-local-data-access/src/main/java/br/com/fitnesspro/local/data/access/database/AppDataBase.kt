@@ -16,6 +16,8 @@ import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.ServiceTokenDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
+import br.com.fitnesspro.local.data.access.dao.VideoDAO
+import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupPreDefinitionDAO
@@ -49,7 +51,7 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 
 @Database(
-    version = 26,
+    version = 29,
     entities = [
         User::class, Person::class, Academy::class, PersonAcademyTime::class, PhysicEvaluation::class,
         IngredientPreDefinition::class, MealOptionPreDefinition::class, Diet::class, DayWeekDiet::class, Meal::class,
@@ -93,5 +95,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun exercisePreDefinitionDAO(): ExercisePreDefinitionDAO
 
     abstract fun workoutGroupPreDefinitionDAO(): WorkoutGroupPreDefinitionDAO
+
+    abstract fun videoDAO(): VideoDAO
+
+    abstract fun videoExerciseDAO(): VideoExerciseDAO
 
 }

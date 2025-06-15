@@ -9,13 +9,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import br.com.fitnesspro.core.R
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.core.theme.GREY_50
 
 @Composable
-fun PlayIconOverlay() {
+fun PlayIconOverlay(hasThumbnail: Boolean) {
+    val tint = if (hasThumbnail) {
+        GREY_50
+    } else {
+        MaterialTheme.colorScheme.inverseOnSurface
+    }
+
     Icon(
         painter = painterResource(R.drawable.ic_play_circle_filled_32dp),
         contentDescription = stringResource(R.string.play_icon_content_description),
-        tint = MaterialTheme.colorScheme.inverseOnSurface,
+        tint = tint,
     )
 }
 
@@ -24,7 +31,7 @@ fun PlayIconOverlay() {
 private fun PlayIconOverlayPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface(color = MaterialTheme.colorScheme.inverseSurface) {
-            PlayIconOverlay()
+            PlayIconOverlay(false)
         }
     }
 }
@@ -34,7 +41,7 @@ private fun PlayIconOverlayPreviewDark() {
 private fun PlayIconOverlayPreviewLight() {
     FitnessProTheme(darkTheme = false) {
         Surface(color = MaterialTheme.colorScheme.inverseSurface) {
-            PlayIconOverlay()
+            PlayIconOverlay(false)
         }
     }
 }

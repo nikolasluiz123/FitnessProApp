@@ -39,7 +39,9 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnFinishVideoRecording
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnSaveExerciseClick
+import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnVideoSelectedOnGallery
 import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumExerciseScreenTags
 import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumTabsExerciseScreen
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
@@ -48,6 +50,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.io.File
 
 @Composable
 fun ExerciseScreen(
@@ -59,7 +62,10 @@ fun ExerciseScreen(
     ExerciseScreen(
         state = state,
         onBackClick = onBackClick,
-        onSaveExerciseClick = viewModel::saveExercise
+        onSaveExerciseClick = viewModel::saveExercise,
+        onOpenCameraVideo = viewModel::onOpenCameraVideo,
+        onFinishVideoRecording = viewModel::onFinishVideoRecording,
+        onVideoSelectedOnGallery = viewModel::onVideoSelectedOnGallery
     )
 }
 
@@ -68,7 +74,10 @@ fun ExerciseScreen(
 fun ExerciseScreen(
     state: ExerciseUIState = ExerciseUIState(),
     onBackClick: () -> Unit = {},
-    onSaveExerciseClick: OnSaveExerciseClick? = null
+    onSaveExerciseClick: OnSaveExerciseClick? = null,
+    onOpenCameraVideo: (File) -> Unit = { },
+    onFinishVideoRecording: OnFinishVideoRecording? = null,
+    onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
@@ -164,7 +173,12 @@ fun ExerciseScreen(
                         }
 
                         EnumTabsExerciseScreen.VIDEOS -> {
-                            ExerciseScreenTabVideos(state = state)
+                            ExerciseScreenTabVideos(
+                                state = state,
+                                onOpenCameraVideo = onOpenCameraVideo,
+                                onFinishVideoRecording = onFinishVideoRecording,
+                                onVideoSelectedOnGallery = onVideoSelectedOnGallery
+                            )
                         }
                     }
                 }

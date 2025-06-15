@@ -33,4 +33,6 @@
     <string name="outlined_textfield_validation_error_icon_description">Erro de Validação</string>
     <string name="label_cancel_event">Cancelar Evento</string>
     <string name="label_close">Fechar</string>
+    <string name="label_gallery">Galeria</string>
+    <string name="label_camera">Câmera</string>
 </resources>

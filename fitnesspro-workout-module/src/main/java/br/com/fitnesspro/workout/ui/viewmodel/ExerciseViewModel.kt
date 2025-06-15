@@ -27,12 +27,14 @@ import br.com.fitnesspro.core.extensions.millisTo
 import br.com.fitnesspro.core.extensions.toIntOrNull
 import br.com.fitnesspro.core.extensions.toStringOrEmpty
 import br.com.fitnesspro.core.state.MessageDialogState
-import br.com.fitnesspro.core.validation.FieldValidationTypedError
+import br.com.fitnesspro.core.utils.VideoUtils
+import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
+import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
 import br.com.fitnesspro.workout.ui.navigation.ExerciseScreenArgs
@@ -40,14 +42,16 @@ import br.com.fitnesspro.workout.ui.navigation.exerciseScreenArguments
 import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumTabsExerciseScreen
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
 import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields
-import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseType
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseUseCase
+import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseVideoFromGalleryUseCase
+import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseVideoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.io.File
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
@@ -60,7 +64,10 @@ class ExerciseViewModel @Inject constructor(
     private val exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
     private val workoutGroupRepository: WorkoutGroupRepository,
     private val workoutRepository: WorkoutRepository,
+    private val videoRepository: VideoRepository,
     private val saveExerciseUseCase: SaveExerciseUseCase,
+    private val saveExerciseVideoUseCase: SaveExerciseVideoUseCase,
+    private val saveExerciseVideoFromGalleryUseCase: SaveExerciseVideoFromGalleryUseCase,
     savedStateHandle: SavedStateHandle
 ): FitnessProViewModel() {
 
@@ -82,6 +89,14 @@ class ExerciseViewModel @Inject constructor(
 
     override fun onShowErrorDialog(message: String) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
+    }
+
+    override fun onError(throwable: Throwable) {
+        super.onError(throwable)
+
+        if (_uiState.value.showLoading) {
+            _uiState.value.onToggleLoading()
+        }
     }
 
     private fun initialLoadUIState() {
@@ -106,7 +121,10 @@ class ExerciseViewModel @Inject constructor(
                 toExercise = _uiState.value.toExercise.copy(
                     workoutId = args.workoutId,
                     dayWeek = args.dayWeek
-                )
+                ),
+                onToggleLoading = {
+                    _uiState.value = _uiState.value.copy(showLoading = _uiState.value.showLoading.not())
+                }
             )
         }
     }
@@ -493,20 +511,14 @@ class ExerciseViewModel @Inject constructor(
     private fun initializeVideoGalleryState(): VideoGalleryState {
         return VideoGalleryState(
             title = context.getString(R.string.exercise_screen_video_gallery_title),
+            isScrollEnabled = false,
             onViewModeChange = {
                 _uiState.value = _uiState.value.copy(
                     videoGalleryState = _uiState.value.videoGalleryState.copy(
                         viewMode = it
                     )
                 )
-            },
-            videoUris = listOf(
-                Uri.fromParts("", "", ""),
-                Uri.fromParts("", "", ""),
-                Uri.fromParts("", "", ""),
-                Uri.fromParts("", "", ""),
-                Uri.fromParts("", "", "")
-            )
+            }
         )
     }
 
@@ -518,7 +530,8 @@ class ExerciseViewModel @Inject constructor(
             loadTopBar(args)
             loadGroups(args)
             loadExercises()
-            loadEdition(args)
+            loadExerciseInfoEdition(args)
+            loadExerciseVideos(args.exerciseId)
         }
     }
 
@@ -544,7 +557,7 @@ class ExerciseViewModel @Inject constructor(
         )
     }
 
-    private suspend fun loadEdition(args: ExerciseScreenArgs) {
+    private suspend fun loadExerciseInfoEdition(args: ExerciseScreenArgs) {
         args.exerciseId?.let { exerciseId ->
             val toExercise = exerciseRepository.findById(exerciseId)
             toExercise.unitRest = toExercise.rest?.bestChronoUnit()
@@ -589,6 +602,21 @@ class ExerciseViewModel @Inject constructor(
             )
 
             loadTopBar(args)
+        }
+    }
+
+    private suspend fun loadExerciseVideos(exerciseId: String?) {
+        exerciseId?.let { id ->
+            val videoFilePaths = videoRepository.getVideoExercises(id)
+
+            _uiState.value = _uiState.value.copy(
+                videoGalleryState = _uiState.value.videoGalleryState.copy(
+                    videoPaths = videoFilePaths,
+                    thumbCache = videoFilePaths.associate { filePath ->
+                        filePath to VideoUtils.generateVideoThumbnail(filePath)
+                    }
+                )
+            )
         }
     }
 
@@ -687,12 +715,12 @@ class ExerciseViewModel @Inject constructor(
                 onSuccess()
             } else {
                 _uiState.value.onToggleLoading()
-                showFieldsValidationMessages(validationResults.toMutableList())
+                showExerciseFieldsValidationMessages(validationResults.toMutableList())
             }
         }
     }
 
-    private fun showFieldsValidationMessages(validationResults: MutableList<FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>>) {
+    private fun showExerciseFieldsValidationMessages(validationResults: MutableList<FieldValidationError<EnumValidatedExerciseFields>>) {
         val dialogValidations = validationResults.filter(::isGlobalFieldsValidation)
         validationResults.removeAll(::isGlobalFieldsValidation)
 
@@ -795,23 +823,50 @@ class ExerciseViewModel @Inject constructor(
                 }
             }
         }
-
-        if (fieldValidations.isEmpty()) {
-            val typedValidations = validationResults.filter(::isTypedValidation)
-
-            // TODO - Exibir essas validações de algum jeito
-        }
     }
 
-    private fun isTypedValidation(error: FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>): Boolean {
-        return error.type != null
-    }
-
-    private fun isFieldValidation(error: FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>): Boolean {
+    private fun isFieldValidation(error: FieldValidationError<EnumValidatedExerciseFields>): Boolean {
         return error.field != null
     }
 
-    private fun isGlobalFieldsValidation(error: FieldValidationTypedError<EnumValidatedExerciseFields, EnumValidatedExerciseType>): Boolean {
-        return error.field == null && error.type == null
+    private fun isGlobalFieldsValidation(error: FieldValidationError<EnumValidatedExerciseFields>): Boolean {
+        return error.field == null
+    }
+
+    fun onOpenCameraVideo(file: File) {
+        _uiState.value.newVideoFileFromCamera = file
+    }
+
+    fun onFinishVideoRecording(onSuccess: () -> Unit) {
+        launch {
+            val validationResult = saveExerciseVideoUseCase(
+                exerciseId = _uiState.value.toExercise.id!!,
+                videoFile = _uiState.value.newVideoFileFromCamera!!
+            )
+
+            if (validationResult != null) {
+                onShowErrorDialog(validationResult.message)
+            } else {
+                loadExerciseVideos(_uiState.value.toExercise.id)
+                onSuccess()
+            }
+
+        }
+    }
+
+    fun onVideoSelectedOnGallery(uri: Uri, onSuccess: () -> Unit) {
+        launch {
+            val validationResult = saveExerciseVideoFromGalleryUseCase(
+                exerciseId = _uiState.value.toExercise.id!!,
+                uri = uri
+            )
+
+            if (validationResult != null) {
+                onShowErrorDialog(validationResult.message)
+            } else {
+                loadExerciseVideos(_uiState.value.toExercise.id)
+                onSuccess()
+            }
+        }
     }
 }
