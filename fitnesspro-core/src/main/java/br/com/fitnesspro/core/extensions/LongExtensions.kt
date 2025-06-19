@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 
 fun Long.toLocalDate(): LocalDate {
     return Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()).toLocalDate()
@@ -21,54 +22,47 @@ fun Long.toLocalDateFormattedOnlyNumbers(enumDateTimePatterns: EnumDateTimePatte
     return toLocalDate().format(enumDateTimePatterns).replace("/", "")
 }
 
-fun Long.toDurationFormatted(context: Context): String? {
-    val duration = Duration.ofSeconds(this)
+fun Long.toReadableDuration(context: Context): String {
+    val duration = Duration.ofMillis(this)
+
     val hours = duration.toHours()
     val minutes = duration.toMinutes() % 60
-    val remainingSeconds = duration.seconds % 60
+    val seconds = duration.seconds % 60
+
+    return buildList {
+        if (hours > 0) {
+            add(context.resources.getQuantityString(R.plurals.label_hours, hours.toInt(), hours))
+        }
+
+        if (minutes > 0) {
+            add(context.resources.getQuantityString(R.plurals.label_minutes, minutes.toInt(), minutes))
+        }
+
+        if (seconds > 0 || isEmpty()) {
+            add(context.resources.getQuantityString(R.plurals.label_seconds, seconds.toInt(), seconds))
+        }
+    }.joinToString(context.getString(R.string.label_and))
+}
+
+fun Long.toMillis(unit: ChronoUnit): Long {
+    require(unit.duration.isZero.not()) { "Valor de unidade inválido: $unit" }
+    return unit.duration.multipliedBy(this).toMillis()
+}
+
+fun Long.millisTo(unit: ChronoUnit): Long {
+    require(unit.duration.toMillis() != 0L) { "Valor de unidade inválido: $unit" }
+    return this / unit.duration.toMillis()
+}
+
+fun Long.bestChronoUnit(): ChronoUnit {
+    val secondLimit = 59 * ChronoUnit.SECONDS.duration.toMillis()
+    val minuteLimit = 59 * ChronoUnit.MINUTES.duration.toMillis()
+    val hourLimit = 23 * ChronoUnit.HOURS.duration.toMillis()
 
     return when {
-        hours > 0 && minutes > 0 && remainingSeconds > 0 -> {
-            val labelHours = context.resources.getQuantityString(R.plurals.label_hour, hours.toInt(), hours)
-            val labelMinutes = context.resources.getQuantityString(R.plurals.label_minutes, minutes.toInt(), minutes)
-            val labelSeconds = context.resources.getQuantityString(R.plurals.label_seconds, remainingSeconds.toInt(), remainingSeconds)
-
-            context.getString(R.string.label_three_times, labelHours, labelMinutes, labelSeconds)
-        }
-
-        hours > 0 && minutes > 0 -> {
-            val labelHours = context.resources.getQuantityString(R.plurals.label_hour, hours.toInt(), hours)
-            val labelMinutes = context.resources.getQuantityString(R.plurals.label_minutes, minutes.toInt(), minutes)
-
-            context.getString(R.string.label_two_times, labelHours, labelMinutes)
-        }
-
-        hours > 0 && remainingSeconds > 0 -> {
-            val labelHours = context.resources.getQuantityString(R.plurals.label_hour, hours.toInt(), hours)
-            val labelSeconds = context.resources.getQuantityString(R.plurals.label_seconds, remainingSeconds.toInt(), remainingSeconds)
-
-            context.getString(R.string.label_two_times, labelHours, labelSeconds)
-        }
-
-        hours > 0 -> {
-            context.resources.getQuantityString(R.plurals.label_hour, hours.toInt(), hours)
-        }
-
-        minutes > 0 && remainingSeconds > 0 -> {
-            val labelMinutes = context.resources.getQuantityString(R.plurals.label_minutes, minutes.toInt(), minutes)
-            val labelSeconds = context.resources.getQuantityString(R.plurals.label_seconds, remainingSeconds.toInt(), remainingSeconds)
-
-            context.getString(R.string.label_two_times, labelMinutes, labelSeconds)
-        }
-
-        minutes > 0 -> {
-            context.resources.getQuantityString(R.plurals.label_minutes, minutes.toInt(), minutes)
-        }
-
-        remainingSeconds > 0 -> {
-            context.resources.getQuantityString(R.plurals.label_seconds, remainingSeconds.toInt(), remainingSeconds)
-        }
-
-        else -> null
+        this <= secondLimit -> ChronoUnit.SECONDS
+        this <= minuteLimit -> ChronoUnit.MINUTES
+        this <= hourLimit -> ChronoUnit.HOURS
+        else -> throw IllegalArgumentException("No suitable ChronoUnit for value: $this ms")
     }
 }

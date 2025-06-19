@@ -146,9 +146,9 @@ class RegisterUserViewModel @Inject constructor(
         )
     }
 
-    private fun initializeUserTypeDropDownMenu(): DropDownTextField<EnumUserType> {
+    private fun initializeUserTypeDropDownMenu(): DropDownTextField<EnumUserType?> {
         val items = EnumUserType.entries.map {
-            MenuItem(
+            MenuItem<EnumUserType?>(
                 value = it,
                 label = it.getLabel(context)!!
             )
@@ -170,7 +170,7 @@ class RegisterUserViewModel @Inject constructor(
             onDataListItemClick = {
                 _uiState.value = _uiState.value.copy(
                     userType = _uiState.value.userType.copy(
-                        value = it.value.getLabel(context)!!,
+                        value = it.value?.getLabel(context)!!,
                         expanded = false,
                         errorMessage = ""
                     ),

@@ -1,8 +1,5 @@
 package br.com.fitnesspro.common.ui.screen.login
 
-import android.Manifest
-import android.content.Context
-import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +11,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,11 +47,9 @@ import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordVali
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.extensions.verifyPermissionGranted
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.utils.PermissionUtils.requestMultiplePermissionsLauncher
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -67,6 +61,9 @@ fun LoginScreen(
     onNavigateToHome: () -> Unit,
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    RequestAllPermissions(context)
 
     LoginScreen(
         state = state,
@@ -86,7 +83,6 @@ fun LoginScreen(
     onNavigateToHome: () -> Unit = { },
     onLoginWithGoogleClick: OnLoginWithGoogle? = null
 ) {
-    val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(
@@ -103,9 +99,6 @@ fun LoginScreen(
                 .padding(padding)
         ) {
             val (loadingRef, containerRef) = createRefs()
-
-            RequestAllPermissions(context)
-
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -253,25 +246,6 @@ fun LoginScreen(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun RequestAllPermissions(context: Context) {
-    val requestPermissionLauncher = requestMultiplePermissionsLauncher()
-
-    LaunchedEffect(Unit) {
-        val permissions = mutableListOf<String>()
-
-        if (!context.verifyPermissionGranted(Manifest.permission.POST_NOTIFICATIONS) &&
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-        ) {
-            permissions.add(Manifest.permission.POST_NOTIFICATIONS)
-        }
-
-        if (permissions.isNotEmpty()) {
-            requestPermissionLauncher.launch(permissions.toTypedArray())
         }
     }
 }

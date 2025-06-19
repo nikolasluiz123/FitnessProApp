@@ -144,3 +144,11 @@ val ChatMessageTimeTextStyle = TextStyle(
     lineHeight = 20.sp,
     letterSpacing = 0.2.sp
 )
+
+val VideoGalleryTitleStyle = TextStyle(
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Medium,
+    fontSize = 14.sp,
+    lineHeight = 18.sp,
+    letterSpacing = 0.2.sp
+)

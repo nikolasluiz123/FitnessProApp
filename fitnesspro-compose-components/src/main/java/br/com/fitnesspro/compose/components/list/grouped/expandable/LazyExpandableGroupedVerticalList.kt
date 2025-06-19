@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +40,6 @@ import br.com.fitnesspro.compose.components.list.grouped.expandable.enums.EnumLa
 import br.com.fitnesspro.compose.components.list.grouped.expandable.enums.EnumLazyExpandableListTestTags.EXPANDABLE_LIST_LAZY_COLUMN
 import br.com.fitnesspro.core.R.drawable
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.GREY_600
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import java.util.UUID
 
@@ -106,7 +106,7 @@ fun <T, GROUP : IBasicExpandableGroup<T>> LazyExpandableVerticalList(
             Text(
                 text = stringResource(id = emptyMessageResId),
                 style = LabelTextStyle,
-                color = GREY_600
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -165,7 +165,8 @@ fun BasicExpandableSection(
             modifier = Modifier.constrainAs(dividerRef) {
                 bottom.linkTo(parent.bottom)
                 top.linkTo(textRef.bottom, margin = 8.dp)
-            }
+            },
+            color = MaterialTheme.colorScheme.outline
         )
     }
 }

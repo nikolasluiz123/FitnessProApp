@@ -24,7 +24,7 @@ kotlin = "2.1.20"
 coreKtx = "1.16.0"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
-composeBom = "2025.04.01"
+composeBom = "2025.05.00"
 appcompat = "1.7.0"
 material = "1.12.0"
 material3 = "1.3.2"
@@ -40,7 +40,8 @@ crashlyticsPluginVersion = "3.0.3"
 perfPluginVersion = "1.4.2"
 googlePlayAuthVersion = "21.3.0"
 workVersion = "2.10.1"
-sharedCommunicationVersion = "1.0.2-SNAPSHOT"
+media3Version = "1.7.1"
+sharedCommunicationVersion = "1.1.0-SNAPSHOT"
 
 [libraries]
 splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
@@ -68,7 +69,6 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWorkVersion" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -101,6 +101,10 @@ firebase-performance = { group = "com.google.firebase", name = "firebase-perf" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
 work-runtime = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workVersion" }
+
+media3-transformer = { group = "androidx.media3", name = "media3-transformer", version.ref = "media3Version" }
+media3-effect = { group = "androidx.media3", name = "media3-effect", version.ref = "media3Version" }
+media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Version" }
 
 fitnesspro-shared-communication = { group = "br.com", name = "fitnesspro-shared-communication", version.ref = "sharedCommunicationVersion" }
 

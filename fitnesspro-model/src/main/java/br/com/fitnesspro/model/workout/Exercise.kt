@@ -32,5 +32,7 @@ data class Exercise(
     var observation: String? = null,
     @ColumnInfo(name = "workout_group_id", index = true)
     var workoutGroupId: String? = null,
+    @ColumnInfo(name = "exercise_order")
+    var exerciseOrder: Int? = null,
     var active: Boolean = true
 ): IntegratedModel

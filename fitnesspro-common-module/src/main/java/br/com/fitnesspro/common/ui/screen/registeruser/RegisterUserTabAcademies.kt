@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -131,7 +132,8 @@ fun AcademyTimeItem(item: TOPersonAcademyTime, onClick: () -> Unit) {
                 top.linkTo(dayWeekRef.bottom, margin = 8.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-            }
+            },
+            color = MaterialTheme.colorScheme.outline
         )
     }
 }

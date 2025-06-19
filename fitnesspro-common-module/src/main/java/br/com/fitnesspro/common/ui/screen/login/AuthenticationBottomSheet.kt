@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.common.R
@@ -29,13 +28,11 @@ import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_
 import br.com.fitnesspro.common.ui.state.BottomSheetAuthenticationUIState
 import br.com.fitnesspro.common.ui.viewmodel.BottomSheetAuthenticationViewModel
 import br.com.fitnesspro.compose.components.buttons.FitnessProButton
-import br.com.fitnesspro.compose.components.buttons.RoundedFacebookButton
 import br.com.fitnesspro.compose.components.buttons.RoundedGoogleButton
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.loading.FitnessProCircularBlockUIProgressIndicator
-import br.com.fitnesspro.core.callback.showInformationDialog
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -147,13 +144,12 @@ fun AuthenticationBottomSheet(
                     }
                 )
 
-                createHorizontalChain(loginGoogleRef,loginFacebookRef, chainStyle = ChainStyle.Packed)
-
                 RoundedGoogleButton(
                     modifier = Modifier
                         .testTag(EnumAuthenticationBottomSheetTags.BOTTOM_SHEET_AUTH_GOOGLE_BUTTON.name)
                         .constrainAs(loginGoogleRef) {
                             start.linkTo(parent.start)
+                            end.linkTo(parent.end)
                             bottom.linkTo(parent.bottom)
                             top.linkTo(loginButtonRef.bottom)
                         }
@@ -164,24 +160,6 @@ fun AuthenticationBottomSheet(
                         onLoginWithGoogleClick?.onExecute(
                             onSuccess = { },
                             onUserNotExistsLocal = { }
-                        )
-                    }
-                )
-
-                RoundedFacebookButton(
-                    modifier = Modifier
-                        .testTag(EnumAuthenticationBottomSheetTags.BOTTOM_SHEET_AUTH_FACEBOOK_BUTTON.name)
-                        .constrainAs(loginFacebookRef) {
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                            top.linkTo(loginButtonRef.bottom)
-                        }
-                        .padding(start = 8.dp, top = 8.dp, bottom = 16.dp),
-                    onClick = {
-                        Firebase.analytics.logButtonClick(EnumAuthenticationBottomSheetTags.BOTTOM_SHEET_AUTH_FACEBOOK_BUTTON)
-
-                        state.messageDialogState.onShowDialog?.showInformationDialog(
-                            message = context.getString(R.string.login_screen_facebook_button_message)
                         )
                     }
                 )

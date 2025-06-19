@@ -120,4 +120,7 @@
     <string name="generic_communication_notification_channel_description">Notificações sobre comunicados gerais</string>
     <string name="enum_scheduler_config_notification_antecedence_time">Tempo de Antecedência da Notificação</string>
     <string name="validation_msg_network_required_login">Como é sua primeira autenticação você precisa ter acesso a internet para que suas credenciais sejam verificadas.</string>
+    <string name="day_week_exercises_title">Treino de %s</string>
+    <string name="day_week_exercises_subtitle_over_due">Vencido em %s</string>
+    <string name="day_week_exercises_subtitle">%s até %s</string>
 </resources>

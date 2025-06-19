@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -50,6 +51,7 @@ import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedList
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG_FILTER
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG_LIST
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG_TITLE
+import br.com.fitnesspro.compose.components.fields.state.DialogListState
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.compose.components.filter.SimpleFilter
 import br.com.fitnesspro.core.enums.EnumDialogType
@@ -215,6 +217,24 @@ fun <T : ITupleListItem> FitnessProPagedListDialog(
 }
 
 @Composable
+fun <T : ITupleListItem> FitnessProListDialog(
+    state: DialogListState<T>,
+    simpleFilterPlaceholderResId: Int,
+    emptyMessage: Int,
+    itemLayout: @Composable (T) -> Unit
+) {
+    FitnessProListDialog(
+        dialogTitle = state.dialogTitle,
+        items = state.dataList,
+        onDismissRequest = state.onHide,
+        onSimpleFilterChange = state.onSimpleFilterChange,
+        simpleFilterPlaceholderResId = simpleFilterPlaceholderResId,
+        emptyMessage = emptyMessage,
+        itemLayout = itemLayout
+    )
+}
+
+@Composable
 fun <T : ITupleListItem> FitnessProPagedListDialog(
     dialogTitle: String,
     pagingItems: LazyPagingItems<T>,
@@ -255,6 +275,7 @@ fun <T : ITupleListItem> FitnessProPagedListDialog(
                         .padding(8.dp)
                         .fillMaxWidth(),
                     placeholderResId = simpleFilterPlaceholderResId,
+                    quickFilter = filterText,
                     onSimpleFilterChange = {
                         filterText = it
                         onSimpleFilterChange(it)
@@ -268,6 +289,62 @@ fun <T : ITupleListItem> FitnessProPagedListDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 PagedListDialog(pagingItems, emptyMessage, itemLayout)
+            }
+        }
+    }
+}
+
+@Composable
+fun <T : ITupleListItem> FitnessProListDialog(
+    dialogTitle: String,
+    items: List<T>,
+    onDismissRequest: () -> Unit = { },
+    onSimpleFilterChange: (String) -> Unit  = { },
+    simpleFilterPlaceholderResId: Int,
+    emptyMessage: Int,
+    itemLayout: @Composable (T) -> Unit
+) {
+    var filterText by remember { mutableStateOf("") }
+    var isFilterExpanded by remember { mutableStateOf(false) }
+
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Text(
+                    text = dialogTitle,
+                    style = DialogTitleTextStyle,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier
+                        .padding(top = 8.dp, start = 8.dp, end = 8.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+
+                SimpleFilter(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth(),
+                    placeholderResId = simpleFilterPlaceholderResId,
+                    quickFilter = filterText,
+                    onSimpleFilterChange = {
+                        filterText = it
+                        onSimpleFilterChange(it)
+                    },
+                    expanded = isFilterExpanded,
+                    onExpandedChange = { isFilterExpanded = it }
+                ) {
+                    ListDialog(items, emptyMessage, itemLayout)
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ListDialog(items, emptyMessage, itemLayout)
             }
         }
     }
@@ -364,6 +441,39 @@ private fun <T : ITupleListItem> PagedListDialog(
                 }
 
                 else -> {}
+            }
+        }
+    }
+
+}
+
+@Composable
+private fun <T : ITupleListItem> ListDialog(
+    items: List<T>,
+    emptyMessage: Int,
+    itemLayout: @Composable (T) -> Unit
+) {
+    if (items.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(id = emptyMessage),
+                style = LabelTextStyle,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(items = items) { item ->
+                itemLayout(item)
             }
         }
     }

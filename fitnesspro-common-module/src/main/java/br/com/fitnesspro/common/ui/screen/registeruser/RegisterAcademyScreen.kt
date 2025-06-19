@@ -307,7 +307,7 @@ fun DialogListItem(academy: AcademyTuple, onItemClick: (AcademyTuple) -> Unit) {
         )
     }
 
-    HorizontalDivider()
+    HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 }
 
 private fun showSaveSuccessMessage(

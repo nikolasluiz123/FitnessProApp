@@ -75,4 +75,25 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideServiceTokenDao(appDatabase: AppDatabase) = appDatabase.serviceTokenDAO()
+
+    @Provides
+    @Singleton
+    fun provideExerciseDao(appDatabase: AppDatabase) = appDatabase.exerciseDAO()
+
+    @Provides
+    @Singleton
+    fun provideExercisePreDefinitionDao(appDatabase: AppDatabase) = appDatabase.exercisePreDefinitionDAO()
+
+    @Provides
+    @Singleton
+    fun provideWorkoutGroupPreDefinitionDao(appDatabase: AppDatabase) = appDatabase.workoutGroupPreDefinitionDAO()
+
+    @Provides
+    @Singleton
+    fun provideVideoDao(appDatabase: AppDatabase) = appDatabase.videoDAO()
+
+    @Provides
+    @Singleton
+    fun provideVideoExerciseDao(appDatabase: AppDatabase) = appDatabase.videoExerciseDAO()
+
 }

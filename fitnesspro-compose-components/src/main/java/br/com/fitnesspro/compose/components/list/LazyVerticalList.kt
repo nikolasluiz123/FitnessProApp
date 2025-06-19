@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -58,14 +60,16 @@ fun <T> LazyVerticalList(
             Box(
                 modifier = modifier
                     .testTag(EMPTY_STATE.name)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     modifier = Modifier.testTag(EMPTY_STATE_MESSAGE.name),
                     text = stringResource(id = emptyMessage),
                     style = LabelTextStyle,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }

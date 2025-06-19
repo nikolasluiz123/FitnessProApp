@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +27,7 @@ import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.BuildConfig
 import br.com.fitnesspro.R
 import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
+import br.com.fitnesspro.common.ui.screen.login.RequestAllPermissions
 import br.com.fitnesspro.compose.components.buttons.SquaredButton
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonAccount
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonLogout
@@ -36,6 +38,7 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.ui.bottomsheet.workout.BottomSheetWorkout
+import br.com.fitnesspro.ui.bottomsheet.workout.EnumOptionsBottomSheetWorkout
 import br.com.fitnesspro.ui.screen.home.callbacks.OnLogoutClick
 import br.com.fitnesspro.ui.screen.home.callbacks.OnNavigateToAccountInformation
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_ACCOUNT_BUTTON
@@ -43,6 +46,7 @@ import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUT
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_NUTRITION
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_SCHEDULER
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_WORKOUT
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_WORKOUT_SETUP
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_LOGOUT_BUTTON
 import br.com.fitnesspro.ui.state.HomeUIState
 import br.com.fitnesspro.ui.viewmodel.HomeViewModel
@@ -54,16 +58,21 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onNavigateToAccountInformation: OnNavigateToAccountInformation,
     onNavigateToSchedule: () -> Unit,
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
+    onNavigateToMembersWorkoutScreen: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    RequestAllPermissions(context)
 
     HomeScreen(
         state = state,
         onNavigateToAccountInformation = onNavigateToAccountInformation,
         onNavigateToSchedule = onNavigateToSchedule,
         onLogoutClick = viewModel::logout,
-        onNavigateToLogin = onNavigateToLogin
+        onNavigateToLogin = onNavigateToLogin,
+        onNavigateToMembersWorkoutScreen = onNavigateToMembersWorkoutScreen
     )
 }
 
@@ -74,7 +83,8 @@ fun HomeScreen(
     onNavigateToAccountInformation: OnNavigateToAccountInformation? = null,
     onNavigateToSchedule: () -> Unit = { },
     onLogoutClick: OnLogoutClick? = null,
-    onNavigateToLogin: () -> Unit = { }
+    onNavigateToLogin: () -> Unit = { },
+    onNavigateToMembersWorkoutScreen: () -> Unit = { }
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
@@ -199,6 +209,17 @@ fun HomeScreen(
                         onDismissRequest = { openedBottomSheetWorkout = false },
                         onItemClickListener = {
                             openedBottomSheetWorkout = false
+
+                            when (it) {
+                                EnumOptionsBottomSheetWorkout.MY_EVOLUTION -> TODO()
+                                EnumOptionsBottomSheetWorkout.MY_WORKOUT -> TODO()
+                                EnumOptionsBottomSheetWorkout.FOLLOW_UP_EVOLUTION -> TODO()
+                                EnumOptionsBottomSheetWorkout.WORKOUT_SETUP -> {
+                                    Firebase.analytics.logButtonClick(HOME_SCREEN_BUTTON_WORKOUT_SETUP)
+                                    onNavigateToMembersWorkoutScreen()
+                                }
+                                EnumOptionsBottomSheetWorkout.MY_PREDEFINITIONS -> TODO()
+                            }
                         }
                     )
                 }

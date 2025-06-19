@@ -13,7 +13,7 @@ data class RegisterAcademyUIState(
     var title: String = "",
     var subtitle: String? = null,
     val academy: PagedDialogListTextField<AcademyTuple> = PagedDialogListTextField(),
-    val dayWeek: DropDownTextField<DayOfWeek> = DropDownTextField(),
+    val dayWeek: DropDownTextField<DayOfWeek?> = DropDownTextField(),
     val start: TimePickerTextField = TimePickerTextField(),
     val end: TimePickerTextField = TimePickerTextField(),
     var toPersonAcademyTime: TOPersonAcademyTime = TOPersonAcademyTime(),

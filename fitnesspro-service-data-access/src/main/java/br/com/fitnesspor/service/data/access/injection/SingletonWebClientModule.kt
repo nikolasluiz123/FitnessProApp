@@ -6,11 +6,15 @@ import br.com.fitnesspor.service.data.access.service.general.IAuthenticationServ
 import br.com.fitnesspor.service.data.access.service.general.IPersonService
 import br.com.fitnesspor.service.data.access.service.log.IExecutionLogService
 import br.com.fitnesspor.service.data.access.service.scheduler.ISchedulerService
+import br.com.fitnesspor.service.data.access.service.workout.IExerciseService
+import br.com.fitnesspor.service.data.access.service.workout.IWorkoutService
 import br.com.fitnesspor.service.data.access.webclient.ExecutionLogWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
+import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
+import br.com.fitnesspor.service.data.access.webclient.workout.WorkoutWebClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -73,6 +77,28 @@ class SingletonWebClientModule {
         return ExecutionLogWebClient(
             context = context,
             executionLogService = executionLogService
+        )
+    }
+
+    @Provides
+    fun provideExerciseWebClient(
+        @ApplicationContext context: Context,
+        exerciseService: IExerciseService
+    ): ExerciseWebClient {
+        return ExerciseWebClient(
+            context = context,
+            exerciseService = exerciseService
+        )
+    }
+
+    @Provides
+    fun provideWorkoutWebClient(
+        @ApplicationContext context: Context,
+        workoutService: IWorkoutService
+    ): WorkoutWebClient {
+        return WorkoutWebClient(
+            context = context,
+            workoutService = workoutService
         )
     }
 }

@@ -25,6 +25,13 @@ import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerDetailsScree
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerDetailsScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerScreen
+import br.com.fitnesspro.workout.ui.navigation.dayWeekExercisesScreen
+import br.com.fitnesspro.workout.ui.navigation.dayWeekWorkoutScreen
+import br.com.fitnesspro.workout.ui.navigation.exercisesScreen
+import br.com.fitnesspro.workout.ui.navigation.membersWorkoutScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekExercisesScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToExercisesScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToMembersWorkoutScreen
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -68,6 +75,7 @@ fun FitnessProNavHost(
         homeScreen(
             onNavigateToAccountInformation = navController::navigateToRegisterUserScreen,
             onNavigateToSchedule = navController::navigateToScheduleScreen,
+            onNavigateToMembersWorkoutScreen = navController::navigateToMembersWorkoutScreen,
             onNavigateToLogin = {
                 navController.navigateToLoginScreen(
                     navOptions = navOptions {
@@ -105,6 +113,24 @@ fun FitnessProNavHost(
         )
 
         chatScreen(
+            onBackClick = navController::popBackStack
+        )
+
+        membersWorkoutScreen(
+            onBackClick = navController::popBackStack,
+            onNavigateDayWeekExercises = navController::navigateToDayWeekExercisesScreen
+        )
+
+        dayWeekWorkoutScreen(
+            onBackClick = navController::popBackStack
+        )
+
+        dayWeekExercisesScreen(
+            onBackClick = navController::popBackStack,
+            onNavigateExercise = navController::navigateToExercisesScreen
+        )
+
+        exercisesScreen(
             onBackClick = navController::popBackStack
         )
     }

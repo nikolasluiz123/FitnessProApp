@@ -7,6 +7,8 @@ import br.com.fitnesspro.local.data.access.converters.RoomTypeConverters
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.ApplicationDAO
 import br.com.fitnesspro.local.data.access.dao.DeviceDAO
+import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
+import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO
 import br.com.fitnesspro.local.data.access.dao.ImportationHistoryDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
@@ -14,8 +16,11 @@ import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.ServiceTokenDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
+import br.com.fitnesspro.local.data.access.dao.VideoDAO
+import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutGroupPreDefinitionDAO
 import br.com.fitnesspro.model.authentication.Application
 import br.com.fitnesspro.model.authentication.Device
 import br.com.fitnesspro.model.authentication.ServiceToken
@@ -46,7 +51,7 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 
 @Database(
-    version = 23,
+    version = 29,
     entities = [
         User::class, Person::class, Academy::class, PersonAcademyTime::class, PhysicEvaluation::class,
         IngredientPreDefinition::class, MealOptionPreDefinition::class, Diet::class, DayWeekDiet::class, Meal::class,
@@ -84,5 +89,15 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun applicationDAO(): ApplicationDAO
 
     abstract fun serviceTokenDAO(): ServiceTokenDAO
+
+    abstract fun exerciseDAO(): ExerciseDAO
+
+    abstract fun exercisePreDefinitionDAO(): ExercisePreDefinitionDAO
+
+    abstract fun workoutGroupPreDefinitionDAO(): WorkoutGroupPreDefinitionDAO
+
+    abstract fun videoDAO(): VideoDAO
+
+    abstract fun videoExerciseDAO(): VideoExerciseDAO
 
 }
