@@ -8,7 +8,6 @@ import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.getTOWorkoutGroup
 import br.com.fitnesspro.mappers.getWorkoutGroup
 import br.com.fitnesspro.model.workout.WorkoutGroup
-import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
@@ -78,11 +77,13 @@ class WorkoutGroupRepository(
     }
 
     suspend fun saveWorkoutGroup(toWorkoutGroup: TOWorkoutGroup) {
-        saveWorkoutGroupLocally(toWorkoutGroup)
-        saveWorkoutGroupRemote(toWorkoutGroup)
+        runInTransaction {
+            saveWorkoutGroupLocally(toWorkoutGroup)
+            saveWorkoutGroupRemote(toWorkoutGroup)
+        }
     }
 
-    private suspend fun saveWorkoutGroupLocally(toWorkoutGroup: TOWorkoutGroup) {
+    suspend fun saveWorkoutGroupLocally(toWorkoutGroup: TOWorkoutGroup) {
         val workoutGroup = toWorkoutGroup.getWorkoutGroup()
 
         if (toWorkoutGroup.id == null) {
@@ -112,26 +113,5 @@ class WorkoutGroupRepository(
 
     private suspend fun inactivateWorkoutGroupRemote(workoutGroupId: String) {
 
-    }
-
-    suspend fun saveExerciseWorkoutGroup(toExercise: TOExercise) {
-        val toWorkoutGroup = if (toExercise.workoutGroupId == null) {
-            TOWorkoutGroup(
-                name = toExercise.workoutGroupName,
-                workoutId = toExercise.workoutId,
-                dayWeek = toExercise.dayWeek,
-                order = toExercise.groupOrder
-            )
-        } else {
-            findWorkoutGroupById(toExercise.workoutGroupId)?.apply {
-                name = toExercise.workoutGroupName
-                order = toExercise.groupOrder
-            }
-        }
-
-        toWorkoutGroup?.let { to ->
-            saveWorkoutGroup(to)
-            toExercise.workoutGroupId = to.id
-        }
     }
 }

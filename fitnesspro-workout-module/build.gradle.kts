@@ -40,6 +40,7 @@ dependencies {
     implementation(project(":fitnesspro-compose-components"))
     implementation(project(":fitnesspro-model"))
     implementation(project(":fitnesspro-local-data-access"))
+    implementation(project(":fitnesspro-service-data-access"))
     implementation(project(":fitnesspro-common-module"))
     implementation(project(":fitnesspro-firebase-api"))
 

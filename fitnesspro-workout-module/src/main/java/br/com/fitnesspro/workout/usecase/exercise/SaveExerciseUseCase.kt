@@ -28,10 +28,7 @@ class SaveExerciseUseCase(
         validationResults.addAll(validateExercise(toExercise))
 
         if (validationResults.isEmpty()) {
-            workoutGroupRepository.runInTransaction {
-                workoutGroupRepository.saveExerciseWorkoutGroup(toExercise)
-                exerciseRepository.saveExercise(toExercise)
-            }
+            exerciseRepository.saveExercise(toExercise)
         }
 
         return validationResults

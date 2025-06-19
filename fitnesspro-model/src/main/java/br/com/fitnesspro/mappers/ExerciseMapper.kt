@@ -1,7 +1,9 @@
 package br.com.fitnesspro.mappers
 
 import br.com.fitnesspro.model.workout.Exercise
+import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.model.workout.predefinition.ExercisePreDefinition
+import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOExercisePreDefinition
 import br.com.fitnesspro.to.TOWorkoutGroup
@@ -30,7 +32,7 @@ fun ExercisePreDefinition.getTOExercisePreDefinition(): TOExercisePreDefinition 
         id = id,
         name = name,
         duration = duration,
-        repetitions = this@getTOExercisePreDefinition.repetitions,
+        repetitions = repetitions,
         sets = sets,
         rest = rest,
         personalTrainerPersonId = personalTrainerPersonId,
@@ -55,4 +57,19 @@ fun TOExercise.getExercise(): Exercise {
     id?.let { model.id = it }
 
     return model
+}
+
+fun Exercise.getExerciseDTO(workoutGroup: WorkoutGroup): ExerciseDTO {
+    return ExerciseDTO(
+        id = id,
+        name = name,
+        duration = duration,
+        repetitions = repetitions,
+        sets = sets,
+        rest = rest,
+        observation = observation,
+        workoutGroupDTO = workoutGroup.getWorkoutGroupDTO(),
+        active = active,
+        exerciseOrder = exerciseOrder
+    )
 }
