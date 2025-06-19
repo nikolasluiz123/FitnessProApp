@@ -55,7 +55,10 @@ fun SchedulerScreen(
         onBackClick = onBackClick,
         onDayClick = onDayClick,
         onNavigateToCompromise = onNavigateToCompromise,
-        onNavigateToConfig = onNavigateToConfig,
+        //onNavigateToConfig = onNavigateToConfig,
+        onNavigateToConfig = {
+            viewModel.generateFakeReport()
+        },
         onUpdateSchedules = viewModel::updateSchedules,
         onNavigateToChatHistory = onNavigateToChatHistory
     )

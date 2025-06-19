@@ -102,4 +102,5 @@
     <string name="compromise_screen_label_you">Você</string>
     <string name="scheduler_config_screen_label_notification_antecedence_time">Antecedência da Notificação em Minutos</string>
     <string name="network_required_save_schedule_message">É necessário ter conexão com a internet para realizar um agendamento ou alterá-lo.</string>
+    <string name="scheduler_report_header_title">Relatório de Agendamentos</string>
 </resources>
