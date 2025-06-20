@@ -30,8 +30,8 @@ abstract class AbstractPDFReport<FILTER: Any>(var filter: FILTER) {
 
         val pageNumber = 1
 
-        header.draw(canvas, pageInfo, pageNumber)
-        body.draw(canvas, pageInfo, pageNumber)
+        val headerLineY = header.draw(canvas, pageInfo, pageNumber)
+        body.draw(canvas, pageInfo, headerLineY)
         footer.draw(canvas, pageInfo, pageNumber)
 
         document.finishPage(page)

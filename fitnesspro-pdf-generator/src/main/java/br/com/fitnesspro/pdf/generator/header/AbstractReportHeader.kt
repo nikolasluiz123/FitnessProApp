@@ -24,13 +24,15 @@ abstract class AbstractReportHeader<FILTER : Any>(protected val context: Context
         this.bitmap = AppCompatResources.getDrawable(context, R.drawable.default_report_logo)?.toBitmap()!!
     }
 
-    override suspend fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, pageNumbers: Int) {
+    override suspend fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, pageNumbers: Int): Float {
         val pageWidth = pageInfo.pageWidth
-        val padding = Margins.MARGIN_30.toFloat()
+        val padding = Margins.MARGIN_32.toFloat()
 
         val (logoPosition, logoRect) = drawLogo(padding, canvas)
         val titlePosition = drawTitle(logoRect, logoPosition, canvas)
-        drawTitleLine(titlePosition, pageWidth, padding, canvas)
+        val titleLineStartPosition = drawTitleLine(titlePosition, pageWidth, padding, canvas)
+
+        return titleLineStartPosition.axisY
     }
 
     private fun drawLogo(padding: Float, canvas: Canvas): Pair<Position, RectF> {
@@ -65,7 +67,7 @@ abstract class AbstractReportHeader<FILTER : Any>(protected val context: Context
         return titlePosition
     }
 
-    private suspend fun drawTitleLine(titlePosition: Position, pageWidth: Int, padding: Float, canvas: Canvas) {
+    private suspend fun drawTitleLine(titlePosition: Position, pageWidth: Int, padding: Float, canvas: Canvas): Position {
         val lineStart = Position(
             axisX = titlePosition.axisX,
             axisY = titlePosition.axisY + Margins.MARGIN_8
@@ -80,6 +82,8 @@ abstract class AbstractReportHeader<FILTER : Any>(protected val context: Context
             endPosition = lineEnd,
             paint = Paints.titleLinePaint
         )
+
+        return lineStart
     }
 
 }

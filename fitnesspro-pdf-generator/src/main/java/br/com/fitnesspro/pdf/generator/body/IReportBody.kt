@@ -9,7 +9,7 @@ interface IReportBody<FILTER: Any>: IPreparable<FILTER> {
 
     val sessions: MutableList<IReportSession<FILTER>>
 
-    fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Int)
+    fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Float)
 
     override suspend fun prepare(filter: FILTER) {
         super.prepare(filter)

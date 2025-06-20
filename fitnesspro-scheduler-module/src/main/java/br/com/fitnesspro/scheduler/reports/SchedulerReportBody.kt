@@ -9,7 +9,13 @@ class SchedulerReportBody(
     override val sessions: MutableList<IReportSession<SchedulerFilter>>
 ) : IReportBody<SchedulerFilter> {
 
-    override fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Int) {
+    override fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Float) {
+        var currentY = yStart
 
+        sessions.forEach { session ->
+//            if (session.shouldRender(filter)) {
+                currentY = session.draw(canvas, pageInfo, currentY)
+//            }
+        }
     }
 }
