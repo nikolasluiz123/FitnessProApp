@@ -15,7 +15,7 @@ class TableComponent<FILTER: Any>: IReportComponent<FILTER> {
         // TODO - Buscar os dados da tabela para carregar as linhas e colunas
     }
 
-    override fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Int): Float {
+    override suspend fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Float): Float {
         TODO("Not yet implemented")
     }
 }

@@ -105,6 +105,12 @@
     <string name="scheduler_report_header_title">Relatório de Agendamentos</string>
     <string name="scheduler_report_resume_session_title">Resumo dos Agendamentos</string>
     <string name="scheduler_report_pending_schedules_session_title">Agendamentos Pendentes do Período</string>
+    <string name="scheduler_report_confirmed_schedules_session_title">Agendamentos Confirmados do Período</string>
     <string name="scheduler_report_canceled_schedules_session_title">Agendamentos Cancelados do Período</string>
     <string name="scheduler_report_completed_schedules_session_title">Agendamentos Realizados no Período</string>
+    <string name="schedulers_report_resume_session_label_professional">Profissional</string>
+    <string name="schedulers_report_resume_session_label_pending">Pendentes</string>
+    <string name="schedulers_report_resume_session_label_confirmed">Confirmados</string>
+    <string name="schedulers_report_resume_session_label_cancelled">Cancelados</string>
+    <string name="schedulers_report_resume_session_label_completed">Concluídos</string>
 </resources>

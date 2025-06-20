@@ -9,11 +9,16 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_SQLITE
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
-import br.com.fitnesspro.model.enums.EnumSchedulerSituation
+import br.com.fitnesspro.local.data.access.dao.filters.SchedulerReportFilter
+import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CANCELLED
+import br.com.fitnesspro.model.enums.EnumSchedulerSituation.COMPLETED
+import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CONFIRMED
+import br.com.fitnesspro.model.enums.EnumSchedulerSituation.SCHEDULED
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.to.TOScheduler
+import br.com.fitnesspro.tuple.SchedulersResumeTuple
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.YearMonth
@@ -48,7 +53,7 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
             add("       date_time_start between ? and ? ")
             add("       or date_time_end between ? and ? ")
             add("     ) ")
-            add(" and schedule.situation != '${EnumSchedulerSituation.CANCELLED}' ")
+            add(" and schedule.situation != '${CANCELLED}' ")
 
             val startFormated = start.toString()
             val endFormated = end.toString()
@@ -127,7 +132,7 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
             add(" and personProfessional.active = 1 ")
 
             if (!canceledSchedules) {
-                add(" and schedule.situation != '${EnumSchedulerSituation.CANCELLED}' ")
+                add(" and schedule.situation != '${CANCELLED}' ")
             }
 
             when (userType) {
@@ -203,4 +208,81 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
 
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Scheduler>
+
+    suspend fun getSchedulerReportResume(filter: SchedulerReportFilter): SchedulersResumeTuple {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select p.name as personName, ")
+            add("        ( ")
+            add("           select count(scheduler.id) ")
+            add("           from scheduler ")
+            add("           where scheduler.active = 1 ")
+            add("           and scheduler.professional_person_id = p.id ")
+            add("           and scheduler.situation = '${SCHEDULED.name}' ")
+            add("        ) as countPending, ")
+            add("        ( ")
+            add("           select count(scheduler.id) ")
+            add("           from scheduler ")
+            add("           where scheduler.active = 1 ")
+            add("           and scheduler.professional_person_id = p.id ")
+            add("           and scheduler.situation = '${CONFIRMED.name}' ")
+            add("        ) as countConfirmed, ")
+            add("        ( ")
+            add("           select count(scheduler.id) ")
+            add("           from scheduler ")
+            add("           where scheduler.active = 1 ")
+            add("           and scheduler.professional_person_id = p.id ")
+            add("           and scheduler.situation = '${CANCELLED.name}' ")
+            add("        ) as countCanceled, ")
+            add("        ( ")
+            add("           select count(scheduler.id) ")
+            add("           from scheduler ")
+            add("           where scheduler.active = 1 ")
+            add("           and scheduler.professional_person_id = p.id ")
+            add("           and scheduler.situation = '${COMPLETED.name}' ")
+            add("        ) as countCompleted ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from scheduler s ")
+            add(" inner join person p on s.professional_person_id = p.id ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where s.professional_person_id = ? ")
+            add(" and s.active = 1 ")
+
+            params.add(filter.personId)
+
+            when {
+                filter.dateStart != null && filter.dateEnd != null -> {
+                    add(" and s.date_time_start between ? and ? ")
+                    params.add(filter.dateStart.format(DATE_SQLITE))
+                    params.add(filter.dateEnd.format(DATE_SQLITE))
+                }
+
+                filter.dateStart != null -> {
+                    add(" and s.date_time_start >= ? ")
+                    params.add(filter.dateStart.format(DATE_SQLITE))
+                }
+
+                filter.dateEnd != null -> {
+                    add(" and s.date_time_start <= ? ")
+                    params.add(filter.dateEnd.format(DATE_SQLITE))
+                }
+            }
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        return executeQuerySchedulerReportResume(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery
+    abstract suspend fun executeQuerySchedulerReportResume(query: SupportSQLiteQuery): SchedulersResumeTuple
 }

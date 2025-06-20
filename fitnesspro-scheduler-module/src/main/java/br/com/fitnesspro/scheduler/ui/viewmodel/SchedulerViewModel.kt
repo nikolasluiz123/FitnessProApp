@@ -7,12 +7,12 @@ import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.fitnesspro.local.data.access.dao.filters.SchedulerReportFilter
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.pdf.generator.enums.EnumPageSize
 import br.com.fitnesspro.pdf.generator.report.PDFReportGenerator
 import br.com.fitnesspro.scheduler.R
-import br.com.fitnesspro.scheduler.reports.SchedulerFilter
-import br.com.fitnesspro.scheduler.reports.SchedulerPDFReport
+import br.com.fitnesspro.scheduler.reports.schedules.report.SchedulerPDFReport
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.decorator.SchedulerDecorator
 import br.com.fitnesspro.scheduler.ui.state.SchedulerUIState
@@ -122,7 +122,8 @@ class SchedulerViewModel @Inject constructor(
 
     fun generateFakeReport(onSuccess: (filePath: String) -> Unit) {
         launch {
-            val report = SchedulerPDFReport(context, SchedulerFilter(""))
+            val personId = personRepository.getAuthenticatedTOPerson()?.id!!
+            val report = SchedulerPDFReport(context, SchedulerReportFilter(personId))
 
             val generator = PDFReportGenerator(context, report)
             val file = generator.generatePdfFile(pageSize = EnumPageSize.A4)

@@ -18,14 +18,21 @@ suspend fun Canvas.drawTextInPosition(text: String, position: Position, paint: T
     drawText(text, position.axisX, position.axisY, paint)
 }
 
-suspend fun Canvas.drawTextInPosition(text: String, position: Position, paint: TextPaint, columnWidth: Float) = withContext(IO) {
+suspend fun Canvas.drawTextInPosition(
+    text: String,
+    position: Position,
+    paint: TextPaint,
+    columnWidth: Float
+): Float = withContext(IO) {
     val lines = text.splitText(paint, columnWidth)
     var axisY = position.axisY
 
-    for (line in lines) {
+    lines.forEach { line ->
         drawText(line, position.axisX, axisY, paint)
         axisY += paint.textSize + Margins.MARGIN_4
     }
+
+    return@withContext (axisY - position.axisY) - Margins.MARGIN_4
 }
 
 suspend fun Canvas.drawLineInPosition(startPosition: Position, endPosition: Position, paint: Paint) = withContext(IO) {

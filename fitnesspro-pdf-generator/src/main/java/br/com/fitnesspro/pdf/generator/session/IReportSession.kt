@@ -8,5 +8,5 @@ interface IReportSession<FILTER: Any>: IPreparable<FILTER> {
 
     fun shouldRender(filter: FILTER): Boolean = true
 
-    fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Float): Float
+    suspend fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Float): Float
 }

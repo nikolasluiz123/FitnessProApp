@@ -10,16 +10,26 @@ import br.com.fitnesspro.pdf.generator.utils.Paints
 abstract class AbstractReportSession<FILTER: Any>(protected val context: Context): IReportSession<FILTER> {
 
     protected lateinit var title: String
-    protected lateinit var components: List<IReportComponent<FILTER>>
+    protected var components: List<IReportComponent<FILTER>> = emptyList()
 
-    override fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Float): Float {
+    override suspend fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Float): Float {
         val pageWidth = pageInfo.pageWidth.toFloat()
         val paddingStart = Margins.MARGIN_32.toFloat()
 
         val titleY = drawTitle(paddingStart, yStart, canvas)
         val lineY = drawLine(titleY, canvas, paddingStart, pageWidth)
 
-        return lineY
+        return drawComponents(lineY, canvas, pageInfo)
+    }
+
+    private suspend fun drawComponents(lineY: Float, canvas: Canvas, pageInfo: PdfDocument.PageInfo): Float {
+        var currentY = lineY
+
+        components.forEach { component ->
+            currentY = component.draw(canvas, pageInfo, currentY)
+        }
+
+        return currentY
     }
 
     private fun drawTitle(paddingStart: Float, yStart: Float, canvas: Canvas): Float {

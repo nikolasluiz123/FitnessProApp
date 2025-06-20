@@ -8,8 +8,9 @@ import br.com.fitnesspro.pdf.generator.session.IReportSession
 interface IReportBody<FILTER: Any>: IPreparable<FILTER> {
 
     val sessions: MutableList<IReportSession<FILTER>>
+    val filter: FILTER
 
-    fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Float)
+    suspend fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Float)
 
     override suspend fun prepare(filter: FILTER) {
         super.prepare(filter)
