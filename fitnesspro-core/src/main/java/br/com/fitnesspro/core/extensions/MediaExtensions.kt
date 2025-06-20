@@ -31,3 +31,15 @@ fun Context.openVideoPlayer(filePath: String) {
 
     startActivity(Intent.createChooser(intent, getString(R.string.open_video_player_message)))
 }
+
+fun Context.openPDFReader(filePath: String) {
+    val file = File(filePath)
+    val uri = FileUtils.getUriForFileUsingProvider(this, file)
+
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(uri, "application/pdf")
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+
+    startActivity(Intent.createChooser(intent, getString(R.string.open_pdf_reader_message)))
+}

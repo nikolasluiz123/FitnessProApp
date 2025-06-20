@@ -33,6 +33,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":fitnesspro-core"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
 }

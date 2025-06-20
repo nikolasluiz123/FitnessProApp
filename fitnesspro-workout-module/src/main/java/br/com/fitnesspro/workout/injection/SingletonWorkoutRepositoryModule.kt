@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.injection
 
 import android.content.Context
+import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO
@@ -55,12 +56,14 @@ class SingletonWorkoutRepositoryModule {
     fun provideExerciseRepository(
         @ApplicationContext context: Context,
         exerciseDAO: ExerciseDAO,
-        workoutGroupDAO: WorkoutGroupDAO
+        workoutGroupRepository: WorkoutGroupRepository,
+        exerciseWebClient: ExerciseWebClient
     ): ExerciseRepository {
         return ExerciseRepository(
             context = context,
             exerciseDAO = exerciseDAO,
-            workoutGroupDAO = workoutGroupDAO
+            workoutGroupRepository = workoutGroupRepository,
+            exerciseWebClient = exerciseWebClient
         )
     }
 

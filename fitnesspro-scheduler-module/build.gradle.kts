@@ -58,7 +58,7 @@ dependencies {
     implementation(project(":fitnesspro-service-data-access"))
     implementation(project(":fitnesspro-common-module"))
     implementation(project(":fitnesspro-firebase-api"))
-//    implementation(project(":fitnesspro-pdf-generator"))
+    implementation(project(":fitnesspro-pdf-generator"))
 
     implementation(libs.fitnesspro.shared.communication)
     implementation(libs.data.store)

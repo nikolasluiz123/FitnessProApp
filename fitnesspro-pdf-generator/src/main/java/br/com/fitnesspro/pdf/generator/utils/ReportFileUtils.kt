@@ -2,16 +2,28 @@ package br.com.fitnesspro.pdf.generator.utils
 
 import android.content.Context
 import android.net.Uri
-import android.os.FileUtils
+import br.com.fitnesspro.core.utils.FileUtils
 import java.io.File
 
 object ReportFileUtils {
+    const val REPORTS_FOLDER_NAME = "reports"
+    const val DEFAULT_REPORT_EXTENSION = "pdf"
 
-    fun createReportFile(context: Context, fileName: String): File {
-        val directory = File(context.getExternalFilesDir(null), "reports")
-        if (!directory.exists()) directory.mkdirs()
+    fun createReportFile(context: Context, fileName: String? = null): File {
+        val reportDir = File(context.getExternalFilesDir(REPORTS_FOLDER_NAME), "")
+        if (!reportDir.exists()) reportDir.mkdirs()
 
-        return File(directory, fileName)
+        val nonNullFileName = if (!fileName.isNullOrEmpty()) {
+            "$fileName.$DEFAULT_REPORT_EXTENSION"
+        } else {
+            getDefaultReportName()
+        }
+
+        return File(reportDir, nonNullFileName)
+    }
+
+    fun getDefaultReportName(): String {
+        return "report_${System.currentTimeMillis()}.$DEFAULT_REPORT_EXTENSION"
     }
 
     fun getReportFileUri(context: Context, file: File): Uri {

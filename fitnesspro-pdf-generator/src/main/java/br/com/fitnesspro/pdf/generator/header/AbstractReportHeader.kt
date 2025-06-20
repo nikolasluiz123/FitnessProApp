@@ -1,67 +1,85 @@
 package br.com.fitnesspro.pdf.generator.header
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.RectF
-import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
+import br.com.fitnesspro.pdf.generator.R
+import br.com.fitnesspro.pdf.generator.extensions.drawLineInPosition
+import br.com.fitnesspro.pdf.generator.extensions.drawTextInPosition
+import br.com.fitnesspro.pdf.generator.utils.Margins
+import br.com.fitnesspro.pdf.generator.utils.Paints
+import br.com.fitnesspro.pdf.generator.utils.Position
 
-abstract class AbstractReportHeader<FILTER: Any>: IReportHeader<FILTER> {
+abstract class AbstractReportHeader<FILTER : Any>(protected val context: Context) : IReportHeader<FILTER> {
 
     protected lateinit var title: String
     protected lateinit var bitmap: Bitmap
 
-    override fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, pageNumbers: Int) {
+    override suspend fun prepare(filter: FILTER) {
+        super.prepare(filter)
+        this.bitmap = AppCompatResources.getDrawable(context, R.drawable.default_report_logo)?.toBitmap()!!
+    }
+
+    override suspend fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, pageNumbers: Int) {
         val pageWidth = pageInfo.pageWidth
-        val padding = 32f // margem lateral e superior
+        val padding = Margins.MARGIN_30.toFloat()
 
-        // Configurações do bitmap (logo)
-        val logoWidth = 80f
-        val logoHeight = 80f
-        val logoLeft = padding
-        val logoTop = padding
-        val logoRight = logoLeft + logoWidth
-        val logoBottom = logoTop + logoHeight
+        val (logoPosition, logoRect) = drawLogo(padding, canvas)
+        val titlePosition = drawTitle(logoRect, logoPosition, canvas)
+        drawTitleLine(titlePosition, pageWidth, padding, canvas)
+    }
 
-        // Desenhar logo
-        val logoRect = RectF(logoLeft, logoTop, logoRight, logoBottom)
+    private fun drawLogo(padding: Float, canvas: Canvas): Pair<Position, RectF> {
+        val logoWidth = 60f
+        val logoHeight = 60f
+        val logoPosition = Position(padding, padding)
+
+        val logoRect = RectF(
+            logoPosition.axisX,
+            logoPosition.axisY,
+            logoPosition.axisX + logoWidth,
+            logoPosition.axisY + logoHeight
+        )
+
         canvas.drawBitmap(bitmap, null, logoRect, null)
 
-        // Configurações do texto (título)
-        val textPaint = Paint().apply {
-            color = Color.BLACK
-            textSize = 18f * (canvas.density)
-            isAntiAlias = true
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        }
+        return Pair(logoPosition, logoRect)
+    }
 
-        // Medir altura do texto
-        val textBounds = Rect()
-        textPaint.getTextBounds(title, 0, title.length, textBounds)
-        val textHeight = textBounds.height()
+    private suspend fun drawTitle(logoRect: RectF, logoPosition: Position, canvas: Canvas): Position {
+        val textStartX = logoRect.right + Margins.MARGIN_16
+        val textStartY = logoPosition.axisY + Paints.titlePaint.textSize
 
-        // Posição do texto
-        val textStartX = logoRight + 16f // espaçamento após logo
-        val textStartY = logoTop + textHeight
+        val titlePosition = Position(textStartX, textStartY + Margins.MARGIN_8)
 
-        // Desenhar título
-        canvas.drawText(title, textStartX, textStartY, textPaint)
+        canvas.drawTextInPosition(
+            text = title,
+            position = titlePosition,
+            paint = Paints.titlePaint
+        )
 
-        // Desenhar linha abaixo do título
-        val lineStartX = textStartX
-        val lineY = textStartY + 8f // pequeno espaçamento abaixo do texto
-        val lineEndX = pageWidth - padding
+        return titlePosition
+    }
 
-        val linePaint = Paint().apply {
-            color = Color.BLACK
-            strokeWidth = 2f
-            isAntiAlias = true
-        }
+    private suspend fun drawTitleLine(titlePosition: Position, pageWidth: Int, padding: Float, canvas: Canvas) {
+        val lineStart = Position(
+            axisX = titlePosition.axisX,
+            axisY = titlePosition.axisY + Margins.MARGIN_8
+        )
+        val lineEnd = Position(
+            axisX = pageWidth - padding,
+            axisY = lineStart.axisY
+        )
 
-        canvas.drawLine(lineStartX, lineY, lineEndX, lineY, linePaint)
+        canvas.drawLineInPosition(
+            startPosition = lineStart,
+            endPosition = lineEnd,
+            paint = Paints.titleLinePaint
+        )
     }
 
 }

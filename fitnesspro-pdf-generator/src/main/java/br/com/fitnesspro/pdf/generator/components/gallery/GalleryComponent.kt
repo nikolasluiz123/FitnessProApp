@@ -12,7 +12,6 @@ class GalleryComponent<FILTER: Any>: IReportComponent<FILTER> {
 
     override suspend fun prepare(filter: FILTER) {
         super.prepare(filter)
-
     }
 
     override fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Int): Float {

@@ -6,5 +6,5 @@ import br.com.fitnesspro.pdf.generator.common.IPreparable
 
 interface IReportHeader<FILTER: Any>: IPreparable<FILTER> {
 
-    fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, pageNumbers: Int)
+    suspend fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, pageNumbers: Int)
 }
