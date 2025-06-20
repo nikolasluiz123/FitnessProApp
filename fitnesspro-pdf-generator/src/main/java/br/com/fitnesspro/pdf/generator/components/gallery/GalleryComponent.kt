@@ -1,7 +1,6 @@
 package br.com.fitnesspro.pdf.generator.components.gallery
 
-import android.graphics.Canvas
-import android.graphics.pdf.PdfDocument
+import br.com.fitnesspro.pdf.generator.common.IPageManager
 import br.com.fitnesspro.pdf.generator.components.IReportComponent
 import kotlin.properties.Delegates
 
@@ -14,7 +13,7 @@ class GalleryComponent<FILTER: Any>: IReportComponent<FILTER> {
         super.prepare(filter)
     }
 
-    override suspend fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Float): Float {
+    override suspend fun draw(pageManager: IPageManager, yStart: Float): Float {
         return 0f
     }
 }

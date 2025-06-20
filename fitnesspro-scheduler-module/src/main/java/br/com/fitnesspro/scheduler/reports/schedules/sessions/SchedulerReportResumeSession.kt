@@ -6,13 +6,13 @@ import br.com.fitnesspro.pdf.generator.components.layout.LayoutGridComponent
 import br.com.fitnesspro.pdf.generator.session.AbstractReportSession
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.reports.injection.ISchedulerReportsEntryPoint
-import br.com.fitnesspro.tuple.SchedulersResumeTuple
+import br.com.fitnesspro.tuple.reports.schedulers.SchedulersResumeSessionReportTuple
 import dagger.hilt.android.EntryPointAccessors
 
 class SchedulerReportResumeSession(context: Context) : AbstractReportSession<SchedulerReportFilter>(context) {
 
     private val entryPoint = EntryPointAccessors.fromApplication(context, ISchedulerReportsEntryPoint::class.java)
-    private lateinit var resumeData: SchedulersResumeTuple
+    private lateinit var resumeData: SchedulersResumeSessionReportTuple
 
     override suspend fun prepare(filter: SchedulerReportFilter) {
         super.prepare(filter)

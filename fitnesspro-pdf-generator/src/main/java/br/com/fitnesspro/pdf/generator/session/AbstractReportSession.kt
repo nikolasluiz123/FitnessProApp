@@ -2,31 +2,39 @@ package br.com.fitnesspro.pdf.generator.session
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.pdf.PdfDocument
+import br.com.fitnesspro.pdf.generator.common.IPageManager
 import br.com.fitnesspro.pdf.generator.components.IReportComponent
 import br.com.fitnesspro.pdf.generator.utils.Margins
 import br.com.fitnesspro.pdf.generator.utils.Paints
 
-abstract class AbstractReportSession<FILTER: Any>(protected val context: Context): IReportSession<FILTER> {
+abstract class AbstractReportSession<FILTER : Any>(
+    protected val context: Context
+) : IReportSession<FILTER> {
 
     protected lateinit var title: String
     protected var components: List<IReportComponent<FILTER>> = emptyList()
 
-    override suspend fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, yStart: Float): Float {
-        val pageWidth = pageInfo.pageWidth.toFloat()
+    override suspend fun draw(pageManager: IPageManager, yStart: Float): Float {
+        val pageWidth = pageManager.pageInfo.pageWidth.toFloat()
         val paddingStart = Margins.MARGIN_32.toFloat()
 
-        val titleY = drawTitle(paddingStart, yStart, canvas)
-        val lineY = drawLine(titleY, canvas, paddingStart, pageWidth)
+        val titleHeight = Paints.subtitlePaint.textSize + Margins.MARGIN_48
+        val lineHeight = Margins.MARGIN_8
+        val headerHeight = titleHeight + lineHeight
 
-        return drawComponents(lineY, canvas, pageInfo)
+        val currentY = pageManager.ensureSpace(yStart, headerHeight)
+
+        val titleY = drawTitle(paddingStart, currentY, pageManager.canvas)
+        val lineY = drawLine(titleY, pageManager.canvas, paddingStart, pageWidth)
+
+        return drawComponents(lineY, pageManager)
     }
 
-    private suspend fun drawComponents(lineY: Float, canvas: Canvas, pageInfo: PdfDocument.PageInfo): Float {
-        var currentY = lineY
+    private suspend fun drawComponents(lineY: Float, pageManager: IPageManager): Float {
+        var currentY = lineY + Margins.MARGIN_16
 
         components.forEach { component ->
-            currentY = component.draw(canvas, pageInfo, currentY)
+            currentY = component.draw(pageManager, currentY)
         }
 
         return currentY

@@ -7,9 +7,6 @@ import br.com.fitnesspro.pdf.generator.report.AbstractPDFReport
 import br.com.fitnesspro.pdf.generator.session.IReportSession
 import br.com.fitnesspro.scheduler.reports.schedules.body.SchedulerReportBody
 import br.com.fitnesspro.scheduler.reports.schedules.header.SchedulerReportHeader
-import br.com.fitnesspro.scheduler.reports.schedules.sessions.SchedulerReportCanceledSchedulesSession
-import br.com.fitnesspro.scheduler.reports.schedules.sessions.SchedulerReportCompletedSchedulesSession
-import br.com.fitnesspro.scheduler.reports.schedules.sessions.SchedulerReportConfirmedSchedulesSession
 import br.com.fitnesspro.scheduler.reports.schedules.sessions.SchedulerReportPendingSchedulesSession
 import br.com.fitnesspro.scheduler.reports.schedules.sessions.SchedulerReportResumeSession
 
@@ -24,9 +21,6 @@ class SchedulerPDFReport(
         val sessions = mutableListOf<IReportSession<SchedulerReportFilter>>(
             SchedulerReportResumeSession(context),
             SchedulerReportPendingSchedulesSession(context),
-            SchedulerReportConfirmedSchedulesSession(context),
-            SchedulerReportCanceledSchedulesSession(context),
-            SchedulerReportCompletedSchedulesSession(context)
         )
 
         this.body = SchedulerReportBody(sessions, filter)

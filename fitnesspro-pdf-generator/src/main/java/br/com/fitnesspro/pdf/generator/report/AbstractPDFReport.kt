@@ -2,6 +2,7 @@ package br.com.fitnesspro.pdf.generator.report
 
 import android.graphics.pdf.PdfDocument
 import br.com.fitnesspro.pdf.generator.body.IReportBody
+import br.com.fitnesspro.pdf.generator.common.PageManager
 import br.com.fitnesspro.pdf.generator.enums.EnumPageSize
 import br.com.fitnesspro.pdf.generator.footer.IReportFooter
 import br.com.fitnesspro.pdf.generator.header.IReportHeader
@@ -24,16 +25,11 @@ abstract class AbstractPDFReport<FILTER: Any>(var filter: FILTER) {
         initialize()
         prepare()
 
-        val pageInfo = PdfDocument.PageInfo.Builder(pageSize.width, pageSize.height, 1).create()
-        val page = document.startPage(pageInfo)
-        val canvas = page.canvas
+        val pageManager = PageManager(document, pageSize, header, footer)
+        pageManager.start()
 
-        val pageNumber = 1
+        body.draw(pageManager, pageManager.currentY)
 
-        val headerLineY = header.draw(canvas, pageInfo, pageNumber)
-        body.draw(canvas, pageInfo, headerLineY)
-        footer.draw(canvas, pageInfo, pageNumber)
-
-        document.finishPage(page)
+        pageManager.finish()
     }
 }
