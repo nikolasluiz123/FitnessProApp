@@ -13,7 +13,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,7 +25,6 @@ import br.com.fitnesspro.compose.components.buttons.icons.IconButtonConfig
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonMessage
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.extensions.openPDFReader
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.scheduler.R
@@ -57,10 +55,7 @@ fun SchedulerScreen(
         onBackClick = onBackClick,
         onDayClick = onDayClick,
         onNavigateToCompromise = onNavigateToCompromise,
-        //onNavigateToConfig = onNavigateToConfig,
-        onNavigateToConfig = {
-            viewModel.generateFakeReport(it)
-        },
+        onNavigateToConfig = onNavigateToConfig,
         onUpdateSchedules = viewModel::updateSchedules,
         onNavigateToChatHistory = onNavigateToChatHistory
     )
@@ -73,12 +68,10 @@ fun SchedulerScreen(
     onBackClick: () -> Unit = { },
     onDayClick: OnDayClick? = null,
     onNavigateToCompromise: OnNavigateToCompromise? = null,
-    onNavigateToConfig: ((String) -> Unit) -> Unit = { },
+    onNavigateToConfig: () -> Unit = { },
     onUpdateSchedules: () -> Unit = { },
     onNavigateToChatHistory: () -> Unit  = {}
 ) {
-    val context = LocalContext.current
-
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
@@ -94,9 +87,7 @@ fun SchedulerScreen(
                         modifier = Modifier.testTag(SCHEDULER_SCREEN_BUTTON_CONFIG.name),
                         onClick = {
                             Firebase.analytics.logButtonClick(SCHEDULER_SCREEN_BUTTON_CONFIG)
-                            onNavigateToConfig {
-                                context.openPDFReader(it)
-                            }
+                            onNavigateToConfig()
                         }
                     )
                 }
