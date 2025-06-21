@@ -47,7 +47,7 @@ class LayoutGridComponent<FILTER : Any>(
             }
         }
 
-        return rowStartY - config.paddingTop
+        return rowStartY
     }
 
     private fun calculateGridConfig(pageInfo: PdfDocument.PageInfo): GridConfig {
@@ -63,7 +63,7 @@ class LayoutGridComponent<FILTER : Any>(
             horizontalPaddingStart = padding,
             columnSpacing = spacing,
             columnWidth = columnWidth,
-            paddingTop = Margins.MARGIN_8.toFloat()
+            paddingTop = Margins.MARGIN_24.toFloat()
         )
     }
 

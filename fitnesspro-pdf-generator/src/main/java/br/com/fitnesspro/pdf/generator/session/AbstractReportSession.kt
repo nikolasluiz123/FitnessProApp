@@ -31,7 +31,7 @@ abstract class AbstractReportSession<FILTER : Any>(
     }
 
     private suspend fun drawComponents(lineY: Float, pageManager: IPageManager): Float {
-        var currentY = lineY + Margins.MARGIN_16
+        var currentY = lineY
 
         components.forEach { component ->
             currentY = component.draw(pageManager, currentY)
