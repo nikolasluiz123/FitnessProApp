@@ -37,7 +37,9 @@ class PageManager(
     override suspend fun ensureSpace(currentY: Float, heightNeeded: Float): Float {
         return if (!checkSpace(currentY, heightNeeded)) {
             startNewPage()
-            drawHeader()
+
+            val headerTitleLineYPosition = drawHeader()
+            headerTitleLineYPosition + Margins.MARGIN_32
         } else {
             currentY
         }
