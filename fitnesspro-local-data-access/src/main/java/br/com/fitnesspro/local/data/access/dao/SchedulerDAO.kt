@@ -299,13 +299,15 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
             add(" select p.name as personName, ")
             add("        s.date_time_start as dateTimeStart, ")
             add("        s.date_time_end as dateTimeEnd, ")
-            add("        s.compromise_type as compromiseType ")
-
+            add("        s.compromise_type as compromiseType, ")
+            add("        s.canceled_date as canceledDate, ")
+            add("        cp.name as canceledPersonName ")
         }
 
         val from = StringJoiner(QR_NL).apply {
             add(" from scheduler s ")
             add(" inner join person p on s.academy_member_person_id = p.id ")
+            add(" left join person cp on s.cancellation_person_id = cp.id ")
         }
 
         val where = StringJoiner(QR_NL).apply {

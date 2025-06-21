@@ -118,4 +118,17 @@
     <string name="scheduler_report_pending_schedules_session_column_type">Tipo</string>
     <string name="scheduler_report_label_period">%1$s até %2$s</string>
     <string name="scheduler_report_pending_schedules_session_column_time">Horário</string>
+    <string name="scheduler_report_confirmed_schedules_session_column_name">Nome</string>
+    <string name="scheduler_report_confirmed_schedules_session_column_date">Data</string>
+    <string name="scheduler_report_confirmed_schedules_session_column_time">Horário</string>
+    <string name="scheduler_report_confirmed_schedules_session_column_type">Tipo</string>
+    <string name="scheduler_report_completed_schedules_session_column_name">Nome</string>
+    <string name="scheduler_report_completed_schedules_session_column_date">Data</string>
+    <string name="scheduler_report_completed_schedules_session_column_time">Horário</string>
+    <string name="scheduler_report_completed_schedules_session_column_type">Tipo</string>
+    <string name="scheduler_report_cancelled_schedules_session_column_name">Membro</string>
+    <string name="scheduler_report_cancelled_schedules_session_column_date">Data</string>
+    <string name="scheduler_report_cancelled_schedules_session_column_time">Horário</string>
+    <string name="scheduler_report_cancelled_schedules_session_column_type">Tipo</string>
+    <string name="scheduler_report_cancelled_schedules_session_column_cancelled_by">Cancelado por</string>
 </resources>

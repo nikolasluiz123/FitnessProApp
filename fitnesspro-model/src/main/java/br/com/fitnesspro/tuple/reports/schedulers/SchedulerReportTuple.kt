@@ -7,5 +7,7 @@ data class SchedulerReportTuple(
     val personName: String,
     val dateTimeStart: OffsetDateTime,
     val dateTimeEnd: OffsetDateTime,
-    val compromiseType: EnumCompromiseType
+    val compromiseType: EnumCompromiseType,
+    val canceledDate: OffsetDateTime?,
+    val canceledPersonName: String?
 )

@@ -10,6 +10,7 @@ import br.com.fitnesspro.pdf.generator.components.table.Column
 import br.com.fitnesspro.pdf.generator.components.table.TableComponent
 import br.com.fitnesspro.pdf.generator.session.AbstractReportSession
 import br.com.fitnesspro.scheduler.reports.injection.ISchedulerReportsEntryPoint
+import br.com.fitnesspro.tuple.reports.schedulers.SchedulerReportTuple
 import dagger.hilt.android.EntryPointAccessors
 import java.time.ZoneId
 import br.com.fitnesspro.scheduler.R as SchedulerRes
@@ -17,13 +18,14 @@ import br.com.fitnesspro.scheduler.R as SchedulerRes
 class SchedulerReportPendingSchedulesSession(context: Context) : AbstractReportSession<SchedulerReportFilter>(context) {
 
     private val entryPoint = EntryPointAccessors.fromApplication(context, ISchedulerReportsEntryPoint::class.java)
+    private var tableData: List<SchedulerReportTuple> = emptyList()
 
     override suspend fun prepare(filter: SchedulerReportFilter) {
         super.prepare(filter)
 
         this.title = context.getString(SchedulerRes.string.scheduler_report_pending_schedules_session_title)
 
-        val tableData = entryPoint.getSchedulerReportsRepository().getListSchedulerReportTuple(
+        tableData = entryPoint.getSchedulerReportsRepository().getListSchedulerReportTuple(
             filter = filter,
             situation = EnumSchedulerSituation.SCHEDULED
         )
@@ -62,5 +64,9 @@ class SchedulerReportPendingSchedulesSession(context: Context) : AbstractReportS
                 }
             )
         )
+    }
+
+    override fun shouldRender(filter: SchedulerReportFilter): Boolean {
+        return tableData.isNotEmpty()
     }
 }
