@@ -17,7 +17,9 @@ class TableComponent<FILTER : Any>(
 ) : IReportComponent<FILTER> {
 
     private val paddingHorizontal = Margins.MARGIN_32.toFloat()
-    private val cellPadding = Margins.MARGIN_4.toFloat()
+
+    private val cellHorizontalPadding = Margins.MARGIN_4.toFloat()
+    private val cellVerticalPadding = Margins.MARGIN_8.toFloat()
 
     override suspend fun draw(pageManager: IPageManager, yStart: Float): Float {
         val pageWidth = pageManager.pageInfo.pageWidth.toFloat()
@@ -78,8 +80,9 @@ class TableComponent<FILTER : Any>(
         columnWidths: List<Float>
     ): Float {
         return texts.mapIndexed { index, text ->
-            val lines = text.splitText(paint, columnWidths[index] - (cellPadding * 2))
-            (lines.size * (paint.textSize + cellPadding)) + cellPadding
+            val lines = text.splitText(paint, columnWidths[index] - (cellHorizontalPadding * 2))
+            val linesCount = lines.size
+            (linesCount * paint.textSize) + (cellVerticalPadding * 2) + ((linesCount - 1) * cellVerticalPadding)
         }.maxOrNull() ?: 0f
     }
 
@@ -96,22 +99,26 @@ class TableComponent<FILTER : Any>(
         var maxHeight = 0f
 
         texts.forEachIndexed { index, text ->
-            val lines = text.splitText(paint, columnWidths[index] - (cellPadding * 2))
-            val cellHeight = (lines.size * (paint.textSize + cellPadding)) + cellPadding
+            val lines = text.splitText(paint, columnWidths[index] - (cellHorizontalPadding * 2))
+            val linesCount = lines.size
+
+            val cellHeight = (linesCount * paint.textSize) + (cellVerticalPadding * 2) + ((linesCount - 1) * cellVerticalPadding)
             maxHeight = maxOf(maxHeight, cellHeight)
 
             val align = if (isHeader) Paint.Align.LEFT else columns[index].alignment
-            val baseY = startY + paint.textSize + cellPadding
+            val baseY = startY + cellVerticalPadding + paint.textSize
 
             lines.forEachIndexed { lineIndex, line ->
                 val textWidth = paint.measureText(line)
                 val x = when (align) {
-                    Paint.Align.LEFT -> currentX + cellPadding
+                    Paint.Align.LEFT -> currentX + cellHorizontalPadding
                     Paint.Align.CENTER -> currentX + (columnWidths[index] / 2) - (textWidth / 2)
-                    Paint.Align.RIGHT -> currentX + columnWidths[index] - cellPadding - textWidth
+                    Paint.Align.RIGHT -> currentX + columnWidths[index] - cellHorizontalPadding - textWidth
                 }
 
-                canvas.drawText(line, x, baseY + (lineIndex * (paint.textSize + cellPadding)), paint)
+                val y = baseY + (lineIndex * (paint.textSize + cellVerticalPadding))
+
+                canvas.drawText(line, x, y, paint)
             }
 
             currentX += columnWidths[index]
