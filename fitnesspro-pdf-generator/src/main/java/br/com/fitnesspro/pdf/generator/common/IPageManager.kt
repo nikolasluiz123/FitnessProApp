@@ -9,6 +9,6 @@ interface IPageManager {
     var currentY: Float
 
     suspend fun ensureSpace(currentY: Float, heightNeeded: Float): Float
-    fun checkSpace(currentY: Float, heightNeeded: Float): Boolean
-    fun finish()
+    fun hasAvailableSpace(currentY: Float, heightNeeded: Float): Boolean
+    suspend fun finish()
 }

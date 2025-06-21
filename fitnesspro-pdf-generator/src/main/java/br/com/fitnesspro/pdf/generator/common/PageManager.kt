@@ -16,12 +16,10 @@ class PageManager(
 
     override lateinit var canvas: Canvas
     override lateinit var pageInfo: PdfDocument.PageInfo
-    private lateinit var currentPage: PdfDocument.Page
-
-    private var pageNumber = 0
-
     override var currentY: Float = 0f
 
+    private lateinit var currentPage: PdfDocument.Page
+    private var pageNumber = 0
     private val marginBottom = Margins.MARGIN_32.toFloat()
 
     suspend fun start() {
@@ -29,13 +27,13 @@ class PageManager(
         currentY = drawHeader()
     }
 
-    override fun finish() {
+    override suspend fun finish() {
         drawFooter()
         document.finishPage(currentPage)
     }
 
     override suspend fun ensureSpace(currentY: Float, heightNeeded: Float): Float {
-        return if (!checkSpace(currentY, heightNeeded)) {
+        return if (!hasAvailableSpace(currentY, heightNeeded)) {
             startNewPage()
             drawHeader()
         } else {
@@ -43,12 +41,14 @@ class PageManager(
         }
     }
 
-    override fun checkSpace(currentY: Float, heightNeeded: Float): Boolean {
-        val bottomLimit = pageInfo.pageHeight.toFloat() - marginBottom
+    override fun hasAvailableSpace(currentY: Float, heightNeeded: Float): Boolean {
+        val footerHeight = footer.getHeight(pageInfo)
+        val bottomLimit = pageInfo.pageHeight.toFloat() - marginBottom - footerHeight
+
         return (currentY + heightNeeded) <= bottomLimit
     }
 
-    private fun startNewPage() {
+    private suspend fun startNewPage() {
         if (::currentPage.isInitialized) {
             drawFooter()
             document.finishPage(currentPage)
@@ -65,7 +65,7 @@ class PageManager(
         return header.draw(canvas, pageInfo, pageNumber)
     }
 
-    private fun drawFooter() {
-        footer.draw(canvas, pageInfo, pageNumber)
+    private suspend fun drawFooter() {
+        footer.draw(canvas, pageInfo)
     }
 }

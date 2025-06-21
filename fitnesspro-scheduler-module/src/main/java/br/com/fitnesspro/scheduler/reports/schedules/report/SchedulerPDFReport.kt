@@ -31,6 +31,6 @@ class SchedulerPDFReport(
 
         this.body = SchedulerReportBody(sessions, filter)
 
-        this.footer = DefaultReportFooter()
+        this.footer = DefaultReportFooter(context)
     }
 }

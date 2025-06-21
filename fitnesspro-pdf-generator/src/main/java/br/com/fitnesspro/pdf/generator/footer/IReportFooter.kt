@@ -6,5 +6,7 @@ import br.com.fitnesspro.pdf.generator.common.IPreparable
 
 interface IReportFooter<FILTER: Any>: IPreparable<FILTER> {
 
-    fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo, totalPages: Int)
+    fun getHeight(pageInfo: PdfDocument.PageInfo): Float
+
+    suspend fun draw(canvas: Canvas, pageInfo: PdfDocument.PageInfo)
 }
