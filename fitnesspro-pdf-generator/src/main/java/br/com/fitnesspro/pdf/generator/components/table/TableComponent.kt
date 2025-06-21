@@ -119,7 +119,6 @@ class TableComponent<FILTER : Any>(
         }
 
         drawHorizontalLine(canvas, startX, startY + maxHeight, columnWidths)
-        drawVerticalLines(canvas, startX, startY, maxHeight, columnWidths)
     }
 
     private suspend fun drawHorizontalLine(
@@ -132,31 +131,6 @@ class TableComponent<FILTER : Any>(
         canvas.drawLineInPosition(
             Position(startX, y),
             Position(endX, y),
-            Paints.dashedLinePaint
-        )
-    }
-
-    private suspend fun drawVerticalLines(
-        canvas: Canvas,
-        startX: Float,
-        startY: Float,
-        height: Float,
-        columnWidths: List<Float>
-    ) {
-        var currentX = startX
-
-        columnWidths.forEach { width ->
-            canvas.drawLineInPosition(
-                Position(currentX, startY),
-                Position(currentX, startY + height),
-                Paints.dashedLinePaint
-            )
-            currentX += width
-        }
-
-        canvas.drawLineInPosition(
-            Position(currentX, startY),
-            Position(currentX, startY + height),
             Paints.dashedLinePaint
         )
     }
