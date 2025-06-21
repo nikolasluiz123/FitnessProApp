@@ -1,7 +1,8 @@
 package br.com.fitnesspro.scheduler.reports.schedules.sessions
 
 import android.content.Context
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_TIME_SHORT
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.filters.SchedulerReportFilter
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
@@ -35,21 +36,27 @@ class SchedulerReportPendingSchedulesSession(context: Context) : AbstractReportS
                         widthPercent = 0.4f
                     ),
                     Column(
-                        label = context.getString(SchedulerRes.string.scheduler_report_pending_schedules_session_column_datetime),
-                        widthPercent = 0.4f
+                        label = context.getString(SchedulerRes.string.scheduler_report_pending_schedules_session_column_date),
+                        widthPercent = 0.15f
+                    ),
+                    Column(
+                        label = context.getString(SchedulerRes.string.scheduler_report_pending_schedules_session_column_time),
+                        widthPercent = 0.2f
                     ),
                     Column(
                         label = context.getString(SchedulerRes.string.scheduler_report_pending_schedules_session_column_type),
-                        widthPercent = 0.2f
+                        widthPercent = 0.25f
                     )
                 ),
                 rows = tableData.map { tuple ->
-                    val start = tuple.dateTimeStart.format(DATE_TIME_SHORT, ZoneId.systemDefault())
-                    val end = tuple.dateTimeEnd.format(DATE_TIME_SHORT, ZoneId.systemDefault())
+                    val date = tuple.dateTimeStart.format(DATE, ZoneId.systemDefault())
+                    val timeStart = tuple.dateTimeStart.format(TIME, ZoneId.systemDefault())
+                    val timeEnd = tuple.dateTimeEnd.format(TIME, ZoneId.systemDefault())
 
                     listOf(
                         tuple.personName,
-                        context.getString(SchedulerRes.string.scheduler_report_label_period, start, end),
+                        date,
+                        context.getString(SchedulerRes.string.scheduler_report_label_period, timeStart, timeEnd),
                         tuple.compromiseType.getLabel(context)!!
                     )
                 }

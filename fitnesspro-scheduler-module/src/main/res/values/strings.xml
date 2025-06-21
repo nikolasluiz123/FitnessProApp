@@ -114,7 +114,8 @@
     <string name="schedulers_report_resume_session_label_cancelled">Cancelados</string>
     <string name="schedulers_report_resume_session_label_completed">Concluídos</string>
     <string name="scheduler_report_pending_schedules_session_column_name">Nome</string>
-    <string name="scheduler_report_pending_schedules_session_column_datetime">Período</string>
+    <string name="scheduler_report_pending_schedules_session_column_date">Data</string>
     <string name="scheduler_report_pending_schedules_session_column_type">Tipo</string>
     <string name="scheduler_report_label_period">%1$s até %2$s</string>
+    <string name="scheduler_report_pending_schedules_session_column_time">Horário</string>
 </resources>
