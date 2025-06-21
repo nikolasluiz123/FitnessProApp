@@ -17,7 +17,6 @@ class TableComponent<FILTER : Any>(
 ) : IReportComponent<FILTER> {
 
     private val paddingHorizontal = Margins.MARGIN_32.toFloat()
-    private val paddingTop = Margins.MARGIN_16.toFloat()
     private val cellPadding = Margins.MARGIN_4.toFloat()
 
     override suspend fun draw(pageManager: IPageManager, yStart: Float): Float {
@@ -26,7 +25,7 @@ class TableComponent<FILTER : Any>(
         val endX = pageWidth - paddingHorizontal
         val columnWidths = calculateColumnWidths(endX - startX)
 
-        var currentY = yStart + paddingTop
+        var currentY = yStart
 
         currentY = drawHeader(pageManager, startX, currentY, columnWidths)
 
