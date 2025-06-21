@@ -5,5 +5,6 @@ import android.graphics.Paint
 data class Column(
     val label: String,
     val widthPercent: Float,
-    val alignment: Paint.Align = Paint.Align.LEFT
+    val horizontalAlignment: Paint.Align = Paint.Align.LEFT,
+    val verticalAlignment: VerticalAlign = VerticalAlign.CENTER
 )

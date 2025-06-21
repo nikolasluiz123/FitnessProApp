@@ -96,17 +96,21 @@ class TableComponent<FILTER : Any>(
         isHeader: Boolean
     ) {
         var currentX = startX
-        var maxHeight = 0f
+        val rowHeight = estimateRowHeight(texts, paint, columnWidths)
 
         texts.forEachIndexed { index, text ->
             val lines = text.splitText(paint, columnWidths[index] - (cellHorizontalPadding * 2))
             val linesCount = lines.size
 
-            val cellHeight = (linesCount * paint.textSize) + (cellVerticalPadding * 2) + ((linesCount - 1) * cellVerticalPadding)
-            maxHeight = maxOf(maxHeight, cellHeight)
+            val align = if (isHeader) Paint.Align.LEFT else columns[index].horizontalAlignment
+            val verticalAlign = if (isHeader) VerticalAlign.CENTER else columns[index].verticalAlignment
 
-            val align = if (isHeader) Paint.Align.LEFT else columns[index].alignment
-            val baseY = startY + cellVerticalPadding + paint.textSize
+            val contentHeight = (linesCount * paint.textSize) + ((linesCount - 1) * cellVerticalPadding)
+            val baseY = when (verticalAlign) {
+                VerticalAlign.TOP -> startY + cellVerticalPadding + paint.textSize
+                VerticalAlign.CENTER -> startY + ((rowHeight - contentHeight) / 2) + paint.textSize
+                VerticalAlign.BOTTOM -> startY + rowHeight - contentHeight - cellVerticalPadding + paint.textSize
+            }
 
             lines.forEachIndexed { lineIndex, line ->
                 val textWidth = paint.measureText(line)
@@ -124,7 +128,7 @@ class TableComponent<FILTER : Any>(
             currentX += columnWidths[index]
         }
 
-        drawHorizontalLine(canvas, startX, startY + maxHeight, columnWidths)
+        drawHorizontalLine(canvas, startX, startY + rowHeight, columnWidths)
     }
 
     private suspend fun drawHorizontalLine(
