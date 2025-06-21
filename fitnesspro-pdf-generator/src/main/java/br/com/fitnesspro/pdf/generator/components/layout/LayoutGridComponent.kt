@@ -59,11 +59,11 @@ class LayoutGridComponent<FILTER : Any>(
         val columnWidth = usableWidth / columnCount
 
         return GridConfig(
-            pageWidth,
-            padding,
-            spacing,
-            columnWidth,
-            paddingTop = Margins.MARGIN_24.toFloat()
+            pageWidth = pageWidth,
+            horizontalPaddingStart = padding,
+            columnSpacing = spacing,
+            columnWidth = columnWidth,
+            paddingTop = Margins.MARGIN_8.toFloat()
         )
     }
 

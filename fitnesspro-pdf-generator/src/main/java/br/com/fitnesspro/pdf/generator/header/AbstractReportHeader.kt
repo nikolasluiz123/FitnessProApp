@@ -30,9 +30,9 @@ abstract class AbstractReportHeader<FILTER : Any>(protected val context: Context
 
         val (logoPosition, logoRect) = drawLogo(padding, canvas)
         val titlePosition = drawTitle(logoRect, logoPosition, canvas)
-        val titleLineStartPosition = drawTitleLine(titlePosition, pageWidth, padding, canvas)
+        drawTitleLine(titlePosition, pageWidth, padding, canvas)
 
-        return titleLineStartPosition.axisY
+        return logoRect.bottom
     }
 
     private fun drawLogo(padding: Float, canvas: Canvas): Pair<Position, RectF> {
@@ -67,7 +67,7 @@ abstract class AbstractReportHeader<FILTER : Any>(protected val context: Context
         return titlePosition
     }
 
-    private suspend fun drawTitleLine(titlePosition: Position, pageWidth: Int, padding: Float, canvas: Canvas): Position {
+    private suspend fun drawTitleLine(titlePosition: Position, pageWidth: Int, padding: Float, canvas: Canvas) {
         val lineStart = Position(
             axisX = titlePosition.axisX,
             axisY = titlePosition.axisY + Margins.MARGIN_8
@@ -82,8 +82,5 @@ abstract class AbstractReportHeader<FILTER : Any>(protected val context: Context
             endPosition = lineEnd,
             paint = Paints.titleLinePaint
         )
-
-        return lineStart
     }
-
 }

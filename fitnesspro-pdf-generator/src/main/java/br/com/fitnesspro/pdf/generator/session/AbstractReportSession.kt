@@ -18,7 +18,7 @@ abstract class AbstractReportSession<FILTER : Any>(
         val pageWidth = pageManager.pageInfo.pageWidth.toFloat()
         val paddingStart = Margins.MARGIN_32.toFloat()
 
-        val titleHeight = Paints.subtitlePaint.textSize + Margins.MARGIN_48
+        val titleHeight = Paints.subtitlePaint.textSize + Margins.MARGIN_8
         val lineHeight = Margins.MARGIN_8
         val headerHeight = titleHeight + lineHeight
 
@@ -42,7 +42,7 @@ abstract class AbstractReportSession<FILTER : Any>(
 
     private fun drawTitle(paddingStart: Float, yStart: Float, canvas: Canvas): Float {
         val titleX = paddingStart
-        val titleY = yStart + Paints.subtitlePaint.textSize + Margins.MARGIN_48
+        val titleY = yStart + Paints.subtitlePaint.textSize + Margins.MARGIN_8
 
         canvas.drawText(
             title,
