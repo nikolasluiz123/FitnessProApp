@@ -17,12 +17,13 @@ abstract class AbstractReportSession<FILTER : Any>(
     override suspend fun draw(pageManager: IPageManager, yStart: Float): Float {
         val pageWidth = pageManager.pageInfo.pageWidth.toFloat()
         val paddingStart = Margins.MARGIN_32.toFloat()
+        val newYStart = yStart + Margins.MARGIN_12.toFloat()
 
         val titleHeight = Paints.subtitlePaint.textSize + Margins.MARGIN_8
         val lineHeight = Margins.MARGIN_8
         val headerHeight = titleHeight + lineHeight
 
-        val currentY = pageManager.ensureSpace(yStart, headerHeight)
+        val currentY = pageManager.ensureSpace(newYStart, headerHeight)
 
         val titleY = drawTitle(paddingStart, currentY, pageManager.canvas)
         val lineY = drawLine(titleY, pageManager.canvas, paddingStart, pageWidth)
