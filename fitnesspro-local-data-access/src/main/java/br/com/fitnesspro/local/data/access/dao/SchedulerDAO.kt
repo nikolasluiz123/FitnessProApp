@@ -315,10 +315,15 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
             params.add(situation.name)
         }
 
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by s.date_time_start desc, s.date_time_end desc ")
+        }
+
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         return executeQuerySchedulerReportTuple(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
