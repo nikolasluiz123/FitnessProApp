@@ -53,7 +53,15 @@ class TableComponent<FILTER : Any>(
 
         val y = pageManager.ensureSpace(startY, headerHeight)
 
-        drawRowContent(pageManager.canvas, columns.map { it.label }, startX, y, columnWidths, Paints.subtitlePaint, isHeader = true)
+        drawRowContent(
+            canvas = pageManager.canvas,
+            texts = columns.map { it.label },
+            startX = startX,
+            startY = y,
+            columnWidths = columnWidths,
+            paint = Paints.tableColumnLabelPaint,
+            isHeader = true
+        )
 
         return y + headerHeight
     }
@@ -69,7 +77,15 @@ class TableComponent<FILTER : Any>(
 
         val y = pageManager.ensureSpace(startY, rowHeight)
 
-        drawRowContent(pageManager.canvas, row, startX, y, columnWidths, Paints.defaultValuePaint, isHeader = false)
+        drawRowContent(
+            canvas = pageManager.canvas,
+            texts = row,
+            startX = startX,
+            startY = y,
+            columnWidths = columnWidths,
+            paint = Paints.defaultValuePaint,
+            isHeader = false
+        )
 
         return y + rowHeight
     }

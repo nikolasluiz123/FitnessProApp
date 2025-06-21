@@ -21,6 +21,13 @@ object Paints {
         }
     }
 
+    val tableColumnLabelPaint by lazy {
+        TextPaint().apply {
+            color = Color.GRAY
+            textSize = 14f
+        }
+    }
+
     val titleLinePaint by lazy {
         Paint().apply {
             color = Color.GRAY
