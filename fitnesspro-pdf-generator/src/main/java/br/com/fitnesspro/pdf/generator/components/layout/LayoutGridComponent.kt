@@ -1,14 +1,13 @@
 package br.com.fitnesspro.pdf.generator.components.layout
 
 import android.graphics.pdf.PdfDocument
-import android.text.TextPaint
+import androidx.core.graphics.withSave
+import androidx.core.graphics.withTranslation
 import br.com.fitnesspro.pdf.generator.common.IPageManager
 import br.com.fitnesspro.pdf.generator.components.IReportComponent
-import br.com.fitnesspro.pdf.generator.extensions.drawTextInPosition
-import br.com.fitnesspro.pdf.generator.extensions.splitText
+import br.com.fitnesspro.pdf.generator.extensions.createStaticLayout
 import br.com.fitnesspro.pdf.generator.utils.Margins
 import br.com.fitnesspro.pdf.generator.utils.Paints
-import br.com.fitnesspro.pdf.generator.utils.Position
 
 class LayoutGridComponent<FILTER : Any>(
     private val items: List<Pair<String, String?>>,
@@ -17,6 +16,7 @@ class LayoutGridComponent<FILTER : Any>(
 
     override suspend fun draw(pageManager: IPageManager, yStart: Float): Float {
         val config = calculateGridConfig(pageManager.pageInfo)
+        val canvas = pageManager.canvas
 
         var columnIndex = 0
         var rowStartY = yStart + config.paddingTop
@@ -25,17 +25,32 @@ class LayoutGridComponent<FILTER : Any>(
         items.forEachIndexed { index, (label, value) ->
             val startX = config.horizontalPaddingStart + (columnIndex * (config.columnWidth + config.columnSpacing))
 
-            val labelHeight = Paints.defaultLabelPaint.textSize + Margins.MARGIN_4
-            val valueHeight = estimateTextHeight(value ?: "", Paints.defaultValuePaint, config.columnWidth)
-            val totalCellHeight = labelHeight + valueHeight + Margins.MARGIN_8
+            val labelLayout = label.createStaticLayout(
+                paint = Paints.defaultLabelPaint,
+                width = config.columnWidth.toInt()
+            )
+
+            val valueLayout = (value ?: "").createStaticLayout(
+                paint = Paints.defaultValuePaint,
+                width = config.columnWidth.toInt()
+            )
+
+            val labelHeight = labelLayout.height.toFloat()
+            val valueHeight = valueLayout.height.toFloat()
+
+            val totalCellHeight = labelHeight + valueHeight + Margins.MARGIN_16
 
             rowStartY = pageManager.ensureSpace(rowStartY, totalCellHeight)
 
-            val labelPos = Position(startX, rowStartY)
-            val valuePos = Position(startX, rowStartY + labelHeight)
+            canvas.withTranslation(startX, rowStartY) {
+                labelLayout.draw(this)
+            }
 
-            pageManager.canvas.drawTextInPosition(label, labelPos, Paints.defaultLabelPaint, config.columnWidth)
-            pageManager.canvas.drawTextInPosition(value ?: "", valuePos, Paints.defaultValuePaint, config.columnWidth)
+            canvas.withSave {
+                val valueY = rowStartY + labelHeight + Margins.MARGIN_4
+                translate(startX, valueY)
+                valueLayout.draw(this)
+            }
 
             maxRowHeight = maxOf(maxRowHeight, totalCellHeight)
 
@@ -47,7 +62,7 @@ class LayoutGridComponent<FILTER : Any>(
             }
         }
 
-        return rowStartY - config.paddingTop
+        return rowStartY - Margins.MARGIN_16
     }
 
     private fun calculateGridConfig(pageInfo: PdfDocument.PageInfo): GridConfig {
@@ -63,12 +78,7 @@ class LayoutGridComponent<FILTER : Any>(
             horizontalPaddingStart = padding,
             columnSpacing = spacing,
             columnWidth = columnWidth,
-            paddingTop = Margins.MARGIN_24.toFloat()
+            paddingTop = Margins.MARGIN_16.toFloat()
         )
-    }
-
-    private fun estimateTextHeight(text: String, paint: TextPaint, columnWidth: Float): Float {
-        val lines = text.splitText(paint, columnWidth)
-        return lines.size * (paint.textSize + Margins.MARGIN_4)
     }
 }

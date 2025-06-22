@@ -1,6 +1,9 @@
 package br.com.fitnesspro.pdf.generator.extensions
 
 import android.graphics.Paint
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
 
 fun String.splitText(paint: Paint, maxWidth: Float): List<String> {
     val words = this.split(" ")
@@ -20,3 +23,10 @@ fun String.splitText(paint: Paint, maxWidth: Float): List<String> {
     return wrappedText.toString().split("\n")
 }
 
+fun String.createStaticLayout(paint: TextPaint, width: Int): StaticLayout {
+    return StaticLayout.Builder.obtain(this, 0, length, paint, width)
+        .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+        .setLineSpacing(0f, 1.0f)
+        .setIncludePad(false)
+        .build()
+}
