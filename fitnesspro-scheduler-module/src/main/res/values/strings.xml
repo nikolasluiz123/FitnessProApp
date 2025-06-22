@@ -131,4 +131,13 @@
     <string name="scheduler_report_cancelled_schedules_session_column_time">Horário</string>
     <string name="scheduler_report_cancelled_schedules_session_column_type">Tipo</string>
     <string name="scheduler_report_cancelled_schedules_session_column_cancelled_by">Cancelado por</string>
+    <string name="scheduler_reports_subtitle">Agendamentos</string>
+    <string name="new_scheduler_report_dialog_loading_label">Gerando Relatório...</string>
+    <string name="new_scheduler_report_dialog_title">Novo Relatório</string>
+    <string name="new_scheduler_report_dialog_name_label">Nome *</string>
+    <string name="new_scheduler_report_dialog_date_start_label">Período Inicial</string>
+    <string name="new_scheduler_report_dialog_date_end_label">Período Final</string>
+    <string name="new_scheduler_report_dialog_cancel_button">Cancelar</string>
+    <string name="new_scheduler_report_dialog_generate_button">Gerar Relatório</string>
+    <string name="enum_validated_scheduler_report_fields_name">Nome</string>
 </resources>

@@ -9,6 +9,7 @@ import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.ApplicationRepository
 import br.com.fitnesspro.common.repository.DeviceRepository
 import br.com.fitnesspro.common.repository.PersonRepository
+import br.com.fitnesspro.common.repository.ReportRepository
 import br.com.fitnesspro.common.repository.ServiceTokenRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.repository.sync.exportation.PersonAcademyTimeExportationRepository
@@ -26,6 +27,7 @@ import br.com.fitnesspro.local.data.access.dao.ApplicationDAO
 import br.com.fitnesspro.local.data.access.dao.DeviceDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
+import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.ServiceTokenDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
@@ -232,6 +234,19 @@ class SingletonCommonRepositoryModule {
             deviceRepository = deviceRepository,
             applicationRepository = applicationRepository,
             serviceTokenDAO = serviceTokenDAO,
+        )
+    }
+
+    @Provides
+    fun provideReportRepository(
+        @ApplicationContext context: Context,
+        reportDAO: ReportDAO,
+        personRepository: PersonRepository
+    ): ReportRepository {
+        return ReportRepository(
+            context = context,
+            reportDAO = reportDAO,
+            personRepository = personRepository
         )
     }
 }

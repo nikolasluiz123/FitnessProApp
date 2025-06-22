@@ -123,4 +123,6 @@
     <string name="day_week_exercises_title">Treino de %s</string>
     <string name="day_week_exercises_subtitle_over_due">Vencido em %s</string>
     <string name="day_week_exercises_subtitle">%s até %s</string>
+    <string name="generated_reports_title">Relatórios Gerados</string>
+    <string name="generated_reports_subtitle_schedulers_report">Agendamentos</string>
 </resources>

@@ -15,5 +15,6 @@ data class SchedulerUIState(
     val selectedYearMonth: YearMonth = yearMonthNow(),
     val onSelectYearMonth: (newYearMonth: YearMonth) -> Unit = { },
     val isVisibleFabRecurrentScheduler: Boolean = false,
-    val messageDialogState: MessageDialogState = MessageDialogState()
+    val messageDialogState: MessageDialogState = MessageDialogState(),
+    val newSchedulerReportDialogUIState: NewSchedulerReportDialogUIState = NewSchedulerReportDialogUIState()
 )

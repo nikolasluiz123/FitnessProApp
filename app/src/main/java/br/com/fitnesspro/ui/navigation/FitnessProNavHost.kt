@@ -6,8 +6,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
+import br.com.fitnesspro.common.ui.navigation.generatedReportsScreen
 import br.com.fitnesspro.common.ui.navigation.loginScreen
 import br.com.fitnesspro.common.ui.navigation.loginScreenRoute
+import br.com.fitnesspro.common.ui.navigation.navigateToGeneratedReportsScreen
 import br.com.fitnesspro.common.ui.navigation.navigateToLoginScreen
 import br.com.fitnesspro.common.ui.navigation.navigateToRegisterAcademyScreen
 import br.com.fitnesspro.common.ui.navigation.navigateToRegisterUserScreen
@@ -90,7 +92,8 @@ fun FitnessProNavHost(
             onDayClick = navController::navigateToSchedulerDetailsScreen,
             onNavigateToCompromise = navController::navigateToCompromiseScreen,
             onNavigateToConfig = navController::navigateToSchedulerConfigScreen,
-            onNavigateToChatHistory = navController::navigateToChatHistoryScreen
+            onNavigateToChatHistory = navController::navigateToChatHistoryScreen,
+            onNavigateToReports = navController::navigateToGeneratedReportsScreen
         )
 
         schedulerDetailsScreen(
@@ -132,6 +135,10 @@ fun FitnessProNavHost(
 
         exercisesScreen(
             onBackClick = navController::popBackStack
+        )
+
+        generatedReportsScreen(
+            onNavigateBackClick = navController::popBackStack
         )
     }
 }

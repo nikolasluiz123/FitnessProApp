@@ -15,6 +15,11 @@ internal val defaultSchedulerScreenState = SchedulerUIState(
     title = "Agenda"
 )
 
+internal val personalSchedulerScreenState = SchedulerUIState(
+    title = "Agenda",
+    isVisibleFabRecurrentScheduler = true
+)
+
 internal val defaultDayStyle = DayStyle(
     backgroundColor = RED_400,
     textStyle = LabelCalendarDayTextStyle,

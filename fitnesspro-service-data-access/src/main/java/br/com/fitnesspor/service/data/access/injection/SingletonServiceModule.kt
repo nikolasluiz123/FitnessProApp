@@ -3,6 +3,7 @@ package br.com.fitnesspor.service.data.access.injection
 import br.com.fitnesspor.service.data.access.service.general.IAcademyService
 import br.com.fitnesspor.service.data.access.service.general.IAuthenticationService
 import br.com.fitnesspor.service.data.access.service.general.IPersonService
+import br.com.fitnesspor.service.data.access.service.general.IReportService
 import br.com.fitnesspor.service.data.access.service.log.IExecutionLogService
 import br.com.fitnesspor.service.data.access.service.scheduler.ISchedulerService
 import br.com.fitnesspor.service.data.access.service.workout.IExerciseService
@@ -50,6 +51,11 @@ class SingletonServiceModule {
     @Provides
     fun provideWorkoutService(retrofit: Retrofit): IWorkoutService {
         return retrofit.create(IWorkoutService::class.java)
+    }
+
+    @Provides
+    fun provideReportService(retrofit: Retrofit): IReportService {
+        return retrofit.create(IReportService::class.java)
     }
 
 }

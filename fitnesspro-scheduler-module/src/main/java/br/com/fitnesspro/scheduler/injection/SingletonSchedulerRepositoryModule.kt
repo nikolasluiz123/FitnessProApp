@@ -1,12 +1,15 @@
 package br.com.fitnesspro.scheduler.injection
 
 import android.content.Context
+import br.com.fitnesspor.service.data.access.webclient.general.ReportWebClient
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
+import br.com.fitnesspro.local.data.access.dao.SchedulerReportDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.scheduler.repository.SchedulerReportRepository
@@ -86,11 +89,17 @@ class SingletonSchedulerRepositoryModule {
     @Provides
     fun provideSchedulerReportRepository(
         @ApplicationContext context: Context,
-        schedulerDAO: SchedulerDAO
+        schedulerDAO: SchedulerDAO,
+        schedulerReportDAO: SchedulerReportDAO,
+        reportDAO: ReportDAO,
+        reportWebClient: ReportWebClient
     ): SchedulerReportRepository {
         return SchedulerReportRepository(
             context = context,
-            schedulerDAO = schedulerDAO
+            schedulerDAO = schedulerDAO,
+            schedulerReportDAO = schedulerReportDAO,
+            reportDAO = reportDAO,
+            reportWebClient = reportWebClient
         )
     }
 
