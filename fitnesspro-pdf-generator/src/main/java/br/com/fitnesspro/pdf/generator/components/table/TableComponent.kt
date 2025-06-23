@@ -1,163 +1,139 @@
 package br.com.fitnesspro.pdf.generator.components.table
 
-import android.graphics.Canvas
 import android.graphics.Paint
+import android.text.Layout
+import android.text.StaticLayout
 import android.text.TextPaint
+import androidx.core.graphics.withTranslation
 import br.com.fitnesspro.pdf.generator.common.IPageManager
 import br.com.fitnesspro.pdf.generator.components.IReportComponent
-import br.com.fitnesspro.pdf.generator.extensions.drawLineInPosition
-import br.com.fitnesspro.pdf.generator.extensions.splitText
+import br.com.fitnesspro.pdf.generator.components.table.enums.VerticalAlign
+import br.com.fitnesspro.pdf.generator.components.table.layout.CellLayout
+import br.com.fitnesspro.pdf.generator.components.table.layout.ColumnLayout
+import br.com.fitnesspro.pdf.generator.components.table.layout.RowLayout
+import br.com.fitnesspro.pdf.generator.components.table.layout.TableLayoutCache
 import br.com.fitnesspro.pdf.generator.utils.Margins
 import br.com.fitnesspro.pdf.generator.utils.Paints
-import br.com.fitnesspro.pdf.generator.utils.Position
+import kotlin.math.max
 
 class TableComponent<FILTER : Any>(
-    private val columns: List<Column>,
+    private val columnLayouts: List<ColumnLayout>,
     private val rows: List<List<String>>
 ) : IReportComponent<FILTER> {
 
     private val paddingHorizontal = Margins.MARGIN_32.toFloat()
-
     private val cellHorizontalPadding = Margins.MARGIN_4.toFloat()
     private val cellVerticalPadding = Margins.MARGIN_8.toFloat()
 
+    private var tableLayoutCache: TableLayoutCache? = null
+
     override suspend fun draw(pageManager: IPageManager, yStart: Float): Float {
-        val pageWidth = pageManager.pageInfo.pageWidth.toFloat()
-        val startX = paddingHorizontal
-        val endX = pageWidth - paddingHorizontal
-        val columnWidths = calculateColumnWidths(endX - startX)
+        if (tableLayoutCache == null) {
+            measureTable(pageManager)
+        }
 
         var currentY = yStart
+        val startX = paddingHorizontal
+        val columnWidths = calculateColumnWidths(pageManager.pageInfo.pageWidth.toFloat() - (paddingHorizontal * 2))
 
-        currentY = drawHeader(pageManager, startX, currentY, columnWidths)
+        tableLayoutCache?.header?.let { headerLayout ->
+            currentY = pageManager.ensureSpace(currentY, headerLayout.height)
+            drawRow(pageManager, headerLayout, startX, currentY, columnWidths)
+            currentY += headerLayout.height
+        }
 
-        rows.forEach { row ->
-            currentY = drawRow(pageManager, row, startX, currentY, columnWidths)
+        tableLayoutCache?.rows?.forEach { rowLayout ->
+            currentY = pageManager.ensureSpace(currentY, rowLayout.height)
+            drawRow(pageManager, rowLayout, startX, currentY, columnWidths)
+            currentY += rowLayout.height
         }
 
         return currentY
     }
 
-    private fun calculateColumnWidths(totalWidth: Float): List<Float> {
-        val totalPercent = columns.sumOf { it.widthPercent.toDouble() }.toFloat()
-        return columns.map { (it.widthPercent / totalPercent) * totalWidth }
-    }
+    private fun measureTable(pageManager: IPageManager) {
+        val totalWidth = pageManager.pageInfo.pageWidth.toFloat() - (paddingHorizontal * 2)
+        val columnWidths = calculateColumnWidths(totalWidth)
 
-    private suspend fun drawHeader(
-        pageManager: IPageManager,
-        startX: Float,
-        startY: Float,
-        columnWidths: List<Float>
-    ): Float {
-        val headerHeight = estimateRowHeight(columns.map { it.label }, Paints.subtitlePaint, columnWidths)
+        val headerTexts = columnLayouts.map { it.label }
+        val headerLayout = createRowLayout(headerTexts, columnWidths, Paints.tableColumnLabelPaint, isHeader = true)
 
-        val y = pageManager.ensureSpace(startY, headerHeight)
-
-        drawRowContent(
-            canvas = pageManager.canvas,
-            texts = columns.map { it.label },
-            startX = startX,
-            startY = y,
-            columnWidths = columnWidths,
-            paint = Paints.tableColumnLabelPaint,
-            isHeader = true
-        )
-
-        return y + headerHeight
-    }
-
-    private suspend fun drawRow(
-        pageManager: IPageManager,
-        row: List<String>,
-        startX: Float,
-        startY: Float,
-        columnWidths: List<Float>
-    ): Float {
-        val rowHeight = estimateRowHeight(row, Paints.defaultValuePaint, columnWidths)
-
-        val y = pageManager.ensureSpace(startY, rowHeight)
-
-        drawRowContent(
-            canvas = pageManager.canvas,
-            texts = row,
-            startX = startX,
-            startY = y,
-            columnWidths = columnWidths,
-            paint = Paints.defaultValuePaint,
-            isHeader = false
-        )
-
-        return y + rowHeight
-    }
-
-    private fun estimateRowHeight(
-        texts: List<String>,
-        paint: TextPaint,
-        columnWidths: List<Float>
-    ): Float {
-        return texts.mapIndexed { index, text ->
-            val lines = text.splitText(paint, columnWidths[index] - (cellHorizontalPadding * 2))
-            val linesCount = lines.size
-            (linesCount * paint.textSize) + (cellVerticalPadding * 2) + ((linesCount - 1) * cellVerticalPadding)
-        }.maxOrNull() ?: 0f
-    }
-
-    private suspend fun drawRowContent(
-        canvas: Canvas,
-        texts: List<String>,
-        startX: Float,
-        startY: Float,
-        columnWidths: List<Float>,
-        paint: TextPaint,
-        isHeader: Boolean
-    ) {
-        var currentX = startX
-        val rowHeight = estimateRowHeight(texts, paint, columnWidths)
-
-        texts.forEachIndexed { index, text ->
-            val lines = text.splitText(paint, columnWidths[index] - (cellHorizontalPadding * 2))
-            val linesCount = lines.size
-
-            val align = if (isHeader) Paint.Align.LEFT else columns[index].horizontalAlignment
-            val verticalAlign = if (isHeader) VerticalAlign.CENTER else columns[index].verticalAlignment
-
-            val contentHeight = (linesCount * paint.textSize) + ((linesCount - 1) * cellVerticalPadding)
-            val baseY = when (verticalAlign) {
-                VerticalAlign.TOP -> startY + cellVerticalPadding + paint.textSize
-                VerticalAlign.CENTER -> startY + ((rowHeight - contentHeight) / 2) + paint.textSize
-                VerticalAlign.BOTTOM -> startY + rowHeight - contentHeight - cellVerticalPadding + paint.textSize
-            }
-
-            lines.forEachIndexed { lineIndex, line ->
-                val textWidth = paint.measureText(line)
-                val x = when (align) {
-                    Paint.Align.LEFT -> currentX + cellHorizontalPadding
-                    Paint.Align.CENTER -> currentX + (columnWidths[index] / 2) - (textWidth / 2)
-                    Paint.Align.RIGHT -> currentX + columnWidths[index] - cellHorizontalPadding - textWidth
-                }
-
-                val y = baseY + (lineIndex * (paint.textSize + cellVerticalPadding))
-
-                canvas.drawText(line, x, y, paint)
-            }
-
-            currentX += columnWidths[index]
+        val rowLayouts = rows.map { rowTexts ->
+            createRowLayout(rowTexts, columnWidths, Paints.defaultValuePaint, isHeader = false)
         }
 
-        drawHorizontalLine(canvas, startX, startY + rowHeight, columnWidths)
+        tableLayoutCache = TableLayoutCache(header = headerLayout, rows = rowLayouts)
     }
 
-    private suspend fun drawHorizontalLine(
-        canvas: Canvas,
+    private fun createRowLayout(texts: List<String>, columnWidths: List<Float>, paint: TextPaint, isHeader: Boolean): RowLayout {
+        var maxRowHeight = 0f
+
+        val cellLayouts = texts.mapIndexed { index, text ->
+            val colWidth = columnWidths.getOrNull(index) ?: 0f
+            val textWidth = (colWidth - (cellHorizontalPadding * 2)).toInt().coerceAtLeast(0)
+
+            val horizontalAlignment = if (isHeader) Paint.Align.LEFT else columnLayouts.getOrNull(index)?.horizontalAlignment ?: Paint.Align.LEFT
+            val layoutAlign = when (horizontalAlignment) {
+                Paint.Align.CENTER -> Layout.Alignment.ALIGN_CENTER
+                Paint.Align.RIGHT -> Layout.Alignment.ALIGN_OPPOSITE
+                else -> Layout.Alignment.ALIGN_NORMAL
+            }
+
+            val staticLayout = StaticLayout.Builder.obtain(text, 0, text.length, paint, textWidth)
+                .setAlignment(layoutAlign)
+                .build()
+
+            maxRowHeight = max(maxRowHeight, staticLayout.height.toFloat())
+
+            val verticalAlign = if (isHeader) VerticalAlign.CENTER else columnLayouts.getOrNull(index)?.verticalAlignment ?: VerticalAlign.CENTER
+            CellLayout(staticLayout, verticalAlign)
+        }
+
+        val finalRowHeight = maxRowHeight + (cellVerticalPadding * 2)
+
+        return RowLayout(cells = cellLayouts, height = finalRowHeight)
+    }
+
+    private fun drawRow(
+        pageManager: IPageManager,
+        rowLayout: RowLayout,
         startX: Float,
-        y: Float,
+        startY: Float,
         columnWidths: List<Float>
     ) {
+        val canvas = pageManager.canvas
+        var currentX = startX
+
+        rowLayout.cells.forEachIndexed { index, cellLayout ->
+            val colWidth = columnWidths.getOrNull(index) ?: 0f
+
+            if (colWidth > 0f) {
+                val contentHeight = cellLayout.layout.height.toFloat()
+
+                val yPos = when (cellLayout.verticalAlign) {
+                    VerticalAlign.TOP -> startY + cellVerticalPadding
+                    VerticalAlign.CENTER -> startY + (rowLayout.height - contentHeight) / 2
+                    VerticalAlign.BOTTOM -> startY + rowLayout.height - contentHeight - cellVerticalPadding
+                }
+
+                canvas.withTranslation(currentX + cellHorizontalPadding, yPos) {
+                    cellLayout.layout.draw(this)
+                }
+            }
+
+            currentX += colWidth
+        }
+
+        val lineY = startY + rowLayout.height
         val endX = startX + columnWidths.sum()
-        canvas.drawLineInPosition(
-            Position(startX, y),
-            Position(endX, y),
-            Paints.dashedLinePaint
-        )
+        canvas.drawLine(startX, lineY, endX, lineY, Paints.dashedLinePaint)
+    }
+
+    private fun calculateColumnWidths(totalWidth: Float): List<Float> {
+        val totalPercent = columnLayouts.sumOf { it.widthPercent.toDouble() }.toFloat()
+        if (totalPercent == 0f) {
+            return if (columnLayouts.isNotEmpty()) List(columnLayouts.size) { totalWidth / columnLayouts.size } else emptyList()
+        }
+        return columnLayouts.map { (it.widthPercent / totalPercent) * totalWidth }
     }
 }

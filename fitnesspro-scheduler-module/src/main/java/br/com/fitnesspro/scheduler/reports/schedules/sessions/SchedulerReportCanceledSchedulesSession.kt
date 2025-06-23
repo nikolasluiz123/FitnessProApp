@@ -7,7 +7,7 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.filters.SchedulerReportFilter
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
-import br.com.fitnesspro.pdf.generator.components.table.Column
+import br.com.fitnesspro.pdf.generator.components.table.layout.ColumnLayout
 import br.com.fitnesspro.pdf.generator.components.table.TableComponent
 import br.com.fitnesspro.pdf.generator.session.AbstractReportSession
 import br.com.fitnesspro.scheduler.reports.injection.ISchedulerReportsEntryPoint
@@ -35,24 +35,24 @@ class SchedulerReportCanceledSchedulesSession(context: Context) : AbstractReport
 
         this.components = listOf(
             TableComponent<SchedulerReportFilter>(
-                columns = listOf(
-                    Column(
+                columnLayouts = listOf(
+                    ColumnLayout(
                         label = context.getString(SchedulerRes.string.scheduler_report_cancelled_schedules_session_column_name),
                         widthPercent = 0.2f
                     ),
-                    Column(
+                    ColumnLayout(
                         label = context.getString(SchedulerRes.string.scheduler_report_cancelled_schedules_session_column_date),
                         widthPercent = 0.15f
                     ),
-                    Column(
+                    ColumnLayout(
                         label = context.getString(SchedulerRes.string.scheduler_report_cancelled_schedules_session_column_time),
                         widthPercent = 0.2f
                     ),
-                    Column(
+                    ColumnLayout(
                         label = context.getString(SchedulerRes.string.scheduler_report_cancelled_schedules_session_column_type),
                         widthPercent = 0.25f
                     ),
-                    Column(
+                    ColumnLayout(
                         label = context.getString(SchedulerRes.string.scheduler_report_cancelled_schedules_session_column_cancelled_by),
                         widthPercent = 0.2f
                     )
