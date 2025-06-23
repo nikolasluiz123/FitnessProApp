@@ -23,10 +23,15 @@ fun String.splitText(paint: Paint, maxWidth: Float): List<String> {
     return wrappedText.toString().split("\n")
 }
 
-fun String.createStaticLayout(paint: TextPaint, width: Int): StaticLayout {
+fun String.createStaticLayout(
+    paint: TextPaint,
+    width: Int,
+    alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL,
+    includePad: Boolean = true
+): StaticLayout {
     return StaticLayout.Builder.obtain(this, 0, length, paint, width)
-        .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+        .setAlignment(alignment)
         .setLineSpacing(0f, 1.0f)
-        .setIncludePad(false)
+        .setIncludePad(includePad)
         .build()
 }

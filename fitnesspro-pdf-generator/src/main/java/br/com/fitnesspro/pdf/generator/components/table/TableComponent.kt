@@ -2,7 +2,6 @@ package br.com.fitnesspro.pdf.generator.components.table
 
 import android.graphics.Paint
 import android.text.Layout
-import android.text.StaticLayout
 import android.text.TextPaint
 import androidx.core.graphics.withTranslation
 import br.com.fitnesspro.pdf.generator.common.IPageManager
@@ -12,6 +11,7 @@ import br.com.fitnesspro.pdf.generator.components.table.layout.CellLayout
 import br.com.fitnesspro.pdf.generator.components.table.layout.ColumnLayout
 import br.com.fitnesspro.pdf.generator.components.table.layout.RowLayout
 import br.com.fitnesspro.pdf.generator.components.table.layout.TableLayoutCache
+import br.com.fitnesspro.pdf.generator.extensions.createStaticLayout
 import br.com.fitnesspro.pdf.generator.utils.Margins
 import br.com.fitnesspro.pdf.generator.utils.Paints
 import kotlin.math.max
@@ -79,9 +79,11 @@ class TableComponent<FILTER : Any>(
                 else -> Layout.Alignment.ALIGN_NORMAL
             }
 
-            val staticLayout = StaticLayout.Builder.obtain(text, 0, text.length, paint, textWidth)
-                .setAlignment(layoutAlign)
-                .build()
+            val staticLayout = text.createStaticLayout(
+                paint = paint,
+                width = textWidth,
+                alignment = layoutAlign
+            )
 
             maxRowHeight = max(maxRowHeight, staticLayout.height.toFloat())
 

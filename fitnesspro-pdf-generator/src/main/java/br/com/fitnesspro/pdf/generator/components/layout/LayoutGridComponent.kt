@@ -27,12 +27,14 @@ class LayoutGridComponent<FILTER : Any>(
 
             val labelLayout = label.createStaticLayout(
                 paint = Paints.defaultLabelPaint,
-                width = config.columnWidth.toInt()
+                width = config.columnWidth.toInt(),
+                includePad = false
             )
 
             val valueLayout = (value ?: "").createStaticLayout(
                 paint = Paints.defaultValuePaint,
-                width = config.columnWidth.toInt()
+                width = config.columnWidth.toInt(),
+                includePad = false
             )
 
             val labelHeight = labelLayout.height.toFloat()
