@@ -37,6 +37,7 @@ import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.filter.SimpleFilter
 import br.com.fitnesspro.compose.components.list.LazyVerticalList
+import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.extensions.openPDFReader
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -86,6 +87,8 @@ fun GeneratedReportsScreen(
                         onClick = {
                             onDeleteAllReportsClick?.onExecute(
                                 onSuccess = {
+                                    state.onToggleLoading()
+
                                     coroutineScope.launch {
                                         snackbarHostState.showSnackbar(
                                             message = context.getString(R.string.generated_reports_all_reports_deleted_success_message)
@@ -135,6 +138,7 @@ fun GeneratedReportsScreen(
             }
 
             CustomHeader(state)
+            FitnessProLinearProgressIndicator(state.showLoading)
 
             ReportsList(
                 state = state,
@@ -195,9 +199,13 @@ private fun ReportsList(
                     context.openPDFReader(it.filePath!!)
                 },
                 onDeleteClick = {
+                    state.onToggleLoading()
+
                     onDeleteReportClick?.onExecute(
                         report = it,
                         onSuccess = {
+                            state.onToggleLoading()
+
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar(
                                     message = context.getString(R.string.generated_reports_report_deleted_success_message)

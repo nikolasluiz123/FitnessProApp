@@ -42,13 +42,13 @@ interface IReportService {
         @Query("pageInfos") pageInfos: String
     ): Response<ImportationServiceResponse<SchedulerReportDTO>>
 
-    @DELETE("$REPORT/$DELETE_SCHEDULER_REPORT")
+    @DELETE("$REPORT$DELETE_SCHEDULER_REPORT")
     suspend fun deleteSchedulerReport(
         @Header("Authorization") token: String,
         @Path("reportId") reportId: String
     ): Response<FitnessProServiceResponse>
 
-    @DELETE("$REPORT/$DELETE_ALL_SCHEDULER_REPORT")
+    @DELETE("$REPORT$DELETE_ALL_SCHEDULER_REPORT")
     suspend fun deleteAllSchedulerReport(
         @Header("Authorization") token: String,
     ): Response<FitnessProServiceResponse>

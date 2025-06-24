@@ -4,6 +4,7 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
+import br.com.fitnesspor.service.data.access.webclient.general.ReportWebClient
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.ApplicationRepository
@@ -241,12 +242,14 @@ class SingletonCommonRepositoryModule {
     fun provideReportRepository(
         @ApplicationContext context: Context,
         reportDAO: ReportDAO,
-        personRepository: PersonRepository
+        personRepository: PersonRepository,
+        reportWebClient: ReportWebClient
     ): ReportRepository {
         return ReportRepository(
             context = context,
             reportDAO = reportDAO,
-            personRepository = personRepository
+            personRepository = personRepository,
+            reportWebClient = reportWebClient
         )
     }
 }

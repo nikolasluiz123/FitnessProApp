@@ -126,4 +126,6 @@
     <string name="generated_reports_title">Relatórios Gerados</string>
     <string name="generated_reports_subtitle_schedulers_report">Agendamentos</string>
     <string name="generated_reports_label_storage_size">Armazenamento Utilizado: %1$s</string>
+    <string name="network_required_delete_report">Para deletar relatórios é necessário ter conexão com a internet. Por favor, verifique sua conexão e tente novamente.</string>
+    <string name="generated_reports_delete_all_reports_confirmation_message">Tem certeza de que deseja deletar permanentemente TODOS os seus relatórios? Essa ação não poderá ser desfeita.</string>
 </resources>

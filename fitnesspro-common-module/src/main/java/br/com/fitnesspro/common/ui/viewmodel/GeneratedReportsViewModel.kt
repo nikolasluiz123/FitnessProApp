@@ -8,7 +8,10 @@ import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.navigation.GeneratedReportsScreenArgs
 import br.com.fitnesspro.common.ui.navigation.generatedReportsArguments
 import br.com.fitnesspro.common.ui.state.GeneratedReportsUIState
+import br.com.fitnesspro.common.usecase.report.DeleteAllReportsUseCase
+import br.com.fitnesspro.common.usecase.report.DeleteReportUseCase
 import br.com.fitnesspro.compose.components.filter.SimpleFilterState
+import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.toReadableFileSize
@@ -26,6 +29,8 @@ class GeneratedReportsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val globalEvents: GlobalEvents,
     private val reportRepository: ReportRepository,
+    private val deleteReportUseCase: DeleteReportUseCase,
+    private val deleteAllReportsUseCase: DeleteAllReportsUseCase,
     savedStateHandle: SavedStateHandle
 ): FitnessProViewModel() {
 
@@ -127,25 +132,40 @@ class GeneratedReportsViewModel @Inject constructor(
 
     fun onUpdateReports(filterText: String? = null) {
         launch {
-            val args = jsonArgs?.fromJsonNavParamToArgs(GeneratedReportsScreenArgs::class.java)!!
-            val reports = reportRepository.getListReports(args.reportContext, filterText)
-
-            _uiState.value = _uiState.value.copy(
-                reports = reports,
-                storageSize = reports.sumOf { it.kbSize!! }.toReadableFileSize(context)
-            )
+            updateReports(filterText)
         }
     }
 
-    fun onDeleteAllReportsClick(onSuccess: () -> Unit) {
-        launch {
+    private suspend fun updateReports(filterText: String? = null) {
+        val args = jsonArgs?.fromJsonNavParamToArgs(GeneratedReportsScreenArgs::class.java)!!
+        val reports = reportRepository.getListReports(args.reportContext, filterText)
 
-        }
+        _uiState.value = _uiState.value.copy(
+            reports = reports,
+            storageSize = reports.sumOf { it.kbSize!! }.toReadableFileSize(context)
+        )
+    }
+
+    fun onDeleteAllReportsClick(onSuccess: () -> Unit) {
+        _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
+            message = context.getString(R.string.generated_reports_delete_all_reports_confirmation_message),
+            onConfirm = {
+                _uiState.value.onToggleLoading()
+
+                launch {
+                    deleteAllReportsUseCase(_uiState.value.reportContext!!)
+                    updateReports()
+                    onSuccess()
+                }
+            }
+        )
     }
 
     fun onDeleteReportClick(report: TOReport, onSuccess: () -> Unit) {
         launch {
-
+            deleteReportUseCase(report)
+            updateReports()
+            onSuccess()
         }
     }
 }

@@ -3,11 +3,14 @@ package br.com.fitnesspro.common.injection
 import android.content.Context
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
+import br.com.fitnesspro.common.repository.ReportRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeUseCase
 import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
 import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
+import br.com.fitnesspro.common.usecase.report.DeleteAllReportsUseCase
+import br.com.fitnesspro.common.usecase.report.DeleteReportUseCase
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.core.security.DefaultPasswordHasher
 import br.com.fitnesspro.core.security.IPasswordHasher
@@ -80,4 +83,25 @@ class SingletonCommonUseCaseModule {
             personRepository = personRepository
         )
     }
+
+    @Provides
+    fun provideDeleteReportUseCase(
+        @ApplicationContext context: Context,
+        reportRepository: ReportRepository
+    ): DeleteReportUseCase {
+        return DeleteReportUseCase(
+            context = context,
+            reportRepository = reportRepository
+        )
+    }
+
+    @Provides
+    fun provideDeleteAllReportsUseCase(
+        reportRepository: ReportRepository
+    ): DeleteAllReportsUseCase {
+        return DeleteAllReportsUseCase(
+            reportRepository = reportRepository
+        )
+    }
+
 }
