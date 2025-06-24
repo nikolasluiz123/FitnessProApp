@@ -57,10 +57,15 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
             }
         }
 
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by report.date desc ")
+        }
+
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         return executeQueryListGeneratedReports(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
