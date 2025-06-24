@@ -14,6 +14,18 @@ abstract class AbstractReportSession<FILTER : Any>(
     protected lateinit var title: String
     protected var components: List<IReportComponent<FILTER>> = emptyList()
 
+    override suspend fun measureHeight(pageManager: IPageManager): Float {
+        val titleHeight = Paints.subtitlePaint.textSize + Margins.MARGIN_8
+        val lineHeight = Margins.MARGIN_8
+        var totalHeight = Margins.MARGIN_12 + titleHeight + lineHeight
+
+        for (component in components) {
+            totalHeight += component.measureHeight(pageManager)
+        }
+
+        return totalHeight
+    }
+
     override suspend fun draw(pageManager: IPageManager, yStart: Float): Float {
         val pageWidth = pageManager.pageInfo.pageWidth.toFloat()
         val paddingStart = Margins.MARGIN_32.toFloat()

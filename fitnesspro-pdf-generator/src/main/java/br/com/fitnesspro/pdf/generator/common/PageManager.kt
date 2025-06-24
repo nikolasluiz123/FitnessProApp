@@ -5,7 +5,6 @@ import android.graphics.pdf.PdfDocument
 import br.com.fitnesspro.pdf.generator.enums.EnumPageSize
 import br.com.fitnesspro.pdf.generator.footer.IReportFooter
 import br.com.fitnesspro.pdf.generator.header.IReportHeader
-import br.com.fitnesspro.pdf.generator.utils.Margins
 
 class PageManager(
     private val document: PdfDocument,
@@ -20,11 +19,17 @@ class PageManager(
 
     private lateinit var currentPage: PdfDocument.Page
     private var pageNumber = 0
-    private val marginBottom = Margins.MARGIN_32.toFloat()
+
+    private var headerHeight: Float = 0f
+    private var footerHeight: Float = 0f
 
     suspend fun start() {
         startNewPage()
-        currentY = drawHeader()
+
+        this.headerHeight = header.measureHeight(this)
+        this.footerHeight = footer.measureHeight(this)
+
+        this.currentY = drawHeader()
     }
 
     override suspend fun finish() {
@@ -42,9 +47,7 @@ class PageManager(
     }
 
     override fun hasAvailableSpace(currentY: Float, heightNeeded: Float): Boolean {
-        val footerHeight = footer.getHeight(pageInfo)
-        val bottomLimit = pageInfo.pageHeight.toFloat() - marginBottom - footerHeight
-
+        val bottomLimit = pageInfo.pageHeight.toFloat() - this.footerHeight
         return (currentY + heightNeeded) <= bottomLimit
     }
 
@@ -62,10 +65,10 @@ class PageManager(
     }
 
     private suspend fun drawHeader(): Float {
-        return header.draw(canvas, pageInfo, pageNumber)
+        return header.draw(this, 0f)
     }
 
     private suspend fun drawFooter() {
-        footer.draw(canvas, pageInfo)
+        footer.draw(this, 0f)
     }
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_report_footer_page_number">Pág. %d</string>
+    <string name="default_report_footer_generated_date_time">Gerado em: %s</string>
+</resources>

@@ -26,10 +26,32 @@ class TableComponent<FILTER : Any>(
     private val cellVerticalPadding = Margins.MARGIN_8.toFloat()
 
     private var tableLayoutCache: TableLayoutCache? = null
+    private var measuredTotalHeight: Float? = null
+
+    override suspend fun measureHeight(pageManager: IPageManager): Float {
+        measuredTotalHeight?.let { return it }
+
+        val totalWidth = pageManager.pageInfo.pageWidth.toFloat() - (paddingHorizontal * 2)
+        val columnWidths = calculateColumnWidths(totalWidth)
+
+        val headerTexts = columnLayouts.map { it.label }
+        val headerLayout = createRowLayout(headerTexts, columnWidths, Paints.tableColumnLabelPaint, isHeader = true)
+
+        val rowLayouts = rows.map { rowTexts ->
+            createRowLayout(rowTexts, columnWidths, Paints.defaultValuePaint, isHeader = false)
+        }
+
+        tableLayoutCache = TableLayoutCache(header = headerLayout, rows = rowLayouts)
+
+        val totalHeight = headerLayout.height + rowLayouts.sumOf { it.height.toDouble() }.toFloat()
+        measuredTotalHeight = totalHeight
+
+        return totalHeight
+    }
 
     override suspend fun draw(pageManager: IPageManager, yStart: Float): Float {
         if (tableLayoutCache == null) {
-            measureTable(pageManager)
+            measureHeight(pageManager)
         }
 
         var currentY = yStart
@@ -49,20 +71,6 @@ class TableComponent<FILTER : Any>(
         }
 
         return currentY
-    }
-
-    private fun measureTable(pageManager: IPageManager) {
-        val totalWidth = pageManager.pageInfo.pageWidth.toFloat() - (paddingHorizontal * 2)
-        val columnWidths = calculateColumnWidths(totalWidth)
-
-        val headerTexts = columnLayouts.map { it.label }
-        val headerLayout = createRowLayout(headerTexts, columnWidths, Paints.tableColumnLabelPaint, isHeader = true)
-
-        val rowLayouts = rows.map { rowTexts ->
-            createRowLayout(rowTexts, columnWidths, Paints.defaultValuePaint, isHeader = false)
-        }
-
-        tableLayoutCache = TableLayoutCache(header = headerLayout, rows = rowLayouts)
     }
 
     private fun createRowLayout(texts: List<String>, columnWidths: List<Float>, paint: TextPaint, isHeader: Boolean): RowLayout {

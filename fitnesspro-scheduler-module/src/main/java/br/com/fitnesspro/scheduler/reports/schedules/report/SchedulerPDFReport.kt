@@ -4,7 +4,6 @@ import android.content.Context
 import br.com.fitnesspro.local.data.access.dao.filters.SchedulerReportFilter
 import br.com.fitnesspro.pdf.generator.footer.DefaultReportFooter
 import br.com.fitnesspro.pdf.generator.report.AbstractPDFReport
-import br.com.fitnesspro.pdf.generator.session.IReportSession
 import br.com.fitnesspro.scheduler.reports.schedules.body.SchedulerReportBody
 import br.com.fitnesspro.scheduler.reports.schedules.header.SchedulerReportHeader
 import br.com.fitnesspro.scheduler.reports.schedules.sessions.SchedulerReportCanceledSchedulesSession
@@ -21,15 +20,12 @@ class SchedulerPDFReport(
     override fun initialize() {
         this.header = SchedulerReportHeader(context)
 
-        val sessions = mutableListOf<IReportSession<SchedulerReportFilter>>(
-            SchedulerReportResumeSession(context),
-            SchedulerReportPendingSchedulesSession(context),
-            SchedulerReportConfirmedSchedulesSession(context),
-            SchedulerReportCompletedSchedulesSession(context),
-            SchedulerReportCanceledSchedulesSession(context)
-        )
-
-        this.body = SchedulerReportBody(sessions, filter)
+        this.body = SchedulerReportBody()
+        this.body.addSession(SchedulerReportResumeSession(context))
+        this.body.addSession(SchedulerReportPendingSchedulesSession(context))
+        this.body.addSession(SchedulerReportConfirmedSchedulesSession(context))
+        this.body.addSession(SchedulerReportCompletedSchedulesSession(context))
+        this.body.addSession(SchedulerReportCanceledSchedulesSession(context))
 
         this.footer = DefaultReportFooter(context)
     }
