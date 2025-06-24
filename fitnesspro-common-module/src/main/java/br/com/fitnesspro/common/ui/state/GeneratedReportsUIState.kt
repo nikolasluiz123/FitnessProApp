@@ -12,6 +12,7 @@ data class GeneratedReportsUIState(
     val simpleFilterState: SimpleFilterState = SimpleFilterState(),
     val messageDialogState: MessageDialogState = MessageDialogState(),
     val reportContext: EnumReportContext? = null,
+    val storageSize: String = "0",
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = {},
     val reports: List<TOReport> = emptyList()

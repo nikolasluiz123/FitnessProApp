@@ -11,6 +11,7 @@ import br.com.fitnesspro.common.ui.state.GeneratedReportsUIState
 import br.com.fitnesspro.compose.components.filter.SimpleFilterState
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
+import br.com.fitnesspro.core.extensions.toReadableFileSize
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.to.TOReport
@@ -35,7 +36,6 @@ class GeneratedReportsViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfo()
     }
 
     private fun initialLoadUIState() {
@@ -95,13 +95,7 @@ class GeneratedReportsViewModel @Inject constructor(
                     )
                 )
 
-                launch {
-                    val args = jsonArgs?.fromJsonNavParamToArgs(GeneratedReportsScreenArgs::class.java)!!
-
-                    _uiState.value = _uiState.value.copy(
-                        reports = reportRepository.getListReports(args.reportContext, filterText)
-                    )
-                }
+                onUpdateReports(filterText)
             },
             onExpandedChange = {
                 _uiState.value = _uiState.value.copy(
@@ -111,16 +105,6 @@ class GeneratedReportsViewModel @Inject constructor(
                 )
             }
         )
-    }
-
-    private fun loadUIStateWithDatabaseInfo() {
-        launch {
-            val args = jsonArgs?.fromJsonNavParamToArgs(GeneratedReportsScreenArgs::class.java)!!
-
-            _uiState.value = _uiState.value.copy(
-                reports = reportRepository.getListReports(context = args.reportContext)
-            )
-        }
     }
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
@@ -141,9 +125,15 @@ class GeneratedReportsViewModel @Inject constructor(
         }
     }
 
-    fun onUpdateReports() {
+    fun onUpdateReports(filterText: String? = null) {
         launch {
+            val args = jsonArgs?.fromJsonNavParamToArgs(GeneratedReportsScreenArgs::class.java)!!
+            val reports = reportRepository.getListReports(args.reportContext, filterText)
 
+            _uiState.value = _uiState.value.copy(
+                reports = reports,
+                storageSize = reports.sumOf { it.kbSize!! }.toReadableFileSize(context)
+            )
         }
     }
 

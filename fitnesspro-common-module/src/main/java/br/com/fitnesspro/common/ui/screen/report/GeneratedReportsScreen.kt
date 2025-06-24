@@ -1,6 +1,7 @@
 package br.com.fitnesspro.common.ui.screen.report
 
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -22,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.common.ui.screen.report.callback.OnDeleteAllReportsClick
@@ -37,6 +41,7 @@ import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.extensions.openPDFReader
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
+import br.com.fitnesspro.core.theme.ValueTextStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -118,6 +123,8 @@ fun GeneratedReportsScreen(
                 state = state.simpleFilterState,
                 placeholderResId = R.string.generated_reports_simple_filter_placeholder
             ) {
+                CustomHeader(state)
+
                 ReportsList(
                     state = state,
                     context = context,
@@ -127,6 +134,8 @@ fun GeneratedReportsScreen(
                 )
             }
 
+            CustomHeader(state)
+
             ReportsList(
                 state = state,
                 context = context,
@@ -135,6 +144,36 @@ fun GeneratedReportsScreen(
                 snackbarHostState = snackbarHostState
             )
         }
+    }
+}
+
+@Composable
+private fun CustomHeader(state: GeneratedReportsUIState) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.secondaryContainer)
+    ) {
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            thickness = 0.5.dp
+        )
+
+        Text(
+            text = stringResource(
+                br.com.fitnesspro.common.R.string.generated_reports_label_storage_size,
+                state.storageSize
+            ),
+            style = ValueTextStyle,
+            modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 20.dp)
+        )
+
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            thickness = 0.5.dp
+        )
     }
 }
 

@@ -125,4 +125,5 @@
     <string name="day_week_exercises_subtitle">%s até %s</string>
     <string name="generated_reports_title">Relatórios Gerados</string>
     <string name="generated_reports_subtitle_schedulers_report">Agendamentos</string>
+    <string name="generated_reports_label_storage_size">Armazenamento Utilizado: %1$s</string>
 </resources>
