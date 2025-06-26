@@ -12,6 +12,16 @@ import br.com.fitnesspro.pdf.generator.utils.Margins
 import br.com.fitnesspro.pdf.generator.utils.Paints
 import br.com.fitnesspro.pdf.generator.utils.Position
 
+/**
+ * Classe abstrata que representa a parte superior normalmente presente em relatórios, a qual chamamos
+ * de Header.
+ *
+ * Por padrão o Header vai possuir uma Logo e o título do relatório.
+ *
+ * @param context Contexto da aplicação.
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 abstract class AbstractReportHeader<FILTER : Any>(
     protected val context: Context
 ) : IReportHeader<FILTER> {

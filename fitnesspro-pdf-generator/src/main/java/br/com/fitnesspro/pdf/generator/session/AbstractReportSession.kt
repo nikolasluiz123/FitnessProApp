@@ -7,6 +7,17 @@ import br.com.fitnesspro.pdf.generator.components.IReportComponent
 import br.com.fitnesspro.pdf.generator.utils.Margins
 import br.com.fitnesspro.pdf.generator.utils.Paints
 
+/**
+ * Classe abstrata que representa uma sessão do relatório contendo um título e uma linha, os quais
+ * são elementos padrões de todas as sessões.
+ *
+ * Além desses elementos normalmente as sessões serão compostas por N componentes, salvo cenários onde
+ * as mesmas sejam desenhadas sem o uso deles por serem muito específicas.
+ *
+ * @param context Contexto da aplicação.
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 abstract class AbstractReportSession<FILTER : Any>(
     protected val context: Context
 ) : IReportSession<FILTER> {

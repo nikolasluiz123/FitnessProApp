@@ -1,5 +1,8 @@
 package br.com.fitnesspro.pdf.generator.utils
 
+/**
+ * Valores padrões de margens utilizados no PDF.
+ */
 object Margins {
     const val MARGIN_64 = 64
     const val MARGIN_48 = 48

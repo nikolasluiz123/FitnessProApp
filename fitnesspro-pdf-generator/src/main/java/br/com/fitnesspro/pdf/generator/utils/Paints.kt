@@ -5,7 +5,9 @@ import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.text.TextPaint
 
-
+/**
+ * Objetos de Paint utilizados para desenhar o que for necessário no PDF.
+ */
 object Paints {
     val titlePaint by lazy {
         TextPaint().apply {

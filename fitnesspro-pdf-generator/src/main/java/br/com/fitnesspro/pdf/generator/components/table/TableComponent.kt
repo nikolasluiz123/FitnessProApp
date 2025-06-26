@@ -16,6 +16,16 @@ import br.com.fitnesspro.pdf.generator.utils.Margins
 import br.com.fitnesspro.pdf.generator.utils.Paints
 import kotlin.math.max
 
+/**
+ * Implementação de um componente de Tabela. É muito comum termos um volume de dados grande para exibir
+ * e costumeiramente escolher tabular esses dados, por isso foi implementado um componente que permite
+ * organizar as colunas e realiza a divisão das linhas.
+ *
+ * @param columnLayouts Lista de configurações de colunas.
+ * @param rows Lista de linhas.
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 class TableComponent<FILTER : Any>(
     private val columnLayouts: List<ColumnLayout>,
     private val rows: List<List<String>>
@@ -25,7 +35,17 @@ class TableComponent<FILTER : Any>(
     private val cellHorizontalPadding = Margins.MARGIN_4.toFloat()
     private val cellVerticalPadding = Margins.MARGIN_8.toFloat()
 
+    /**
+     * Armazena o layout da tabela que foi calculado em [measureHeight] para evitar recalcular
+     * desnecessariamente. Como a tabela tem uma composição um pouco complexa foram utilizados alguns
+     * objetos simples para representar partes dela.
+     */
     private var tableLayoutCache: TableLayoutCache? = null
+
+    /**
+     * Armazena a altura do componente que foi calculada em [measureHeight] para evitar recalcular
+     * desnecessariamente.
+     */
     private var measuredTotalHeight: Float? = null
 
     override suspend fun measureHeight(pageManager: IPageManager): Float {

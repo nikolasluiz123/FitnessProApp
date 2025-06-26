@@ -8,6 +8,17 @@ import br.com.fitnesspro.pdf.generator.utils.ReportFileUtils
 import java.io.File
 import java.io.FileOutputStream
 
+/**
+ * Implementação responsável por gerar o relatório PDF.
+ *
+ * Essa classe deve conter todas as variações de geração dos relatórios, as mais comuns são a geração
+ * de um [File], mas também é possível utilizar uma [Uri] para compartilhamento.
+ *
+ * @param context Contexto da aplicação.
+ * @param report Instância do relatório a ser gerado.
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 class PDFReportGenerator<FILTER : Any>(
     private val context: Context,
     private val report: AbstractPDFReport<FILTER>

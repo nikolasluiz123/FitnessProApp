@@ -23,7 +23,7 @@ class PageManager(
     private var headerHeight: Float = 0f
     private var footerHeight: Float = 0f
 
-    suspend fun start() {
+    override suspend fun start() {
         startNewPage()
 
         this.headerHeight = header.measureHeight(this)

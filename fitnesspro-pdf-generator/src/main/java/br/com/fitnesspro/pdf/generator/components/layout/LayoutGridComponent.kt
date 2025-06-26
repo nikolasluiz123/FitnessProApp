@@ -9,12 +9,37 @@ import br.com.fitnesspro.pdf.generator.extensions.createStaticLayout
 import br.com.fitnesspro.pdf.generator.utils.Margins
 import br.com.fitnesspro.pdf.generator.utils.Paints
 
+/**
+ * Implementação de um componente de Layout de Grade. Esse componente é utilizado para exibir
+ * textos com Label e Valor um abaixo do outro e distribuídos em colunas, respeitando os limites
+ * da página.
+ *
+ * Ao definir o número de colunas, o componente é capaz de ajustar automaticamente a largura de cada
+ * coluna de acordo com o espaço disponível na página.
+ *
+ * @param items Lista de pares de texto (Label, Valor).
+ * @param columnCount Número de colunas.
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 class LayoutGridComponent<FILTER : Any>(
     private val items: List<Pair<String, String?>>,
     private val columnCount: Int = 3
 ) : IReportComponent<FILTER> {
 
+    /**
+     * Em [measureHeight] calculamos a altura necessária para exibição do componente, nesse processo
+     * aproveitamos para armazenar os [StaticLayout] que precisaram ser criados para podermos calcular
+     * essa altura.
+     *
+     * Fazendo isso, em [draw] podemos de fato apenas focar em desenhar os elementos na página.
+     */
     private var cachedLayouts: List<Pair<StaticLayout, StaticLayout>>? = null
+
+    /**
+     * Armazena a altura do componente que foi calculada em [measureHeight] para evitar recalcular
+     * desnecessariamente.
+     */
     private var measuredTotalHeight: Float? = null
 
     override suspend fun measureHeight(pageManager: IPageManager): Float {

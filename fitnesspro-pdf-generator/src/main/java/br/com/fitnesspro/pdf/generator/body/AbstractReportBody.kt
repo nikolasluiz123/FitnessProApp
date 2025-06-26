@@ -3,6 +3,16 @@ package br.com.fitnesspro.pdf.generator.body
 import br.com.fitnesspro.pdf.generator.common.IPageManager
 import br.com.fitnesspro.pdf.generator.session.IReportSession
 
+/**
+ * Classe abstrata que representa o corpo do relatório.
+ *
+ * O corpo do relatório é algo que normalmente não terá nenhuma implementação específica, apenas em
+ * algum caso extremamente incomum. Por conta dessa característica, foi concentrada toda a implementação
+ * necessária aqui.
+ *
+ * Em resumo, a responsabilidade dessa parte do relatório é preparar as sessões e controlar a
+ * visualização delas de acordo com a definição.
+ */
 abstract class AbstractReportBody<FILTER: Any>: IReportBody<FILTER> {
 
     override val sessions = mutableListOf<IReportSession<FILTER>>()

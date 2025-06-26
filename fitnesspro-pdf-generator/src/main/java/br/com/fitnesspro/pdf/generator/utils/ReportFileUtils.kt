@@ -5,6 +5,9 @@ import android.net.Uri
 import br.com.fitnesspro.core.utils.FileUtils
 import java.io.File
 
+/**
+ * Object utilitário para manipulação de arquivos de relatórios.
+ */
 object ReportFileUtils {
     const val REPORTS_FOLDER_NAME = "reports"
     const val DEFAULT_REPORT_EXTENSION = "pdf"

@@ -14,6 +14,17 @@ import br.com.fitnesspro.pdf.generator.utils.Paints
 import java.time.LocalDateTime
 import java.time.ZoneId
 
+/**
+ * Classe padrão para o Footer do relatório.
+ *
+ * As informações que normalmente estão presentes no footer não costumam variar muito, no geral,
+ * sempre haverá uma data e um número de página. Nesse caso, há também uma pequena imagem da mesma
+ * Logo exibida no Header.
+ *
+ * @param context Contexto da aplicação.
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 class DefaultReportFooter<FILTER : Any>(private val context: Context) : IReportFooter<FILTER> {
 
     private lateinit var date: LocalDateTime
