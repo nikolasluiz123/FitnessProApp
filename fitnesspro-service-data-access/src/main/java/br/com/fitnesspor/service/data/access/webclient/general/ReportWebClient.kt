@@ -13,6 +13,7 @@ import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.SchedulerReportDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.SchedulerReportImportFilter
+import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
@@ -32,6 +33,22 @@ class ReportWebClient(
                     token = formatToken(token),
                     schedulerReportDTO = dto
                 ).getResponseBody(SchedulerReportDTO::class.java)
+            }
+        )
+    }
+
+    suspend fun saveSchedulerReportBatch(token: String, reports: List<Report>, schedulerReports: List<SchedulerReport>): ExportationServiceResponse {
+        return exportationServiceErrorHandlingBlock(
+            codeBlock = {
+                val schedulerReportDTOList = schedulerReports.map { schedulerReport ->
+                    val report = reports.first { it.id == schedulerReport.reportId }
+                    schedulerReport.getSchedulerReportDTO(report.getReportDTO())
+                }
+
+                reportService.saveSchedulerReportBatch(
+                    token = formatToken(token),
+                    schedulerReportDTOList = schedulerReportDTOList
+                ).getResponseBody()
             }
         )
     }

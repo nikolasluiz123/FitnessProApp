@@ -6,14 +6,14 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.to.TOReport
 import java.util.StringJoiner
 
 @Dao
-abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
+abstract class ReportDAO: MaintenanceDAO<Report>() {
 
     suspend fun getListGeneratedReports(
         context: EnumReportContext,
@@ -85,4 +85,6 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
     @Delete
     abstract suspend fun deleteReports(reports: List<Report>)
 
+    @Query("select exists (select 1 from report where id = :id)")
+    abstract suspend fun hasEntityWithId(id: String): Boolean
 }

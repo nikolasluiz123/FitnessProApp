@@ -5,9 +5,11 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.DELETE_SCHED
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.REPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.REPORT_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_REPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_REPORT_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_REPORT_IMPORT
 import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.SchedulerReportDTO
+import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
@@ -27,6 +29,12 @@ interface IReportService {
         @Header("Authorization") token: String,
         @Body schedulerReportDTO: SchedulerReportDTO
     ): Response<PersistenceServiceResponse<SchedulerReportDTO>>
+
+    @POST("$REPORT$SCHEDULER_REPORT_EXPORT")
+    suspend fun saveSchedulerReportBatch(
+        @Header("Authorization") token: String,
+        @Body schedulerReportDTOList: List<SchedulerReportDTO>
+    ): Response<ExportationServiceResponse>
 
     @GET("$REPORT$SCHEDULER_REPORT_IMPORT")
     suspend fun importReportsFromScheduler(

@@ -17,7 +17,7 @@ class PersonAcademyTimeImportationRepository(
     context: Context,
     private val webClient: PersonWebClient,
     private val personAcademyTimeDAO: PersonAcademyTimeDAO,
-): AbstractImportationRepository<PersonAcademyTimeDTO, PersonAcademyTime, PersonAcademyTimeDAO>(context) {
+): AbstractImportationRepository<PersonAcademyTimeDTO, PersonAcademyTime, PersonAcademyTimeDAO, CommonImportFilter>(context) {
 
     override fun getDescription(): String {
         return context.getString(R.string.person_importation_descrition)

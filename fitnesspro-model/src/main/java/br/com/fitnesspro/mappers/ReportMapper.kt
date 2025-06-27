@@ -59,7 +59,6 @@ fun SchedulerReport.getTOSchedulerReport(): TOSchedulerReport {
 fun ReportDTO.getReport(): Report {
     return Report(
         id = id!!,
-        transmissionState = EnumTransmissionState.TRANSMITTED,
         name = name,
         extension = extension,
         filePath = filePath,

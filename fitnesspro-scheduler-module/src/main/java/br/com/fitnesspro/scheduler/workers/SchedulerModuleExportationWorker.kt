@@ -25,6 +25,7 @@ class SchedulerModuleExportationWorker @AssistedInject constructor(
     override suspend fun onExport(serviceToken: String) {
         scheduleEntryPoint.getSchedulerExportationRepository().export(serviceToken)
         commonEntryPoint.getSchedulerConfigExportationRepository().export(serviceToken)
+        scheduleEntryPoint.getSchedulerReportExportationRepository().export(serviceToken)
     }
 
     override fun getModule() = EnumSyncModule.SCHEDULER
