@@ -17,7 +17,7 @@ class SchedulerConfigImportationRepository(
     context: Context,
     private val schedulerConfigDAO: SchedulerConfigDAO,
     private val webClient: SchedulerWebClient,
-): AbstractImportationRepository<SchedulerConfigDTO, SchedulerConfig, SchedulerConfigDAO>(context) {
+): AbstractImportationRepository<SchedulerConfigDTO, SchedulerConfig, SchedulerConfigDAO, CommonImportFilter>(context) {
 
     override fun getDescription(): String {
         return context.getString(R.string.scheduler_config_importation_descrition)

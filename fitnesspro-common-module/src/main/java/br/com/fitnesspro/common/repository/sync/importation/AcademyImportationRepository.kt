@@ -17,7 +17,7 @@ class AcademyImportationRepository(
     context: Context,
     private val academyDAO: AcademyDAO,
     private val academyWebClient: AcademyWebClient,
-): AbstractImportationRepository<AcademyDTO, Academy, AcademyDAO>(context) {
+): AbstractImportationRepository<AcademyDTO, Academy, AcademyDAO, CommonImportFilter>(context) {
 
     override fun getDescription(): String {
         return context.getString(R.string.academy_importation_descrition)

@@ -16,7 +16,7 @@ import br.com.fitnesspro.shared.communication.responses.ImportationServiceRespon
 class UserImportationRepository(
     context: Context,
     private val webClient: PersonWebClient,
-): AbstractImportationRepository<UserDTO, User, UserDAO>(context) {
+): AbstractImportationRepository<UserDTO, User, UserDAO, CommonImportFilter>(context) {
 
     override fun getDescription(): String {
         return context.getString(R.string.user_importation_descrition)

@@ -17,12 +17,12 @@ import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO: MaintenanceDAO<MODEL>>(context: Context)
+abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO: MaintenanceDAO<MODEL>, FILTER: CommonImportFilter>(context: Context)
     : AbstractSyncRepository<DAO>(context) {
 
     abstract suspend fun getImportationData(
         token: String,
-        filter: CommonImportFilter,
+        filter: FILTER,
         pageInfos: ImportPageInfos
     ): ImportationServiceResponse<DTO>
 
@@ -30,14 +30,19 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
 
     abstract suspend fun convertDTOToEntity(dto: DTO): MODEL
 
-    suspend fun import(serviceToken: String, lastUpdateDate: LocalDateTime?) {
-        val importFilter = CommonImportFilter(lastUpdateDate = lastUpdateDate?.minusMinutes(5))
-        val pageInfos = ImportPageInfos(pageSize = getPageSize())
+    @Suppress("UNCHECKED_CAST")
+    open suspend fun getImportFilter(lastUpdateDate: LocalDateTime?): FILTER {
+        return CommonImportFilter(lastUpdateDate = lastUpdateDate?.minusMinutes(5)) as FILTER
+    }
 
+    suspend fun import(serviceToken: String, lastUpdateDate: LocalDateTime?) {
         lateinit var response: ImportationServiceResponse<DTO>
         lateinit var clientStartDateTime: LocalDateTime
 
         try {
+            val importFilter = getImportFilter(lastUpdateDate)
+            val pageInfos = ImportPageInfos(pageSize = getPageSize())
+
             do {
                 clientStartDateTime = dateTimeNow(ZoneOffset.UTC)
 
