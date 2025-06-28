@@ -7,7 +7,7 @@ import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClien
 import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import com.google.gson.GsonBuilder
 
