@@ -36,13 +36,13 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
     }
 
     suspend fun import(serviceToken: String, lastUpdateDate: LocalDateTime?) {
-        val importFilter = getImportFilter(lastUpdateDate)
-        val pageInfos = ImportPageInfos(pageSize = getPageSize())
-
         lateinit var response: ImportationServiceResponse<DTO>
         lateinit var clientStartDateTime: LocalDateTime
 
         try {
+            val importFilter = getImportFilter(lastUpdateDate)
+            val pageInfos = ImportPageInfos(pageSize = getPageSize())
+
             do {
                 clientStartDateTime = dateTimeNow(ZoneOffset.UTC)
 

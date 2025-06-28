@@ -23,11 +23,9 @@ class ReportFromSchedulerImportationRepository(
 ): AbstractImportationRepository<ReportDTO, Report, ReportDAO, SchedulerReportImportFilter>(context) {
 
     override suspend fun getImportFilter(lastUpdateDate: LocalDateTime?): SchedulerReportImportFilter {
-        val baseFilter = super.getImportFilter(lastUpdateDate)
         val authenticatedPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
-
         return SchedulerReportImportFilter(
-            lastUpdateDate = baseFilter.lastUpdateDate,
+            lastUpdateDate = lastUpdateDate?.minusMinutes(5),
             personId = authenticatedPersonId
         )
     }
