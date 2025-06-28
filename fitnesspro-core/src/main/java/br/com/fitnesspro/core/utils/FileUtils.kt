@@ -42,4 +42,9 @@ object FileUtils {
     fun getFileSizeInKB(file: File): Long {
         return file.length() / 1024
     }
+
+    fun deleteFile(filePath: String): Boolean {
+        val file = File(filePath)
+        return file.delete()
+    }
 }

@@ -32,8 +32,4 @@ object ReportFileUtils {
     fun getReportFileUri(context: Context, file: File): Uri {
         return FileUtils.getUriForFileUsingProvider(context, file)
     }
-
-    fun deleteReportFile(file: File): Boolean {
-        return file.delete()
-    }
 }
