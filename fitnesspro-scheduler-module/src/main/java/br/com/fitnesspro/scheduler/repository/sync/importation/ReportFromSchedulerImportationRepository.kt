@@ -11,31 +11,34 @@ import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.importation.SchedulerReportImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.ReportImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import java.time.LocalDateTime
+import br.com.fitnesspro.shared.communication.enums.report.EnumReportContext as EnumReportContextService
 
 class ReportFromSchedulerImportationRepository(
     context: Context,
     private val webClient: ReportWebClient,
     private val reportDAO: ReportDAO,
     private val personRepository: PersonRepository
-): AbstractImportationRepository<ReportDTO, Report, ReportDAO, SchedulerReportImportFilter>(context) {
+): AbstractImportationRepository<ReportDTO, Report, ReportDAO, ReportImportFilter>(context) {
 
-    override suspend fun getImportFilter(lastUpdateDate: LocalDateTime?): SchedulerReportImportFilter {
+    override suspend fun getImportFilter(lastUpdateDate: LocalDateTime?): ReportImportFilter {
         val authenticatedPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
-        return SchedulerReportImportFilter(
+
+        return ReportImportFilter(
             lastUpdateDate = lastUpdateDate?.minusMinutes(5),
-            personId = authenticatedPersonId
+            personId = authenticatedPersonId,
+            reportContext = EnumReportContextService.SCHEDULERS_REPORT
         )
     }
 
     override suspend fun getImportationData(
         token: String,
-        filter: SchedulerReportImportFilter,
+        filter: ReportImportFilter,
         pageInfos: ImportPageInfos
     ): ImportationServiceResponse<ReportDTO> {
-        return webClient.importReportsFromScheduler(token, filter, pageInfos)
+        return webClient.importReports(token, filter, pageInfos)
     }
 
     override suspend fun hasEntityWithId(id: String): Boolean {

@@ -12,6 +12,7 @@ import br.com.fitnesspro.model.general.report.SchedulerReport
 import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.SchedulerReportDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.importation.ReportImportFilter
 import br.com.fitnesspro.shared.communication.query.filter.importation.SchedulerReportImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
@@ -53,9 +54,9 @@ class ReportWebClient(
         )
     }
 
-    suspend fun importReportsFromScheduler(
+    suspend fun importReports(
         token: String,
-        filter: SchedulerReportImportFilter,
+        filter: ReportImportFilter,
         pageInfos: ImportPageInfos
     ): ImportationServiceResponse<ReportDTO> {
         return importationServiceErrorHandlingBlock(

@@ -36,14 +36,14 @@ interface IReportService {
         @Body schedulerReportDTOList: List<SchedulerReportDTO>
     ): Response<ExportationServiceResponse>
 
-    @GET("$REPORT$SCHEDULER_REPORT_IMPORT")
+    @GET("$REPORT$REPORT_IMPORT")
     suspend fun importReportsFromScheduler(
         @Header("Authorization") token: String,
         @Query("filter") filter: String,
         @Query("pageInfos") pageInfos: String
     ): Response<ImportationServiceResponse<ReportDTO>>
 
-    @GET("$REPORT$REPORT_IMPORT")
+    @GET("$REPORT$SCHEDULER_REPORT_IMPORT")
     suspend fun importSchedulerReports(
         @Header("Authorization") token: String,
         @Query("filter") filter: String,
