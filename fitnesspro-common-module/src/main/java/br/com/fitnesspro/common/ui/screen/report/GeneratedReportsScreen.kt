@@ -39,10 +39,12 @@ import br.com.fitnesspro.compose.components.filter.SimpleFilter
 import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
+import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.openPDFReader
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.core.theme.ValueTextStyle
+import br.com.fitnesspro.core.utils.FileUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -196,7 +198,11 @@ private fun ReportsList(
             GeneratedReportItem(
                 toReport = toReport,
                 onItemClick = {
-                    context.openPDFReader(it.filePath!!)
+                    if (FileUtils.verifyFileExists(it.filePath!!)) {
+                        context.openPDFReader(it.filePath!!)
+                    } else {
+                        state.messageDialogState.onShowDialog?.showErrorDialog(context.getString(br.com.fitnesspro.pdf.generator.R.string.report_file_not_found_message))
+                    }
                 },
                 onDeleteClick = {
                     state.onToggleLoading()

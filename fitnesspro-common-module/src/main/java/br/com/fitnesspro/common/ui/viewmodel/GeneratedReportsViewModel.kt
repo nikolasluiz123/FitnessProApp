@@ -22,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.io.FileNotFoundException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -115,7 +116,10 @@ class GeneratedReportsViewModel @Inject constructor(
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun getErrorMessageFrom(throwable: Throwable): String {
-        return context.getString(R.string.unknown_error_message)
+        return when (throwable) {
+            is FileNotFoundException -> throwable.message!!
+            else -> context.getString(R.string.unknown_error_message)
+        }
     }
 
     override fun onShowErrorDialog(message: String) {

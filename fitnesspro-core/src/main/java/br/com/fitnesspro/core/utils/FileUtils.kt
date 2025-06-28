@@ -47,4 +47,9 @@ object FileUtils {
         val file = File(filePath)
         return file.delete()
     }
+
+    fun verifyFileExists(filePath: String): Boolean {
+        val file = File(filePath)
+        return file.exists()
+    }
 }

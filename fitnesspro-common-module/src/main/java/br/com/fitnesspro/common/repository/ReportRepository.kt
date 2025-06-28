@@ -3,10 +3,10 @@ package br.com.fitnesspro.common.repository
 import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.general.ReportWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
-import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.model.general.report.Report
+import br.com.fitnesspro.pdf.generator.utils.ReportFileUtils
 import br.com.fitnesspro.to.TOReport
 
 class ReportRepository(
@@ -38,8 +38,8 @@ class ReportRepository(
 
     private suspend fun deleteReportLocally(reportId: String) {
         reportDAO.getReportById(reportId)?.let { report ->
+            ReportFileUtils.deleteReportFile(context, report.filePath!!)
             reportDAO.deleteReport(report)
-            FileUtils.deleteFile(report.filePath!!)
         }
     }
 
@@ -59,7 +59,7 @@ class ReportRepository(
         reportDAO.deleteReports(reports)
 
         reports.forEach { report ->
-            FileUtils.deleteFile(report.filePath!!)
+            ReportFileUtils.deleteReportFile(context, report.filePath!!)
         }
     }
 }
