@@ -20,6 +20,7 @@ data class Video(
     @ColumnInfo(name = "file_path")
     var filePath: String? = null,
     var date: LocalDateTime = LocalDateTime.now(),
+    @ColumnInfo(name = "kb_size")
     var kbSize: Long? = null,
     var seconds: Long? = null,
     var width: Int? = null,

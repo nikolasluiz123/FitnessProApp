@@ -12,6 +12,8 @@ import br.com.fitnesspro.core.worker.onetime.OneTimeWorkerRequester
 import br.com.fitnesspro.core.worker.periodic.PeriodicWorkerRequester
 import br.com.fitnesspro.scheduler.workers.SchedulerModuleExportationWorker
 import br.com.fitnesspro.scheduler.workers.SchedulerModuleImportationWorker
+import br.com.fitnesspro.workout.workers.WorkoutModuleExportationWorker
+import br.com.fitnesspro.workout.workers.WorkoutModuleImportationWorker
 import dagger.hilt.android.HiltAndroidApp
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -54,6 +56,12 @@ class FitnessProApplication : Application(), Configuration.Provider {
 
         OneTimeWorkerRequester(
             context = this,
+            clazz = WorkoutModuleImportationWorker::class.java,
+            builder = OneTimeWorkRequestBuilder<WorkoutModuleImportationWorker>()
+        ).enqueue()
+
+        OneTimeWorkerRequester(
+            context = this,
             clazz = GeneralModuleExportationWorker::class.java,
             builder = OneTimeWorkRequestBuilder<GeneralModuleExportationWorker>()
         ).enqueue()
@@ -62,6 +70,12 @@ class FitnessProApplication : Application(), Configuration.Provider {
             context = this,
             clazz = SchedulerModuleExportationWorker::class.java,
             builder = OneTimeWorkRequestBuilder<SchedulerModuleExportationWorker>()
+        ).enqueue()
+
+        OneTimeWorkerRequester(
+            context = this,
+            clazz = WorkoutModuleExportationWorker::class.java,
+            builder = OneTimeWorkRequestBuilder<WorkoutModuleExportationWorker>()
         ).enqueue()
     }
 }

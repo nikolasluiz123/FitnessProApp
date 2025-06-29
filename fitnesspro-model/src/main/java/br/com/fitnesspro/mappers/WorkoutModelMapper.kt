@@ -1,5 +1,6 @@
 package br.com.fitnesspro.mappers
 
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
@@ -78,4 +79,28 @@ fun TOWorkoutGroup.getWorkoutGroup(): WorkoutGroup {
     id?.let { model.id = it }
 
     return model
+}
+
+fun WorkoutDTO.getWorkout(): Workout {
+    return Workout(
+        id = id!!,
+        active = active,
+        academyMemberPersonId = academyMemberPersonId,
+        professionalPersonId = professionalPersonId,
+        dateStart = dateStart,
+        dateEnd = dateEnd,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
+    )
+}
+
+fun WorkoutGroupDTO.getWorkoutGroup(): WorkoutGroup {
+    return WorkoutGroup(
+        id = id!!,
+        name = name,
+        active = active,
+        workoutId = workoutId,
+        dayWeek = dayWeek,
+        groupOrder = groupOrder,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
+    )
 }

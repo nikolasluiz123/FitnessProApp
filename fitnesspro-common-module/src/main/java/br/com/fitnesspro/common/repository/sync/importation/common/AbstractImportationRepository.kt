@@ -36,8 +36,8 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
     }
 
     suspend fun import(serviceToken: String, lastUpdateDate: LocalDateTime?) {
-        lateinit var response: ImportationServiceResponse<DTO>
-        lateinit var clientStartDateTime: LocalDateTime
+        var response: ImportationServiceResponse<DTO>? = null
+        var clientStartDateTime: LocalDateTime? = null
 
         try {
             val importFilter = getImportFilter(lastUpdateDate)
@@ -90,13 +90,15 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
 
             updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
         } catch (ex: Exception) {
-            updateLogPackageWithErrorInfos(
-                serviceToken = serviceToken,
-                logId = response.executionLogId,
-                logPackageId = response.executionLogPackageId,
-                exception = ex,
-                clientStartDateTime = clientStartDateTime
-            )
+            if (response != null) {
+                updateLogPackageWithErrorInfos(
+                    serviceToken = serviceToken,
+                    logId = response.executionLogId,
+                    logPackageId = response.executionLogPackageId,
+                    exception = ex,
+                    clientStartDateTime = clientStartDateTime
+                )
+            }
 
             throw ex
         }
@@ -107,7 +109,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
         logId: String,
         logPackageId: String,
         exception: Exception,
-        clientStartDateTime: LocalDateTime
+        clientStartDateTime: LocalDateTime?
     ) {
         executionLogWebClient.updateLogInformation(
             token = serviceToken,

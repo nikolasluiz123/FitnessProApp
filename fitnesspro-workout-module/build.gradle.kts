@@ -44,19 +44,20 @@ dependencies {
     implementation(project(":fitnesspro-common-module"))
     implementation(project(":fitnesspro-firebase-api"))
 
+    implementation(libs.fitnesspro.shared.communication)
+    implementation(libs.data.store)
+
     implementation(libs.google.gson)
-
     implementation(libs.constraint.layout.compose)
-
+    implementation(libs.java.faker)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.work)
     ksp(libs.hilt.compiler)
-
+    ksp(libs.dagger.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
+    implementation(libs.room.ktx)
     implementation(libs.room.paging)
-
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -65,6 +66,11 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.work.runtime)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

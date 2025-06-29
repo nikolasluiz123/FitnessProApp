@@ -4,13 +4,19 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP_EXPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP_IMPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_IMPORT
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
+import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface IWorkoutService {
 
@@ -24,7 +30,7 @@ interface IWorkoutService {
     suspend fun saveWorkoutBatch(
         @Header("Authorization") token: String,
         @Body workoutDTOList: List<WorkoutDTO>
-    ): Response<PersistenceServiceResponse<WorkoutDTO>>
+    ): Response<ExportationServiceResponse>
 
     @POST("$WORKOUT$WORKOUT_GROUP")
     suspend fun saveWorkoutGroup(
@@ -36,5 +42,19 @@ interface IWorkoutService {
     suspend fun saveWorkoutGroupBatch(
         @Header("Authorization") token: String,
         @Body workoutGroupDTOList: List<WorkoutGroupDTO>
-    ): Response<PersistenceServiceResponse<WorkoutGroupDTO>>
+    ): Response<ExportationServiceResponse>
+
+    @GET("$WORKOUT$WORKOUT_IMPORT")
+    suspend fun importWorkout(
+        @Header("Authorization") token: String,
+        @Query("filter") filter: String,
+        @Query("pageInfos") pageInfos: String
+    ): Response<ImportationServiceResponse<WorkoutDTO>>
+
+    @GET("$WORKOUT$WORKOUT_GROUP_IMPORT")
+    suspend fun importWorkoutGroup(
+        @Header("Authorization") token: String,
+        @Query("filter") filter: String,
+        @Query("pageInfos") pageInfos: String
+    ): Response<ImportationServiceResponse<WorkoutGroupDTO>>
 }

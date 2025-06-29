@@ -81,4 +81,14 @@
     <string name="exercise_video_message_max_video_count">Limite de vídeos por exercício atingido. Você pode ter até 3 vídeos por exercício.</string>
     <string name="exercise_video_message_max_video_duration">Duração máxima do vídeo atiginda. Você pode adicionar vídeos de no máximo 1 minuto de duração.</string>
     <string name="exercise_video_message_max_video_size">Seu vídeo excedeu muito o tamanho máximo de 15MB, mesmo realizando uma compressão não foi possível salvá-lo. Tente gravar um vídeo mais curto ou com uma qualidade um pouco menor.</string>
+    <string name="workout_importation_descrition">Importação dos Treinos</string>
+    <string name="workout_group_importation_descrition">Importação dos Grupos Musculares dos Treinos</string>
+    <string name="exercise_importation_descrition">Importação de Exercícios dos Treinos</string>
+    <string name="video_exercise_importation_descrition">Importação da Relação dos Vídeos com o Exercício</string>
+    <string name="video_importation_descrition">Importação dos Vídeos dos Exercícios</string>
+    <string name="workout_exportation_description">Exportação dos Treinos</string>
+    <string name="workout_group_exportation_description">Exportação dos Grupos Musculares dos Treinos</string>
+    <string name="exercise_exportation_description">Exportação dos Exercícios dos Treinos</string>
+    <string name="video_exercise_exportation_description">Exportação das Relações dos Vídeos e Exercícios</string>
+    <string name="video_exportation_description">Exportação dos Vídeos dos Exercícios</string>
 </resources>

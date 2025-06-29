@@ -6,6 +6,7 @@ import br.com.fitnesspor.service.data.access.service.general.IPersonService
 import br.com.fitnesspor.service.data.access.service.log.IExecutionLogService
 import br.com.fitnesspor.service.data.access.service.scheduler.ISchedulerService
 import br.com.fitnesspor.service.data.access.service.workout.IExerciseService
+import br.com.fitnesspor.service.data.access.service.workout.IVideoService
 import br.com.fitnesspor.service.data.access.service.workout.IWorkoutService
 import dagger.Module
 import dagger.Provides
@@ -50,6 +51,11 @@ class SingletonServiceModule {
     @Provides
     fun provideWorkoutService(retrofit: Retrofit): IWorkoutService {
         return retrofit.create(IWorkoutService::class.java)
+    }
+
+    @Provides
+    fun provideVideoService(retrofit: Retrofit): IVideoService {
+        return retrofit.create(IVideoService::class.java)
     }
 
 }

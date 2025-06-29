@@ -7,6 +7,7 @@ import br.com.fitnesspor.service.data.access.service.general.IPersonService
 import br.com.fitnesspor.service.data.access.service.log.IExecutionLogService
 import br.com.fitnesspor.service.data.access.service.scheduler.ISchedulerService
 import br.com.fitnesspor.service.data.access.service.workout.IExerciseService
+import br.com.fitnesspor.service.data.access.service.workout.IVideoService
 import br.com.fitnesspor.service.data.access.service.workout.IWorkoutService
 import br.com.fitnesspor.service.data.access.webclient.ExecutionLogWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
@@ -83,11 +84,13 @@ class SingletonWebClientModule {
     @Provides
     fun provideExerciseWebClient(
         @ApplicationContext context: Context,
-        exerciseService: IExerciseService
+        exerciseService: IExerciseService,
+        videoService: IVideoService
     ): ExerciseWebClient {
         return ExerciseWebClient(
             context = context,
-            exerciseService = exerciseService
+            exerciseService = exerciseService,
+            videoService = videoService
         )
     }
 

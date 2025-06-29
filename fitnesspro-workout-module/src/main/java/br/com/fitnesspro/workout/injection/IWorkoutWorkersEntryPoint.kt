@@ -1,0 +1,41 @@
+package br.com.fitnesspro.workout.injection
+
+import br.com.fitnesspro.workout.repository.sync.exportation.ExerciseExportationRepository
+import br.com.fitnesspro.workout.repository.sync.exportation.VideoExerciseExportationRepository
+import br.com.fitnesspro.workout.repository.sync.exportation.VideoExportationRepository
+import br.com.fitnesspro.workout.repository.sync.exportation.WorkoutExportationRepository
+import br.com.fitnesspro.workout.repository.sync.exportation.WorkoutGroupExportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.ExerciseImportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.VideoExerciseImportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.VideoImportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.WorkoutGroupImportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.WorkoutImportationRepository
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface IWorkoutWorkersEntryPoint {
+    
+    fun getWorkoutImportationRepository(): WorkoutImportationRepository
+
+    fun getWorkoutGroupImportationRepository(): WorkoutGroupImportationRepository
+
+    fun getExerciseImportationRepository(): ExerciseImportationRepository
+
+    fun getVideoExerciseImportationRepository(): VideoExerciseImportationRepository
+
+    fun getVideoImportationRepository(): VideoImportationRepository
+
+    fun getWorkoutExportationRepository(): WorkoutExportationRepository
+
+    fun getWorkoutGroupExportationRepository(): WorkoutGroupExportationRepository
+
+    fun getExerciseExportationRepository(): ExerciseExportationRepository
+
+    fun getVideoExerciseExportationRepository(): VideoExerciseExportationRepository
+
+    fun getVideoExportationRepository(): VideoExportationRepository
+
+}
