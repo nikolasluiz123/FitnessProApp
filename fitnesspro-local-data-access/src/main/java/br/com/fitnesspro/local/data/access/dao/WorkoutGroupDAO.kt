@@ -120,9 +120,6 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
             add(where.toString())
         }
 
-        Log.i("Teste", "sql = $sql ")
-        Log.i("Teste", "params = ${params.joinToString()} ")
-
         return executeQueryExportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
     }
 
