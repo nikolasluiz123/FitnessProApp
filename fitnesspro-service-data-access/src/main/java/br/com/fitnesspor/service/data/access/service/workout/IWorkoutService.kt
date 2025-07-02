@@ -5,10 +5,12 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_EXPO
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP_IMPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP_INACTIVATE
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_IMPORT
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import retrofit2.Response
@@ -16,6 +18,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface IWorkoutService {
@@ -57,4 +61,10 @@ interface IWorkoutService {
         @Query("filter") filter: String,
         @Query("pageInfos") pageInfos: String
     ): Response<ImportationServiceResponse<WorkoutGroupDTO>>
+
+    @PUT("$WORKOUT$WORKOUT_GROUP_INACTIVATE")
+    suspend fun inactivateWorkoutGroup(
+        @Header("Authorization") token: String,
+        @Path("workoutGroupId") workoutGroupId: String
+    ): Response<FitnessProServiceResponse>
 }

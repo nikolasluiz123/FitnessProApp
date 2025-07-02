@@ -6,6 +6,7 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.filter.SimpleFilterState
+import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.dateNow
@@ -13,7 +14,6 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.to.TOWorkout
-import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
 import br.com.fitnesspro.workout.ui.navigation.DayWeekExercisesScreenArgs
@@ -190,10 +190,15 @@ class DayWeekExercisesViewModel @Inject constructor(
         }
     }
 
-    fun onChangeWorkoutGroup(workoutGroupId: String, onLoaded: (TOWorkoutGroup) -> Unit) {
-        launch {
-            workoutGroupRepository.findWorkoutGroupById(workoutGroupId)?.let(onLoaded)
-        }
+    fun deleteWorkout() {
+        _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
+            message = context.getString(R.string.day_week_exercises_delete_confirmation_message),
+            onConfirm = {
+                launch {
+                    // TODO - Chamar o UseCase para inativar o Workout, WorkoutGroup, Exercise, deletar VideoExercise
+                }
+            }
+        )
     }
 
     /**

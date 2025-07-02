@@ -14,7 +14,9 @@ import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
 
 class WorkoutWebClient(
@@ -49,8 +51,8 @@ class WorkoutWebClient(
         )
     }
 
-    suspend fun saveWorkoutGroup(token: String, workoutGroup: WorkoutGroup) {
-        persistenceServiceErrorHandlingBlock(
+    suspend fun saveWorkoutGroup(token: String, workoutGroup: WorkoutGroup): PersistenceServiceResponse<WorkoutGroupDTO> {
+        return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 workoutService.saveWorkoutGroup(
                     token = formatToken(token),
@@ -108,6 +110,20 @@ class WorkoutWebClient(
                     filter = gson.toJson(filter),
                     pageInfos = gson.toJson(pageInfos)
                 ).getResponseBody(WorkoutGroupDTO::class.java)
+            }
+        )
+    }
+
+    suspend fun inactivateWorkoutGroup(
+        token: String,
+        workoutGroupId: String
+    ): FitnessProServiceResponse {
+        return serviceErrorHandlingBlock(
+            codeBlock = {
+                workoutService.inactivateWorkoutGroup(
+                    token = formatToken(token),
+                    workoutGroupId = workoutGroupId
+                ).getResponseBody()
             }
         )
     }

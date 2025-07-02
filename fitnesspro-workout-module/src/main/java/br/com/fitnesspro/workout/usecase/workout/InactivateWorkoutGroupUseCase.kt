@@ -9,8 +9,8 @@ class InactivateWorkoutGroupUseCase(
 ) {
     suspend operator fun invoke(workoutGroupId: String) {
         workoutGroupRepository.runInTransaction {
-            workoutGroupRepository.inactivateWorkoutGroup(workoutGroupId)
-            exerciseRepository.inactivateExercisesFromWorkoutGroup(workoutGroupId)
+            val inactivateWorkoutGroupRemoteSuccess = workoutGroupRepository.inactivateWorkoutGroup(workoutGroupId)
+            exerciseRepository.inactivateExercisesFromWorkoutGroup(workoutGroupId, inactivateWorkoutGroupRemoteSuccess)
         }
     }
 

@@ -7,6 +7,7 @@ import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.mappers.getExercise
 import br.com.fitnesspro.mappers.getTOExercise
 import br.com.fitnesspro.mappers.getWorkoutGroup
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
 
@@ -73,12 +74,23 @@ class ExerciseRepository(
         )
     }
 
-    suspend fun inactivateExercisesFromWorkoutGroup(workoutGroupId: String) {
+    suspend fun inactivateExercisesFromWorkoutGroup(
+        workoutGroupId: String,
+        inactivateWorkoutGroupRemoteSuccess: Boolean
+    ) {
         val exercises = exerciseDAO.findExerciesFromWorkoutGroup(workoutGroupId).onEach {
             it.active = false
         }
 
-        exerciseDAO.updateBatch(exercises)
+        exerciseDAO.updateBatch(exercises, true)
+
+        if (inactivateWorkoutGroupRemoteSuccess) {
+            exercises.forEach {
+                it.transmissionState = EnumTransmissionState.TRANSMITTED
+            }
+
+            exerciseDAO.updateBatch(exercises)
+        }
     }
 
 }

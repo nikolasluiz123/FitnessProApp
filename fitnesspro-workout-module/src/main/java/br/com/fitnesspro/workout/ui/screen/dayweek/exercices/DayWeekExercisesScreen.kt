@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -16,8 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
-import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.filter.SimpleFilter
@@ -52,7 +49,8 @@ fun DayWeekExercisesScreen(
         onBackClick = onBackClick,
         onNavigateExercise = onNavigateExercise,
         onUpdateExercises = viewModel::updateExercises,
-        workoutGroupEditDialogViewModel = workoutGroupEditDialogViewModel
+        workoutGroupEditDialogViewModel = workoutGroupEditDialogViewModel,
+        onDeleteWorkout = viewModel::deleteWorkout
     )
 }
 
@@ -63,38 +61,26 @@ fun DayWeekExercisesScreen(
     onBackClick: () -> Unit = { },
     onNavigateExercise: OnNavigateExercise? = null,
     onUpdateExercises: () -> Unit = { },
-    workoutGroupEditDialogViewModel: WorkoutGroupEditDialogViewModel? = null
+    workoutGroupEditDialogViewModel: WorkoutGroupEditDialogViewModel? = null,
+    onDeleteWorkout: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
-                onBackClick = onBackClick
-            )
-        },
-        bottomBar = {
-            if (!state.isOverDue) {
-                FitnessProBottomAppBar(
-                    actions = {
+                onBackClick = onBackClick,
+                actions = {
+                    if (!state.isOverDue) {
                         IconButtonDelete(
                             enabled = state.deleteEnabled,
                             onClick = {
-
-                            }
-                        )
-                    },
-                    floatingActionButton = {
-                        FloatingActionButtonAdd(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            onClick = {
-
+                                onDeleteWorkout()
                             }
                         )
                     }
-                )
-            }
+                }
+            )
         }
     ) { paddings ->
 

@@ -1,12 +1,14 @@
 package br.com.fitnesspro.workout.repository
 
 import android.content.Context
+import br.com.fitnesspor.service.data.access.webclient.workout.WorkoutWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.getTOWorkoutGroup
 import br.com.fitnesspro.mappers.getWorkoutGroup
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.R
@@ -17,7 +19,8 @@ import java.time.DayOfWeek
 class WorkoutGroupRepository(
     context: Context,
     private val workoutGroupDAO: WorkoutGroupDAO,
-    private val exerciseDAO: ExerciseDAO
+    private val exerciseDAO: ExerciseDAO,
+    private val workoutWebClient: WorkoutWebClient
 ): FitnessProRepository(context) {
 
     suspend fun getListDayWeekExercisesGroupDecorator(workoutId: String): List<DayWeekExercicesGroupDecorator> {
@@ -78,12 +81,12 @@ class WorkoutGroupRepository(
 
     suspend fun saveWorkoutGroup(toWorkoutGroup: TOWorkoutGroup) {
         runInTransaction {
-            saveWorkoutGroupLocally(toWorkoutGroup)
-            saveWorkoutGroupRemote(toWorkoutGroup)
+            val workoutGroup = saveWorkoutGroupLocally(toWorkoutGroup)
+            saveWorkoutGroupRemote(workoutGroup)
         }
     }
 
-    suspend fun saveWorkoutGroupLocally(toWorkoutGroup: TOWorkoutGroup) {
+    suspend fun saveWorkoutGroupLocally(toWorkoutGroup: TOWorkoutGroup): WorkoutGroup {
         val workoutGroup = toWorkoutGroup.getWorkoutGroup()
 
         if (toWorkoutGroup.id == null) {
@@ -93,25 +96,43 @@ class WorkoutGroupRepository(
         }
 
         toWorkoutGroup.id = workoutGroup.id
+
+        return workoutGroup
     }
 
-    private suspend fun saveWorkoutGroupRemote(toWorkoutGroup: TOWorkoutGroup) {
+    private suspend fun saveWorkoutGroupRemote(workoutGroup: WorkoutGroup) {
+        val response = workoutWebClient.saveWorkoutGroup(getValidToken(), workoutGroup)
 
-    }
-
-    suspend fun inactivateWorkoutGroup(workoutGroupId: String) {
-        inactivateWorkoutGroupLocally(workoutGroupId)
-        inactivateWorkoutGroupRemote(workoutGroupId)
-    }
-
-    private suspend fun inactivateWorkoutGroupLocally(workoutGroupId: String) {
-        workoutGroupDAO.findById(workoutGroupId)?.let {
-            it.active = false
-            workoutGroupDAO.update(it, true)
+        if (response.success) {
+            workoutGroupDAO.update(
+                model = workoutGroup.copy(transmissionState = EnumTransmissionState.TRANSMITTED),
+                writeTransmissionState = true
+            )
         }
     }
 
-    private suspend fun inactivateWorkoutGroupRemote(workoutGroupId: String) {
+    suspend fun inactivateWorkoutGroup(workoutGroupId: String): Boolean {
+        inactivateWorkoutGroupLocally(workoutGroupId)
+        return inactivateWorkoutGroupRemote(workoutGroupId)
+    }
 
+    private suspend fun inactivateWorkoutGroupLocally(workoutGroupId: String) {
+        val workoutGroup = workoutGroupDAO.findById(workoutGroupId)!!
+        workoutGroup.active = false
+
+        workoutGroupDAO.update(workoutGroup, true)
+    }
+
+    private suspend fun inactivateWorkoutGroupRemote(workoutGroupId: String): Boolean {
+        val response = workoutWebClient.inactivateWorkoutGroup(getValidToken(), workoutGroupId)
+
+        if (response.success) {
+            workoutGroupDAO.update(
+                model = workoutGroupDAO.findById(workoutGroupId)!!.copy(transmissionState = EnumTransmissionState.TRANSMITTED),
+                writeTransmissionState = true
+            )
+        }
+
+        return response.success
     }
 }
