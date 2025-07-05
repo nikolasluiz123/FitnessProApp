@@ -65,6 +65,8 @@ class ExerciseRepository(
         } else {
             exerciseDAO.update(exercise)
         }
+
+        toExercise.id = exercise.id
     }
 
     private suspend fun saveExerciseRemote(toExercise: TOExercise, toWorkoutGroup: TOWorkoutGroup?) {
