@@ -26,6 +26,7 @@ fun WorkoutGroup.getWorkoutGroupDTO(): WorkoutGroupDTO {
         active = active,
         workoutId = workoutId,
         dayWeek = dayWeek,
+        groupOrder = groupOrder
     )
 }
 

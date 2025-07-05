@@ -91,4 +91,6 @@
     <string name="exercise_exportation_description">Exportação dos Exercícios dos Treinos</string>
     <string name="video_exercise_exportation_description">Exportação das Relações dos Vídeos e Exercícios</string>
     <string name="video_exportation_description">Exportação dos Vídeos dos Exercícios</string>
+    <string name="workout_group_edit_dialog_msg_save_success">Grupo Muscular salvo com sucesso</string>
+    <string name="workout_group_edit_dialog_msg_inactivated_success">Grupo Muscular excluído com sucesso</string>
 </resources>

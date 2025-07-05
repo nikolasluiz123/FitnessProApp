@@ -7,14 +7,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.filter.SimpleFilter
@@ -22,17 +29,19 @@ import br.com.fitnesspro.compose.components.list.grouped.nested.NestedGroupedLis
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.navigation.ExerciseScreenArgs
+import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.callbacks.OnInactivateWorkoutGroupClick
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.callbacks.OnNavigateExercise
+import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.callbacks.OnSaveWorkoutGroupClick
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.DayWeekWorkoutItem
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.WorkoutGroupItem
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekExercisesUIState
 import br.com.fitnesspro.workout.ui.viewmodel.DayWeekExercisesViewModel
-import br.com.fitnesspro.workout.ui.viewmodel.WorkoutGroupEditDialogViewModel
 import java.time.DayOfWeek
 
 @Composable
@@ -42,15 +51,16 @@ fun DayWeekExercisesScreen(
     onNavigateExercise: OnNavigateExercise
 ) {
     val state by viewModel.uiState.collectAsState()
-    val workoutGroupEditDialogViewModel = hiltViewModel<WorkoutGroupEditDialogViewModel>()
 
     DayWeekExercisesScreen(
         state = state,
         onBackClick = onBackClick,
         onNavigateExercise = onNavigateExercise,
         onUpdateExercises = viewModel::updateExercises,
-        workoutGroupEditDialogViewModel = workoutGroupEditDialogViewModel,
-        onDeleteWorkout = viewModel::deleteWorkout
+        onDeleteWorkout = viewModel::deleteWorkout,
+        onSaveWorkoutGroupClick = viewModel::onSaveWorkoutGroup,
+        onInactivateWorkoutGroupClick = viewModel::onInactivateWorkoutGroup,
+        onLoadDataWorkoutGroupEdition = viewModel::onLoadDataWorkoutGroupEdition
     )
 }
 
@@ -61,9 +71,15 @@ fun DayWeekExercisesScreen(
     onBackClick: () -> Unit = { },
     onNavigateExercise: OnNavigateExercise? = null,
     onUpdateExercises: () -> Unit = { },
-    workoutGroupEditDialogViewModel: WorkoutGroupEditDialogViewModel? = null,
-    onDeleteWorkout: () -> Unit = {}
+    onDeleteWorkout: () -> Unit = {},
+    onSaveWorkoutGroupClick: OnSaveWorkoutGroupClick? = null,
+    onInactivateWorkoutGroupClick: OnInactivateWorkoutGroupClick? = null,
+    onLoadDataWorkoutGroupEdition: () -> Unit = {}
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
@@ -81,6 +97,13 @@ fun DayWeekExercisesScreen(
                     }
                 }
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) {
+                Snackbar(modifier = Modifier.padding(8.dp)) {
+                    Text(text = it.visuals.message, style = SnackBarTextStyle)
+                }
+            }
         }
     ) { paddings ->
 
@@ -98,15 +121,15 @@ fun DayWeekExercisesScreen(
 
             FitnessProMessageDialog(state.messageDialogState)
 
-            if (state.showWorkoutGroupEditDialog) {
-                WorkoutGroupEditDialog(
-                    viewModel = workoutGroupEditDialogViewModel!!,
-                    workoutGroupId = state.workoutGroupIdEdited!!,
-                    onDismissRequest = state.onDismissWorkoutGroupEditDialog,
-                    onSaveClick = { onUpdateExercises() },
-                    onInactivateClick = { onUpdateExercises() }
-                )
-            }
+            WorkoutGroupEditDialog(
+                state = state.workoutGroupEditDialogUIState,
+                onSaveClick = onSaveWorkoutGroupClick,
+                onInactivateClick = onInactivateWorkoutGroupClick,
+                onLoadDataEdition = onLoadDataWorkoutGroupEdition,
+                snackbarHostState = snackbarHostState,
+                coroutineScope = coroutineScope,
+                context = context
+            )
 
             SimpleFilter(
                 modifier = Modifier.fillMaxWidth(),
@@ -201,7 +224,7 @@ fun DayWeekExercisesScreen(
                                 },
                                 onItemLongClick = {
                                     state.workoutGroupIdEdited = it.id
-                                    state.onShowWorkoutGroupEditDialog()
+                                    state.workoutGroupEditDialogUIState.onShowDialogChange(true)
                                 }
                             )
                         }

@@ -1,6 +1,5 @@
 package br.com.fitnesspro.local.data.access.dao
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
@@ -16,7 +15,7 @@ import java.util.StringJoiner
 @Dao
 abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
 
-    @Query("select * from workout_group where id = :workoutGroupId and active = 1")
+    @Query("select * from workout_group where id = :workoutGroupId")
     abstract suspend fun findById(workoutGroupId: String?): WorkoutGroup?
 
     suspend fun getWorkoutGroupsFromWorkout(

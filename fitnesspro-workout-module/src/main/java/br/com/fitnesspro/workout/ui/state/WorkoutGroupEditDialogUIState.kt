@@ -14,6 +14,8 @@ data class WorkoutGroupEditDialogUIState(
     val dayWeek: DropDownTextField<DayOfWeek> = DropDownTextField(),
     val toWorkoutGroup: TOWorkoutGroup = TOWorkoutGroup(),
     val messageDialogState: MessageDialogState = MessageDialogState(),
+    val showDialog: Boolean = false,
+    val onShowDialogChange: (Boolean) -> Unit = { },
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = { }
 ): ILoadingUIState
