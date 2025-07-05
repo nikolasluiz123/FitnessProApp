@@ -4,6 +4,7 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.getExercise
 import br.com.fitnesspro.mappers.getTOExercise
 import br.com.fitnesspro.mappers.getWorkoutGroup
@@ -14,6 +15,7 @@ import br.com.fitnesspro.to.TOWorkoutGroup
 class ExerciseRepository(
     context: Context,
     private val exerciseDAO: ExerciseDAO,
+    private val workoutGroupDAO: WorkoutGroupDAO,
     private val workoutGroupRepository: WorkoutGroupRepository,
     private val exerciseWebClient: ExerciseWebClient,
     private val videoRepository: VideoRepository
@@ -94,6 +96,28 @@ class ExerciseRepository(
 
             exerciseDAO.updateBatch(exercises)
             videoRepository.deleteVideos(exercises.map { it.id })
+        }
+    }
+
+    suspend fun inactivateExercise(exerciseId: String) {
+        val exercise = exerciseDAO.findById(exerciseId).apply {
+            active = false
+        }
+        exerciseDAO.update(exercise)
+
+        val workoutGroup = workoutGroupDAO.findById(exercise.workoutGroupId)!!
+
+        val response = exerciseWebClient.saveExercise(
+            token = getValidToken(),
+            exercise = exercise,
+            workoutGroup = workoutGroup
+        )
+
+        if (response.success) {
+            exercise.transmissionState = EnumTransmissionState.TRANSMITTED
+            exerciseDAO.update(exercise)
+
+            videoRepository.deleteVideos(listOf(exerciseId))
         }
     }
 

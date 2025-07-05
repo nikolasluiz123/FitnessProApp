@@ -40,6 +40,7 @@ import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnFinishVideoRecording
+import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnInactivateExerciseClick
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnSaveExerciseClick
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnVideoSelectedOnGallery
 import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumExerciseScreenTags
@@ -66,7 +67,8 @@ fun ExerciseScreen(
         onOpenCameraVideo = viewModel::onOpenCameraVideo,
         onFinishVideoRecording = viewModel::onFinishVideoRecording,
         onVideoSelectedOnGallery = viewModel::onVideoSelectedOnGallery,
-        onVideoClick = viewModel::onVideoClick
+        onVideoClick = viewModel::onVideoClick,
+        onInactivateExerciseClick = viewModel::onInactivateExercise
     )
 }
 
@@ -79,7 +81,8 @@ fun ExerciseScreen(
     onOpenCameraVideo: (File) -> Unit = { },
     onFinishVideoRecording: OnFinishVideoRecording? = null,
     onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null,
-    onVideoClick: (path: String) -> Unit = {}
+    onVideoClick: (path: String) -> Unit = {},
+    onInactivateExerciseClick: OnInactivateExerciseClick? = null
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
@@ -100,7 +103,13 @@ fun ExerciseScreen(
                 actions = {
                     IconButtonDelete(
                         onClick = {
-
+                            onInactivateExerciseClick?.onExecute {
+                                state.onToggleLoading()
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar(context.getString(R.string.exercise_screen_msg_inactivate_success))
+                                }
+                                onBackClick()
+                            }
                         }
                     )
                 },

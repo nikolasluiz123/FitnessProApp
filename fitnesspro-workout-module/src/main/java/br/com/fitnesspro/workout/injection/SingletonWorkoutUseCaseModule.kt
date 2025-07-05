@@ -5,6 +5,7 @@ import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
+import br.com.fitnesspro.workout.usecase.exercise.InactivateExerciseUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseVideoFromGalleryUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseVideoUseCase
@@ -48,10 +49,12 @@ class SingletonWorkoutUseCaseModule {
 
     @Provides
     fun provideInactivateWorkoutGroupUseCase(
+        @ApplicationContext context: Context,
         workoutGroupRepository: WorkoutGroupRepository,
-        exerciseRepository: ExerciseRepository
+        exerciseRepository: ExerciseRepository,
     ): InactivateWorkoutGroupUseCase {
         return InactivateWorkoutGroupUseCase(
+            context = context,
             workoutGroupRepository = workoutGroupRepository,
             exerciseRepository = exerciseRepository
         )
@@ -76,6 +79,17 @@ class SingletonWorkoutUseCaseModule {
         return SaveExerciseVideoFromGalleryUseCase(
             context = context,
             saveExerciseVideoUseCase = saveExerciseVideoUseCase,
+        )
+    }
+
+    @Provides
+    fun provideInactivateExerciseUseCase(
+        @ApplicationContext context: Context,
+        exerciseRepository: ExerciseRepository
+    ): InactivateExerciseUseCase {
+        return InactivateExerciseUseCase(
+            context = context,
+            exerciseRepository = exerciseRepository
         )
     }
 }

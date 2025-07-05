@@ -19,6 +19,7 @@ import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
 import br.com.fitnesspro.compose.components.tabs.Tab
+import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
@@ -44,6 +45,7 @@ import br.com.fitnesspro.workout.ui.navigation.exerciseScreenArguments
 import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumTabsExerciseScreen
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
 import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields
+import br.com.fitnesspro.workout.usecase.exercise.InactivateExerciseUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseVideoFromGalleryUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseVideoUseCase
@@ -70,6 +72,7 @@ class ExerciseViewModel @Inject constructor(
     private val saveExerciseUseCase: SaveExerciseUseCase,
     private val saveExerciseVideoUseCase: SaveExerciseVideoUseCase,
     private val saveExerciseVideoFromGalleryUseCase: SaveExerciseVideoFromGalleryUseCase,
+    private val inactivateExerciseUseCase: InactivateExerciseUseCase,
     savedStateHandle: SavedStateHandle
 ): FitnessProViewModel() {
 
@@ -880,6 +883,22 @@ class ExerciseViewModel @Inject constructor(
         } else {
             _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
                 message = context.getString(R.string.exercise_screen_msg_video_not_found)
+            )
+        }
+    }
+
+    fun onInactivateExercise(onSuccess: () -> Unit) {
+        _uiState.value.toExercise.id?.let {
+            _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
+                message = context.getString(R.string.exercise_screen_msg_confirm_inactivate_exercise),
+                onConfirm = {
+                    _uiState.value.onToggleLoading()
+
+                    launch {
+                        inactivateExerciseUseCase(it)
+                        onSuccess()
+                    }
+                }
             )
         }
     }

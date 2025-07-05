@@ -31,8 +31,8 @@ class ExerciseWebClient(
     private val videoService: IVideoService,
 ): FitnessProWebClient(context) {
 
-    suspend fun saveExercise(token: String, exercise: Exercise, workoutGroup: WorkoutGroup) {
-        persistenceServiceErrorHandlingBlock(
+    suspend fun saveExercise(token: String, exercise: Exercise, workoutGroup: WorkoutGroup): PersistenceServiceResponse<ExerciseDTO> {
+        return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 exerciseService.saveExercise(
                     token = formatToken(token),
