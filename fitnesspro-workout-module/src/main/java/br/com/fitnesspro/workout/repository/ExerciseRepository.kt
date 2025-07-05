@@ -16,6 +16,7 @@ class ExerciseRepository(
     private val exerciseDAO: ExerciseDAO,
     private val workoutGroupRepository: WorkoutGroupRepository,
     private val exerciseWebClient: ExerciseWebClient,
+    private val videoRepository: VideoRepository
 ): FitnessProRepository(context) {
 
     suspend fun findById(id: String): TOExercise {
@@ -90,6 +91,7 @@ class ExerciseRepository(
             }
 
             exerciseDAO.updateBatch(exercises)
+            videoRepository.deleteVideos(exercises.map { it.id })
         }
     }
 

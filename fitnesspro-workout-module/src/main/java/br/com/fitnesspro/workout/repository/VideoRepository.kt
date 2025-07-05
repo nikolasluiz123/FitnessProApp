@@ -53,4 +53,11 @@ class VideoRepository(
         return videoExerciseDAO.getCountVideosExercise(exerciseId)
     }
 
+    suspend fun deleteVideos(exerciseIds: List<String>) {
+        val videoExerciseList = videoExerciseDAO.getListVideoExerciseFromExercises(exerciseIds)
+
+        videoDAO.deleteVideos(videoExerciseList.map { it.videoId!! })
+        videoExerciseDAO.deleteVideosExercise(videoExerciseList)
+    }
+
 }

@@ -61,4 +61,7 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
 
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Video>
+
+    @Query(" delete from video where id in (:ids) ")
+    abstract suspend fun deleteVideos(ids: List<String>)
 }
