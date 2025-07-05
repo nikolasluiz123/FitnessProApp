@@ -5,13 +5,17 @@ import br.com.fitnesspro.core.exceptions.NoLoggingException
 import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.repository.ExerciseRepository
+import br.com.fitnesspro.workout.repository.VideoRepository
 
 class InactivateExerciseUseCase(
     private val context: Context,
     private val exerciseRepository: ExerciseRepository,
+    private val videoRepository: VideoRepository
 ) {
     suspend operator fun invoke(exerciseId: String) {
-        if (!context.isNetworkAvailable()) {
+        val existsVideoExerciseTransmitted = videoRepository.getExistsVideoExerciseTransmitted(exerciseId = exerciseId)
+
+        if (!context.isNetworkAvailable() && existsVideoExerciseTransmitted) {
             throw NoLoggingException(context.getString(R.string.network_required_inactivate_exercise_message))
         }
 

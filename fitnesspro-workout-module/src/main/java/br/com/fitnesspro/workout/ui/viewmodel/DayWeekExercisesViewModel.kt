@@ -314,6 +314,7 @@ class DayWeekExercisesViewModel @Inject constructor(
             onConfirm = {
                 launch {
                     // TODO - Chamar o UseCase para inativar o Workout, WorkoutGroup, Exercise, deletar VideoExercise
+
                 }
             }
         )

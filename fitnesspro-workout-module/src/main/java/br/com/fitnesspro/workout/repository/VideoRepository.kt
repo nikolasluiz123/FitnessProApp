@@ -82,4 +82,12 @@ class VideoRepository(
         videoExerciseDAO.deleteVideosExercise(videoExerciseList)
     }
 
+    suspend fun getExistsVideoExerciseTransmitted(
+        workoutId: String? = null,
+        workoutGroupId: String? = null,
+        exerciseId: String? = null
+        ): Boolean {
+        return videoExerciseDAO.getExistsVideoExerciseTransmitted(workoutId, workoutGroupId, exerciseId)
+    }
+
 }
