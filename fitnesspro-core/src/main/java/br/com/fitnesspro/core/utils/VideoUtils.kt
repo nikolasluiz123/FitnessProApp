@@ -51,15 +51,19 @@ object VideoUtils {
     }
 
     suspend fun generateVideoThumbnail(filePath: String, timeUs: Long = 1_000_000): Bitmap? = withContext(IO) {
-        val retriever = MediaMetadataRetriever()
+        if (FileUtils.getFileExists(filePath)) {
+            val retriever = MediaMetadataRetriever()
 
-        try {
-            retriever.setDataSource(filePath)
-            val bitmap = retriever.getFrameAtTime(timeUs, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+            try {
+                retriever.setDataSource(filePath)
+                val bitmap = retriever.getFrameAtTime(timeUs, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
 
-            bitmap
-        } finally {
-            retriever.release()
+                bitmap
+            } finally {
+                retriever.release()
+            }
+        } else {
+            null
         }
     }
 

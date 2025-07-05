@@ -24,9 +24,11 @@ import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.extensions.millisTo
+import br.com.fitnesspro.core.extensions.openVideoPlayer
 import br.com.fitnesspro.core.extensions.toIntOrNull
 import br.com.fitnesspro.core.extensions.toStringOrEmpty
 import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.core.utils.VideoUtils
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOExercise
@@ -530,7 +532,7 @@ class ExerciseViewModel @Inject constructor(
             loadTopBar(args)
             loadGroups(args)
             loadExercises()
-            loadExerciseInfoEdition(args)
+            loadExerciseInfoEdition(args.exerciseId)
             loadExerciseVideos(args.exerciseId)
         }
     }
@@ -557,9 +559,10 @@ class ExerciseViewModel @Inject constructor(
         )
     }
 
-    private suspend fun loadExerciseInfoEdition(args: ExerciseScreenArgs) {
-        args.exerciseId?.let { exerciseId ->
-            val toExercise = exerciseRepository.findById(exerciseId)
+    private suspend fun loadExerciseInfoEdition(exerciseId: String?) {
+        exerciseId?.let { id ->
+            val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
+            val toExercise = exerciseRepository.findById(id)
             toExercise.unitRest = toExercise.rest?.bestChronoUnit()
             toExercise.unitDuration = toExercise.duration?.bestChronoUnit()
 
@@ -713,6 +716,7 @@ class ExerciseViewModel @Inject constructor(
 
             if (validationResults.isEmpty()) {
                 onSuccess()
+                loadExerciseInfoEdition(_uiState.value.toExercise.id)
             } else {
                 _uiState.value.onToggleLoading()
                 showExerciseFieldsValidationMessages(validationResults.toMutableList())
@@ -867,6 +871,16 @@ class ExerciseViewModel @Inject constructor(
                 loadExerciseVideos(_uiState.value.toExercise.id)
                 onSuccess()
             }
+        }
+    }
+
+    fun onVideoClick(path: String) {
+        if (FileUtils.getFileExists(path)) {
+            context.openVideoPlayer(filePath = path)
+        } else {
+            _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
+                message = context.getString(R.string.exercise_screen_msg_video_not_found)
+            )
         }
     }
 }

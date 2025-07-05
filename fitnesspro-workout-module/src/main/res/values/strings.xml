@@ -93,4 +93,5 @@
     <string name="video_exportation_description">Exportação dos Vídeos dos Exercícios</string>
     <string name="workout_group_edit_dialog_msg_save_success">Grupo Muscular salvo com sucesso</string>
     <string name="workout_group_edit_dialog_msg_inactivated_success">Grupo Muscular excluído com sucesso</string>
+    <string name="exercise_screen_msg_video_not_found">Não foi possível encontrar o vídeo para reproduzir. É possível que o mesmo ainda esteja sendo baixado para o dispositivo.</string>
 </resources>

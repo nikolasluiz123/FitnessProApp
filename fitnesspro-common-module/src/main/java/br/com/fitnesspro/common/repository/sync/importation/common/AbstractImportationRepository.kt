@@ -90,11 +90,11 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
 
             updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
         } catch (ex: Exception) {
-            if (response != null) {
+            response?.let { serviceResponse ->
                 updateLogPackageWithErrorInfos(
                     serviceToken = serviceToken,
-                    logId = response.executionLogId,
-                    logPackageId = response.executionLogPackageId,
+                    logId = serviceResponse.executionLogId,
+                    logPackageId = serviceResponse.executionLogPackageId,
                     exception = ex,
                     clientStartDateTime = clientStartDateTime
                 )

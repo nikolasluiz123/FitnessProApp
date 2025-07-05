@@ -19,7 +19,6 @@ import br.com.fitnesspro.compose.components.gallery.video.components.VideoGaller
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.core.extensions.launchVideosOnly
 import br.com.fitnesspro.core.extensions.openCameraVideo
-import br.com.fitnesspro.core.extensions.openVideoPlayer
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnFinishVideoRecording
@@ -32,7 +31,8 @@ fun ExerciseScreenTabVideos(
     state: ExerciseUIState = ExerciseUIState(),
     onOpenCameraVideo: OnOpenCameraVideo? = null,
     onFinishVideoRecording: OnFinishVideoRecording? = null,
-    onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null
+    onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null,
+    onVideoClick: (path: String) -> Unit = {}
 ) {
     val context = LocalContext.current
 
@@ -60,7 +60,7 @@ fun ExerciseScreenTabVideos(
         VideoGallery(
             modifier = Modifier.padding(top = 12.dp),
             state = state.videoGalleryState,
-            onVideoClick = context::openVideoPlayer,
+            onVideoClick = onVideoClick,
             emptyMessage = stringResource(R.string.exercise_screen_videos_empty_message),
             actions = {
                 IconButtonGallery(

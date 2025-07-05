@@ -7,6 +7,7 @@ import br.com.fitnesspor.service.data.access.service.workout.IVideoService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
 import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.mappers.getExerciseDTO
+import br.com.fitnesspro.mappers.getNewVideoExerciseDTO
 import br.com.fitnesspro.mappers.getVideoDTO
 import br.com.fitnesspro.mappers.getVideoExerciseDTO
 import br.com.fitnesspro.model.workout.Exercise
@@ -14,12 +15,14 @@ import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
 
 class ExerciseWebClient(
@@ -139,6 +142,17 @@ class ExerciseWebClient(
                     token = formatToken(token),
                     videoDTOList = videoListDTO
                 ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun createVideo(token: String, video: Video, videoExercise: VideoExercise): PersistenceServiceResponse<NewVideoExerciseDTO> {
+        return persistenceServiceErrorHandlingBlock(
+            codeBlock = {
+                videoService.createVideo(
+                    token = formatToken(token),
+                    newVideoExerciseDTO = videoExercise.getNewVideoExerciseDTO(video)
+                ).getResponseBody(NewVideoExerciseDTO::class.java)
             }
         )
     }

@@ -1,17 +1,20 @@
 package br.com.fitnesspro.workout.repository
 
 import android.content.Context
+import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
 import br.com.fitnesspro.mappers.getVideo
 import br.com.fitnesspro.mappers.getVideoExercise
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.to.TOVideoExercise
 
 class VideoRepository(
     context: Context,
     private val videoDAO: VideoDAO,
-    private val videoExerciseDAO: VideoExerciseDAO
+    private val videoExerciseDAO: VideoExerciseDAO,
+    private val exerciseWebClient: ExerciseWebClient
 ): FitnessProRepository(context) {
 
     suspend fun saveVideoExercise(toVideoExercise: TOVideoExercise) {
@@ -42,7 +45,26 @@ class VideoRepository(
     }
 
     private suspend fun saveVideoExerciseRemote(toVideoExercise: TOVideoExercise) {
+        val video = toVideoExercise.toVideo!!.getVideo()
+        val videoExercise = toVideoExercise.getVideoExercise()
 
+        val response = exerciseWebClient.createVideo(
+            token = getValidToken(),
+            video = video,
+            videoExercise = videoExercise
+        )
+
+        if (response.success) {
+            videoDAO.update(
+                model = video.copy(transmissionState = EnumTransmissionState.TRANSMITTED),
+                writeTransmissionState = true
+            )
+
+            videoExerciseDAO.update(
+                model = videoExercise.copy(transmissionState = EnumTransmissionState.TRANSMITTED),
+                writeTransmissionState = true
+            )
+        }
     }
 
     suspend fun getVideoExercises(exerciseId: String): List<String> {

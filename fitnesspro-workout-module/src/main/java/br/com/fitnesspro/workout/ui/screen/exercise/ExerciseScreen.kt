@@ -65,7 +65,8 @@ fun ExerciseScreen(
         onSaveExerciseClick = viewModel::saveExercise,
         onOpenCameraVideo = viewModel::onOpenCameraVideo,
         onFinishVideoRecording = viewModel::onFinishVideoRecording,
-        onVideoSelectedOnGallery = viewModel::onVideoSelectedOnGallery
+        onVideoSelectedOnGallery = viewModel::onVideoSelectedOnGallery,
+        onVideoClick = viewModel::onVideoClick
     )
 }
 
@@ -77,7 +78,8 @@ fun ExerciseScreen(
     onSaveExerciseClick: OnSaveExerciseClick? = null,
     onOpenCameraVideo: (File) -> Unit = { },
     onFinishVideoRecording: OnFinishVideoRecording? = null,
-    onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null
+    onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null,
+    onVideoClick: (path: String) -> Unit = {}
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
@@ -177,7 +179,8 @@ fun ExerciseScreen(
                                 state = state,
                                 onOpenCameraVideo = onOpenCameraVideo,
                                 onFinishVideoRecording = onFinishVideoRecording,
-                                onVideoSelectedOnGallery = onVideoSelectedOnGallery
+                                onVideoSelectedOnGallery = onVideoSelectedOnGallery,
+                                onVideoClick = onVideoClick
                             )
                         }
                     }

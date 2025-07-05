@@ -3,6 +3,7 @@ package br.com.fitnesspro.mappers
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
+import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
 import br.com.fitnesspro.to.TOVideo
@@ -93,5 +94,13 @@ fun Video.getVideoDTO(): VideoDTO {
         seconds = seconds,
         width = width,
         height = height,
+    )
+}
+
+fun VideoExercise.getNewVideoExerciseDTO(video: Video): NewVideoExerciseDTO {
+    return NewVideoExerciseDTO(
+        id = id,
+        exerciseId = exerciseId,
+        videoDTO = video.getVideoDTO()
     )
 }

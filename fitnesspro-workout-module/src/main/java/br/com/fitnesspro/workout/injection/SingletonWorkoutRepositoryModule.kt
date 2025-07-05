@@ -71,12 +71,14 @@ class SingletonWorkoutRepositoryModule {
         exerciseDAO: ExerciseDAO,
         workoutGroupRepository: WorkoutGroupRepository,
         exerciseWebClient: ExerciseWebClient,
+        videoRepository: VideoRepository
     ): ExerciseRepository {
         return ExerciseRepository(
             context = context,
             exerciseDAO = exerciseDAO,
             workoutGroupRepository = workoutGroupRepository,
-            exerciseWebClient = exerciseWebClient
+            exerciseWebClient = exerciseWebClient,
+            videoRepository = videoRepository
         )
     }
 
@@ -106,12 +108,14 @@ class SingletonWorkoutRepositoryModule {
     fun provideVideoRepository(
         @ApplicationContext context: Context,
         videoDAO: VideoDAO,
-        videoExerciseDAO: VideoExerciseDAO
+        videoExerciseDAO: VideoExerciseDAO,
+        exerciseWebClient: ExerciseWebClient
     ): VideoRepository {
         return VideoRepository(
             context = context,
             videoDAO = videoDAO,
-            videoExerciseDAO = videoExerciseDAO
+            videoExerciseDAO = videoExerciseDAO,
+            exerciseWebClient = exerciseWebClient
         )
     }
     

@@ -1,6 +1,7 @@
 package br.com.fitnesspro.core.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 
@@ -27,7 +28,7 @@ abstract class FitnessProCoroutineWorker(
             onWork()
             Result.success()
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("FitnessProCoroutineWorker", e.message, e)
             onError(e)
         }
     }

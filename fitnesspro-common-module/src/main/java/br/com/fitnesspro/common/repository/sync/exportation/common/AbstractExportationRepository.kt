@@ -26,13 +26,13 @@ abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: Integr
     override fun getPageSize(): Int = 100
 
     suspend fun export(serviceToken: String) {
-        val pageInfos = ExportPageInfos(pageSize = getPageSize())
-
-        lateinit var response: ExportationServiceResponse
-        lateinit var clientDateTimeStart: LocalDateTime
-        lateinit var models: List<MODEL>
+        var response: ExportationServiceResponse? = null
+        var clientDateTimeStart: LocalDateTime? = null
+        var models: List<MODEL>
 
         try {
+            val pageInfos = ExportPageInfos(pageSize = getPageSize())
+
             do {
                 clientDateTimeStart = dateTimeNow(ZoneOffset.UTC)
 
@@ -73,17 +73,19 @@ abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: Integr
             } while (models.size == pageInfos.pageSize)
 
             if (models.isNotEmpty()) {
-                updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
+                updateLogWithFinalizationInfos(serviceToken, response?.executionLogId!!)
             }
 
         } catch (ex: Exception) {
-            updateLogPackageWithErrorInfos(
-                serviceToken = serviceToken,
-                logId = response.executionLogId,
-                logPackageId = response.executionLogPackageId,
-                exception = ex,
-                clientStartDateTime = clientDateTimeStart
-            )
+            response?.let { serviceResponse ->
+                updateLogPackageWithErrorInfos(
+                    serviceToken = serviceToken,
+                    logId = serviceResponse.executionLogId,
+                    logPackageId = serviceResponse.executionLogPackageId,
+                    exception = ex,
+                    clientStartDateTime = clientDateTimeStart!!
+                )
+            }
 
             throw ex
         }

@@ -85,7 +85,7 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
     @Query("select exists(select 1 from workout_group where id = :id)")
     abstract suspend fun hasEntityWithId(id: String): Boolean
 
-    suspend fun getExportationData(pageInfos: ExportPageInfos, userId: String): List<WorkoutGroup> {
+    suspend fun getExportationData(pageInfos: ExportPageInfos, personId: String): List<WorkoutGroup> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -94,7 +94,8 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
             add("        wg.workout_id as workoutId, ")
             add("        wg.day_week as dayWeek, ")
             add("        wg.group_order as groupOrder, ")
-            add("        wg.active as active ")
+            add("        wg.active as active, ")
+            add("        wg.transmission_state as transmissionState ")
         }
 
         val from = StringJoiner(QR_NL).apply {
@@ -107,8 +108,8 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
             add(" and wg.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
             add(" limit ? offset ? ")
 
-            params.add(userId)
-            params.add(userId)
+            params.add(personId)
+            params.add(personId)
             params.add(pageInfos.pageSize)
             params.add(pageInfos.pageSize * pageInfos.pageNumber)
         }

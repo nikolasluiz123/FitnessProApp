@@ -42,4 +42,8 @@ object FileUtils {
     fun getFileSizeInKB(file: File): Long {
         return file.length() / 1024
     }
+
+    fun getFileExists(filePath: String): Boolean {
+        return File(filePath).exists()
+    }
 }
