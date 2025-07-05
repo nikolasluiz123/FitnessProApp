@@ -105,9 +105,6 @@ fun ExerciseScreen(
                         onClick = {
                             onInactivateExerciseClick?.onExecute {
                                 state.onToggleLoading()
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar(context.getString(R.string.exercise_screen_msg_inactivate_success))
-                                }
                                 onBackClick()
                             }
                         }
