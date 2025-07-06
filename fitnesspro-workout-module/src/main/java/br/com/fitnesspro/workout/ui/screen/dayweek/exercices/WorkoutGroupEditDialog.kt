@@ -183,7 +183,6 @@ fun WorkoutGroupEditDialog(
                             modifier = Modifier.align(Alignment.CenterStart),
                             labelResId = R.string.workout_group_edit_dialog_inactivate_button,
                             onClick = {
-                                state.onToggleLoading()
                                 onInactivateClick?.onExecute {
                                     state.onToggleLoading()
                                     state.onShowDialogChange(false)
