@@ -362,7 +362,7 @@ class DayWeekExercisesViewModel @Inject constructor(
                 onSuccess()
                 updateExercises()
             } else {
-                _uiState.value.onToggleLoading()
+                _uiState.value.workoutGroupEditDialogUIState.onToggleLoading()
                 showFieldsValidationMessagesWorkoutGroupDialog(validationResults.toMutableList())
             }
         }
@@ -401,7 +401,7 @@ class DayWeekExercisesViewModel @Inject constructor(
                 getWorkoutGroupNameOrDefault(_uiState.value.workoutGroupEditDialogUIState.toWorkoutGroup)
             )
         ) {
-            _uiState.value.onToggleLoading()
+            _uiState.value.workoutGroupEditDialogUIState.onToggleLoading()
 
             launch {
                 inactivateWorkoutGroupUseCase(_uiState.value.workoutGroupEditDialogUIState.toWorkoutGroup.id!!)
