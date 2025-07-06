@@ -27,7 +27,6 @@ class MembersWorkoutViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfos()
     }
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
@@ -97,7 +96,7 @@ class MembersWorkoutViewModel @Inject constructor(
         )
     }
 
-    private fun loadUIStateWithDatabaseInfos() {
+    fun onUpdateWorkouts() {
         launch {
             _uiState.value = _uiState.value.copy(
                 workouts = workoutRepository.getListWorkout()

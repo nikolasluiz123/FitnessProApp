@@ -97,4 +97,5 @@
     <string name="network_required_inactivate_exercise_message">Para excluir um exercício é necessário ter conexão com a internet.</string>
     <string name="network_required_inactivate_workout_group_message">Para excluir um grupo muscular é necessário ter conexão com a internet.</string>
     <string name="exercise_screen_msg_confirm_inactivate_exercise">Você tem certeza de que deseja excluir esse exercício? Essa ação não poderá ser desfeita.</string>
+    <string name="network_required_inactivate_workout_message">Para excluir o treino é necessário ter conexão com a internet.</string>
 </resources>

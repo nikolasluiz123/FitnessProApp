@@ -7,6 +7,7 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROU
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP_INACTIVATE
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_IMPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_INACTIVATE
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
@@ -66,5 +67,11 @@ interface IWorkoutService {
     suspend fun inactivateWorkoutGroup(
         @Header("Authorization") token: String,
         @Path("workoutGroupId") workoutGroupId: String
+    ): Response<FitnessProServiceResponse>
+
+    @PUT("$WORKOUT$WORKOUT_INACTIVATE")
+    suspend fun inactivateWorkout(
+        @Header("Authorization") token: String,
+        @Path("workoutId") workoutId: String
     ): Response<FitnessProServiceResponse>
 }

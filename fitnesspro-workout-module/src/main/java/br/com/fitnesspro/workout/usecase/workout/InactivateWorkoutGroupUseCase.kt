@@ -23,7 +23,11 @@ class InactivateWorkoutGroupUseCase(
 
         workoutGroupRepository.runInTransaction {
             val inactivateWorkoutGroupRemoteSuccess = workoutGroupRepository.inactivateWorkoutGroup(workoutGroupId)
-            exerciseRepository.inactivateExercisesFromWorkoutGroup(workoutGroupId, inactivateWorkoutGroupRemoteSuccess)
+
+            exerciseRepository.inactivateExercisesFromWorkoutGroupLocally(
+                listWorkoutGroupId = listOf(workoutGroupId),
+                remoteSuccess = inactivateWorkoutGroupRemoteSuccess
+            )
         }
     }
 

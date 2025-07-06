@@ -79,17 +79,14 @@ class ExerciseRepository(
         )
     }
 
-    suspend fun inactivateExercisesFromWorkoutGroup(
-        workoutGroupId: String,
-        inactivateWorkoutGroupRemoteSuccess: Boolean
-    ) {
-        val exercises = exerciseDAO.findExerciesFromWorkoutGroup(workoutGroupId).onEach {
+    suspend fun inactivateExercisesFromWorkoutGroupLocally(listWorkoutGroupId: List<String>, remoteSuccess: Boolean) {
+        val exercises = exerciseDAO.findExercisesFromWorkoutGroup(listWorkoutGroupId).onEach {
             it.active = false
         }
 
         exerciseDAO.updateBatch(exercises, true)
 
-        if (inactivateWorkoutGroupRemoteSuccess) {
+        if (remoteSuccess) {
             exercises.forEach {
                 it.transmissionState = EnumTransmissionState.TRANSMITTED
             }

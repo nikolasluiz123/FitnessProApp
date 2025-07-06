@@ -33,6 +33,7 @@ import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.navigation.ExerciseScreenArgs
+import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.callbacks.OnInactivateWorkoutClick
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.callbacks.OnInactivateWorkoutGroupClick
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.callbacks.OnNavigateExercise
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.callbacks.OnSaveWorkoutGroupClick
@@ -57,7 +58,7 @@ fun DayWeekExercisesScreen(
         onBackClick = onBackClick,
         onNavigateExercise = onNavigateExercise,
         onUpdateExercises = viewModel::updateExercises,
-        onDeleteWorkout = viewModel::deleteWorkout,
+        onInactivateWorkoutClick = viewModel::onInactivateWorkout,
         onSaveWorkoutGroupClick = viewModel::onSaveWorkoutGroup,
         onInactivateWorkoutGroupClick = viewModel::onInactivateWorkoutGroup,
         onLoadDataWorkoutGroupEdition = viewModel::onLoadDataWorkoutGroupEdition
@@ -71,7 +72,7 @@ fun DayWeekExercisesScreen(
     onBackClick: () -> Unit = { },
     onNavigateExercise: OnNavigateExercise? = null,
     onUpdateExercises: () -> Unit = { },
-    onDeleteWorkout: () -> Unit = {},
+    onInactivateWorkoutClick: OnInactivateWorkoutClick? = null,
     onSaveWorkoutGroupClick: OnSaveWorkoutGroupClick? = null,
     onInactivateWorkoutGroupClick: OnInactivateWorkoutGroupClick? = null,
     onLoadDataWorkoutGroupEdition: () -> Unit = {}
@@ -91,7 +92,10 @@ fun DayWeekExercisesScreen(
                         IconButtonDelete(
                             enabled = state.deleteEnabled,
                             onClick = {
-                                onDeleteWorkout()
+                                onInactivateWorkoutClick?.onExecute {
+                                    state.onToggleLoading()
+                                    onBackClick()
+                                }
                             }
                         )
                     }

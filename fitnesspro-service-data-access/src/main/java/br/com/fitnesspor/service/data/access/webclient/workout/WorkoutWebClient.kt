@@ -127,4 +127,18 @@ class WorkoutWebClient(
             }
         )
     }
+
+    suspend fun inactivateWorkout(
+        token: String,
+        workoutId: String
+    ): FitnessProServiceResponse {
+        return serviceErrorHandlingBlock(
+            codeBlock = {
+                workoutService.inactivateWorkout(
+                    token = formatToken(token),
+                    workoutId = workoutId
+                ).getResponseBody()
+            }
+        )
+    }
 }

@@ -30,6 +30,7 @@ import br.com.fitnesspro.workout.ui.navigation.dayWeekExercisesScreenArguments
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekExercisesUIState
 import br.com.fitnesspro.workout.ui.state.WorkoutGroupEditDialogUIState
+import br.com.fitnesspro.workout.usecase.exercise.InactivateWorkoutUseCase
 import br.com.fitnesspro.workout.usecase.workout.EditWorkoutGroupUseCase
 import br.com.fitnesspro.workout.usecase.workout.EnumValidatedWorkoutGroupFields
 import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutGroupUseCase
@@ -49,6 +50,7 @@ class DayWeekExercisesViewModel @Inject constructor(
     private val workoutGroupRepository: WorkoutGroupRepository,
     private val editWorkoutGroupUseCase: EditWorkoutGroupUseCase,
     private val inactivateWorkoutGroupUseCase: InactivateWorkoutGroupUseCase,
+    private val inactivateWorkoutUseCase: InactivateWorkoutUseCase,
     savedStateHandle: SavedStateHandle
 ): FitnessProViewModel() {
 
@@ -110,7 +112,12 @@ class DayWeekExercisesViewModel @Inject constructor(
                         )
                     )
                 }
-            )
+            ),
+            onToggleLoading = {
+                _uiState.value = _uiState.value.copy(
+                    showLoading = !_uiState.value.showLoading
+                )
+            }
         )
     }
 
@@ -308,13 +315,14 @@ class DayWeekExercisesViewModel @Inject constructor(
         }
     }
 
-    fun deleteWorkout() {
+    fun onInactivateWorkout(onSuccess: () -> Unit) {
         _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
             message = context.getString(R.string.day_week_exercises_delete_confirmation_message),
             onConfirm = {
+                _uiState.value.onToggleLoading()
                 launch {
-                    // TODO - Chamar o UseCase para inativar o Workout, WorkoutGroup, Exercise, deletar VideoExercise
-
+                    inactivateWorkoutUseCase(_uiState.value.workout!!.id!!)
+                    onSuccess()
                 }
             }
         )
