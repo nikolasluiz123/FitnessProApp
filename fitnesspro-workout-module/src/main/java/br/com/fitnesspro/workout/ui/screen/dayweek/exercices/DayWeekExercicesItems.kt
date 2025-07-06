@@ -20,14 +20,15 @@ import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekEx
 @Composable
 fun DayWeekWorkoutGroupItem(
     decorator: DayWeekExercicesGroupDecorator,
-    onItemClick: (DayWeekExercicesGroupDecorator) -> Unit = {}
+    onItemClick: (DayWeekExercicesGroupDecorator) -> Unit = {},
+    enabled: Boolean = true
 ) {
     Box(
         Modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.inverseSurface)
             .padding(8.dp)
-            .clickable { onItemClick(decorator) }
+            .clickable(enabled = enabled) { onItemClick(decorator) }
     ) {
         Text(
             modifier = Modifier.align(alignment = Alignment.Center),

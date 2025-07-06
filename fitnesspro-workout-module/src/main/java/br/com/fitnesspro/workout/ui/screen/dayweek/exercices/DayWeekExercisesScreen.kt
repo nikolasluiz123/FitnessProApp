@@ -210,7 +210,8 @@ fun DayWeekExercisesScreen(
                                     )
 
                                     onNavigateExercise?.onExecute(args)
-                                }
+                                },
+                                enabled = !state.isOverDue
                             )
                         }
 
@@ -229,7 +230,8 @@ fun DayWeekExercisesScreen(
                                 onItemLongClick = {
                                     state.workoutGroupIdEdited = it.id
                                     state.workoutGroupEditDialogUIState.onShowDialogChange(true)
-                                }
+                                },
+                                enabled = !state.isOverDue
                             )
                         }
                     }
@@ -245,7 +247,8 @@ fun DayWeekExercisesScreen(
                             )
 
                             onNavigateExercise?.onExecute(args)
-                        }
+                        },
+                        enabled = !state.isOverDue
                     )
                 },
                 emptyMessageResId = R.string.day_week_exercises_empty_message

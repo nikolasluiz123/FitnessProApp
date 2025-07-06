@@ -32,7 +32,8 @@ import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGrou
 fun WorkoutGroupItem(
     decorator: WorkoutGroupDecorator,
     onItemClick: (WorkoutGroupDecorator) -> Unit = {},
-    onItemLongClick: (WorkoutGroupDecorator) -> Unit = {}
+    onItemLongClick: (WorkoutGroupDecorator) -> Unit = {},
+    enabled: Boolean = true
 ) {
     Box(
         Modifier
@@ -40,6 +41,7 @@ fun WorkoutGroupItem(
             .background(color = MaterialTheme.colorScheme.surfaceVariant)
             .padding(8.dp)
             .combinedClickable(
+                enabled = enabled,
                 onClick = {
                     onItemClick(decorator)
                 },
@@ -58,13 +60,17 @@ fun WorkoutGroupItem(
 }
 
 @Composable
-fun DayWeekWorkoutItem(toExercise: TOExercise, onItemClick: (TOExercise) -> Unit = { }) {
+fun DayWeekWorkoutItem(
+    toExercise: TOExercise,
+    onItemClick: (TOExercise) -> Unit = { },
+    enabled: Boolean = true
+) {
     val context = LocalContext.current
 
     ConstraintLayout(
         Modifier
             .fillMaxWidth()
-            .clickable { onItemClick(toExercise) }
+            .clickable(enabled = enabled) { onItemClick(toExercise) }
     ) {
         val (exerciseRef, durationRef, setsAndRepsRef, restRef, observationRef, dividerRef) = createRefs()
 
