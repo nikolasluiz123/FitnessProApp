@@ -6,14 +6,11 @@ import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
-import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
 import br.com.fitnesspro.to.TOScheduler
 import br.com.fitnesspro.to.TOSchedulerConfig
-import java.time.DayOfWeek
-import java.time.LocalDate
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumCompromiseType as EnumCompromiseTypeService
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation as EnumSchedulerSituationService
 
@@ -129,16 +126,11 @@ fun SchedulerDTO.getScheduler(): Scheduler {
     )
 }
 
-fun Scheduler.getSchedulerDTO(
-    schedulerType: String,
-    dateStart: LocalDate?,
-    dateEnd: LocalDate?,
-    dayWeeks: List<DayOfWeek>
-): SchedulerDTO {
+fun Scheduler.getSchedulerDTO(schedulerType: String): SchedulerDTO {
     val enumSchedulerType = EnumSchedulerType.valueOf(schedulerType)
 
     return SchedulerDTO(
-        id = if (enumSchedulerType == EnumSchedulerType.RECURRENT) null else id,
+        id = id,
         academyMemberPersonId = academyMemberPersonId,
         professionalPersonId = professionalPersonId,
         dateTimeStart = dateTimeStart,
@@ -150,30 +142,7 @@ fun Scheduler.getSchedulerDTO(
         observation = observation,
         active = active,
         type = enumSchedulerType,
-        recurrentConfig = getRecurrentConfigDTO(
-            schedulerType = enumSchedulerType,
-            dateStart = dateStart,
-            dateEnd = dateEnd,
-            dayWeeks = dayWeeks
-        ),
     )
-}
-
-private fun getRecurrentConfigDTO(
-    schedulerType: EnumSchedulerType,
-    dateStart: LocalDate?,
-    dateEnd: LocalDate?,
-    dayWeeks: List<DayOfWeek>
-): RecurrentConfigDTO? {
-    return if (schedulerType == EnumSchedulerType.RECURRENT) {
-        RecurrentConfigDTO(
-            dateStart = dateStart!!,
-            dateEnd = dateEnd!!,
-            dayWeeks = dayWeeks
-        )
-    } else {
-        null
-    }
 }
 
 private fun getServiceCompromiseType(compromiseType: EnumCompromiseType): EnumCompromiseTypeService {

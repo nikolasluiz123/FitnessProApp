@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 30,
-    "identityHash": "d813f774f12279431ccd254cb98c8840",
+    "identityHash": "2602814dc8fcbe33d35dccbb95e7a33a",
     "entities": [
       {
         "tableName": "user",
@@ -1886,7 +1886,7 @@
       },
       {
         "tableName": "workout_group",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `name` TEXT, `workout_id` TEXT, `day_week` TEXT, `group_order` INTEGER, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`workout_id`) REFERENCES `workout`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `name` TEXT, `workout_id` TEXT, `day_week` TEXT, `group_order` INTEGER NOT NULL DEFAULT 1, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`workout_id`) REFERENCES `workout`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1919,7 +1919,9 @@
           {
             "fieldPath": "groupOrder",
             "columnName": "group_order",
-            "affinity": "INTEGER"
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "1"
           },
           {
             "fieldPath": "active",
@@ -2243,7 +2245,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd813f774f12279431ccd254cb98c8840')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2602814dc8fcbe33d35dccbb95e7a33a')"
     ]
   }
 }

@@ -24,7 +24,7 @@ fun Exercise.getTOExercise(toWorkoutGroup: TOWorkoutGroup? = null): TOExercise {
         dayWeek = toWorkoutGroup?.dayWeek,
         active = active,
         exerciseOrder = exerciseOrder,
-        groupOrder = toWorkoutGroup?.order
+        groupOrder = toWorkoutGroup?.order ?: 1
     )
 }
 

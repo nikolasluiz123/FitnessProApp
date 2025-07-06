@@ -7,13 +7,20 @@ import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClien
 import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.mappers.getSchedulerConfigDTO
 import br.com.fitnesspro.mappers.getSchedulerDTO
+import br.com.fitnesspro.mappers.getWorkoutDTO
+import br.com.fitnesspro.mappers.getWorkoutGroupDTO
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
+import br.com.fitnesspro.model.workout.Workout
+import br.com.fitnesspro.model.workout.WorkoutGroup
+import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentSchedulerDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
@@ -36,16 +43,37 @@ class SchedulerWebClient(
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 val schedulerDTO = scheduler.getSchedulerDTO(
-                    schedulerType = schedulerType,
-                    dateStart = dateStart,
-                    dateEnd = dateEnd,
-                    dayWeeks = dayWeeks
+                    schedulerType = schedulerType
                 )
 
                 schedulerService.saveScheduler(
                     token = formatToken(token),
                     schedulerDTO = schedulerDTO
                 ).getResponseBody(SchedulerDTO::class.java)
+            }
+        )
+    }
+
+    suspend fun saveRecurrentScheduler(
+        token: String,
+        schedules: List<Scheduler>,
+        workout: Workout,
+        workoutGroups: List<WorkoutGroup>
+    ): FitnessProServiceResponse {
+        return serviceErrorHandlingBlock(
+            codeBlock = {
+                val dto = RecurrentSchedulerDTO(
+                    schedules = schedules.map {
+                        it.getSchedulerDTO(EnumSchedulerType.RECURRENT.name)
+                    },
+                    workoutDTO = workout.getWorkoutDTO(),
+                    workoutGroups = workoutGroups.map { it.getWorkoutGroupDTO() }
+                )
+
+                schedulerService.saveRecurrentScheduler(
+                    token = formatToken(token),
+                    recurrentSchedulerDTO = dto
+                ).getResponseBody()
             }
         )
     }
@@ -59,10 +87,7 @@ class SchedulerWebClient(
             codeBlock = {
                 val listSchedulerDTO = schedulerList.map {
                     it.getSchedulerDTO(
-                        schedulerType = schedulerType,
-                        dateStart = null,
-                        dateEnd = null,
-                        dayWeeks = emptyList()
+                        schedulerType = schedulerType
                     )
                 }
 

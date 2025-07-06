@@ -30,7 +30,7 @@ data class WorkoutGroup(
     var workoutId: String? = null,
     @ColumnInfo(name = "day_week", index = true)
     var dayWeek: DayOfWeek? = null,
-    @ColumnInfo(name = "group_order")
-    var groupOrder: Int? = null,
+    @ColumnInfo(name = "group_order", defaultValue = "1")
+    var groupOrder: Int = 1,
     var active: Boolean = true
 ): IntegratedModel

@@ -6,9 +6,12 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_CO
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_CONFIG_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_IMPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_RECURRENT
+import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentSchedulerDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import retrofit2.Response
@@ -25,6 +28,12 @@ interface ISchedulerService {
         @Header("Authorization") token: String,
         @Body schedulerDTO: SchedulerDTO
     ): Response<PersistenceServiceResponse<SchedulerDTO>>
+
+    @POST("$SCHEDULER$SCHEDULER_RECURRENT")
+    suspend fun saveRecurrentScheduler(
+        @Header("Authorization") token: String,
+        @Body recurrentSchedulerDTO: RecurrentSchedulerDTO
+    ): Response<FitnessProServiceResponse>
 
     @POST("$SCHEDULER$SCHEDULER_EXPORT")
     suspend fun saveSchedulerBatch(
