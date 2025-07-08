@@ -17,19 +17,23 @@ import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.ui.navigation.DayWeekWorkoutScreenArgs
+import br.com.fitnesspro.workout.ui.screen.current.workout.callbacks.OnNavigateToDayWeekWorkout
 import br.com.fitnesspro.workout.ui.state.CurrentWorkoutUIState
 import br.com.fitnesspro.workout.ui.viewmodel.CurrentWorkoutViewModel
 
 @Composable
 fun CurrentWorkoutScreen(
     viewModel: CurrentWorkoutViewModel,
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit,
+    onNavigateToDayWeekWorkout: OnNavigateToDayWeekWorkout
 ) {
     val state by viewModel.uiState.collectAsState()
 
     CurrentWorkoutScreen(
         state = state,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onNavigateToDayWeekWorkout = onNavigateToDayWeekWorkout
     )
 }
 
@@ -37,7 +41,8 @@ fun CurrentWorkoutScreen(
 @Composable
 fun CurrentWorkoutScreen(
     state: CurrentWorkoutUIState,
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onNavigateToDayWeekWorkout: OnNavigateToDayWeekWorkout? = null
 ) {
     Scaffold(
         topBar = {
@@ -68,8 +73,20 @@ fun CurrentWorkoutScreen(
                     },
                 items = state.items,
                 emptyMessageResId = R.string.current_workout_empty_message
-            ) {
-                CurrentWorkoutItem(it)
+            ) { listItem ->
+                CurrentWorkoutItem(
+                    decorator = listItem,
+                    onItemClick = { clickedItem ->
+                        state.toWorkout?.id?.let { workoutId ->
+                            onNavigateToDayWeekWorkout?.onNavigate(
+                                args = DayWeekWorkoutScreenArgs(
+                                    workoutId = workoutId,
+                                    dayWeek = clickedItem.dayWeek
+                                )
+                            )
+                        }
+                    }
+                )
             }
         }
     }

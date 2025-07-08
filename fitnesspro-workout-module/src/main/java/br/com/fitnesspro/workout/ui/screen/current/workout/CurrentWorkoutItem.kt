@@ -1,5 +1,6 @@
 package br.com.fitnesspro.workout.ui.screen.current.workout
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
@@ -16,14 +17,20 @@ import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.LabeledText
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.workout.ui.screen.current.workout.decorator.CurrentWorkoutDecorator
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.ui.screen.current.workout.decorator.CurrentWorkoutDecorator
 
 @Composable
-fun CurrentWorkoutItem(decorator: CurrentWorkoutDecorator) {
+fun CurrentWorkoutItem(
+    decorator: CurrentWorkoutDecorator,
+    onItemClick: (CurrentWorkoutDecorator) -> Unit = { }
+) {
     ConstraintLayout(
         Modifier
             .fillMaxWidth()
+            .clickable {
+                onItemClick(decorator)
+            }
     ) {
         val (dayWeekRef, muscularGroupRef, dividerRef) = createRefs()
 

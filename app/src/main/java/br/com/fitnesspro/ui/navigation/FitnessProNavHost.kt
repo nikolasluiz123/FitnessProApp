@@ -32,6 +32,7 @@ import br.com.fitnesspro.workout.ui.navigation.exercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.membersWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToCurrentWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekExercisesScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToMembersWorkoutScreen
 import com.google.firebase.auth.ktx.auth
@@ -138,7 +139,8 @@ fun FitnessProNavHost(
         )
 
         currentWorkoutScreen(
-            onBackClick = navController::popBackStack
+            onBackClick = navController::popBackStack,
+            onNavigateToDayWeekWorkout = navController::navigateToDayWeekWorkoutScreen
         )
     }
 }
