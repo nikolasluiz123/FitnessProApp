@@ -89,13 +89,7 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select wg.id as id, ")
-            add("        wg.name as name, ")
-            add("        wg.workout_id as workoutId, ")
-            add("        wg.day_week as dayWeek, ")
-            add("        wg.group_order as groupOrder, ")
-            add("        wg.active as active, ")
-            add("        wg.transmission_state as transmissionState ")
+            add(" select wg.* ")
         }
 
         val from = StringJoiner(QR_NL).apply {
