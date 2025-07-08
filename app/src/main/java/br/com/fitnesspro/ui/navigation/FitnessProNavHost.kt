@@ -25,10 +25,12 @@ import br.com.fitnesspro.scheduler.ui.navigation.navigateToSchedulerDetailsScree
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerConfigScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerDetailsScreen
 import br.com.fitnesspro.scheduler.ui.navigation.schedulerScreen
+import br.com.fitnesspro.workout.ui.navigation.currentWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.dayWeekExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.dayWeekWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.exercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.membersWorkoutScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToCurrentWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToMembersWorkoutScreen
@@ -76,6 +78,7 @@ fun FitnessProNavHost(
             onNavigateToAccountInformation = navController::navigateToRegisterUserScreen,
             onNavigateToSchedule = navController::navigateToScheduleScreen,
             onNavigateToMembersWorkoutScreen = navController::navigateToMembersWorkoutScreen,
+            onNavigateToCurrentWorkoutScreen = navController::navigateToCurrentWorkoutScreen,
             onNavigateToLogin = {
                 navController.navigateToLoginScreen(
                     navOptions = navOptions {
@@ -131,6 +134,10 @@ fun FitnessProNavHost(
         )
 
         exercisesScreen(
+            onBackClick = navController::popBackStack
+        )
+
+        currentWorkoutScreen(
             onBackClick = navController::popBackStack
         )
     }

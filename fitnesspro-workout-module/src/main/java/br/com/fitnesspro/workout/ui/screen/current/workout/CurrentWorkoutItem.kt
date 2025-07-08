@@ -16,11 +16,11 @@ import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.LabeledText
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.theme.FitnessProTheme
+import br.com.fitnesspro.workout.ui.screen.current.workout.decorator.CurrentWorkoutDecorator
 import br.com.fitnesspro.workout.R
-import br.com.fitnesspro.workout.ui.screen.current.workout.decorator.CurrentWorkoutItemDecorator
 
 @Composable
-fun CurrentWorkoutItem(decorator: CurrentWorkoutItemDecorator) {
+fun CurrentWorkoutItem(decorator: CurrentWorkoutDecorator) {
     ConstraintLayout(
         Modifier
             .fillMaxWidth()

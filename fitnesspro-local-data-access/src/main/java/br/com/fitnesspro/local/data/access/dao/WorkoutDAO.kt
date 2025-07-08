@@ -9,6 +9,7 @@ import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Workout
+import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.to.TOWorkout
 import java.util.StringJoiner
 
@@ -104,4 +105,53 @@ abstract class WorkoutDAO: IntegratedMaintenanceDAO<Workout>() {
 
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Workout>
+
+    suspend fun getListWorkoutGroupsFromCurrentWorkout(personId: String): List<WorkoutGroup> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select wg.* ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from workout w ")
+            add(" inner join workout_group wg on w.id = wg.workout_id ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where w.academy_member_person_id = ? ")
+            add(" and w.date_end >= date('now') ")
+            add(" and w.active = 1 ")
+            add(" and wg.active = 1 ")
+
+            params.add(personId)
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by wg.day_week ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(orderBy.toString())
+        }
+
+        return executeQueryCurrentMemberWorkout(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery
+    abstract suspend fun executeQueryCurrentMemberWorkout(query: SupportSQLiteQuery): List<WorkoutGroup>
+
+    @Query("""
+        select w.*
+        from workout w
+        where w.academy_member_person_id = :personId
+        and w.date_end >= date('now')
+        and w.active = 1
+        order by w.date_start desc
+        limit 1
+    """)
+    abstract suspend fun getCurrentMemberWorkout(personId: String): Workout?
 }

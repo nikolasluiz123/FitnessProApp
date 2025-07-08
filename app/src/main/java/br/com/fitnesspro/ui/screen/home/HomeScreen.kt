@@ -43,6 +43,7 @@ import br.com.fitnesspro.ui.screen.home.callbacks.OnLogoutClick
 import br.com.fitnesspro.ui.screen.home.callbacks.OnNavigateToAccountInformation
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_ACCOUNT_BUTTON
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_MONEY
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_MY_WORKOUT
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_NUTRITION
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_SCHEDULER
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_WORKOUT
@@ -59,7 +60,8 @@ fun HomeScreen(
     onNavigateToAccountInformation: OnNavigateToAccountInformation,
     onNavigateToSchedule: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    onNavigateToMembersWorkoutScreen: () -> Unit
+    onNavigateToMembersWorkoutScreen: () -> Unit,
+    onNavigateToCurrentWorkoutScreen: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -72,7 +74,8 @@ fun HomeScreen(
         onNavigateToSchedule = onNavigateToSchedule,
         onLogoutClick = viewModel::logout,
         onNavigateToLogin = onNavigateToLogin,
-        onNavigateToMembersWorkoutScreen = onNavigateToMembersWorkoutScreen
+        onNavigateToMembersWorkoutScreen = onNavigateToMembersWorkoutScreen,
+        onNavigateToCurrentWorkoutScreen = onNavigateToCurrentWorkoutScreen
     )
 }
 
@@ -84,7 +87,8 @@ fun HomeScreen(
     onNavigateToSchedule: () -> Unit = { },
     onLogoutClick: OnLogoutClick? = null,
     onNavigateToLogin: () -> Unit = { },
-    onNavigateToMembersWorkoutScreen: () -> Unit = { }
+    onNavigateToMembersWorkoutScreen: () -> Unit = { },
+    onNavigateToCurrentWorkoutScreen: () -> Unit = { }
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
@@ -212,7 +216,10 @@ fun HomeScreen(
 
                             when (it) {
                                 EnumOptionsBottomSheetWorkout.MY_EVOLUTION -> TODO()
-                                EnumOptionsBottomSheetWorkout.MY_WORKOUT -> TODO()
+                                EnumOptionsBottomSheetWorkout.MY_WORKOUT -> {
+                                    Firebase.analytics.logButtonClick(HOME_SCREEN_BUTTON_MY_WORKOUT)
+                                    onNavigateToCurrentWorkoutScreen()
+                                }
                                 EnumOptionsBottomSheetWorkout.FOLLOW_UP_EVOLUTION -> TODO()
                                 EnumOptionsBottomSheetWorkout.WORKOUT_SETUP -> {
                                     Firebase.analytics.logButtonClick(HOME_SCREEN_BUTTON_WORKOUT_SETUP)

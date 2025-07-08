@@ -8,7 +8,9 @@ import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.geTOWorkout
 import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.to.TOWorkout
+import br.com.fitnesspro.workout.ui.screen.current.workout.decorator.CurrentWorkoutDecorator
 
 class WorkoutRepository(
     context: Context,
@@ -26,6 +28,10 @@ class WorkoutRepository(
 
     suspend fun findWorkoutById(id: String): TOWorkout? {
         val workout = workoutDAO.findWorkoutById(id)
+        return getTOWorkoutFrom(workout)
+    }
+
+    private suspend fun getTOWorkoutFrom(workout: Workout?): TOWorkout? {
         val memberName = workout?.academyMemberPersonId?.let { personRepository.findPersonById(it).name }
         val professionalName = workout?.professionalPersonId?.let { personRepository.findPersonById(it).name }
 
@@ -80,5 +86,24 @@ class WorkoutRepository(
         return response.success
     }
 
+    suspend fun getCurrentMemberWorkoutList(): List<CurrentWorkoutDecorator> {
+        val authPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
+        val groups = workoutDAO.getListWorkoutGroupsFromCurrentWorkout(authPersonId)
+
+        return groups
+            .groupBy { it.dayWeek }
+            .map { (day, groups) ->
+                CurrentWorkoutDecorator(
+                    dayWeek = day!!,
+                    muscularGroups = groups.sortedBy { it.groupOrder }.joinToString(", ") { it.name!! }
+                )
+            }
+    }
+
+    suspend fun getCurrentMemberWorkout(): TOWorkout? {
+        val authPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
+        val workout = workoutDAO.getCurrentMemberWorkout(authPersonId)
+        return getTOWorkoutFrom(workout)
+    }
 
 }

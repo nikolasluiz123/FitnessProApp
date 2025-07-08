@@ -1,34 +1,32 @@
 package br.com.fitnesspro.workout.ui.screen.current.workout
 
-import br.com.fitnesspro.workout.ui.screen.current.workout.decorator.CurrentWorkoutItemDecorator
+import br.com.fitnesspro.workout.ui.screen.current.workout.decorator.CurrentWorkoutDecorator
 import br.com.fitnesspro.workout.ui.state.CurrentWorkoutUIState
 import java.time.DayOfWeek
 
 internal val currentWorkoutEmptyState = CurrentWorkoutUIState(
-    title = "Treino Atual",
     subtitle = "01/05/2024 até 01/07/2024"
 )
 
 internal val currentWorkoutState = CurrentWorkoutUIState(
-    title = "Treino Atual",
     subtitle = "01/05/2024 até 01/07/2024",
     items = listOf(
-        CurrentWorkoutItemDecorator(
+        CurrentWorkoutDecorator(
             dayWeek = DayOfWeek.MONDAY,
             muscularGroups = "Peito, Ombro e Tríceps"
         ),
-        CurrentWorkoutItemDecorator(
+        CurrentWorkoutDecorator(
             dayWeek = DayOfWeek.WEDNESDAY,
             muscularGroups = "Costas, Ombro e Bíceps"
         ),
-        CurrentWorkoutItemDecorator(
+        CurrentWorkoutDecorator(
             dayWeek = DayOfWeek.FRIDAY,
             muscularGroups = "Perna Completa"
         )
     )
 )
 
-internal val currentWorkoutItemDecorator = CurrentWorkoutItemDecorator(
+internal val currentWorkoutItemDecorator = CurrentWorkoutDecorator(
     dayWeek = DayOfWeek.MONDAY,
     muscularGroups = "Peito, Costas, Ombros"
 )
