@@ -3,8 +3,6 @@ package br.com.fitnesspro.workout.ui.screen.current.workout
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.LabeledText
+import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
@@ -63,14 +62,13 @@ fun CurrentWorkoutItem(
             textAlign = TextAlign.End
         )
 
-        HorizontalDivider(
+        FitnessProHorizontalDivider(
             modifier = Modifier.constrainAs(dividerRef) {
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
                 top.linkTo(dayWeekRef.bottom, margin = 8.dp)
             },
-            color = MaterialTheme.colorScheme.outline
         )
     }
 }

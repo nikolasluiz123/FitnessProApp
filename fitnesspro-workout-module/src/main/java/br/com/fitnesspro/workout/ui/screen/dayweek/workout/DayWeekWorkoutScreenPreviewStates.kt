@@ -105,10 +105,3 @@ internal val dayWeekWorkoutScreenDefaultState = DayWeekWorkoutUIState(
     subtitle = "Peito, Ombro e Tríceps",
     dayWeekWorkoutGroups = defaultDayWeekWorkoutGroups,
 )
-
-internal val dayWeekWorkoutScreenProfessionalState = DayWeekWorkoutUIState(
-    title = "Segunda",
-    subtitle = "Treino do Nikolas Luiz Schmitt",
-    showFabAddExercise = true,
-    dayWeekWorkoutGroups = defaultDayWeekWorkoutGroups,
-)

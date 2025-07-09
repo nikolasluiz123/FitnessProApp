@@ -12,7 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -54,6 +53,7 @@ import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
+import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
 import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.TimePickerOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
@@ -307,7 +307,7 @@ fun DialogListItem(academy: AcademyTuple, onItemClick: (AcademyTuple) -> Unit) {
         )
     }
 
-    HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+    FitnessProHorizontalDivider()
 }
 
 private fun showSaveSuccessMessage(

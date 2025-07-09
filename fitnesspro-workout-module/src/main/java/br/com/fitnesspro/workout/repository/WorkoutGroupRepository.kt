@@ -135,4 +135,22 @@ class WorkoutGroupRepository(
 
         return response.success
     }
+
+    suspend fun getListWorkoutGroupDecorator(workoutId: String, dayOfWeek: DayOfWeek): List<WorkoutGroupDecorator> {
+        val workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(workoutId, dayOfWeek).onEach {
+            it.name = it.name ?: context.getString(R.string.workout_group_default_name)
+        }
+
+        val workoutGroupIds = workoutGroups.map { it.id }
+        val allExercises = exerciseDAO.getExercisesFromWorkoutGroup(workoutGroupIds)
+        val exercisesByGroupId = allExercises.groupBy { it.workoutGroupId!! }
+
+        return workoutGroups.map { workoutGroup ->
+            WorkoutGroupDecorator(
+                id = workoutGroup.id,
+                label = workoutGroup.name!!,
+                items = exercisesByGroupId[workoutGroup.id] ?: emptyList()
+            )
+        }
+    }
 }

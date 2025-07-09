@@ -6,7 +6,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.LabeledText
+import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
 import br.com.fitnesspro.core.extensions.toReadableDuration
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.LabelGroupTextStyle
@@ -39,7 +39,6 @@ fun WorkoutGroupItem(
         Modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.surfaceVariant)
-            .padding(8.dp)
             .combinedClickable(
                 enabled = enabled,
                 onClick = {
@@ -49,6 +48,7 @@ fun WorkoutGroupItem(
                     onItemLongClick(decorator)
                 }
             )
+            .padding(8.dp)
     ) {
         Text(
             modifier = Modifier.align(alignment = Alignment.Center),
@@ -165,7 +165,7 @@ fun DayWeekWorkoutItem(
             )
         }
 
-        HorizontalDivider(
+        FitnessProHorizontalDivider(
             modifier = Modifier.constrainAs(dividerRef) {
                 when {
                     isShowObservation(toExercise) -> {
@@ -188,7 +188,6 @@ fun DayWeekWorkoutItem(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
-            color = MaterialTheme.colorScheme.outline
         )
     }
 }

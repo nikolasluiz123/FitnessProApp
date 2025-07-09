@@ -3,8 +3,6 @@ package br.com.fitnesspro.common.ui.screen.registeruser
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +23,7 @@ import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScr
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_ACADEMY_LIST_ITEM_LABELED_TIME
 import br.com.fitnesspro.common.ui.state.RegisterUserUIState
 import br.com.fitnesspro.compose.components.LabeledText
+import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
 import br.com.fitnesspro.compose.components.list.grouped.expandable.LazyExpandableVerticalList
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
@@ -126,14 +125,13 @@ fun AcademyTimeItem(item: TOPersonAcademyTime, onClick: () -> Unit) {
             )
         )
 
-        HorizontalDivider(
+        FitnessProHorizontalDivider(
             modifier = Modifier.constrainAs(dividerRef) {
                 bottom.linkTo(parent.bottom)
                 top.linkTo(dayWeekRef.bottom, margin = 8.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             },
-            color = MaterialTheme.colorScheme.outline
         )
     }
 }

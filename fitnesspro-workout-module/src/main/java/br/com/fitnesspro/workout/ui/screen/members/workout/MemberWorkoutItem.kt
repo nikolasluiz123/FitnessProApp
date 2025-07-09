@@ -3,8 +3,6 @@ package br.com.fitnesspro.workout.ui.screen.members.workout
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.LabeledText
+import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -61,7 +60,7 @@ fun MemberWorkoutItem(toWorkout: TOWorkout, onItemClick: (TOWorkout) -> Unit = {
             textAlign = TextAlign.End
         )
 
-        HorizontalDivider(
+        FitnessProHorizontalDivider(
             modifier = Modifier.constrainAs(lineRef) {
                 top.linkTo(nameRef.bottom, margin = 8.dp)
                 start.linkTo(parent.start)
@@ -69,7 +68,6 @@ fun MemberWorkoutItem(toWorkout: TOWorkout, onItemClick: (TOWorkout) -> Unit = {
 
                 width = Dimension.fillToConstraints
             },
-            color = MaterialTheme.colorScheme.outline
         )
     }
 }

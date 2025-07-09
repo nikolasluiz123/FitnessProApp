@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,6 +21,7 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryViewMode
 import br.com.fitnesspro.core.R
@@ -73,9 +73,7 @@ fun VideoGallery(
             }
         }
 
-        HorizontalDivider(
-            color = MaterialTheme.colorScheme.outline
-        )
+        FitnessProHorizontalDivider()
 
         ActionsBottomBar(
             modifier = Modifier

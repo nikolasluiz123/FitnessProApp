@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
-import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.list.grouped.LazyGroupedVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
@@ -46,15 +45,6 @@ fun DayWeekWorkoutScreen(
                 subtitle = state.subtitle,
                 onBackClick = onBackClick
             )
-        },
-        floatingActionButton = {
-            if (state.showFabAddExercise) {
-                FloatingActionButtonAdd(
-                    onClick = {
-
-                    }
-                )
-            }
         }
     ) { padding ->
         ConstraintLayout(
@@ -105,28 +95,6 @@ fun DayWeekWorkoutScreenPreviewDark() {
         Surface {
             DayWeekWorkoutScreen(
                 state = dayWeekWorkoutScreenDefaultState
-            )
-        }
-    }
-}
-
-@Preview(device = "id:small_phone")
-@Composable
-fun DayWeekWorkoutScreenProfessionalPreview() {
-    FitnessProTheme {
-        Surface {
-            DayWeekWorkoutScreen(dayWeekWorkoutScreenProfessionalState)
-        }
-    }
-}
-
-@Preview(device = "id:small_phone")
-@Composable
-fun DayWeekWorkoutScreenProfessionalPreviewDark() {
-    FitnessProTheme(darkTheme = true) {
-        Surface {
-            DayWeekWorkoutScreen(
-                state = dayWeekWorkoutScreenProfessionalState
             )
         }
     }

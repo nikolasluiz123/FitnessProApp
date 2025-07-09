@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import br.com.fitnesspro.compose.components.LabeledText
 import br.com.fitnesspro.compose.components.R
+import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
 import br.com.fitnesspro.compose.components.list.grouped.expandable.enums.EnumLazyExpandableListTestTags.EXPANDABLE_LIST_ITEM
 import br.com.fitnesspro.compose.components.list.grouped.expandable.enums.EnumLazyExpandableListTestTags.EXPANDABLE_LIST_ITEM_ICON_EXPANDED
 import br.com.fitnesspro.compose.components.list.grouped.expandable.enums.EnumLazyExpandableListTestTags.EXPANDABLE_LIST_ITEM_LABELED_TEXT
@@ -161,12 +161,11 @@ fun BasicExpandableSection(
             contentDescription = null
         )
 
-        HorizontalDivider(
+        FitnessProHorizontalDivider(
             modifier = Modifier.constrainAs(dividerRef) {
                 bottom.linkTo(parent.bottom)
                 top.linkTo(textRef.bottom, margin = 8.dp)
             },
-            color = MaterialTheme.colorScheme.outline
         )
     }
 }

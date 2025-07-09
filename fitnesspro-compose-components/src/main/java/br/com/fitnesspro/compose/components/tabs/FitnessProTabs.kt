@@ -6,7 +6,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -18,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
 import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.HORIZONTAL_PAGER
 import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.TAB
@@ -51,7 +51,7 @@ fun FitnessProTabRow(
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
         divider = {
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+            FitnessProHorizontalDivider()
         },
         indicator = { tabPositions ->
             val selectedIndex = tabState.tabs.first { it.selected }.enum.index

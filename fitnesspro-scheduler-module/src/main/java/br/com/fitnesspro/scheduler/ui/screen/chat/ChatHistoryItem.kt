@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.dateTimeNow
@@ -124,7 +123,7 @@ fun ChatHistoryItem(
             )
         }
 
-        HorizontalDivider(
+        FitnessProHorizontalDivider(
             modifier = Modifier.constrainAs(dividerRef) {
                 val topConstraint = if (item.lastMessageDate != null) lastMessageDate.bottom else userNameRef.bottom
 
@@ -133,8 +132,6 @@ fun ChatHistoryItem(
                 end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
             },
-            thickness = 0.5.dp,
-            color = MaterialTheme.colorScheme.outline
         )
     }
 }
