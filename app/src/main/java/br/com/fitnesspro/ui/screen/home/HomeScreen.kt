@@ -215,17 +215,23 @@ fun HomeScreen(
                             openedBottomSheetWorkout = false
 
                             when (it) {
-                                EnumOptionsBottomSheetWorkout.MY_EVOLUTION -> TODO()
+                                EnumOptionsBottomSheetWorkout.MY_EVOLUTION -> {
+
+                                }
                                 EnumOptionsBottomSheetWorkout.MY_WORKOUT -> {
                                     Firebase.analytics.logButtonClick(HOME_SCREEN_BUTTON_MY_WORKOUT)
                                     onNavigateToCurrentWorkoutScreen()
                                 }
-                                EnumOptionsBottomSheetWorkout.FOLLOW_UP_EVOLUTION -> TODO()
+                                EnumOptionsBottomSheetWorkout.FOLLOW_UP_EVOLUTION -> {
+
+                                }
                                 EnumOptionsBottomSheetWorkout.WORKOUT_SETUP -> {
                                     Firebase.analytics.logButtonClick(HOME_SCREEN_BUTTON_WORKOUT_SETUP)
                                     onNavigateToMembersWorkoutScreen()
                                 }
-                                EnumOptionsBottomSheetWorkout.MY_PREDEFINITIONS -> TODO()
+                                EnumOptionsBottomSheetWorkout.MY_PREDEFINITIONS -> {
+
+                                }
                             }
                         }
                     )

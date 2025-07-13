@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCamera
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonGallery
+import br.com.fitnesspro.compose.components.gallery.video.callbacks.OnVideoClick
 import br.com.fitnesspro.compose.components.gallery.video.components.VideoGallery
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.core.extensions.launchVideosOnly
@@ -32,7 +33,7 @@ fun ExerciseScreenTabVideos(
     onOpenCameraVideo: OnOpenCameraVideo? = null,
     onFinishVideoRecording: OnFinishVideoRecording? = null,
     onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null,
-    onVideoClick: (path: String) -> Unit = {}
+    onVideoClick: OnVideoClick? = null
 ) {
     val context = LocalContext.current
 

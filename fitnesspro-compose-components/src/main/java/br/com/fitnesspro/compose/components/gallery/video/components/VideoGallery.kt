@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
+import br.com.fitnesspro.compose.components.gallery.video.callbacks.OnVideoClick
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryViewMode
 import br.com.fitnesspro.core.R
@@ -33,7 +34,7 @@ fun VideoGallery(
     state: VideoGalleryState,
     modifier: Modifier = Modifier,
     emptyMessage: String = stringResource(id = R.string.video_gallery_empty_message),
-    onVideoClick: (String) -> Unit = {},
+    onVideoClick: OnVideoClick? = null,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     val screenHeight = LocalWindowInfo.current.containerSize.height.dp

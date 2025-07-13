@@ -1,11 +1,14 @@
 package br.com.fitnesspro.mappers
 
+import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.WorkoutGroup
+import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.model.workout.predefinition.ExercisePreDefinition
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.to.TOExercise
+import br.com.fitnesspro.to.TOExerciseExecution
 import br.com.fitnesspro.to.TOExercisePreDefinition
 import br.com.fitnesspro.to.TOWorkoutGroup
 
@@ -24,7 +27,9 @@ fun Exercise.getTOExercise(toWorkoutGroup: TOWorkoutGroup? = null): TOExercise {
         dayWeek = toWorkoutGroup?.dayWeek,
         active = active,
         exerciseOrder = exerciseOrder,
-        groupOrder = toWorkoutGroup?.order ?: 1
+        groupOrder = toWorkoutGroup?.order ?: 1,
+        unitRest = rest?.bestChronoUnit(),
+        unitDuration = duration?.bestChronoUnit()
     )
 }
 
@@ -88,5 +93,36 @@ fun ExerciseDTO.getExercise(): Exercise {
         active = active,
         exerciseOrder = exerciseOrder,
         transmissionState = EnumTransmissionState.TRANSMITTED
+    )
+}
+
+fun TOExerciseExecution.getExerciseExecution(): ExerciseExecution {
+    val model = ExerciseExecution(
+        exerciseId = exerciseId,
+        repetitions = repetitions,
+        set = set,
+        duration = duration,
+        rest = rest,
+        weight = weight,
+        date = date!!,
+        active = active,
+    )
+
+    id?.let { model.id = it }
+
+    return model
+}
+
+fun ExerciseExecution.getTOExerciseExecution(): TOExerciseExecution {
+    return TOExerciseExecution(
+        id = id,
+        exerciseId = exerciseId,
+        repetitions = repetitions,
+        set = set,
+        duration = duration,
+        rest = rest,
+        weight = weight,
+        date = date,
+        active = active,
     )
 }

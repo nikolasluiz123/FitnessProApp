@@ -42,7 +42,7 @@ internal fun ProfessionalSchedulerConfigScreen(
     ConstraintLayout(
         Modifier
             .fillMaxSize()
-            .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 64.dp)
+            .padding(8.dp)
     ) {
         val (
             generalRef, labeledCheckboxNotificationRef, notificationTimeRef,

@@ -100,4 +100,17 @@
     <string name="network_required_inactivate_workout_message">Para excluir o treino é necessário ter conexão com a internet.</string>
     <string name="current_workout_title">Treino Atual</string>
     <string name="current_workout_subtitle">%1$s até %2$s</string>
+    <string name="exercise_details_screen_label_tab_orientation">Orientações</string>
+    <string name="exercise_details_screen_label_tab_evolution">Evolução</string>
+    <string name="exercise_details_screen_title">Detalhes do Exercício</string>
+    <string name="register_evolution_weight_label">Peso</string>
+    <string name="register_evolution_reps_label">Repetições</string>
+    <string name="register_evolution_rest_label">Descanço</string>
+    <string name="register_evolution_rest_unit_label">Unidade</string>
+    <string name="register_evolution_duration_label">Duração</string>
+    <string name="register_evolution_duration_unit_label">Unidade</string>
+    <string name="register_evolution_screen_video_gallery_title">Vídeos da Execução</string>
+    <string name="register_evolution_screen_videos_empty_message">Não foi encontrado nenhum vídeo de execução desse exercício</string>
+    <string name="register_evolution_screen_title_new_exercise">Novo Registro de Evolução</string>
+    <string name="register_evolution_screen_title_edit_exercise">Registro de Evolução</string>
 </resources>

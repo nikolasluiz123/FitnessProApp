@@ -28,13 +28,17 @@ import br.com.fitnesspro.scheduler.ui.navigation.schedulerScreen
 import br.com.fitnesspro.workout.ui.navigation.currentWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.dayWeekExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.dayWeekWorkoutScreen
+import br.com.fitnesspro.workout.ui.navigation.exerciseDetailsScreen
 import br.com.fitnesspro.workout.ui.navigation.exercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.membersWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToCurrentWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekWorkoutScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToExerciseDetailsScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToMembersWorkoutScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToRegisterEvolutionScreen
+import br.com.fitnesspro.workout.ui.navigation.registerEvolutionScreen
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -126,7 +130,8 @@ fun FitnessProNavHost(
         )
 
         dayWeekWorkoutScreen(
-            onBackClick = navController::popBackStack
+            onBackClick = navController::popBackStack,
+            onNavigateToExerciseDetails = navController::navigateToExerciseDetailsScreen
         )
 
         dayWeekExercisesScreen(
@@ -141,6 +146,15 @@ fun FitnessProNavHost(
         currentWorkoutScreen(
             onBackClick = navController::popBackStack,
             onNavigateToDayWeekWorkout = navController::navigateToDayWeekWorkoutScreen
+        )
+
+        exerciseDetailsScreen(
+            onBackClick = navController::popBackStack,
+            onNavigateToRegisterEvolution = navController::navigateToRegisterEvolutionScreen
+        )
+
+        registerEvolutionScreen(
+            onBackClick = navController::popBackStack
         )
     }
 }

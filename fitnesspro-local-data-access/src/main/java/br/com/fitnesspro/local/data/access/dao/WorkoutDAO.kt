@@ -11,6 +11,7 @@ import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.to.TOWorkout
+import java.time.DayOfWeek
 import java.util.StringJoiner
 
 @Dao
@@ -128,7 +129,16 @@ abstract class WorkoutDAO: IntegratedMaintenanceDAO<Workout>() {
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by wg.day_week ")
+            add(" order by case wg.day_week ")
+            add("     when '${DayOfWeek.MONDAY.name}' then 1 ")
+            add("     when '${DayOfWeek.TUESDAY.name}' then 2 ")
+            add("     when '${DayOfWeek.WEDNESDAY.name}' then 3 ")
+            add("     when '${DayOfWeek.THURSDAY.name}' then 4 ")
+            add("     when '${DayOfWeek.FRIDAY.name}' then 5 ")
+            add("     when '${DayOfWeek.SATURDAY.name}' then 6 ")
+            add("     when '${DayOfWeek.SUNDAY.name}' then 7 ")
+            add("     else 8 ")
+            add(" end ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

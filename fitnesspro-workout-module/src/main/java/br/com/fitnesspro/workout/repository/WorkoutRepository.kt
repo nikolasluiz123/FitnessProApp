@@ -10,6 +10,7 @@ import br.com.fitnesspro.mappers.geTOWorkout
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.to.TOWorkout
+import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.current.workout.decorator.CurrentWorkoutDecorator
 
 class WorkoutRepository(
@@ -95,7 +96,9 @@ class WorkoutRepository(
             .map { (day, groups) ->
                 CurrentWorkoutDecorator(
                     dayWeek = day!!,
-                    muscularGroups = groups.sortedBy { it.groupOrder }.joinToString(", ") { it.name!! }
+                    muscularGroups = groups.sortedBy { it.groupOrder }.joinToString(", ") {
+                        it.name ?: context.getString(R.string.workout_group_default_name)
+                    }
                 )
             }
     }

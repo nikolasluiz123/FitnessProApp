@@ -16,6 +16,8 @@ import br.com.fitnesspro.compose.components.list.grouped.LazyGroupedVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.ui.navigation.ExerciseDetailsScreenArgs
+import br.com.fitnesspro.workout.ui.screen.details.callbacks.OnNavigateToExerciseDetails
 import br.com.fitnesspro.workout.ui.state.DayWeekWorkoutUIState
 import br.com.fitnesspro.workout.ui.viewmodel.DayWeekWorkoutViewModel
 
@@ -23,12 +25,14 @@ import br.com.fitnesspro.workout.ui.viewmodel.DayWeekWorkoutViewModel
 fun DayWeekWorkoutScreen(
     viewModel: DayWeekWorkoutViewModel,
     onBackClick: () -> Unit,
+    onNavigateToExerciseDetails: OnNavigateToExerciseDetails
 ) {
     val state by viewModel.uiState.collectAsState()
 
     DayWeekWorkoutScreen(
         state = state,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onNavigateToExerciseDetails = onNavigateToExerciseDetails
     )
 }
 
@@ -36,7 +40,8 @@ fun DayWeekWorkoutScreen(
 @Composable
 fun DayWeekWorkoutScreen(
     state: DayWeekWorkoutUIState,
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onNavigateToExerciseDetails: OnNavigateToExerciseDetails? = null
 ) {
     Scaffold(
         topBar = {
@@ -68,10 +73,20 @@ fun DayWeekWorkoutScreen(
                 groups = state.dayWeekWorkoutGroups,
                 emptyMessageResId = R.string.day_week_workout_empty_message,
                 groupLayout = { groupDecorator ->
-                    WorkoutGroupItem(groupDecorator)
+                    WorkoutGroupItem(
+                        decorator = groupDecorator,
+                        enabled = false
+                    )
                 },
                 itemLayout = { itemDecorator ->
-                    DayWeekWorkoutItem(itemDecorator)
+                    DayWeekWorkoutItem(
+                        toExercise = itemDecorator,
+                        onItemClick = {
+                            onNavigateToExerciseDetails?.onNavigate(
+                                args = ExerciseDetailsScreenArgs(exerciseId = it.id!!)
+                            )
+                        }
+                    )
                 }
             )
         }

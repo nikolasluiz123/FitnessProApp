@@ -72,16 +72,7 @@ abstract class ExerciseDAO: IntegratedMaintenanceDAO<Exercise>() {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select e.id as id, ")
-            add("        e.name as name, ")
-            add("        e.duration as duration, ")
-            add("        e.repetitions as repetitions, ")
-            add("        e.sets as sets, ")
-            add("        e.rest as rest, ")
-            add("        e.observation as observation, ")
-            add("        e.workout_group_id as workoutGroupId, ")
-            add("        e.exercise_order as exerciseOrder, ")
-            add("        e.active as active ")
+            add(" select e.* ")
         }
 
         val from = StringJoiner(QR_NL).apply {

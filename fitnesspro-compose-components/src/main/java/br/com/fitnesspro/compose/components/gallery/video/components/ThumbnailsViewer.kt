@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import br.com.fitnesspro.compose.components.gallery.video.callbacks.OnVideoClick
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryViewMode
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -24,7 +25,7 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 @Composable
 internal fun ThumbnailsViewer(
     state: VideoGalleryState,
-    onVideoClick: (String) -> Unit
+    onVideoClick: OnVideoClick?
 ) {
     when (state.viewMode) {
         VideoGalleryViewMode.COLLAPSED -> {
@@ -38,7 +39,7 @@ internal fun ThumbnailsViewer(
 }
 
 @Composable
-private fun VideosCarousel(state: VideoGalleryState, onVideoClick: (String) -> Unit) {
+private fun VideosCarousel(state: VideoGalleryState, onVideoClick: OnVideoClick?) {
     LazyRow(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically,
@@ -48,14 +49,14 @@ private fun VideosCarousel(state: VideoGalleryState, onVideoClick: (String) -> U
         items(state.videoPaths) { videoPath ->
             VideoThumbnail(
                 bitmap = state.thumbCache[videoPath],
-                onClick = { onVideoClick(videoPath) }
+                onClick = { onVideoClick?.onExecute(videoPath) }
             )
         }
     }
 }
 
 @Composable
-private fun VideosGrid(state: VideoGalleryState, onVideoClick: (String) -> Unit) {
+private fun VideosGrid(state: VideoGalleryState, onVideoClick: OnVideoClick?) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),
@@ -65,7 +66,7 @@ private fun VideosGrid(state: VideoGalleryState, onVideoClick: (String) -> Unit)
         items(state.videoPaths) { videoPath ->
             VideoThumbnail(
                 bitmap = state.thumbCache[videoPath],
-                onClick = { onVideoClick(videoPath) },
+                onClick = { onVideoClick?.onExecute(videoPath) },
                 modifier = Modifier.fillMaxWidth()
             )
         }

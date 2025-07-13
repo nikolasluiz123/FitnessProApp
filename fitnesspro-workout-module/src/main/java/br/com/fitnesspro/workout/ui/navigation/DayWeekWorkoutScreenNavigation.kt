@@ -7,6 +7,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.DayWeekWorkoutScreen
+import br.com.fitnesspro.workout.ui.screen.details.callbacks.OnNavigateToExerciseDetails
 import br.com.fitnesspro.workout.ui.viewmodel.DayWeekWorkoutViewModel
 import com.google.gson.GsonBuilder
 import java.time.DayOfWeek
@@ -18,6 +19,7 @@ internal const val dayWeekWorkoutScreenArguments = "dayWeekWorkoutScreenArgument
 
 fun NavGraphBuilder.dayWeekWorkoutScreen(
     onBackClick: () -> Unit,
+    onNavigateToExerciseDetails: OnNavigateToExerciseDetails
 ) {
     composable(route = "$dayWeekWorkoutScreenRoute?$dayWeekWorkoutScreenArguments={$dayWeekWorkoutScreenArguments}") {
         val viewModel = hiltViewModel<DayWeekWorkoutViewModel>()
@@ -25,6 +27,7 @@ fun NavGraphBuilder.dayWeekWorkoutScreen(
         DayWeekWorkoutScreen(
             viewModel = viewModel,
             onBackClick = onBackClick,
+            onNavigateToExerciseDetails = onNavigateToExerciseDetails
         )
     }
 }

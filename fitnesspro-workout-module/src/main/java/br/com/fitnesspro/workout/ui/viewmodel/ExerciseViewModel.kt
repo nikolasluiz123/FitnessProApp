@@ -339,12 +339,6 @@ class ExerciseViewModel @Inject constructor(
                 },
             ),
             onChange = { newText ->
-                if (_uiState.value.toExercise.id != null) {
-                    _uiState.value = _uiState.value.copy(
-                        toExercise = TOExercise()
-                    )
-                }
-
                 _uiState.value = _uiState.value.copy(
                     exercise = _uiState.value.exercise.copy(
                         value = newText,
@@ -566,8 +560,6 @@ class ExerciseViewModel @Inject constructor(
         exerciseId?.let { id ->
             val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
             val toExercise = exerciseRepository.findById(id)
-            toExercise.unitRest = toExercise.rest?.bestChronoUnit()
-            toExercise.unitDuration = toExercise.duration?.bestChronoUnit()
 
             _uiState.value = _uiState.value.copy(
                 toExercise = toExercise,
