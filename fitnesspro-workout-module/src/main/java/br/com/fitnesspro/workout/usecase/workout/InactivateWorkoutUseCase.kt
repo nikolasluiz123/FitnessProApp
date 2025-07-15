@@ -1,4 +1,4 @@
-package br.com.fitnesspro.workout.usecase.exercise
+package br.com.fitnesspro.workout.usecase.workout
 
 import android.content.Context
 import br.com.fitnesspro.core.exceptions.NoLoggingException

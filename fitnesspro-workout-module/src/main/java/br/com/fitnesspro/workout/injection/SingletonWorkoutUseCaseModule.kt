@@ -1,18 +1,22 @@
 package br.com.fitnesspro.workout.injection
 
 import android.content.Context
+import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
 import br.com.fitnesspro.workout.usecase.exercise.InactivateExerciseUseCase
-import br.com.fitnesspro.workout.usecase.exercise.InactivateWorkoutUseCase
+import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseExecutionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseUseCase
-import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseVideoFromGalleryUseCase
-import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseVideoUseCase
+import br.com.fitnesspro.workout.usecase.exercise.video.SaveExerciseVideoUseCase
+import br.com.fitnesspro.workout.usecase.exercise.video.SaveVideoExecutionUseCase
+import br.com.fitnesspro.workout.usecase.exercise.video.gallery.SaveExerciseVideoFromGalleryUseCase
+import br.com.fitnesspro.workout.usecase.exercise.video.gallery.SaveVideoExecutionFromGalleryUseCase
 import br.com.fitnesspro.workout.usecase.workout.EditWorkoutGroupUseCase
 import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutGroupUseCase
+import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -111,4 +115,40 @@ class SingletonWorkoutUseCaseModule {
             videoRepository = videoRepository
         )
     }
+
+    @Provides
+    fun provideSaveExerciseExecutionUseCase(
+        @ApplicationContext context: Context,
+        exerciseExecutionRepository: ExerciseExecutionRepository,
+        saveVideoExecutionUseCase: SaveVideoExecutionUseCase
+    ): SaveExerciseExecutionUseCase {
+        return SaveExerciseExecutionUseCase(
+            context = context,
+            exerciseExecutionRepository = exerciseExecutionRepository,
+            saveVideoExecutionUseCase = saveVideoExecutionUseCase
+        )
+    }
+
+    @Provides
+    fun provideSaveVideoExecutionFromGalleryUseCase(
+        @ApplicationContext context: Context,
+        saveVideoExecutionUseCase: SaveVideoExecutionUseCase
+    ): SaveVideoExecutionFromGalleryUseCase {
+        return SaveVideoExecutionFromGalleryUseCase(
+            context = context,
+            saveVideoExecutionUseCase = saveVideoExecutionUseCase
+        )
+    }
+
+    @Provides
+    fun provideSaveVideoExecutionUseCase(
+        @ApplicationContext context: Context,
+        videoRepository: VideoRepository
+    ): SaveVideoExecutionUseCase {
+        return SaveVideoExecutionUseCase(
+            context = context,
+            videoRepository = videoRepository
+        )
+    }
+
 }

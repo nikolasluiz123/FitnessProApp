@@ -78,7 +78,7 @@
     <string name="exercise_screen_video_gallery_title">Vídeos da Execução</string>
     <string name="exercise_screen_label_tab_general">Geral</string>
     <string name="exercise_screen_label_tab_videos">Vídeos</string>
-    <string name="exercise_video_message_max_video_count">Limite de vídeos por exercício atingido. Você pode ter até 3 vídeos por exercício.</string>
+    <string name="exercise_video_message_max_video_count">Limite de vídeos atingido. Você pode adicionar até 3 vídeos.</string>
     <string name="exercise_video_message_max_video_duration">Duração máxima do vídeo atiginda. Você pode adicionar vídeos de no máximo 1 minuto de duração.</string>
     <string name="exercise_video_message_max_video_size">Seu vídeo excedeu muito o tamanho máximo de 15MB, mesmo realizando uma compressão não foi possível salvá-lo. Tente gravar um vídeo mais curto ou com uma qualidade um pouco menor.</string>
     <string name="workout_importation_descrition">Importação dos Treinos</string>
@@ -113,4 +113,5 @@
     <string name="register_evolution_screen_videos_empty_message">Não foi encontrado nenhum vídeo de execução desse exercício</string>
     <string name="register_evolution_screen_title_new_exercise">Novo Registro de Evolução</string>
     <string name="register_evolution_screen_title_edit_exercise">Registro de Evolução</string>
+    <string name="register_evolution_screen_success_message">Execução salva com sucesso</string>
 </resources>

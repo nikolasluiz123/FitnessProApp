@@ -5,15 +5,19 @@ import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
+import br.com.fitnesspro.local.data.access.dao.VideoExerciseExecutionDAO
 import br.com.fitnesspro.mappers.getVideo
 import br.com.fitnesspro.mappers.getVideoExercise
+import br.com.fitnesspro.mappers.getVideoExerciseExecution
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.to.TOVideoExercise
+import br.com.fitnesspro.to.TOVideoExerciseExecution
 
 class VideoRepository(
     context: Context,
     private val videoDAO: VideoDAO,
     private val videoExerciseDAO: VideoExerciseDAO,
+    private val videoExerciseExecutionDAO: VideoExerciseExecutionDAO,
     private val exerciseWebClient: ExerciseWebClient
 ): FitnessProRepository(context) {
 
@@ -48,7 +52,7 @@ class VideoRepository(
         val video = toVideoExercise.toVideo!!.getVideo()
         val videoExercise = toVideoExercise.getVideoExercise()
 
-        val response = exerciseWebClient.createVideo(
+        val response = exerciseWebClient.createExerciseVideo(
             token = getValidToken(),
             video = video,
             videoExercise = videoExercise
@@ -71,8 +75,16 @@ class VideoRepository(
         return videoExerciseDAO.getListVideoFilePathsFromExercise(exerciseId)
     }
 
+    suspend fun getVideoExerciseExecution(exerciseExecutionId: String): List<String> {
+        return videoExerciseDAO.getListVideoFilePathsFromExecution(exerciseExecutionId)
+    }
+
     suspend fun getCountVideosExercise(exerciseId: String): Int {
         return videoExerciseDAO.getCountVideosExercise(exerciseId)
+    }
+
+    suspend fun getCountVideosExecution(exerciseExecutionId: String): Int {
+        return videoExerciseExecutionDAO.getCountVideosExecution(exerciseExecutionId)
     }
 
     suspend fun deleteVideos(exerciseIds: List<String>) {
@@ -86,8 +98,51 @@ class VideoRepository(
         workoutId: String? = null,
         workoutGroupId: String? = null,
         exerciseId: String? = null
-        ): Boolean {
+    ): Boolean {
         return videoExerciseDAO.getExistsVideoExerciseTransmitted(workoutId, workoutGroupId, exerciseId)
     }
 
+    suspend fun saveVideoExerciseExecutionLocally(toVideoExerciseExecutionList: List<TOVideoExerciseExecution>) {
+        val (inserts, updates) = toVideoExerciseExecutionList.partition { it.id == null }
+
+        if (inserts.isNotEmpty()) saveVideoExerciseExecutionLocally(inserts, isInsert = true)
+        if (updates.isNotEmpty()) saveVideoExerciseExecutionLocally(updates, isInsert = false)
+    }
+
+    private suspend fun saveVideoExerciseExecutionLocally(list: List<TOVideoExerciseExecution>, isInsert: Boolean) {
+        val videoExecutionList = list.map {
+            val videoExecution = it.getVideoExerciseExecution()
+            if (isInsert) it.id = videoExecution.id
+            videoExecution
+        }
+
+        val videoList = list.mapNotNull {
+            it.toVideo?.getVideo()?.also { video ->
+                if (isInsert) it.toVideo?.id = video.id
+            }
+        }
+
+        if (isInsert) {
+            videoDAO.insertBatch(videoList)
+            videoExerciseExecutionDAO.insertBatch(videoExecutionList)
+        } else {
+            videoDAO.updateBatch(videoList)
+            videoExerciseExecutionDAO.updateBatch(videoExecutionList)
+        }
+    }
+
+    suspend fun createExecutionVideo(toVideoExerciseExecution: TOVideoExerciseExecution) {
+        runInTransaction {
+            saveVideoExerciseExecutionLocally(listOf(toVideoExerciseExecution), isInsert = true)
+            createExecutionVideoRemote(toVideoExerciseExecution)
+        }
+    }
+
+    private suspend fun createExecutionVideoRemote(toVideoExerciseExecution: TOVideoExerciseExecution) {
+        exerciseWebClient.createExecutionVideo(
+            token = getValidToken(),
+            videoExecution = toVideoExerciseExecution.getVideoExerciseExecution(),
+            video = toVideoExerciseExecution.toVideo!!.getVideo()
+        )
+    }
 }

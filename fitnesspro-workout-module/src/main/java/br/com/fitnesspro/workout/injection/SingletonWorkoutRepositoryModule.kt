@@ -5,12 +5,15 @@ import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
 import br.com.fitnesspor.service.data.access.webclient.workout.WorkoutWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
+import br.com.fitnesspro.local.data.access.dao.ExerciseExecutionDAO
 import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
+import br.com.fitnesspro.local.data.access.dao.VideoExerciseExecutionDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupPreDefinitionDAO
+import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
@@ -117,12 +120,14 @@ class SingletonWorkoutRepositoryModule {
         @ApplicationContext context: Context,
         videoDAO: VideoDAO,
         videoExerciseDAO: VideoExerciseDAO,
+        videoExerciseExecutionDAO: VideoExerciseExecutionDAO,
         exerciseWebClient: ExerciseWebClient
     ): VideoRepository {
         return VideoRepository(
             context = context,
             videoDAO = videoDAO,
             videoExerciseDAO = videoExerciseDAO,
+            videoExerciseExecutionDAO = videoExerciseExecutionDAO,
             exerciseWebClient = exerciseWebClient
         )
     }
@@ -277,4 +282,18 @@ class SingletonWorkoutRepositoryModule {
         )
     }
 
+    @Provides
+    fun provideExerciseExecutionRepository(
+        @ApplicationContext context: Context,
+        exerciseExecutionDAO: ExerciseExecutionDAO,
+        videoRepository: VideoRepository,
+        exerciseWebClient: ExerciseWebClient
+    ): ExerciseExecutionRepository {
+        return ExerciseExecutionRepository(
+            context = context,
+            exerciseExecutionDAO = exerciseExecutionDAO,
+            videoRepository = videoRepository,
+            exerciseWebClient = exerciseWebClient
+        )
+    }
 }

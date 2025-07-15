@@ -8,6 +8,7 @@ import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.ApplicationDAO
 import br.com.fitnesspro.local.data.access.dao.DeviceDAO
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
+import br.com.fitnesspro.local.data.access.dao.ExerciseExecutionDAO
 import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO
 import br.com.fitnesspro.local.data.access.dao.ImportationHistoryDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
@@ -18,6 +19,7 @@ import br.com.fitnesspro.local.data.access.dao.ServiceTokenDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
+import br.com.fitnesspro.local.data.access.dao.VideoExerciseExecutionDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupPreDefinitionDAO
@@ -99,5 +101,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun videoDAO(): VideoDAO
 
     abstract fun videoExerciseDAO(): VideoExerciseDAO
+
+    abstract fun exerciseExecutionDAO(): ExerciseExecutionDAO
+
+    abstract fun videoExerciseExecutionDAO(): VideoExerciseExecutionDAO
 
 }

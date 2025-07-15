@@ -3,11 +3,15 @@ package br.com.fitnesspro.mappers
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
+import br.com.fitnesspro.model.workout.execution.VideoExerciseExecution
 import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseExecutionDTO
 import br.com.fitnesspro.to.TOVideo
 import br.com.fitnesspro.to.TOVideoExercise
+import br.com.fitnesspro.to.TOVideoExerciseExecution
 
 fun TOVideo.getVideo(): Video {
     val model = Video(
@@ -101,6 +105,33 @@ fun VideoExercise.getNewVideoExerciseDTO(video: Video): NewVideoExerciseDTO {
     return NewVideoExerciseDTO(
         id = id,
         exerciseId = exerciseId,
+        videoDTO = video.getVideoDTO()
+    )
+}
+
+fun TOVideoExerciseExecution.getVideoExerciseExecution(): VideoExerciseExecution {
+    val model = VideoExerciseExecution(
+        exerciseExecutionId = exerciseExecutionId,
+        videoId = toVideo?.id,
+    )
+
+    this.id?.let { model.id = it }
+
+    return model
+}
+
+fun VideoExerciseExecution.getVideoExerciseExecutionDTO(): VideoExerciseExecutionDTO {
+    return VideoExerciseExecutionDTO(
+        id = id,
+        exerciseExecutionId = exerciseExecutionId,
+        videoId = videoId,
+    )
+}
+
+fun VideoExerciseExecution.getNewVideoExerciseExecutionDTO(video: Video): NewVideoExerciseExecutionDTO {
+    return NewVideoExerciseExecutionDTO(
+        id = id,
+        exerciseExecutionId = exerciseExecutionId,
         videoDTO = video.getVideoDTO()
     )
 }

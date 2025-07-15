@@ -30,9 +30,9 @@ import br.com.fitnesspro.workout.ui.navigation.dayWeekExercisesScreenArguments
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekExercisesUIState
 import br.com.fitnesspro.workout.ui.state.WorkoutGroupEditDialogUIState
-import br.com.fitnesspro.workout.usecase.exercise.InactivateWorkoutUseCase
+import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutUseCase
 import br.com.fitnesspro.workout.usecase.workout.EditWorkoutGroupUseCase
-import br.com.fitnesspro.workout.usecase.workout.EnumValidatedWorkoutGroupFields
+import br.com.fitnesspro.workout.usecase.workout.enums.EnumValidatedWorkoutGroupFields
 import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutGroupUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

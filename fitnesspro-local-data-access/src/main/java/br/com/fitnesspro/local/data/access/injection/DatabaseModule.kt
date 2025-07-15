@@ -96,4 +96,12 @@ class DatabaseModule {
     @Singleton
     fun provideVideoExerciseDao(appDatabase: AppDatabase) = appDatabase.videoExerciseDAO()
 
+    @Provides
+    @Singleton
+    fun provideExerciseExecutionDao(appDatabase: AppDatabase) = appDatabase.exerciseExecutionDAO()
+
+    @Provides
+    @Singleton
+    fun provideVideoExerciseExecutionDao(appDatabase: AppDatabase) = appDatabase.videoExerciseExecutionDAO()
+
 }

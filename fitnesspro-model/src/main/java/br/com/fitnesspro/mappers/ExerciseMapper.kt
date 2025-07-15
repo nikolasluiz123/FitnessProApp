@@ -7,6 +7,7 @@ import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.model.workout.predefinition.ExercisePreDefinition
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOExerciseExecution
 import br.com.fitnesspro.to.TOExercisePreDefinition
@@ -115,6 +116,20 @@ fun TOExerciseExecution.getExerciseExecution(): ExerciseExecution {
 
 fun ExerciseExecution.getTOExerciseExecution(): TOExerciseExecution {
     return TOExerciseExecution(
+        id = id,
+        exerciseId = exerciseId,
+        repetitions = repetitions,
+        set = set,
+        duration = duration,
+        rest = rest,
+        weight = weight,
+        date = date,
+        active = active,
+    )
+}
+
+fun ExerciseExecution.getExerciseExecutionDTO(): ExerciseExecutionDTO {
+    return ExerciseExecutionDTO(
         id = id,
         exerciseId = exerciseId,
         repetitions = repetitions,

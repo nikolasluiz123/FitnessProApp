@@ -1,9 +1,10 @@
-package br.com.fitnesspro.workout.usecase.exercise
+package br.com.fitnesspro.workout.usecase.exercise.video.gallery
 
 import android.content.Context
 import android.net.Uri
 import br.com.fitnesspro.core.utils.VideoUtils
 import br.com.fitnesspro.core.validation.ValidationError
+import br.com.fitnesspro.workout.usecase.exercise.video.SaveExerciseVideoUseCase
 
 class SaveExerciseVideoFromGalleryUseCase(
     private val context: Context,

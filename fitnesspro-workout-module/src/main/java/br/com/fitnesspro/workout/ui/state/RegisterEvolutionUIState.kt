@@ -21,7 +21,7 @@ data class RegisterEvolutionUIState(
     val messageDialogState: MessageDialogState = MessageDialogState(),
     val toExerciseExecution: TOExerciseExecution = TOExerciseExecution(),
     val videoGalleryState: VideoGalleryState = VideoGalleryState(),
-    var newVideoFileFromCamera: File? = null,
+    var notSavedVideoFiles: MutableList<File> = mutableListOf(),
     val onFabVisibilityChange: (Boolean) -> Unit = {},
     val fabVisible: Boolean = true,
     override val showLoading: Boolean = false,

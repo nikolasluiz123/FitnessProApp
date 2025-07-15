@@ -9,11 +9,12 @@ import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
-import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.EXERCISE
-import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.EXERCISE_GROUP
-import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.EXERCISE_GROUP_ORDER
-import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.EXERCISE_ORDER
-import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields.OBSERVATION
+import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFields
+import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFields.EXERCISE
+import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFields.EXERCISE_GROUP
+import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFields.EXERCISE_GROUP_ORDER
+import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFields.EXERCISE_ORDER
+import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFields.OBSERVATION
 
 class SaveExerciseUseCase(
     private val context: Context,

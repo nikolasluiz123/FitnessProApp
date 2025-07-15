@@ -23,6 +23,14 @@ abstract class VideoExerciseDAO: IntegratedMaintenanceDAO<VideoExercise>() {
     """)
     abstract suspend fun getListVideoFilePathsFromExercise(exerciseId: String): List<String>
 
+    @Query("""
+        select file_path as path
+        from video 
+        inner join video_exercise_execution on video.id = video_exercise_execution.video_id 
+        where video_exercise_execution.exercise_execution_id = :exerciseExecutionId
+    """)
+    abstract suspend fun getListVideoFilePathsFromExecution(exerciseExecutionId: String): List<String>
+
     @Query(" select count(id) from video_exercise where exercise_id = :exerciseId ")
     abstract suspend fun getCountVideosExercise(exerciseId: String): Int
 

@@ -1,4 +1,4 @@
-package br.com.fitnesspor.service.data.access.webclient
+package br.com.fitnesspor.service.data.access.webclient.log
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.extensions.getResponseBody

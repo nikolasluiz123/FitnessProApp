@@ -1,7 +1,6 @@
-package br.com.fitnesspro.workout.usecase.exercise
+package br.com.fitnesspro.workout.usecase.exercise.enums
 
 import br.com.fitnesspro.workout.R
-
 
 enum class EnumValidatedExerciseFields(val labelResId: Int, val maxLength: Int = 0) {
     EXERCISE_GROUP(R.string.enum_exercise_group, 255),

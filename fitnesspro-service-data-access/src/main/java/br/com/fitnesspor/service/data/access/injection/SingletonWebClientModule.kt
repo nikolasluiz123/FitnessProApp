@@ -9,7 +9,7 @@ import br.com.fitnesspor.service.data.access.service.scheduler.ISchedulerService
 import br.com.fitnesspor.service.data.access.service.workout.IExerciseService
 import br.com.fitnesspor.service.data.access.service.workout.IVideoService
 import br.com.fitnesspor.service.data.access.service.workout.IWorkoutService
-import br.com.fitnesspor.service.data.access.webclient.ExecutionLogWebClient
+import br.com.fitnesspor.service.data.access.webclient.log.ExecutionLogWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient

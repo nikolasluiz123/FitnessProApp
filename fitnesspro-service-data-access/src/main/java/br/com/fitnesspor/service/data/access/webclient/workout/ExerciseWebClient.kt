@@ -7,20 +7,30 @@ import br.com.fitnesspor.service.data.access.service.workout.IVideoService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
 import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.mappers.getExerciseDTO
+import br.com.fitnesspro.mappers.getExerciseExecutionDTO
 import br.com.fitnesspro.mappers.getNewVideoExerciseDTO
+import br.com.fitnesspro.mappers.getNewVideoExerciseExecutionDTO
 import br.com.fitnesspro.mappers.getVideoDTO
 import br.com.fitnesspro.mappers.getVideoExerciseDTO
+import br.com.fitnesspro.mappers.getVideoExerciseExecutionDTO
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
 import br.com.fitnesspro.model.workout.WorkoutGroup
+import br.com.fitnesspro.model.workout.execution.ExerciseExecution
+import br.com.fitnesspro.model.workout.execution.VideoExerciseExecution
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.NewExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
@@ -146,13 +156,134 @@ class ExerciseWebClient(
         )
     }
 
-    suspend fun createVideo(token: String, video: Video, videoExercise: VideoExercise): PersistenceServiceResponse<NewVideoExerciseDTO> {
+    suspend fun createExerciseVideo(token: String, video: Video, videoExercise: VideoExercise): PersistenceServiceResponse<NewVideoExerciseDTO> {
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
-                videoService.createVideo(
+                videoService.createExerciseVideo(
                     token = formatToken(token),
                     newVideoExerciseDTO = videoExercise.getNewVideoExerciseDTO(video)
                 ).getResponseBody(NewVideoExerciseDTO::class.java)
+            }
+        )
+    }
+
+    suspend fun saveExerciseExecutionBatch(
+        token: String,
+        exerciseList: List<ExerciseExecution>,
+    ): ExportationServiceResponse {
+        return exportationServiceErrorHandlingBlock(
+            codeBlock = {
+                val exerciseListDTO = exerciseList.map(ExerciseExecution::getExerciseExecutionDTO)
+
+                exerciseService.saveExerciseExecutionBatch(
+                    token = formatToken(token),
+                    exerciseDTOs = exerciseListDTO
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun importExerciseExecution(
+        token: String,
+        filter: WorkoutModuleImportFilter,
+        pageInfos: ImportPageInfos
+    ): ImportationServiceResponse<ExerciseExecutionDTO> {
+        return importationServiceErrorHandlingBlock(
+            codeBlock = {
+                val gson = GsonBuilder().defaultGSon()
+
+                exerciseService.importExerciseExecution(
+                    token = formatToken(token),
+                    filter = gson.toJson(filter),
+                    pageInfos = gson.toJson(pageInfos)
+                ).getResponseBody(ExerciseExecutionDTO::class.java)
+            }
+        )
+    }
+
+    suspend fun importVideoExerciseExecution(
+        token: String,
+        filter: WorkoutModuleImportFilter,
+        pageInfos: ImportPageInfos
+    ): ImportationServiceResponse<VideoExerciseExecutionDTO> {
+        return importationServiceErrorHandlingBlock(
+            codeBlock = {
+                val gson = GsonBuilder().defaultGSon()
+
+                exerciseService.importVideoExerciseExecution(
+                    token = formatToken(token),
+                    filter = gson.toJson(filter),
+                    pageInfos = gson.toJson(pageInfos)
+                ).getResponseBody(VideoExerciseExecutionDTO::class.java)
+            }
+        )
+    }
+
+    suspend fun saveExerciseExecutionVideosBatch(
+        token: String,
+        videosList: List<VideoExerciseExecution>
+    ): ExportationServiceResponse {
+        return exportationServiceErrorHandlingBlock(
+            codeBlock = {
+                val videosListDTO = videosList.map(VideoExerciseExecution::getVideoExerciseExecutionDTO)
+
+                exerciseService.saveExerciseExecutionVideosBatch(
+                    token = formatToken(token),
+                    videoDTOs = videosListDTO
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun newExerciseExecution(
+        token: String,
+        exerciseExecution: ExerciseExecution,
+        videos: List<Video>,
+        videoExerciseExecutionList: List<VideoExerciseExecution>
+    ): FitnessProServiceResponse {
+        return serviceErrorHandlingBlock(
+            codeBlock = {
+                val videosById = videos.associateBy { it.id }
+
+                val videosDTO = videoExerciseExecutionList.map { videoExec ->
+                    videoExec.getNewVideoExerciseExecutionDTO(video = videosById[videoExec.videoId]!!)
+                }
+
+                val exerciseExecutionDTO = NewExerciseExecutionDTO(
+                    exerciseExecutionDTO = exerciseExecution.getExerciseExecutionDTO(),
+                    videosDTO = videosDTO
+                )
+
+                exerciseService.newExerciseExecution(
+                    token = formatToken(token),
+                    newExerciseExecutionDTO = exerciseExecutionDTO
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun saveExerciseExecution(token: String, exerciseExecution: ExerciseExecution): PersistenceServiceResponse<ExerciseExecutionDTO> {
+        return persistenceServiceErrorHandlingBlock(
+            codeBlock = {
+                exerciseService.saveExerciseExecution(
+                    token = formatToken(token),
+                    exerciseExecutionDTO = exerciseExecution.getExerciseExecutionDTO()
+                ).getResponseBody(ExerciseExecutionDTO::class.java)
+            }
+        )
+    }
+
+    suspend fun createExecutionVideo(
+        token: String,
+        videoExecution: VideoExerciseExecution,
+        video: Video
+    ): PersistenceServiceResponse<NewVideoExerciseExecutionDTO> {
+        return persistenceServiceErrorHandlingBlock(
+            codeBlock = {
+                videoService.createExecutionVideo(
+                    token = formatToken(token),
+                    newVideoExecutionDTO = videoExecution.getNewVideoExerciseExecutionDTO(video)
+                ).getResponseBody(NewVideoExerciseExecutionDTO::class.java)
             }
         )
     }

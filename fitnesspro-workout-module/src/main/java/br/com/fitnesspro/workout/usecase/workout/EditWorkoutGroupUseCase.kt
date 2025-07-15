@@ -5,6 +5,7 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
+import br.com.fitnesspro.workout.usecase.workout.enums.EnumValidatedWorkoutGroupFields
 
 class EditWorkoutGroupUseCase(
     private val context: Context,

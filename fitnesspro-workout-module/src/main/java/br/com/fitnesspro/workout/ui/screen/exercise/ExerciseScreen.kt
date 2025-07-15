@@ -214,7 +214,7 @@ private fun onSave(
     }
 }
 
-fun showSuccessMessage(coroutineScope: CoroutineScope, snackbarHostState: SnackbarHostState, context: Context) {
+private fun showSuccessMessage(coroutineScope: CoroutineScope, snackbarHostState: SnackbarHostState, context: Context) {
     coroutineScope.launch {
         val message = context.getString(R.string.exercise_screen_success_message)
         snackbarHostState.showSnackbar(message = message)

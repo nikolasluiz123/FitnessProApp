@@ -44,11 +44,11 @@ import br.com.fitnesspro.workout.ui.navigation.ExerciseScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.exerciseScreenArguments
 import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumTabsExerciseScreen
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
-import br.com.fitnesspro.workout.usecase.exercise.EnumValidatedExerciseFields
 import br.com.fitnesspro.workout.usecase.exercise.InactivateExerciseUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseUseCase
-import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseVideoFromGalleryUseCase
-import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseVideoUseCase
+import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFields
+import br.com.fitnesspro.workout.usecase.exercise.video.SaveExerciseVideoUseCase
+import br.com.fitnesspro.workout.usecase.exercise.video.gallery.SaveExerciseVideoFromGalleryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
