@@ -101,7 +101,7 @@ fun TOExerciseExecution.getExerciseExecution(): ExerciseExecution {
     val model = ExerciseExecution(
         exerciseId = exerciseId,
         repetitions = repetitions,
-        set = set,
+        actualSet = set,
         duration = duration,
         rest = rest,
         weight = weight,
@@ -119,12 +119,14 @@ fun ExerciseExecution.getTOExerciseExecution(): TOExerciseExecution {
         id = id,
         exerciseId = exerciseId,
         repetitions = repetitions,
-        set = set,
+        set = actualSet,
         duration = duration,
         rest = rest,
         weight = weight,
         date = date,
         active = active,
+        restUnit = rest?.bestChronoUnit(),
+        durationUnit = duration?.bestChronoUnit()
     )
 }
 
@@ -133,7 +135,7 @@ fun ExerciseExecution.getExerciseExecutionDTO(): ExerciseExecutionDTO {
         id = id,
         exerciseId = exerciseId,
         repetitions = repetitions,
-        set = set,
+        set = actualSet,
         duration = duration,
         rest = rest,
         weight = weight,

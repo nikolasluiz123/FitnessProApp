@@ -122,7 +122,10 @@ fun ExerciseDetailsScreen(
                         }
 
                         EnumTabsExerciseDetailsScreen.EVOLUTION -> {
-                            ExerciseDetailsTabEvolution(state)
+                            ExerciseDetailsTabEvolution(
+                                state = state,
+                                onNavigateToRegisterEvolution = onNavigateToRegisterEvolution
+                            )
                         }
                     }
                 }

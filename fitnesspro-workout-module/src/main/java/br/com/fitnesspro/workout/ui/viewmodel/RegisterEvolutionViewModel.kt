@@ -11,18 +11,23 @@ import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
 import br.com.fitnesspro.core.callback.showErrorDialog
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.bestChronoUnit
+import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.extensions.formatToDecimal
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.millisTo
 import br.com.fitnesspro.core.extensions.openVideoPlayer
+import br.com.fitnesspro.core.extensions.toDoubleValue
 import br.com.fitnesspro.core.extensions.toIntOrNull
 import br.com.fitnesspro.core.extensions.toStringOrEmpty
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.core.utils.VideoUtils
 import br.com.fitnesspro.core.validation.FieldValidationError
-import br.com.fitnesspro.to.TOExercise
+import br.com.fitnesspro.to.TOExerciseExecution
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.ui.navigation.RegisterEvolutionScreenArgs
@@ -47,6 +52,7 @@ class RegisterEvolutionViewModel @Inject constructor(
     private val globalEvents: GlobalEvents,
     private val exerciseRepository: ExerciseRepository,
     private val videoRepository: VideoRepository,
+    private val executionRepository: ExerciseExecutionRepository,
     private val saveVideoExecutionUseCase: SaveVideoExecutionUseCase,
     private val saveVideoExecutionFromGalleryUseCase: SaveVideoExecutionFromGalleryUseCase,
     private val saveExerciseExecutionUseCase: SaveExerciseExecutionUseCase,
@@ -137,7 +143,7 @@ class RegisterEvolutionViewModel @Inject constructor(
                         value = it,
                         errorMessage = ""
                     ),
-                    toExerciseExecution = _uiState.value.toExerciseExecution.copy(weight = it.toDoubleOrNull())
+                    toExerciseExecution = _uiState.value.toExerciseExecution.copy(weight = it.toDoubleValue())
                 )
             }
         )
@@ -286,26 +292,48 @@ class RegisterEvolutionViewModel @Inject constructor(
     private fun loadUIStateWithDatabaseInfos() {
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(RegisterEvolutionScreenArgs::class.java)!!
+            val toExerciseExecution = args.exerciseExecutionId?.let { executionRepository.findById(it) }
 
-            // TODO - Carregar informacoes de edicao, pode ser que modifique o lugar que o titulo e
-            //  carregado
-            _uiState.value = _uiState.value.copy(
-                title = getTitle(args.exerciseExecutionId)
-            )
-
+            loadTitle(toExerciseExecution)
+            loadExecutionInfosEdition(toExerciseExecution)
             loadExerciseInfos(args)
             loadVideos(exerciseExecutionId = args.exerciseExecutionId)
         }
     }
 
-    private fun getTitle(exerciseExecutionId: String?): String {
-        // TODO - Isso precisa ser alterado para adicionar a data no titulo quando for edicao
+    private fun loadExecutionInfosEdition(toExerciseExecution: TOExerciseExecution?) {
+        toExerciseExecution?.let { to ->
+            val convertedRest = getConvertedRestFrom(to.restUnit, to.rest)
+            val convertedDuration = getConvertedDurationFrom(to.durationUnit, to.duration)
 
-        return if (exerciseExecutionId.isNullOrEmpty()) {
-            context.getString(R.string.register_evolution_screen_title_new_exercise)
-        } else {
-            context.getString(R.string.register_evolution_screen_title_edit_exercise)
+            _uiState.value = _uiState.value.copy(
+                weight = _uiState.value.weight.copy(value = to.weight.formatToDecimal()),
+                repetitions = _uiState.value.repetitions.copy(value = to.repetitions.toStringOrEmpty()),
+                rest = _uiState.value.rest.copy(value = convertedRest),
+                restUnit = _uiState.value.restUnit.copy(value = getUnitRestFrom(to.rest)),
+                duration = _uiState.value.duration.copy(value = convertedDuration),
+                durationUnit = _uiState.value.durationUnit.copy(value = getUnitDurationFrom(to.duration)),
+                toExerciseExecution = to.copy(
+                    duration = convertedDuration.toLongOrNull(),
+                    rest = convertedRest.toLongOrNull()
+                )
+            )
         }
+    }
+
+    private fun loadTitle(toExerciseExecution: TOExerciseExecution?) {
+        _uiState.value = _uiState.value.copy(
+            title = getTitle(toExerciseExecution)
+        )
+    }
+
+    private fun getTitle(toExecution: TOExerciseExecution?): String {
+        return toExecution?.let {
+            context.getString(
+                R.string.register_evolution_screen_title_edit_exercise,
+                it.date!!.format(EnumDateTimePatterns.DATE)
+            )
+        } ?: context.getString(R.string.register_evolution_screen_title_new_exercise)
     }
 
     private suspend fun loadExerciseInfos(args: RegisterEvolutionScreenArgs) {
@@ -313,46 +341,51 @@ class RegisterEvolutionViewModel @Inject constructor(
 
         _uiState.value = _uiState.value.copy(
             subtitle = toExercise.name!!,
-            repetitions = _uiState.value.repetitions.copy(
-                value = toExercise.repetitions.toStringOrEmpty(),
-            ),
-            rest = _uiState.value.rest.copy(
-                value = getConvertedRestFrom(toExercise)
-            ),
-            restUnit = _uiState.value.restUnit.copy(
-                value = getUnitRestFrom(toExercise)
-            ),
-            duration = _uiState.value.duration.copy(
-                value = getConvertedDurationFrom(toExercise)
-            ),
-            durationUnit = _uiState.value.durationUnit.copy(
-                value = getUnitDurationFrom(toExercise)
-            ),
-            toExerciseExecution = _uiState.value.toExerciseExecution.copy(
-                repetitions = toExercise.repetitions,
-                rest = toExercise.rest,
-                restUnit = toExercise.unitRest,
-                duration = toExercise.duration,
-                durationUnit = toExercise.unitDuration,
-                exerciseId = toExercise.id
-            )
         )
+
+        if (args.exerciseExecutionId == null) {
+            _uiState.value = _uiState.value.copy(
+                repetitions = _uiState.value.repetitions.copy(
+                    value = toExercise.repetitions.toStringOrEmpty(),
+                ),
+                rest = _uiState.value.rest.copy(
+                    value = getConvertedRestFrom(toExercise.unitRest, toExercise.rest)
+                ),
+                restUnit = _uiState.value.restUnit.copy(
+                    value = getUnitRestFrom(toExercise.rest)
+                ),
+                duration = _uiState.value.duration.copy(
+                    value = getConvertedDurationFrom(toExercise.unitDuration, toExercise.duration)
+                ),
+                durationUnit = _uiState.value.durationUnit.copy(
+                    value = getUnitDurationFrom(toExercise.duration)
+                ),
+                toExerciseExecution = _uiState.value.toExerciseExecution.copy(
+                    repetitions = toExercise.repetitions,
+                    rest = toExercise.rest,
+                    restUnit = toExercise.unitRest,
+                    duration = toExercise.duration,
+                    durationUnit = toExercise.unitDuration,
+                    exerciseId = toExercise.id
+                )
+            )
+        }
     }
 
-    private fun getUnitDurationFrom(toExercise: TOExercise): String {
-        return toExercise.duration?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
+    private fun getUnitDurationFrom(duration: Long?): String {
+        return duration?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
     }
 
-    private fun getUnitRestFrom(toExercise: TOExercise): String {
-        return toExercise.rest?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
+    private fun getUnitRestFrom(rest: Long?): String {
+        return rest?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
     }
 
-    private fun getConvertedDurationFrom(toExercise: TOExercise): String {
-        return toExercise.unitDuration?.let { toExercise.duration?.millisTo(it) }.toStringOrEmpty()
+    private fun getConvertedDurationFrom(unitDuration: ChronoUnit?, duration: Long?): String {
+        return unitDuration?.let { duration?.millisTo(it) }.toStringOrEmpty()
     }
 
-    private fun getConvertedRestFrom(toExercise: TOExercise): String {
-        return toExercise.unitRest?.let { toExercise.rest?.millisTo(it) }.toStringOrEmpty()
+    private fun getConvertedRestFrom(unitRest: ChronoUnit?, rest: Long?): String {
+        return unitRest?.let { rest?.millisTo(it) }.toStringOrEmpty()
     }
 
     fun onOpenCameraVideo(file: File) {

@@ -14,7 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,8 +37,6 @@ import androidx.paging.LoadStates
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemContentType
-import androidx.paging.compose.itemKey
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProMessageDialogTestTags.FITNESS_PRO_MESSAGE_DIALOG
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProMessageDialogTestTags.FITNESS_PRO_MESSAGE_DIALOG_CANCEL_BUTTON
@@ -49,11 +46,11 @@ import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProMessageDi
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProMessageDialogTestTags.FITNESS_PRO_MESSAGE_DIALOG_TITLE
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG_FILTER
-import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG_LIST
 import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG_TITLE
 import br.com.fitnesspro.compose.components.fields.state.DialogListState
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.compose.components.filter.SimpleFilter
+import br.com.fitnesspro.compose.components.list.PagedLazyVerticalList
 import br.com.fitnesspro.core.enums.EnumDialogType
 import br.com.fitnesspro.core.enums.EnumDialogType.CONFIRMATION
 import br.com.fitnesspro.core.enums.EnumDialogType.ERROR
@@ -356,95 +353,13 @@ private fun <T : ITupleListItem> PagedListDialog(
     emptyMessage: Int,
     itemLayout: @Composable (T) -> Unit
 ) {
-    if (pagingItems.itemCount == 0) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(id = emptyMessage),
-                style = LabelTextStyle,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center
-            )
-        }
-    } else {
-        LazyColumn(
-            modifier = Modifier
-                .testTag(FITNESS_PRO_PAGED_LIST_DIALOG_LIST.name)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            when (pagingItems.loadState.refresh) {
-                is LoadState.Loading -> {
-                    item {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                }
-
-                is LoadState.Error -> {
-                    item {
-                        Text(
-                            text = stringResource(R.string.paged_list_dialog_erros_load_items),
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                is LoadState.NotLoading -> {
-                    items(
-                        count = pagingItems.itemCount,
-                        key = pagingItems.itemKey(),
-                        contentType = pagingItems.itemContentType()
-                    ) { index ->
-                        pagingItems[index]?.let { item ->
-                            itemLayout(item)
-                        }
-                    }
-                }
-            }
-
-            when (pagingItems.loadState.append) {
-                is LoadState.Loading -> {
-                    item {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                }
-
-                is LoadState.Error -> {
-                    item {
-                        Text(
-                            text = stringResource(R.string.paged_list_dialog_erros_load_new_items),
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                else -> {}
-            }
-        }
-    }
-
+    PagedLazyVerticalList(
+        modifier = Modifier.fillMaxWidth(),
+        pagingItems = pagingItems,
+        itemLayout = itemLayout,
+        emptyMessageResId = emptyMessage,
+        emptyStateTextColor = MaterialTheme.colorScheme.onSurface
+    )
 }
 
 @Composable

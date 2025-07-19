@@ -2,6 +2,7 @@ package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
+import androidx.paging.PagingData
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.state.TabState
@@ -10,7 +11,9 @@ import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.ui.navigation.ExerciseDetailsScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.exerciseDetailsScreenArguments
@@ -18,6 +21,7 @@ import br.com.fitnesspro.workout.ui.screen.details.enums.EnumTabsExerciseDetails
 import br.com.fitnesspro.workout.ui.state.ExerciseDetailsUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -27,6 +31,7 @@ class ExerciseDetailsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val globalEvents: GlobalEvents,
     private val exerciseRepository: ExerciseRepository,
+    private val exerciseExecutionRepository: ExerciseExecutionRepository,
     savedStateHandle: SavedStateHandle
 ): FitnessProViewModel() {
 
@@ -37,7 +42,14 @@ class ExerciseDetailsViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
+        loadEvolutionList()
         loadUIStateWithDatabaseInfos()
+    }
+
+    private fun loadEvolutionList() {
+        _uiState.value = _uiState.value.copy(
+            evolutionList = getListExerciseExecutionGrouped()
+        )
     }
 
     override fun getErrorMessageFrom(throwable: Throwable): String {
@@ -144,5 +156,10 @@ class ExerciseDetailsViewModel @Inject constructor(
                 )
             }
         )
+    }
+
+    private fun getListExerciseExecutionGrouped(): Flow<PagingData<ExerciseExecutionGroupedTuple>> {
+        val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseDetailsScreenArgs::class.java)!!
+        return exerciseExecutionRepository.getListExerciseExecutionGrouped(args.exerciseId).flow
     }
 }

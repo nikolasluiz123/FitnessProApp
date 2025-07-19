@@ -1,6 +1,8 @@
 package br.com.fitnesspro.workout.repository
 
 import android.content.Context
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseExecutionDAO
@@ -12,6 +14,7 @@ import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.execution.VideoExerciseExecution
 import br.com.fitnesspro.to.TOExerciseExecution
 import br.com.fitnesspro.to.TOVideoExerciseExecution
+import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
 
 class ExerciseExecutionRepository(
     context: Context,
@@ -88,5 +91,19 @@ class ExerciseExecutionRepository(
 
     suspend fun getActualExecutionSet(exerciseId: String): Int {
         return exerciseExecutionDAO.getActualExecutionSet(exerciseId)
+    }
+
+    fun getListExerciseExecutionGrouped(exerciseId: String): Pager<Int, ExerciseExecutionGroupedTuple> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 50,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                exerciseExecutionDAO.getListExerciseExecutionGrouped(
+                    exerciseId = exerciseId
+                )
+            }
+        )
     }
 }

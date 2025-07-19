@@ -560,9 +560,14 @@ class ExerciseViewModel @Inject constructor(
         exerciseId?.let { id ->
             val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
             val toExercise = exerciseRepository.findById(id)
+            val convertedRest = getConvertedRestFrom(toExercise)
+            val convertedDuration = getConvertedDurationFrom(toExercise)
 
             _uiState.value = _uiState.value.copy(
-                toExercise = toExercise,
+                toExercise = toExercise.copy(
+                    rest = convertedRest.toLongOrNull(),
+                    duration = convertedDuration.toLongOrNull()
+                ),
                 group = _uiState.value.group.copy(
                     value = toExercise.workoutGroupName!!
                 ),
@@ -582,13 +587,13 @@ class ExerciseViewModel @Inject constructor(
                     value = toExercise.repetitions.toStringOrEmpty()
                 ),
                 rest = _uiState.value.rest.copy(
-                    value = getConvertedRestFrom(toExercise)
+                    value = convertedRest
                 ),
                 unitRest = _uiState.value.unitRest.copy(
                     value = getUnitRestFrom(toExercise)
                 ),
                 duration = _uiState.value.duration.copy(
-                    value = getConvertedDurationFrom(toExercise)
+                    value = convertedDuration
                 ),
                 unitDuration = _uiState.value.unitDuration.copy(
                     value = getUnitDurationFrom(toExercise)

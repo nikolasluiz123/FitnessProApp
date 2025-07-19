@@ -30,7 +30,8 @@ data class ExerciseExecution(
     var exerciseId: String? = null,
     var duration: Long? = null,
     var repetitions: Int? = null,
-    var set: Int? = null,
+    @ColumnInfo(name = "actual_set")
+    var actualSet: Int? = null,
     var rest: Long? = null,
     var weight: Double? = null,
     var date: LocalDateTime = LocalDateTime.now(),

@@ -112,6 +112,11 @@
     <string name="register_evolution_screen_video_gallery_title">Vídeos da Execução</string>
     <string name="register_evolution_screen_videos_empty_message">Não foi encontrado nenhum vídeo de execução desse exercício</string>
     <string name="register_evolution_screen_title_new_exercise">Novo Registro de Evolução</string>
-    <string name="register_evolution_screen_title_edit_exercise">Registro de Evolução</string>
+    <string name="register_evolution_screen_title_edit_exercise">Registro de Evolução - %s</string>
     <string name="register_evolution_screen_success_message">Execução salva com sucesso</string>
+    <string name="exercise_details_tab_evolution_empty_list_message">Não existem registros de evolução</string>
+    <string name="exercise_execution_label_weight">Carga</string>
+    <string name="exercise_execution_label_reps">Repetições</string>
+    <string name="exercise_execution_label_duration">Duração</string>
+    <string name="exercise_execution_label_rest">Descanso</string>
 </resources>

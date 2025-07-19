@@ -63,6 +63,6 @@ fun Long.bestChronoUnit(): ChronoUnit {
         this <= secondLimit -> ChronoUnit.SECONDS
         this <= minuteLimit -> ChronoUnit.MINUTES
         this <= hourLimit -> ChronoUnit.HOURS
-        else -> throw IllegalArgumentException("No suitable ChronoUnit for value: $this ms")
+        else -> ChronoUnit.HOURS
     }
 }

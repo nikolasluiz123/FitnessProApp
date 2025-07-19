@@ -99,7 +99,7 @@ class SaveExerciseExecutionUseCase(
             else -> null
         }
 
-        if (validationError == null && toExerciseExecution.rest != null && toExerciseExecution.id == null) {
+        if (validationError == null && toExerciseExecution.rest != null) {
             toExerciseExecution.rest = toExerciseExecution.rest!!.toMillis(toExerciseExecution.restUnit!!)
         }
 
@@ -120,7 +120,7 @@ class SaveExerciseExecutionUseCase(
             else -> null
         }
 
-        if (validationError == null && toExerciseExecution.duration != null && toExerciseExecution.id == null) {
+        if (validationError == null && toExerciseExecution.duration != null) {
             toExerciseExecution.duration = toExerciseExecution.duration!!.toMillis(toExerciseExecution.durationUnit!!)
         }
 
