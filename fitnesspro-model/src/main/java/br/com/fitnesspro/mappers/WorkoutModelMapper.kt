@@ -3,10 +3,13 @@ package br.com.fitnesspro.mappers
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.model.workout.WorkoutGroup
+import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupPreDefinitionDTO
 import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.to.TOWorkoutGroup
+import br.com.fitnesspro.to.TOWorkoutGroupPreDefinition
 
 fun Workout.getWorkoutDTO(): WorkoutDTO {
     return WorkoutDTO(
@@ -102,6 +105,37 @@ fun WorkoutGroupDTO.getWorkoutGroup(): WorkoutGroup {
         workoutId = workoutId,
         dayWeek = dayWeek,
         groupOrder = groupOrder,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
+    )
+}
+
+fun TOWorkoutGroupPreDefinition.getWorkoutGroupPreDefinition(): WorkoutGroupPreDefinition {
+    val model = WorkoutGroupPreDefinition(
+        name = name,
+        personalTrainerPersonId = personalTrainerPersonId,
+        active = active
+    )
+
+    id?.let { model.id = it }
+
+    return model
+}
+
+fun WorkoutGroupPreDefinition.getWorkoutGroupPreDefinitionDTO(): WorkoutGroupPreDefinitionDTO {
+    return WorkoutGroupPreDefinitionDTO(
+        id = id,
+        name = name,
+        personalTrainerPersonId = personalTrainerPersonId,
+        active = active
+    )
+}
+
+fun WorkoutGroupPreDefinitionDTO.getWorkoutGroupPreDefinition(): WorkoutGroupPreDefinition {
+    return WorkoutGroupPreDefinition(
+        id = id!!,
+        name = name,
+        personalTrainerPersonId = personalTrainerPersonId,
+        active = active,
         transmissionState = EnumTransmissionState.TRANSMITTED,
     )
 }

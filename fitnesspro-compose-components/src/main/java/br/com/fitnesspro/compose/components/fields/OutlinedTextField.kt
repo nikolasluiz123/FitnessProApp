@@ -467,11 +467,13 @@ fun <T: ITupleListItem> PagedListDialogOutlinedTextFieldValidation(
         modifier = modifier,
         keyboardOptions = keyboardOptions,
         trailingIcon = {
-            IconButtonSearch(
-                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),
-                onClick = field.dialogListState.onShow,
-                iconColor = MaterialTheme.colorScheme.secondary
-            )
+            if (field.dialogListState.showTrailingIcon) {
+                IconButtonSearch(
+                    modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),
+                    onClick = field.dialogListState.onShow,
+                    iconColor = MaterialTheme.colorScheme.secondary
+                )
+            }
         }
     )
 

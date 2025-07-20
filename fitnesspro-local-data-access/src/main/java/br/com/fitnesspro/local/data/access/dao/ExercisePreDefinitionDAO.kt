@@ -7,6 +7,8 @@ import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.predefinition.ExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 import br.com.fitnesspro.to.TOExercise
@@ -112,5 +114,41 @@ abstract class ExercisePreDefinitionDAO: IntegratedMaintenanceDAO<ExercisePreDef
 
     @Query("select * from exercise_pre_definition where lower(name) = lower(:name) and active = 1")
     abstract suspend fun findExercisePreDefinitionByName(name: String): ExercisePreDefinition?
+
+    @Query("select exists(select 1 from exercise_pre_definition where id = :id and active = 1)")
+    abstract suspend fun hasEntityWithId(id: String): Boolean
+
+    suspend fun getExportationData(pageInfos: ExportPageInfos, personId: String): List<ExercisePreDefinition> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select e.* ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from exercise_pre_definition e ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where e.personal_trainer_person_id = ? ")
+            add(" and e.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
+            add(" limit ? offset ? ")
+
+            params.add(personId)
+            params.add(pageInfos.pageSize)
+            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        return executeQueryExportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery
+    abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<ExercisePreDefinition>
 
 }

@@ -37,7 +37,11 @@ import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToExerciseDetailsScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToMembersWorkoutScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToPreDefinitionScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToPreDefinitionsScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToRegisterEvolutionScreen
+import br.com.fitnesspro.workout.ui.navigation.preDefinitionScreen
+import br.com.fitnesspro.workout.ui.navigation.preDefinitionsScreen
 import br.com.fitnesspro.workout.ui.navigation.registerEvolutionScreen
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -84,6 +88,7 @@ fun FitnessProNavHost(
             onNavigateToSchedule = navController::navigateToScheduleScreen,
             onNavigateToMembersWorkoutScreen = navController::navigateToMembersWorkoutScreen,
             onNavigateToCurrentWorkoutScreen = navController::navigateToCurrentWorkoutScreen,
+            onNavigateToPreDefinitionsScreen = navController::navigateToPreDefinitionsScreen,
             onNavigateToLogin = {
                 navController.navigateToLoginScreen(
                     navOptions = navOptions {
@@ -154,6 +159,15 @@ fun FitnessProNavHost(
         )
 
         registerEvolutionScreen(
+            onBackClick = navController::popBackStack
+        )
+
+        preDefinitionsScreen(
+            onBackClick = navController::popBackStack,
+            onNavigateToPreDefinition = navController::navigateToPreDefinitionScreen
+        )
+
+        preDefinitionScreen(
             onBackClick = navController::popBackStack
         )
     }

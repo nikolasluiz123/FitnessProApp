@@ -13,7 +13,7 @@ package br.com.fitnesspro.compose.components.bottomsheet.interfaces
  */
 interface IBottomSheetItem<T: IEnumOptionsBottomSheet> {
     val option: T
-    val iconResId: Int
+    val iconResId: Int?
     val labelResId: Int
-    val iconDescriptionResId: Int
+    val iconDescriptionResId: Int?
 }

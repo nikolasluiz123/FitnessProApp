@@ -258,7 +258,7 @@ class RegisterEvolutionViewModel @Inject constructor(
     private fun initializeVideoGalleryState(): VideoGalleryState {
         return VideoGalleryState(
             title = context.getString(R.string.register_evolution_screen_video_gallery_title),
-            isScrollEnabled = false,
+            isScrollEnabled = true,
             onViewModeChange = {
                 _uiState.value = _uiState.value.copy(
                     videoGalleryState = _uiState.value.videoGalleryState.copy(
@@ -496,7 +496,6 @@ class RegisterEvolutionViewModel @Inject constructor(
 
             if (validationResult.isEmpty()) {
                 onSuccess()
-                // TODO - Chamar um reload?
             } else {
                 _uiState.value.onToggleLoading()
                 showValidationMessages(validationResult)

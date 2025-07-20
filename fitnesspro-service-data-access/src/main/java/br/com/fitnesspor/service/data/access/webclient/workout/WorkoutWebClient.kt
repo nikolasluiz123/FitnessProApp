@@ -7,10 +7,13 @@ import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClien
 import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.mappers.getWorkoutDTO
 import br.com.fitnesspro.mappers.getWorkoutGroupDTO
+import br.com.fitnesspro.mappers.getWorkoutGroupPreDefinitionDTO
 import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.model.workout.WorkoutGroup
+import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupPreDefinitionDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
@@ -138,6 +141,40 @@ class WorkoutWebClient(
                     token = formatToken(token),
                     workoutId = workoutId
                 ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun saveWorkoutGroupPreDefinitionBatch(
+        token: String,
+        workoutGroupList: List<WorkoutGroupPreDefinition>,
+    ): ExportationServiceResponse {
+        return exportationServiceErrorHandlingBlock(
+            codeBlock = {
+                val listDTO = workoutGroupList.map(WorkoutGroupPreDefinition::getWorkoutGroupPreDefinitionDTO)
+
+                workoutService.saveWorkoutGroupPreDefinitionBatch(
+                    token = formatToken(token),
+                    workoutGroupDTOList = listDTO
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun importWorkoutGroupsPreDefinition(
+        token: String,
+        filter: WorkoutModuleImportFilter,
+        pageInfos: ImportPageInfos
+    ): ImportationServiceResponse<WorkoutGroupPreDefinitionDTO> {
+        return importationServiceErrorHandlingBlock(
+            codeBlock = {
+                val gson = GsonBuilder().defaultGSon()
+
+                workoutService.importWorkoutGroupPreDefinition(
+                    token = formatToken(token),
+                    filter = gson.toJson(filter),
+                    pageInfos = gson.toJson(pageInfos)
+                ).getResponseBody(WorkoutGroupPreDefinitionDTO::class.java)
             }
         )
     }

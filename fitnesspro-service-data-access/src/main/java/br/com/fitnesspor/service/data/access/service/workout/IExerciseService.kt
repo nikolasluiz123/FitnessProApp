@@ -9,13 +9,19 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_EXE
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_EXECUTION_VIDEO_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_IMPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_PREDEFINITION_EXPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_PREDEFINITION_IMPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_PREDEFINITION_VIDEO_EXPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_PREDEFINITION_VIDEO_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_VIDEO_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_VIDEO_IMPORT
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.ExercisePreDefinitionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.NewExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.VideoExercisePreDefinitionDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
@@ -98,4 +104,30 @@ interface IExerciseService {
         @Header("Authorization") token: String,
         @Body exerciseExecutionDTO: ExerciseExecutionDTO
     ): Response<PersistenceServiceResponse<ExerciseExecutionDTO>>
+
+    @POST("$EXERCISE$EXERCISE_PREDEFINITION_EXPORT")
+    suspend fun saveExercisePreDefinitionBatch(
+        @Header("Authorization") token: String,
+        @Body exerciseDTOs: List<ExercisePreDefinitionDTO>
+    ): Response<ExportationServiceResponse>
+
+    @POST("$EXERCISE$EXERCISE_PREDEFINITION_VIDEO_EXPORT")
+    suspend fun saveExercisePreDefinitionVideosBatch(
+        @Header("Authorization") token: String,
+        @Body videoDTOs: List<VideoExercisePreDefinitionDTO>
+    ): Response<ExportationServiceResponse>
+
+    @GET("$EXERCISE$EXERCISE_PREDEFINITION_IMPORT")
+    suspend fun importExercisePreDefinition(
+        @Header("Authorization") token: String,
+        @Query("filter") filter: String,
+        @Query("pageInfos") pageInfos: String
+    ): Response<ImportationServiceResponse<ExercisePreDefinitionDTO>>
+
+    @GET("$EXERCISE$EXERCISE_PREDEFINITION_VIDEO_IMPORT")
+    suspend fun importVideoExercisePreDefinition(
+        @Header("Authorization") token: String,
+        @Query("filter") filter: String,
+        @Query("pageInfos") pageInfos: String
+    ): Response<ImportationServiceResponse<VideoExercisePreDefinitionDTO>>
 }

@@ -61,7 +61,8 @@ fun HomeScreen(
     onNavigateToSchedule: () -> Unit,
     onNavigateToLogin: () -> Unit,
     onNavigateToMembersWorkoutScreen: () -> Unit,
-    onNavigateToCurrentWorkoutScreen: () -> Unit
+    onNavigateToCurrentWorkoutScreen: () -> Unit,
+    onNavigateToPreDefinitionsScreen: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -75,7 +76,8 @@ fun HomeScreen(
         onLogoutClick = viewModel::logout,
         onNavigateToLogin = onNavigateToLogin,
         onNavigateToMembersWorkoutScreen = onNavigateToMembersWorkoutScreen,
-        onNavigateToCurrentWorkoutScreen = onNavigateToCurrentWorkoutScreen
+        onNavigateToCurrentWorkoutScreen = onNavigateToCurrentWorkoutScreen,
+        onNavigateToPreDefinitionsScreen = onNavigateToPreDefinitionsScreen
     )
 }
 
@@ -88,7 +90,8 @@ fun HomeScreen(
     onLogoutClick: OnLogoutClick? = null,
     onNavigateToLogin: () -> Unit = { },
     onNavigateToMembersWorkoutScreen: () -> Unit = { },
-    onNavigateToCurrentWorkoutScreen: () -> Unit = { }
+    onNavigateToCurrentWorkoutScreen: () -> Unit = { },
+    onNavigateToPreDefinitionsScreen: () -> Unit = { }
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
@@ -230,7 +233,7 @@ fun HomeScreen(
                                     onNavigateToMembersWorkoutScreen()
                                 }
                                 EnumOptionsBottomSheetWorkout.MY_PREDEFINITIONS -> {
-
+                                    onNavigateToPreDefinitionsScreen()
                                 }
                             }
                         }

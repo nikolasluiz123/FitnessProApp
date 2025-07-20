@@ -6,18 +6,22 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseExecutionDAO
+import br.com.fitnesspro.local.data.access.dao.VideoExercisePreDefinitionDAO
 import br.com.fitnesspro.mappers.getVideo
 import br.com.fitnesspro.mappers.getVideoExercise
 import br.com.fitnesspro.mappers.getVideoExerciseExecution
+import br.com.fitnesspro.mappers.getVideoExercisePreDefinition
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.to.TOVideoExercise
 import br.com.fitnesspro.to.TOVideoExerciseExecution
+import br.com.fitnesspro.to.TOVideoExercisePreDefinition
 
 class VideoRepository(
     context: Context,
     private val videoDAO: VideoDAO,
     private val videoExerciseDAO: VideoExerciseDAO,
     private val videoExerciseExecutionDAO: VideoExerciseExecutionDAO,
+    private val videoExercisePreDefinitionDAO: VideoExercisePreDefinitionDAO,
     private val exerciseWebClient: ExerciseWebClient
 ): FitnessProRepository(context) {
 
@@ -79,12 +83,20 @@ class VideoRepository(
         return videoExerciseDAO.getListVideoFilePathsFromExecution(exerciseExecutionId)
     }
 
+    suspend fun getVideoExercisePreDefinition(exercisePreDefinitionId: String): List<String> {
+        return videoExerciseDAO.getListVideoFilePathsFromPreDefinition(exercisePreDefinitionId)
+    }
+
     suspend fun getCountVideosExercise(exerciseId: String): Int {
         return videoExerciseDAO.getCountVideosExercise(exerciseId)
     }
 
     suspend fun getCountVideosExecution(exerciseExecutionId: String): Int {
         return videoExerciseExecutionDAO.getCountVideosExecution(exerciseExecutionId)
+    }
+
+    suspend fun getCountVideosPreDefinition(exercisePreDefinitionId: String): Int {
+        return videoExercisePreDefinitionDAO.getCountVideosPreDefinition(exercisePreDefinitionId)
     }
 
     suspend fun deleteVideos(exerciseIds: List<String>) {
@@ -144,5 +156,34 @@ class VideoRepository(
             videoExecution = toVideoExerciseExecution.getVideoExerciseExecution(),
             video = toVideoExerciseExecution.toVideo!!.getVideo()
         )
+    }
+
+    suspend fun saveVideoExercisePreDefinitionLocally(toVideoExercisePreDefinitionList: List<TOVideoExercisePreDefinition>) {
+        val (inserts, updates) = toVideoExercisePreDefinitionList.partition { it.id == null }
+
+        if (inserts.isNotEmpty()) saveVideoExercisePreDefinitionLocally(inserts, isInsert = true)
+        if (updates.isNotEmpty()) saveVideoExercisePreDefinitionLocally(updates, isInsert = false)
+    }
+
+    private suspend fun saveVideoExercisePreDefinitionLocally(list: List<TOVideoExercisePreDefinition>, isInsert: Boolean) {
+        val videoPreDefinitionList = list.map {
+            val videoPreDefinition = it.getVideoExercisePreDefinition()
+            if (isInsert) it.id = videoPreDefinition.id
+            videoPreDefinition
+        }
+
+        val videoList = list.mapNotNull {
+            it.toVideo?.getVideo()?.also { video ->
+                if (isInsert) it.toVideo?.id = video.id
+            }
+        }
+
+        if (isInsert) {
+            videoDAO.insertBatch(videoList)
+            videoExercisePreDefinitionDAO.insertBatch(videoPreDefinitionList)
+        } else {
+            videoDAO.updateBatch(videoList)
+            videoExercisePreDefinitionDAO.updateBatch(videoPreDefinitionList)
+        }
     }
 }

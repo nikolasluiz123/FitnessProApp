@@ -10,6 +10,7 @@ import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseExecutionDAO
+import br.com.fitnesspro.local.data.access.dao.VideoExercisePreDefinitionDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupPreDefinitionDAO
@@ -17,18 +18,27 @@ import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
-import br.com.fitnesspro.workout.repository.WorkoutGroupPreDefinitionRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
+import br.com.fitnesspro.workout.repository.sync.exportation.ExerciseExecutionExportationRepository
 import br.com.fitnesspro.workout.repository.sync.exportation.ExerciseExportationRepository
+import br.com.fitnesspro.workout.repository.sync.exportation.ExercisePreDefinitionExportationRepository
+import br.com.fitnesspro.workout.repository.sync.exportation.VideoExerciseExecutionExportationRepository
 import br.com.fitnesspro.workout.repository.sync.exportation.VideoExerciseExportationRepository
+import br.com.fitnesspro.workout.repository.sync.exportation.VideoExercisePreDefinitionExportationRepository
 import br.com.fitnesspro.workout.repository.sync.exportation.VideoExportationRepository
 import br.com.fitnesspro.workout.repository.sync.exportation.WorkoutExportationRepository
 import br.com.fitnesspro.workout.repository.sync.exportation.WorkoutGroupExportationRepository
+import br.com.fitnesspro.workout.repository.sync.exportation.WorkoutGroupPreDefinitionExportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.ExerciseExecutionImportationRepository
 import br.com.fitnesspro.workout.repository.sync.importation.ExerciseImportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.ExercisePreDefinitionImportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.VideoExerciseExecutionImportationRepository
 import br.com.fitnesspro.workout.repository.sync.importation.VideoExerciseImportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.VideoExercisePreDefinitionImportationRepository
 import br.com.fitnesspro.workout.repository.sync.importation.VideoImportationRepository
 import br.com.fitnesspro.workout.repository.sync.importation.WorkoutGroupImportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.WorkoutGroupPreDefinitionImportationRepository
 import br.com.fitnesspro.workout.repository.sync.importation.WorkoutImportationRepository
 import dagger.Module
 import dagger.Provides
@@ -96,22 +106,15 @@ class SingletonWorkoutRepositoryModule {
     @Provides
     fun provideExercisePreDefinitionRepository(
         @ApplicationContext context: Context,
-        exercisePreDefinitionDAO: ExercisePreDefinitionDAO
+        exercisePreDefinitionDAO: ExercisePreDefinitionDAO,
+        workoutGroupPreDefinitionDAO: WorkoutGroupPreDefinitionDAO,
+        videoRepository: VideoRepository
     ): ExercisePreDefinitionRepository {
         return ExercisePreDefinitionRepository(
             context = context,
-            exercisePreDefinitionDAO = exercisePreDefinitionDAO
-        )
-    }
-
-    @Provides
-    fun provideWorkoutGroupPreDefinitionRepository(
-        @ApplicationContext context: Context,
-        workoutGroupPreDefinitionDAO: WorkoutGroupPreDefinitionDAO
-    ): WorkoutGroupPreDefinitionRepository {
-        return WorkoutGroupPreDefinitionRepository(
-            context = context,
-            workoutGroupPreDefinitionDAO = workoutGroupPreDefinitionDAO
+            exercisePreDefinitionDAO = exercisePreDefinitionDAO,
+            workoutGroupPreDefinitionDAO = workoutGroupPreDefinitionDAO,
+            videoRepository = videoRepository
         )
     }
 
@@ -121,6 +124,7 @@ class SingletonWorkoutRepositoryModule {
         videoDAO: VideoDAO,
         videoExerciseDAO: VideoExerciseDAO,
         videoExerciseExecutionDAO: VideoExerciseExecutionDAO,
+        videoExercisePreDefinitionDAO: VideoExercisePreDefinitionDAO,
         exerciseWebClient: ExerciseWebClient
     ): VideoRepository {
         return VideoRepository(
@@ -128,6 +132,7 @@ class SingletonWorkoutRepositoryModule {
             videoDAO = videoDAO,
             videoExerciseDAO = videoExerciseDAO,
             videoExerciseExecutionDAO = videoExerciseExecutionDAO,
+            videoExercisePreDefinitionDAO = videoExercisePreDefinitionDAO,
             exerciseWebClient = exerciseWebClient
         )
     }
@@ -294,6 +299,156 @@ class SingletonWorkoutRepositoryModule {
             exerciseExecutionDAO = exerciseExecutionDAO,
             videoRepository = videoRepository,
             exerciseWebClient = exerciseWebClient
+        )
+    }
+    
+    @Provides
+    fun provideExerciseExecutionImportationRepository(
+        @ApplicationContext context: Context,
+        exerciseExecutionDAO: ExerciseExecutionDAO,
+        exerciseWebClient: ExerciseWebClient,
+        personRepository: PersonRepository
+    ): ExerciseExecutionImportationRepository {
+        return ExerciseExecutionImportationRepository(
+            context = context,
+            exerciseExecutionDAO = exerciseExecutionDAO,
+            webClient = exerciseWebClient,
+            personRepository = personRepository
+        )
+    }
+    
+    @Provides
+    fun provideExercisePreDefinitionImportationRepository(
+        @ApplicationContext context: Context,
+         exercisePredefinitionDAO: ExercisePreDefinitionDAO,
+         webClient: ExerciseWebClient,
+         personRepository: PersonRepository
+    ): ExercisePreDefinitionImportationRepository {
+        return ExercisePreDefinitionImportationRepository(
+            context = context,
+            exercisePredefinitionDAO = exercisePredefinitionDAO,
+            webClient = webClient,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideVideoExerciseExecutionImportationRepository(
+        @ApplicationContext context: Context,
+        videoExerciseExecutionDAO: VideoExerciseExecutionDAO,
+        webClient: ExerciseWebClient,
+        personRepository: PersonRepository
+    ): VideoExerciseExecutionImportationRepository {
+        return VideoExerciseExecutionImportationRepository(
+            context = context,
+            videoExerciseExecutionDAO = videoExerciseExecutionDAO,
+            webClient = webClient,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideVideoExercisePreDefinitionImportationRepository(
+        @ApplicationContext context: Context,
+        videoExercisePreDefinitionDAO: VideoExercisePreDefinitionDAO,
+        webClient: ExerciseWebClient,
+        personRepository: PersonRepository
+    ): VideoExercisePreDefinitionImportationRepository {
+        return VideoExercisePreDefinitionImportationRepository(
+            context = context,
+            videoExercisePreDefinitionDAO = videoExercisePreDefinitionDAO,
+            webClient = webClient,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideWorkoutGroupPreDefinitionImportationRepository(
+        @ApplicationContext context: Context,
+        workoutGroupPreDefinitionDAO: WorkoutGroupPreDefinitionDAO,
+        webClient: WorkoutWebClient,
+        personRepository: PersonRepository
+    ): WorkoutGroupPreDefinitionImportationRepository {
+        return WorkoutGroupPreDefinitionImportationRepository(
+            context = context,
+            workoutGroupPreDefinitionDAO = workoutGroupPreDefinitionDAO,
+            webClient = webClient,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideExerciseExecutionExportationRepository(
+        @ApplicationContext context: Context,
+        exerciseExecutionDAO: ExerciseExecutionDAO,
+        exerciseWebClient: ExerciseWebClient,
+        personRepository: PersonRepository
+    ): ExerciseExecutionExportationRepository {
+        return ExerciseExecutionExportationRepository(
+            context = context,
+            exerciseExecutionDAO = exerciseExecutionDAO,
+            exerciseWebClient = exerciseWebClient,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideVideoExerciseExecutionExportationRepository(
+        @ApplicationContext context: Context,
+        videoExerciseExecutionDAO: VideoExerciseExecutionDAO,
+        exerciseWebClient: ExerciseWebClient,
+        personRepository: PersonRepository
+    ): VideoExerciseExecutionExportationRepository {
+        return VideoExerciseExecutionExportationRepository(
+            context = context,
+            videoExerciseExecutionDAO = videoExerciseExecutionDAO,
+            exerciseWebClient = exerciseWebClient,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideExercisePreDefinitionExportationRepository(
+        @ApplicationContext context: Context,
+        exercisePreDefinitionDAO: ExercisePreDefinitionDAO,
+        exerciseWebClient: ExerciseWebClient,
+        personRepository: PersonRepository
+    ): ExercisePreDefinitionExportationRepository {
+        return ExercisePreDefinitionExportationRepository(
+            context = context,
+            exercisePreDefinitionDAO = exercisePreDefinitionDAO,
+            exerciseWebClient = exerciseWebClient,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideVideoExercisePreDefinitionExportationRepository(
+        @ApplicationContext context: Context,
+        videoExercisePreDefinitionDAO: VideoExercisePreDefinitionDAO,
+        exerciseWebClient: ExerciseWebClient,
+        personRepository: PersonRepository
+    ): VideoExercisePreDefinitionExportationRepository {
+        return VideoExercisePreDefinitionExportationRepository(
+            context = context,
+            videoExercisePreDefinitionDAO = videoExercisePreDefinitionDAO,
+            exerciseWebClient = exerciseWebClient,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideWorkoutGroupPreDefinitionExportationRepository(
+        @ApplicationContext context: Context,
+        workoutGroupPreDefinitionDAO: WorkoutGroupPreDefinitionDAO,
+        workoutWebClient: WorkoutWebClient,
+        personRepository: PersonRepository
+    ): WorkoutGroupPreDefinitionExportationRepository {
+        return WorkoutGroupPreDefinitionExportationRepository(
+            context = context,
+            workoutGroupPreDefinitionDAO = workoutGroupPreDefinitionDAO,
+            workoutWebClient = workoutWebClient,
+            personRepository = personRepository
         )
     }
 }

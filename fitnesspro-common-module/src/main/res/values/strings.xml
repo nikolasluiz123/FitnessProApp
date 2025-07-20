@@ -125,4 +125,8 @@
     <string name="day_week_exercises_subtitle">%s até %s</string>
     <string name="day_week_exercises_delete_confirmation_message">Você tem certeza de que deseja excluir permanentemente o treino? Não será possível desfazer esta ação, sendo necessário montar um novo treino.</string>
     <string name="day_week_workout_title">Treino de %s</string>
+    <string name="label_exercise_bottom_sheet_new_pre_definition">Nova Predefinição de Exercício</string>
+    <string name="label_group_bottom_sheet_new_pre_definition">Nova Predefinição de Grupo Muscular</string>
+    <string name="label_new_pre_definition">Nova Predefinição</string>
+    <string name="label_edit_pre_definition">Predefinição</string>
 </resources>

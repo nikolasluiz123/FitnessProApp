@@ -8,25 +8,31 @@ import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClien
 import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.mappers.getExerciseDTO
 import br.com.fitnesspro.mappers.getExerciseExecutionDTO
+import br.com.fitnesspro.mappers.getExercisePreDefinitionDTO
 import br.com.fitnesspro.mappers.getNewVideoExerciseDTO
 import br.com.fitnesspro.mappers.getNewVideoExerciseExecutionDTO
 import br.com.fitnesspro.mappers.getVideoDTO
 import br.com.fitnesspro.mappers.getVideoExerciseDTO
 import br.com.fitnesspro.mappers.getVideoExerciseExecutionDTO
+import br.com.fitnesspro.mappers.getVideoExercisePreDefinitionDTO
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.model.workout.execution.VideoExerciseExecution
+import br.com.fitnesspro.model.workout.predefinition.ExercisePreDefinition
+import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.ExercisePreDefinitionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.NewExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.VideoExercisePreDefinitionDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
@@ -284,6 +290,74 @@ class ExerciseWebClient(
                     token = formatToken(token),
                     newVideoExecutionDTO = videoExecution.getNewVideoExerciseExecutionDTO(video)
                 ).getResponseBody(NewVideoExerciseExecutionDTO::class.java)
+            }
+        )
+    }
+
+    suspend fun saveExercisePreDefinitionBatch(
+        token: String,
+        exerciseList: List<ExercisePreDefinition>,
+    ): ExportationServiceResponse {
+        return exportationServiceErrorHandlingBlock(
+            codeBlock = {
+                val exerciseListDTO = exerciseList.map(ExercisePreDefinition::getExercisePreDefinitionDTO)
+
+                exerciseService.saveExercisePreDefinitionBatch(
+                    token = formatToken(token),
+                    exerciseDTOs = exerciseListDTO
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun importExercisePreDefinition(
+        token: String,
+        filter: WorkoutModuleImportFilter,
+        pageInfos: ImportPageInfos
+    ): ImportationServiceResponse<ExercisePreDefinitionDTO> {
+        return importationServiceErrorHandlingBlock(
+            codeBlock = {
+                val gson = GsonBuilder().defaultGSon()
+
+                exerciseService.importExercisePreDefinition(
+                    token = formatToken(token),
+                    filter = gson.toJson(filter),
+                    pageInfos = gson.toJson(pageInfos)
+                ).getResponseBody(ExercisePreDefinitionDTO::class.java)
+            }
+        )
+    }
+
+    suspend fun importVideoExercisePreDefinition(
+        token: String,
+        filter: WorkoutModuleImportFilter,
+        pageInfos: ImportPageInfos
+    ): ImportationServiceResponse<VideoExercisePreDefinitionDTO> {
+        return importationServiceErrorHandlingBlock(
+            codeBlock = {
+                val gson = GsonBuilder().defaultGSon()
+
+                exerciseService.importVideoExercisePreDefinition(
+                    token = formatToken(token),
+                    filter = gson.toJson(filter),
+                    pageInfos = gson.toJson(pageInfos)
+                ).getResponseBody(VideoExercisePreDefinitionDTO::class.java)
+            }
+        )
+    }
+
+    suspend fun saveExercisePreDefinitionVideosBatch(
+        token: String,
+        videosList: List<VideoExercisePreDefinition>
+    ): ExportationServiceResponse {
+        return exportationServiceErrorHandlingBlock(
+            codeBlock = {
+                val videosListDTO = videosList.map(VideoExercisePreDefinition::getVideoExercisePreDefinitionDTO)
+
+                exerciseService.saveExercisePreDefinitionVideosBatch(
+                    token = formatToken(token),
+                    videoDTOs = videosListDTO
+                ).getResponseBody()
             }
         )
     }

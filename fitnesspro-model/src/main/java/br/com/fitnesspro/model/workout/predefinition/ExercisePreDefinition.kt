@@ -36,6 +36,8 @@ data class ExercisePreDefinition(
     var repetitions: Int? = null,
     var sets: Int? = null,
     var rest: Long? = null,
+    @ColumnInfo(name = "exercise_order")
+    var exerciseOrder: Int? = null,
     @ColumnInfo(name = "personal_trainer_person_id", index = true)
     var personalTrainerPersonId: String? = null,
     @ColumnInfo(name = "workout_group_pre_definition_id", index = true)

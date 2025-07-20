@@ -31,7 +31,7 @@ import br.com.fitnesspro.core.theme.BottomSheetItemTextStyle
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T: IEnumOptionsBottomSheet> BottomSheet(
+fun <T : IEnumOptionsBottomSheet> BottomSheet(
     items: List<IBottomSheetItem<T>>,
     onDismissRequest: () -> Unit,
     onItemClickListener: (T) -> Unit,
@@ -47,25 +47,27 @@ fun <T: IEnumOptionsBottomSheet> BottomSheet(
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         LazyColumn {
-            items(items) {
+            items(items) { item ->
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = stringResource(id = it.labelResId),
+                            text = stringResource(id = item.labelResId),
                             style = BottomSheetItemTextStyle,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     },
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(id = it.iconResId),
-                            contentDescription = stringResource(id = it.iconDescriptionResId),
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
+                    leadingContent = item.iconResId?.let { iconResId ->
+                        {
+                            Icon(
+                                painter = painterResource(id = iconResId),
+                                contentDescription = item.iconDescriptionResId?.let { stringResource(id = it) },
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                     },
                     colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
                     modifier = Modifier.clickable {
-                        onItemClickListener(it.option)
+                        onItemClickListener(item.option)
                     }
                 )
             }

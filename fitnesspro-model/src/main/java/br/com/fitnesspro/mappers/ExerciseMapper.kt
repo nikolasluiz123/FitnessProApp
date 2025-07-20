@@ -8,6 +8,7 @@ import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.model.workout.predefinition.ExercisePreDefinition
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.ExercisePreDefinitionDTO
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOExerciseExecution
 import br.com.fitnesspro.to.TOExercisePreDefinition
@@ -141,5 +142,66 @@ fun ExerciseExecution.getExerciseExecutionDTO(): ExerciseExecutionDTO {
         weight = weight,
         date = date,
         active = active,
+    )
+}
+
+fun TOExercisePreDefinition.getExercisePreDefinition(): ExercisePreDefinition {
+    val model = ExercisePreDefinition(
+        name = name,
+        duration = duration,
+        repetitions = repetitions,
+        sets = sets,
+        rest = rest,
+        personalTrainerPersonId = personalTrainerPersonId,
+        workoutGroupPreDefinitionId = workoutGroupPreDefinitionId,
+        active = active,
+    )
+
+    id?.let { model.id = it }
+
+    return model
+}
+
+fun ExercisePreDefinition.getExercisePreDefinitionDTO(): ExercisePreDefinitionDTO {
+    return ExercisePreDefinitionDTO(
+        id = id,
+        name = name,
+        duration = duration,
+        repetitions = repetitions,
+        sets = sets,
+        rest = rest,
+        personalTrainerPersonId = personalTrainerPersonId,
+        workoutGroupPreDefinitionId = workoutGroupPreDefinitionId,
+        active = active,
+    )
+}
+
+fun ExerciseExecutionDTO.getExerciseExecution(): ExerciseExecution {
+    return ExerciseExecution(
+        id = id!!,
+        exerciseId = exerciseId,
+        repetitions = repetitions,
+        actualSet = set,
+        duration = duration,
+        rest = rest,
+        weight = weight,
+        date = date!!,
+        active = active,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
+    )
+}
+
+fun ExercisePreDefinitionDTO.getExercisePreDefinition(): ExercisePreDefinition {
+    return ExercisePreDefinition(
+        id = id!!,
+        name = name,
+        duration = duration,
+        repetitions = repetitions,
+        sets = sets,
+        rest = rest,
+        personalTrainerPersonId = personalTrainerPersonId,
+        workoutGroupPreDefinitionId = workoutGroupPreDefinitionId,
+        active = active,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
     )
 }

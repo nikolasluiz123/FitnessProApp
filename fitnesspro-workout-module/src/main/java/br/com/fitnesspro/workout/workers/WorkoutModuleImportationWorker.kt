@@ -27,6 +27,13 @@ class WorkoutModuleImportationWorker @AssistedInject constructor(
         entryPoint.getExerciseImportationRepository().import(serviceToken, lastUpdateDate)
         entryPoint.getVideoImportationRepository().import(serviceToken, lastUpdateDate)
         entryPoint.getVideoExerciseImportationRepository().import(serviceToken, lastUpdateDate)
+
+        entryPoint.getExerciseExecutionImportationRepository().import(serviceToken, lastUpdateDate)
+        entryPoint.getVideoExerciseExecutionImportationRepository().import(serviceToken, lastUpdateDate)
+
+        entryPoint.getWorkoutGroupPreDefinitionImportationRepository().import(serviceToken, lastUpdateDate)
+        entryPoint.getExercisePreDefinitionImportationRepository().import(serviceToken, lastUpdateDate)
+        entryPoint.getVideoExercisePreDefinitionImportationRepository().import(serviceToken, lastUpdateDate)
     }
 
     override fun getModule() = EnumSyncModule.WORKOUT

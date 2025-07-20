@@ -26,6 +26,13 @@ class WorkoutModuleExportationWorker @AssistedInject constructor(
         entryPoint.getExerciseExportationRepository().export(serviceToken)
         entryPoint.getVideoExportationRepository().export(serviceToken)
         entryPoint.getVideoExerciseExportationRepository().export(serviceToken)
+
+        entryPoint.getExerciseExecutionExportationRepository().export(serviceToken)
+        entryPoint.getVideoExerciseExecutionExportationRepository().export(serviceToken)
+
+        entryPoint.getExercisePreDefinitionExportationRepository().export(serviceToken)
+        entryPoint.getWorkoutGroupPreDefinitionExportationRepository().export(serviceToken)
+        entryPoint.getVideoExercisePreDefinitionExportationRepository().export(serviceToken)
     }
 
     override fun getModule() = EnumSyncModule.WORKOUT

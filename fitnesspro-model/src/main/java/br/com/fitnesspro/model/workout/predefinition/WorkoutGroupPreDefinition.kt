@@ -10,7 +10,7 @@ import br.com.fitnesspro.model.general.Person
 import java.util.UUID
 
 @Entity(
-    tableName = "workout_pre_definition",
+    tableName = "workout_group_pre_definition",
     foreignKeys = [
         ForeignKey(
             entity = Person::class,

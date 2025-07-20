@@ -9,11 +9,15 @@ import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
 import br.com.fitnesspro.workout.usecase.exercise.InactivateExerciseUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseExecutionUseCase
+import br.com.fitnesspro.workout.usecase.exercise.SaveExercisePreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseUseCase
+import br.com.fitnesspro.workout.usecase.exercise.SaveGroupPreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.SaveExerciseVideoUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.SaveVideoExecutionUseCase
+import br.com.fitnesspro.workout.usecase.exercise.video.SaveVideoPreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.gallery.SaveExerciseVideoFromGalleryUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.gallery.SaveVideoExecutionFromGalleryUseCase
+import br.com.fitnesspro.workout.usecase.exercise.video.gallery.SaveVideoExercisePreDefinitionFromGalleryUseCase
 import br.com.fitnesspro.workout.usecase.workout.EditWorkoutGroupUseCase
 import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutGroupUseCase
 import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutUseCase
@@ -150,5 +154,54 @@ class SingletonWorkoutUseCaseModule {
             videoRepository = videoRepository
         )
     }
+
+    @Provides
+    fun provideSaveExercisePreDefinitionUseCase(
+        @ApplicationContext context: Context,
+        exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
+        saveVideoPreDefinitionUseCase: SaveVideoPreDefinitionUseCase
+    ): SaveExercisePreDefinitionUseCase {
+        return SaveExercisePreDefinitionUseCase(
+            context = context,
+            exercisePreDefinitionRepository = exercisePreDefinitionRepository,
+            saveVideoPreDefinitionUseCase = saveVideoPreDefinitionUseCase
+        )
+    }
+
+    @Provides
+    fun provideSaveVideoPreDefinitionUseCase(
+        @ApplicationContext context: Context,
+        videoRepository: VideoRepository
+    ): SaveVideoPreDefinitionUseCase {
+        return SaveVideoPreDefinitionUseCase(
+            context = context,
+            videoRepository = videoRepository
+        )
+    }
+
+    @Provides
+    fun provideSaveVideoPreDefinitionFromGalleryUseCase(
+        @ApplicationContext context: Context,
+        saveVideoPreDefinitionUseCase: SaveVideoPreDefinitionUseCase
+    ): SaveVideoExercisePreDefinitionFromGalleryUseCase {
+        return SaveVideoExercisePreDefinitionFromGalleryUseCase(
+            context = context,
+            saveVideoPreDefinitionUseCase = saveVideoPreDefinitionUseCase
+        )
+    }
+
+    @Provides
+    fun provideSaveGroupPreDefinitionUseCase(
+        @ApplicationContext context: Context,
+        exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
+        saveExercisePreDefinitionUseCase: SaveExercisePreDefinitionUseCase
+    ): SaveGroupPreDefinitionUseCase {
+        return SaveGroupPreDefinitionUseCase(
+            context = context,
+            exercisePreDefinitionRepository = exercisePreDefinitionRepository,
+            saveExercisePreDefinitionUseCase = saveExercisePreDefinitionUseCase
+        )
+    }
+
 
 }

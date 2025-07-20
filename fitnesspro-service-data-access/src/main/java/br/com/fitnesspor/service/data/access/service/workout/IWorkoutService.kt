@@ -6,10 +6,13 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROU
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP_INACTIVATE
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP_PREDEFINITION_EXPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_GROUP_PREDEFINITION_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.WORKOUT_INACTIVATE
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupPreDefinitionDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
@@ -74,4 +77,17 @@ interface IWorkoutService {
         @Header("Authorization") token: String,
         @Path("workoutId") workoutId: String
     ): Response<FitnessProServiceResponse>
+
+    @POST("$WORKOUT$WORKOUT_GROUP_PREDEFINITION_EXPORT")
+    suspend fun saveWorkoutGroupPreDefinitionBatch(
+        @Header("Authorization") token: String,
+        @Body workoutGroupDTOList: List<WorkoutGroupPreDefinitionDTO>
+    ): Response<ExportationServiceResponse>
+
+    @GET("$WORKOUT$WORKOUT_GROUP_PREDEFINITION_IMPORT")
+    suspend fun importWorkoutGroupPreDefinition(
+        @Header("Authorization") token: String,
+        @Query("filter") filter: String,
+        @Query("pageInfos") pageInfos: String
+    ): Response<ImportationServiceResponse<WorkoutGroupPreDefinitionDTO>>
 }

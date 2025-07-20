@@ -12,5 +12,6 @@ data class PagedDialogListState<T: ITupleListItem>(
     val onShow: () -> Unit = { },
     val onHide: () -> Unit = { },
     val onDataListItemClick: (T) -> Unit = { },
-    val onSimpleFilterChange: (String) -> Unit = { }
+    val onSimpleFilterChange: (String) -> Unit = { },
+    val showTrailingIcon: Boolean = true,
 )

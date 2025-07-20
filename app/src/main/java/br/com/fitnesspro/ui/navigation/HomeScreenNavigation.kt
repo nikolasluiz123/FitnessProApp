@@ -16,7 +16,8 @@ fun NavGraphBuilder.homeScreen(
     onNavigateToSchedule: () -> Unit,
     onNavigateToLogin: () -> Unit,
     onNavigateToMembersWorkoutScreen: () -> Unit,
-    onNavigateToCurrentWorkoutScreen: () -> Unit
+    onNavigateToCurrentWorkoutScreen: () -> Unit,
+    onNavigateToPreDefinitionsScreen: () -> Unit
 ) {
     composable(route = homeScreenRoute) {
         val loginViewModel = hiltViewModel<HomeViewModel>()
@@ -27,7 +28,8 @@ fun NavGraphBuilder.homeScreen(
             onNavigateToSchedule = onNavigateToSchedule,
             onNavigateToLogin = onNavigateToLogin,
             onNavigateToMembersWorkoutScreen = onNavigateToMembersWorkoutScreen,
-            onNavigateToCurrentWorkoutScreen = onNavigateToCurrentWorkoutScreen
+            onNavigateToCurrentWorkoutScreen = onNavigateToCurrentWorkoutScreen,
+            onNavigateToPreDefinitionsScreen = onNavigateToPreDefinitionsScreen
         )
     }
 }
