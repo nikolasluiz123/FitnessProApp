@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -132,6 +133,7 @@ fun PreDefinitionScreen(
         },
         bottomBar = {
             FitnessProBottomAppBar(
+                modifier = Modifier.imePadding(),
                 actions = {
                     IconButtonDelete(
                         onClick = {
@@ -164,18 +166,19 @@ fun PreDefinitionScreen(
     ) { paddingValues ->
         Column(
             Modifier
-                .fillMaxSize()
                 .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)
+                .fillMaxSize()
         ) {
             FitnessProLinearProgressIndicator(show = state.showLoading)
             FitnessProMessageDialog(state.messageDialogState)
 
             ConstraintLayout(
                 Modifier
-                    .consumeWindowInsets(paddingValues)
                     .padding(horizontal = 8.dp)
                     .fillMaxSize()
                     .verticalScroll(scrollState)
+                    .imePadding()
             ) {
                 val (groupRef, exerciseRef, setsRef, repsRef, restRef, unitRestRef,
                     durationRef, unitDurationRef, exerciseOrderRef, videoGalleryRef) = createRefs()
