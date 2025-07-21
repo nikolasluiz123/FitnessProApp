@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.injection
 
 import android.content.Context
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
@@ -159,12 +160,14 @@ class SingletonWorkoutUseCaseModule {
     fun provideSaveExercisePreDefinitionUseCase(
         @ApplicationContext context: Context,
         exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
-        saveVideoPreDefinitionUseCase: SaveVideoPreDefinitionUseCase
+        saveVideoPreDefinitionUseCase: SaveVideoPreDefinitionUseCase,
+        personRepository: PersonRepository
     ): SaveExercisePreDefinitionUseCase {
         return SaveExercisePreDefinitionUseCase(
             context = context,
             exercisePreDefinitionRepository = exercisePreDefinitionRepository,
-            saveVideoPreDefinitionUseCase = saveVideoPreDefinitionUseCase
+            saveVideoPreDefinitionUseCase = saveVideoPreDefinitionUseCase,
+            personRepository = personRepository
         )
     }
 

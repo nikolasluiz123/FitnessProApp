@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.usecase.exercise
 
 import android.content.Context
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.core.extensions.toMillis
 import br.com.fitnesspro.core.utils.FileUtils
@@ -20,6 +21,7 @@ import java.time.ZoneId
 class SaveExercisePreDefinitionUseCase(
     private val context: Context,
     private val exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
+    private val personRepository: PersonRepository,
     private val saveVideoPreDefinitionUseCase: SaveVideoPreDefinitionUseCase
 ) {
     suspend operator fun invoke(
@@ -50,8 +52,10 @@ class SaveExercisePreDefinitionUseCase(
             )
         } else {
             val toVideos = getListTOVideoExecutionFromFiles(videoFiles)
-
             validateAllVideos(videoFiles, toVideos)
+
+            toExercisePreDefinition.personalTrainerPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
+
             exercisePreDefinitionRepository.saveExercisePreDefinitionLocally(toExercisePreDefinition, toVideos)
         }
     }
