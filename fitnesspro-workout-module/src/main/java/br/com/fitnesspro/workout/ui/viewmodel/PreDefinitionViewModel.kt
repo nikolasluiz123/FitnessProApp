@@ -17,13 +17,16 @@ import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryStat
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
+import br.com.fitnesspro.core.extensions.millisTo
 import br.com.fitnesspro.core.extensions.openVideoPlayer
 import br.com.fitnesspro.core.extensions.toIntOrNull
+import br.com.fitnesspro.core.extensions.toStringOrEmpty
 import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.core.utils.VideoUtils
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.ui.navigation.ExerciseScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.PreDefinitionScreenArgs
@@ -49,6 +52,7 @@ class PreDefinitionViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val globalEvents: GlobalEvents,
     private val videoRepository: VideoRepository,
+    private val exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
     private val saveGroupPreDefinitionUseCase: SaveGroupPreDefinitionUseCase,
     private val saveExercisePreDefinitionUseCase: SaveExercisePreDefinitionUseCase,
     private val saveVideoExercisePreDefinitionFromGalleryUseCase: SaveVideoExercisePreDefinitionFromGalleryUseCase,
@@ -62,7 +66,10 @@ class PreDefinitionViewModel @Inject constructor(
     val jsonArgs: String? = savedStateHandle[preDefinitionScreenArguments]
 
     init {
-        initialLoadUIState()
+        val args = jsonArgs?.fromJsonNavParamToArgs(PreDefinitionScreenArgs::class.java)!!
+
+        initialLoadUIState(args)
+        args.exercisePreDefinitionId?.let(::loadStateEdition)
     }
 
     override fun getErrorMessageFrom(throwable: Throwable): String {
@@ -77,7 +84,7 @@ class PreDefinitionViewModel @Inject constructor(
         return globalEvents
     }
 
-    private fun initialLoadUIState() {
+    private fun initialLoadUIState(args1: PreDefinitionScreenArgs) {
         val args = jsonArgs?.fromJsonNavParamToArgs(PreDefinitionScreenArgs::class.java)!!
 
         _uiState.value = _uiState.value.copy(
@@ -94,6 +101,52 @@ class PreDefinitionViewModel @Inject constructor(
             videoGalleryState = initializeVideoGalleryState(),
             showGroupField = args.grouped
         )
+    }
+
+    private fun loadStateEdition(exercisePreDefinitionId: String) {
+        launch {
+            val to = exercisePreDefinitionRepository.findById(exercisePreDefinitionId)!!
+            val convertedRest = getConvertedRestFrom(to.unitRest, to.rest)
+            val convertedDuration = getConvertedDurationFrom(to.unitDuration, to.duration)
+
+            _uiState.value = _uiState.value.copy(
+                title = getTitle(to.id),
+                subtitle = to.name,
+                exercise = _uiState.value.exercise.copy(
+                    value = to.name!!
+                ),
+                sets = _uiState.value.sets.copy(
+                    value = to.sets.toStringOrEmpty()
+                ),
+                reps = _uiState.value.reps.copy(
+                    value = to.repetitions.toStringOrEmpty()
+                ),
+                rest = _uiState.value.rest.copy(
+                    value = convertedRest
+                ),
+                unitRest = _uiState.value.unitRest.copy(
+                    value = getUnitRestFrom(to.rest)
+                ),
+                duration = _uiState.value.duration.copy(
+                    value = convertedDuration
+                ),
+                unitDuration = _uiState.value.unitDuration.copy(
+                    value = getUnitDurationFrom(to.duration)
+                ),
+                toExercisePredefinition = to,
+                inactivateEnabled = true
+            )
+
+            loadVideos(to.id)
+        }
+    }
+
+    private fun getConvertedDurationFrom(unitDuration: ChronoUnit?, duration: Long?): String {
+        return unitDuration?.let { duration?.millisTo(it) }.toStringOrEmpty()
+    }
+
+    private fun getConvertedRestFrom(unitRest: ChronoUnit?, rest: Long?): String {
+        return unitRest?.let { rest?.millisTo(it) }.toStringOrEmpty()
     }
 
     private fun getTitle(exercisePreDefinitionId: String?): String {
@@ -164,7 +217,7 @@ class PreDefinitionViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         unitRest = _uiState.value.unitRest.copy(
-                            value = getUnitRestFrom(item),
+                            value = getUnitRestFrom(item.rest),
                             errorMessage = ""
                         ),
                         duration = _uiState.value.duration.copy(
@@ -172,7 +225,7 @@ class PreDefinitionViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         unitDuration = _uiState.value.unitDuration.copy(
-                            value = getUnitDurationFrom(item),
+                            value = getUnitDurationFrom(item.duration),
                             errorMessage = ""
                         )
                     )
@@ -372,12 +425,12 @@ class PreDefinitionViewModel @Inject constructor(
         }
     }
 
-    private fun getUnitDurationFrom(toExercise: TOExercise): String {
-        return toExercise.duration?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
+    private fun getUnitDurationFrom(duration: Long?): String {
+        return duration?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
     }
 
-    private fun getUnitRestFrom(toExercise: TOExercise): String {
-        return toExercise.rest?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
+    private fun getUnitRestFrom(rest: Long?): String {
+        return rest?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
     }
 
     private fun getLabelFromChronoUnit(unit: ChronoUnit): String {
@@ -505,6 +558,7 @@ class PreDefinitionViewModel @Inject constructor(
 
             if (validationResult.isEmpty()) {
                 onSuccess()
+                loadStateEdition(_uiState.value.toExercisePredefinition.id!!)
             } else {
                 _uiState.value.onToggleLoading()
                 showValidationMessages(validationResult)

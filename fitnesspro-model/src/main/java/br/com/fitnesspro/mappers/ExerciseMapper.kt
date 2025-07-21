@@ -46,6 +46,8 @@ fun ExercisePreDefinition.getTOExercisePreDefinition(): TOExercisePreDefinition 
         personalTrainerPersonId = personalTrainerPersonId,
         workoutGroupPreDefinitionId = workoutGroupPreDefinitionId,
         active = active,
+        unitRest = rest?.bestChronoUnit(),
+        unitDuration = duration?.bestChronoUnit()
     )
 }
 

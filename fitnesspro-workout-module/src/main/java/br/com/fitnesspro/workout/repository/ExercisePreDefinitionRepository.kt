@@ -53,12 +53,12 @@ class ExercisePreDefinitionRepository(
 
         if (toExercisePreDefinition.id == null) {
             exercisePreDefinitionDAO.insert(exercisePreDefinition)
+
+            toExercisePreDefinition.id = exercisePreDefinition.id
+            toVideos.forEach { it.exercisePreDefinitionId = exercisePreDefinition.id }
         } else {
             exercisePreDefinitionDAO.update(exercisePreDefinition)
         }
-
-        toExercisePreDefinition.id = exercisePreDefinition.id
-        toVideos.forEach { it.exercisePreDefinitionId = exercisePreDefinition.id }
 
         videoRepository.saveVideoExercisePreDefinitionLocally(toVideos)
     }
@@ -72,5 +72,9 @@ class ExercisePreDefinitionRepository(
         } else {
             workoutGroupPreDefinitionDAO.update(workoutGroupPreDefinition)
         }
+    }
+
+    suspend fun findById(id: String): TOExercisePreDefinition? {
+        return exercisePreDefinitionDAO.findExercisePreDefinitionById(id)?.getTOExercisePreDefinition()
     }
 }

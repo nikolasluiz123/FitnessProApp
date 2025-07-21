@@ -115,6 +115,9 @@ abstract class ExercisePreDefinitionDAO: IntegratedMaintenanceDAO<ExercisePreDef
     @Query("select * from exercise_pre_definition where lower(name) = lower(:name) and active = 1")
     abstract suspend fun findExercisePreDefinitionByName(name: String): ExercisePreDefinition?
 
+    @Query("select * from exercise_pre_definition where id = :id and active = 1")
+    abstract suspend fun findExercisePreDefinitionById(id: String): ExercisePreDefinition?
+
     @Query("select exists(select 1 from exercise_pre_definition where id = :id and active = 1)")
     abstract suspend fun hasEntityWithId(id: String): Boolean
 
