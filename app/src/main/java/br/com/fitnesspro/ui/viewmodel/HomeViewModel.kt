@@ -9,7 +9,9 @@ import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
+import br.com.fitnesspro.core.callback.showInformationDialog
 import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.fitnesspro.local.data.access.backup.DatabaseBackupExporter
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.ui.state.HomeUIState
@@ -122,6 +124,17 @@ class HomeViewModel @Inject constructor(
 
     private fun getSubtitle(toPerson: TOPerson): String {
         return toPerson.name!!
+    }
+
+    fun onExecuteBackup(onSuccess: () -> Unit) {
+        launch {
+            val backupPath = DatabaseBackupExporter(context).export()
+            onSuccess()
+
+            _uiState.value.messageDialogState.onShowDialog?.showInformationDialog(
+                message = context.getString(R.string.home_screen_dialog_backup_message, backupPath)
+            )
+        }
     }
 
 }

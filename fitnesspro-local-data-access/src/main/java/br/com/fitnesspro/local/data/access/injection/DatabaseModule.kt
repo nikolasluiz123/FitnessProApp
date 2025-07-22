@@ -2,6 +2,7 @@ package br.com.fitnesspro.local.data.access.injection
 
 import android.content.Context
 import androidx.room.Room
+import br.com.fitnesspro.local.data.access.backup.DatabaseBackupExporter.Companion.FITNESS_PRO_DB_FILE
 import br.com.fitnesspro.local.data.access.database.AppDatabase
 import dagger.Module
 import dagger.Provides
@@ -23,7 +24,7 @@ class DatabaseModule {
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room
-            .databaseBuilder(context, AppDatabase::class.java, "fitnesspro.db")
+            .databaseBuilder(context, AppDatabase::class.java, FITNESS_PRO_DB_FILE)
             .fallbackToDestructiveMigration(true) // TODO - Remover quando estiver em 'Producao'
             .build()
     }

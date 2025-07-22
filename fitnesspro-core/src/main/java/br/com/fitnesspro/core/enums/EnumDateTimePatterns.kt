@@ -49,4 +49,6 @@ enum class EnumDateTimePatterns(val pattern: String) {
     DATE_TIME_FILE_NAME("dd_MM_yyyy_HHmmss"),
 
     MONTH_YEAR("MMMM 'de' yyyy"),
+
+    BACKUP_DB_FILE_NAME("dd_MM_yyyy_HH_mm_ss_SSS"),
 }

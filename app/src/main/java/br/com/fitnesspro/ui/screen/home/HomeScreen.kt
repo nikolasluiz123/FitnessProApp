@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -39,6 +40,7 @@ import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.ui.bottomsheet.workout.BottomSheetWorkout
 import br.com.fitnesspro.ui.bottomsheet.workout.EnumOptionsBottomSheetWorkout
+import br.com.fitnesspro.ui.screen.home.callbacks.OnExecuteBackup
 import br.com.fitnesspro.ui.screen.home.callbacks.OnLogoutClick
 import br.com.fitnesspro.ui.screen.home.callbacks.OnNavigateToAccountInformation
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_ACCOUNT_BUTTON
@@ -77,7 +79,8 @@ fun HomeScreen(
         onNavigateToLogin = onNavigateToLogin,
         onNavigateToMembersWorkoutScreen = onNavigateToMembersWorkoutScreen,
         onNavigateToCurrentWorkoutScreen = onNavigateToCurrentWorkoutScreen,
-        onNavigateToPreDefinitionsScreen = onNavigateToPreDefinitionsScreen
+        onNavigateToPreDefinitionsScreen = onNavigateToPreDefinitionsScreen,
+        onExecuteBackup = viewModel::onExecuteBackup
     )
 }
 
@@ -91,7 +94,8 @@ fun HomeScreen(
     onNavigateToLogin: () -> Unit = { },
     onNavigateToMembersWorkoutScreen: () -> Unit = { },
     onNavigateToCurrentWorkoutScreen: () -> Unit = { },
-    onNavigateToPreDefinitionsScreen: () -> Unit = { }
+    onNavigateToPreDefinitionsScreen: () -> Unit = { },
+    onExecuteBackup: OnExecuteBackup? = null
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
@@ -118,6 +122,25 @@ fun HomeScreen(
                         }
                     )
                 },
+                menuItems = {
+                    if (BuildConfig.DEBUG) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = stringResource(R.string.home_screen_menu_item_backup),
+                                    style = LabelTextStyle
+                                )
+                            },
+                            onClick = {
+                                state.onToggleLoading()
+                                onExecuteBackup?.onExecute {
+                                    state.onToggleLoading()
+                                }
+                            }
+                        )
+                    }
+                },
+                showMenu = BuildConfig.DEBUG
             )
         }
     ) { padding ->

@@ -21,4 +21,6 @@
     <string name="label_predefinitions_bottom_sheet_nutrition">Minhas Predefinições</string>
     <string name="home_screen_dialog_logout_message">Deseja realmente sair da aplicação?</string>
     <string name="splash_screen_ic_launcher_description">Ícone Fitness Pro</string>
+    <string name="home_screen_menu_item_backup">Executar Backup do Banco</string>
+    <string name="home_screen_dialog_backup_message">O backup do banco de dados foi executado com sucesso. Para acessá-lo você precisará entrar na pasta %s no Android.</string>
 </resources>

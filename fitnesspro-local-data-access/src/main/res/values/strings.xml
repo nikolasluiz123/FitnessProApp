@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="database_backup_exporter_file_not_found_message">Arquivo do banco de dados não encontrado: %1$s</string>
+</resources>
