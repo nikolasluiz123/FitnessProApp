@@ -129,6 +129,7 @@ abstract class ExercisePreDefinitionDAO: IntegratedMaintenanceDAO<ExercisePreDef
 
         val where = StringJoiner(QR_NL).apply {
             add(" where exercisePreDef.personal_trainer_person_id = ? ")
+            add(" and exercisePreDef.workout_group_pre_definition_id is null ")
             add(" and exercisePreDef.active = 1 ")
 
             queryParams.add(authenticatedPersonId)
