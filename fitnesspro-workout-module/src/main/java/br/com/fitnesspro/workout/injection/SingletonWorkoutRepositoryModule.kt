@@ -2,7 +2,6 @@ package br.com.fitnesspro.workout.injection
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
-import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
 import br.com.fitnesspor.service.data.access.webclient.workout.WorkoutWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
