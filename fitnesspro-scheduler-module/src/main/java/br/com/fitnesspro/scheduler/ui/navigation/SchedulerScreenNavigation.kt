@@ -8,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
+import br.com.fitnesspro.common.ui.screen.report.callback.OnNavigateToReports
 import br.com.fitnesspro.scheduler.ui.screen.details.callbacks.OnNavigateToCompromise
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.SchedulerScreen
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnDayClick
@@ -21,7 +22,8 @@ fun NavGraphBuilder.schedulerScreen(
     onDayClick: OnDayClick,
     onNavigateToCompromise: OnNavigateToCompromise,
     onNavigateToConfig: () -> Unit,
-    onNavigateToChatHistory: () -> Unit
+    onNavigateToChatHistory: () -> Unit,
+    onNavigateToReports: OnNavigateToReports
 ) {
     composable(
         route = schedulerScreenRoute,
@@ -35,7 +37,8 @@ fun NavGraphBuilder.schedulerScreen(
             onDayClick = onDayClick,
             onNavigateToCompromise = onNavigateToCompromise,
             onNavigateToConfig = onNavigateToConfig,
-            onNavigateToChatHistory = onNavigateToChatHistory
+            onNavigateToChatHistory = onNavigateToChatHistory,
+            onNavigateToReports = onNavigateToReports
         )
     }
 }

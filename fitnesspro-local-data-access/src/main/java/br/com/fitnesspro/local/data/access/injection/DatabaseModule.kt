@@ -109,4 +109,13 @@ class DatabaseModule {
     @Singleton
     fun provideVideoExercisePreDefinitionDao(appDatabase: AppDatabase) = appDatabase.videoExercisePreDefinitionDAO()
 
+    @Provides
+    @Singleton
+    fun provideReportDao(appDatabase: AppDatabase) = appDatabase.reportDAO()
+
+    @Provides
+    @Singleton
+    fun provideSchedulerReportDao(appDatabase: AppDatabase) = appDatabase.schedulerReportDAO()
+
+
 }

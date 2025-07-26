@@ -7,7 +7,9 @@ import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
+import br.com.fitnesspro.scheduler.repository.SchedulerReportRepository
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
+import br.com.fitnesspro.scheduler.usecase.report.GenerateSchedulerReportUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.CancelSchedulerUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.ConfirmationSchedulerUseCase
 import br.com.fitnesspro.scheduler.usecase.scheduler.SaveCompromiseSuggestionUseCase
@@ -129,6 +131,19 @@ class SingletonSchedulerUseCaseModule {
     ): SendChatMessageUseCase {
         return SendChatMessageUseCase(
             firestoreChatRepository = firestoreChatRepository,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideGenerateSchedulerReportUseCase(
+        @ApplicationContext context: Context,
+        schedulerReportRepository: SchedulerReportRepository,
+        personRepository: PersonRepository
+    ): GenerateSchedulerReportUseCase {
+        return GenerateSchedulerReportUseCase(
+            context = context,
+            schedulerReportRepository = schedulerReportRepository,
             personRepository = personRepository
         )
     }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -13,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -20,16 +22,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import br.com.fitnesspro.common.ui.navigation.GeneratedReportsScreenArgs
+import br.com.fitnesspro.common.ui.screen.report.callback.OnNavigateToReports
+import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FitnessProFloatingActionButton
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonConfig
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonMessage
+import br.com.fitnesspro.compose.components.buttons.icons.IconButtonNewReport
+import br.com.fitnesspro.compose.components.buttons.icons.IconButtonViewReports
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
+import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.details.callbacks.OnNavigateToCompromise
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnDayClick
+import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnGenerateSchedulerReportClick
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.components.DaysGrid
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.components.SchedulerHeader
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreenTags.SCHEDULER_SCREEN_BUTTON_CONFIG
@@ -46,7 +55,8 @@ fun SchedulerScreen(
     onDayClick: OnDayClick,
     onNavigateToCompromise: OnNavigateToCompromise,
     onNavigateToConfig: () -> Unit,
-    onNavigateToChatHistory: () -> Unit
+    onNavigateToChatHistory: () -> Unit,
+    onNavigateToReports: OnNavigateToReports
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -57,7 +67,10 @@ fun SchedulerScreen(
         onNavigateToCompromise = onNavigateToCompromise,
         onNavigateToConfig = onNavigateToConfig,
         onUpdateSchedules = viewModel::updateSchedules,
-        onNavigateToChatHistory = onNavigateToChatHistory
+        onNavigateToChatHistory = onNavigateToChatHistory,
+        onNavigateToReports = onNavigateToReports,
+        onGenerateReportClick = viewModel::onGenerateReport,
+        onShowReportDialog = viewModel::onShowReportDialog
     )
 }
 
@@ -70,8 +83,13 @@ fun SchedulerScreen(
     onNavigateToCompromise: OnNavigateToCompromise? = null,
     onNavigateToConfig: () -> Unit = { },
     onUpdateSchedules: () -> Unit = { },
-    onNavigateToChatHistory: () -> Unit  = {}
+    onNavigateToChatHistory: () -> Unit  = {},
+    onNavigateToReports: OnNavigateToReports? = null,
+    onGenerateReportClick: OnGenerateSchedulerReportClick? = null,
+    onShowReportDialog: () -> Unit = { }
 ) {
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
@@ -93,27 +111,51 @@ fun SchedulerScreen(
                 }
             )
         },
-        floatingActionButton = {
-            if (state.isVisibleFabRecurrentScheduler) {
-                FitnessProFloatingActionButton(
-                    modifier = Modifier.testTag(SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB.name),
-                    content = {
-                        Icon(
-                            painter = painterResource(br.com.fitnesspro.core.R.drawable.ic_edit_calendar_24dp),
-                            contentDescription = stringResource(R.string.schedule_screen_fab_recurrent_description)
-                        )
-                    },
-                    onClick = {
-                        Firebase.analytics.logButtonClick(SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB)
+        bottomBar = {
+            FitnessProBottomAppBar(
+                floatingActionButton = {
+                    if (state.isVisibleFabRecurrentScheduler) {
+                        FitnessProFloatingActionButton(
+                            modifier = Modifier.testTag(SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB.name),
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            content = {
+                                Icon(
+                                    painter = painterResource(br.com.fitnesspro.core.R.drawable.ic_edit_calendar_24dp),
+                                    contentDescription = stringResource(R.string.schedule_screen_fab_recurrent_description),
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            },
+                            onClick = {
+                                Firebase.analytics.logButtonClick(SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB)
 
-                        onNavigateToCompromise?.onExecute(
-                            args = br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs(
-                                recurrent = true
-                            )
+                                onNavigateToCompromise?.onExecute(
+                                    args = br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs(
+                                        recurrent = true
+                                    )
+                                )
+                            }
                         )
                     }
-                )
-            }
+                },
+                actions = {
+                    IconButtonViewReports(
+                        iconModifier = Modifier.size(32.dp),
+                        onClick = {
+                            onNavigateToReports?.onExecute(
+                                args = GeneratedReportsScreenArgs(
+                                    subtitle = context.getString(R.string.scheduler_reports_subtitle),
+                                    reportContext = EnumReportContext.SCHEDULERS_REPORT
+                                )
+                            )
+                        }
+                    )
+
+                    IconButtonNewReport(
+                        iconModifier = Modifier.size(32.dp),
+                        onClick = onShowReportDialog
+                    )
+                }
+            )
         },
         contentWindowInsets = WindowInsets(0.dp)
     ) { padding ->
@@ -130,6 +172,11 @@ fun SchedulerScreen(
             val (headerRef, daysGridRef) = createRefs()
 
             FitnessProMessageDialog(state = state.messageDialogState)
+
+            NewSchedulerReportDialog(
+                state = state.newSchedulerReportDialogUIState,
+                onGenerateClick = onGenerateReportClick
+            )
 
             SchedulerHeader(
                 selectedYearMonth = state.selectedYearMonth,
@@ -175,11 +222,35 @@ fun ScheduleScreenPreviewDark() {
 
 @Preview(device = "id:small_phone")
 @Composable
+fun ScheduleScreenPersonalPreviewDark() {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
+            SchedulerScreen(
+                state = personalSchedulerScreenState
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
 fun ScheduleScreenPreviewLight() {
     FitnessProTheme {
         Surface {
             SchedulerScreen(
                 state = defaultSchedulerScreenState
+            )
+        }
+    }
+}
+
+@Preview(device = "id:small_phone")
+@Composable
+fun ScheduleScreenPersonalPreviewLight() {
+    FitnessProTheme {
+        Surface {
+            SchedulerScreen(
+                state = personalSchedulerScreenState
             )
         }
     }

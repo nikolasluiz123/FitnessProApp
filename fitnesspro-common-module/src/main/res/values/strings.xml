@@ -129,4 +129,12 @@
     <string name="label_group_bottom_sheet_new_pre_definition">Nova Predefinição de Grupo Muscular</string>
     <string name="label_new_pre_definition">Nova Predefinição</string>
     <string name="label_edit_pre_definition">Predefinição</string>
+    <string name="generated_reports_title">Relatórios Gerados</string>
+    <string name="generated_reports_subtitle_schedulers_report">Agendamentos</string>
+    <string name="generated_reports_label_storage_size">Armazenamento Utilizado: %1$s</string>
+    <string name="network_required_delete_report">Para deletar relatórios é necessário ter conexão com a internet. Por favor, verifique sua conexão e tente novamente.</string>
+    <string name="generated_reports_delete_all_reports_confirmation_message">Tem certeza de que deseja deletar permanentemente TODOS os seus relatórios? Essa ação não poderá ser desfeita.</string>
+    <string name="sync_module_scheduler_report">Exportação de Relatórios dos Agendamentos</string>
+    <string name="reports_from_scheduler_importation_descrition">Importação de Relatórios de Agendamentos</string>
+    <string name="scheduler_report_importation_descrition">Importação das Entidade Relacionais de Relatórios de Agendamento</string>
 </resources>

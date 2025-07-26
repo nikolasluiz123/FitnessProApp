@@ -2,6 +2,7 @@ package br.com.fitnesspro.workout.injection
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
+import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
 import br.com.fitnesspor.service.data.access.webclient.workout.WorkoutWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
@@ -136,7 +137,7 @@ class SingletonWorkoutRepositoryModule {
             exerciseWebClient = exerciseWebClient
         )
     }
-    
+
     @Provides
     fun provideWorkoutImportationRepository(
         @ApplicationContext context: Context,
@@ -151,7 +152,7 @@ class SingletonWorkoutRepositoryModule {
             personRepository = personRepository
         )
     }
-    
+
     @Provides
     fun provideWorkoutGroupImportationRepository(
         @ApplicationContext context: Context,
@@ -166,7 +167,7 @@ class SingletonWorkoutRepositoryModule {
             personRepository = personRepository
         )
     }
-    
+
     @Provides
     fun provideExerciseImportationRepository(
         @ApplicationContext context: Context,
@@ -181,7 +182,7 @@ class SingletonWorkoutRepositoryModule {
             personRepository = personRepository
         )
     }
-    
+
     @Provides
     fun provideVideoImportationRepository(
         @ApplicationContext context: Context,
@@ -211,7 +212,7 @@ class SingletonWorkoutRepositoryModule {
             personRepository = personRepository
         )
     }
-    
+
     @Provides
     fun provideWorkoutExportationRepository(
         @ApplicationContext context: Context,
@@ -226,7 +227,7 @@ class SingletonWorkoutRepositoryModule {
             personRepository = personRepository
         )
     }
-    
+
     @Provides
     fun provideWorkoutGroupExportationRepository(
         @ApplicationContext context: Context,
@@ -301,7 +302,7 @@ class SingletonWorkoutRepositoryModule {
             exerciseWebClient = exerciseWebClient
         )
     }
-    
+
     @Provides
     fun provideExerciseExecutionImportationRepository(
         @ApplicationContext context: Context,
@@ -316,7 +317,7 @@ class SingletonWorkoutRepositoryModule {
             personRepository = personRepository
         )
     }
-    
+
     @Provides
     fun provideExercisePreDefinitionImportationRepository(
         @ApplicationContext context: Context,

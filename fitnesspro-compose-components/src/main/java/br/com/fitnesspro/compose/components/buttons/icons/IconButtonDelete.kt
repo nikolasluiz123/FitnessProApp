@@ -19,6 +19,7 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 @Composable
 fun IconButtonDelete(
     modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
     iconColor: Color = MaterialTheme.colorScheme.onPrimary,
     enabled: Boolean = true,
     contentDescriptionResId: Int? = R.string.label_delete,
@@ -26,6 +27,7 @@ fun IconButtonDelete(
 ) {
     FitnessProIconButton(
         modifier = modifier,
+        iconModifier = iconModifier,
         resId = br.com.fitnesspro.core.R.drawable.ic_delete_32dp,
         iconColor = iconColor,
         enabled = enabled,

@@ -4,6 +4,7 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.service.general.IAcademyService
 import br.com.fitnesspor.service.data.access.service.general.IAuthenticationService
 import br.com.fitnesspor.service.data.access.service.general.IPersonService
+import br.com.fitnesspor.service.data.access.service.general.IReportService
 import br.com.fitnesspor.service.data.access.service.log.IExecutionLogService
 import br.com.fitnesspor.service.data.access.service.scheduler.ISchedulerService
 import br.com.fitnesspor.service.data.access.service.workout.IExerciseService
@@ -13,6 +14,7 @@ import br.com.fitnesspor.service.data.access.webclient.log.ExecutionLogWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
+import br.com.fitnesspor.service.data.access.webclient.general.ReportWebClient
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
 import br.com.fitnesspor.service.data.access.webclient.workout.WorkoutWebClient
@@ -102,6 +104,17 @@ class SingletonWebClientModule {
         return WorkoutWebClient(
             context = context,
             workoutService = workoutService
+        )
+    }
+
+    @Provides
+    fun provideReportWebClient(
+        @ApplicationContext context: Context,
+        reportService: IReportService
+    ): ReportWebClient {
+        return ReportWebClient(
+            context = context,
+            reportService = reportService
         )
     }
 }

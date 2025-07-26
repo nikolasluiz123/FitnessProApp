@@ -13,8 +13,10 @@ import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO
 import br.com.fitnesspro.local.data.access.dao.ImportationHistoryDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
+import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
+import br.com.fitnesspro.local.data.access.dao.SchedulerReportDAO
 import br.com.fitnesspro.local.data.access.dao.ServiceTokenDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
@@ -31,6 +33,8 @@ import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.model.general.User
+import br.com.fitnesspro.model.general.report.Report
+import br.com.fitnesspro.model.general.report.SchedulerReport
 import br.com.fitnesspro.model.nutrition.avaliation.PhysicEvaluation
 import br.com.fitnesspro.model.nutrition.diet.DayWeekDiet
 import br.com.fitnesspro.model.nutrition.diet.Diet
@@ -62,7 +66,7 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
         VideoExerciseExecution::class, ExercisePreDefinition::class, VideoExercisePreDefinition::class,
         WorkoutGroupPreDefinition::class, Exercise::class, Video::class, VideoExercise::class,
         Workout::class, WorkoutGroup::class, ImportationHistory::class, ServiceToken::class, Device::class,
-        Application::class
+        Application::class, Report::class, SchedulerReport::class
     ],
     exportSchema = true
 )
@@ -108,4 +112,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun videoExerciseExecutionDAO(): VideoExerciseExecutionDAO
 
     abstract fun videoExercisePreDefinitionDAO(): VideoExercisePreDefinitionDAO
+
+    abstract fun reportDAO(): ReportDAO
+
+    abstract fun schedulerReportDAO(): SchedulerReportDAO
+
 }

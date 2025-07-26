@@ -1,6 +1,7 @@
 package br.com.fitnesspro.core.extensions
 
 import android.content.Context
+import android.text.format.Formatter
 import br.com.fitnesspro.core.R
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import java.time.Duration
@@ -65,4 +66,8 @@ fun Long.bestChronoUnit(): ChronoUnit {
         this <= hourLimit -> ChronoUnit.HOURS
         else -> ChronoUnit.HOURS
     }
+}
+
+fun Long.toReadableFileSize(context: Context): String {
+    return Formatter.formatFileSize(context, this * 1024)
 }

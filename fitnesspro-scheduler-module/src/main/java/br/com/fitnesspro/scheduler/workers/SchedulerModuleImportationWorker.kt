@@ -23,6 +23,8 @@ class SchedulerModuleImportationWorker @AssistedInject constructor(
 
     override suspend fun onImport(serviceToken: String, lastUpdateDate: LocalDateTime?) {
         scheduleEntryPoint.getSchedulerImportationRepository().import(serviceToken, lastUpdateDate)
+        scheduleEntryPoint.getReportsFromSchedulerImportationRepository().import(serviceToken, lastUpdateDate)
+        scheduleEntryPoint.getSchedulerReportImportationRepository().import(serviceToken, lastUpdateDate)
     }
 
     override fun getModule() = EnumSyncModule.SCHEDULER

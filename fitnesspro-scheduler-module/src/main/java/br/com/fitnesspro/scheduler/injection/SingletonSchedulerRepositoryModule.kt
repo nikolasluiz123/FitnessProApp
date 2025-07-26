@@ -1,17 +1,24 @@
 package br.com.fitnesspro.scheduler.injection
 
 import android.content.Context
+import br.com.fitnesspor.service.data.access.webclient.general.ReportWebClient
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository
+import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
+import br.com.fitnesspro.local.data.access.dao.SchedulerReportDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
+import br.com.fitnesspro.scheduler.repository.SchedulerReportRepository
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.repository.sync.exportation.SchedulerExportationRepository
+import br.com.fitnesspro.scheduler.repository.sync.exportation.SchedulerReportExportationRepository
+import br.com.fitnesspro.scheduler.repository.sync.importation.ReportFromSchedulerImportationRepository
 import br.com.fitnesspro.scheduler.repository.sync.importation.SchedulerImportationRepository
+import br.com.fitnesspro.scheduler.repository.sync.importation.SchedulerReportImportationRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -79,6 +86,68 @@ class SingletonSchedulerRepositoryModule {
             schedulerWebClient = schedulerWebClient,
             schedulerDAO = schedulerDAO,
             context = context
+        )
+    }
+
+    @Provides
+    fun provideSchedulerReportRepository(
+        @ApplicationContext context: Context,
+        schedulerDAO: SchedulerDAO,
+        schedulerReportDAO: SchedulerReportDAO,
+        reportDAO: ReportDAO,
+        reportWebClient: ReportWebClient
+    ): SchedulerReportRepository {
+        return SchedulerReportRepository(
+            context = context,
+            schedulerDAO = schedulerDAO,
+            schedulerReportDAO = schedulerReportDAO,
+            reportDAO = reportDAO,
+            reportWebClient = reportWebClient
+        )
+    }
+
+    @Provides
+    fun provideSchedulerReportImportationRepository(
+        @ApplicationContext context: Context,
+        schedulerReportDAO: SchedulerReportDAO,
+        reportWebClient: ReportWebClient,
+        personRepository: PersonRepository
+        ): SchedulerReportImportationRepository {
+        return SchedulerReportImportationRepository(
+            context = context,
+            schedulerReportDAO = schedulerReportDAO,
+            webClient = reportWebClient,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideReportFromSchedulerImportationRepository(
+        @ApplicationContext context: Context,
+        reportDAO: ReportDAO,
+        reportWebClient: ReportWebClient,
+        personRepository: PersonRepository
+    ): ReportFromSchedulerImportationRepository {
+        return ReportFromSchedulerImportationRepository(
+            context = context,
+            reportDAO = reportDAO,
+            webClient = reportWebClient,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideSchedulerReportExportationRepository(
+        @ApplicationContext context: Context,
+        reportDAO: ReportDAO,
+        schedulerReportDAO: SchedulerReportDAO,
+        reportWebClient: ReportWebClient
+    ): SchedulerReportExportationRepository {
+        return SchedulerReportExportationRepository(
+            context = context,
+            reportDAO = reportDAO,
+            schedulerReportDAO = schedulerReportDAO,
+            reportWebClient = reportWebClient
         )
     }
 
