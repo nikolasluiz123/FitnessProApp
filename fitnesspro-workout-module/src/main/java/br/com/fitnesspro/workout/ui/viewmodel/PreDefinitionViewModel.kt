@@ -22,6 +22,7 @@ import br.com.fitnesspro.core.extensions.millisTo
 import br.com.fitnesspro.core.extensions.openVideoPlayer
 import br.com.fitnesspro.core.extensions.toIntOrNull
 import br.com.fitnesspro.core.extensions.toStringOrEmpty
+import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.core.utils.VideoUtils
 import br.com.fitnesspro.core.validation.FieldValidationError
@@ -99,6 +100,7 @@ class PreDefinitionViewModel @Inject constructor(
             duration = initializeTextFieldDuration(),
             unitDuration = initializeDropDownTextFieldUnitDuration(),
             videoGalleryState = initializeVideoGalleryState(),
+            messageDialogState = initializeMessageDialogState(),
             showGroupField = args.grouped
         )
     }
@@ -495,6 +497,29 @@ class PreDefinitionViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     videoGalleryState = _uiState.value.videoGalleryState.copy(
                         viewMode = it
+                    )
+                )
+            }
+        )
+    }
+
+    private fun initializeMessageDialogState(): MessageDialogState {
+        return MessageDialogState(
+            onShowDialog = { type, message, onConfirm, onCancel ->
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        dialogType = type,
+                        dialogMessage = message,
+                        showDialog = true,
+                        onConfirm = onConfirm,
+                        onCancel = onCancel
+                    )
+                )
+            },
+            onHideDialog = {
+                _uiState.value = _uiState.value.copy(
+                    messageDialogState = _uiState.value.messageDialogState.copy(
+                        showDialog = false
                     )
                 )
             }

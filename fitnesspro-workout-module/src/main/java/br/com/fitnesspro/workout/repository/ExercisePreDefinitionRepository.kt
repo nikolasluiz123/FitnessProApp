@@ -14,6 +14,7 @@ import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOExercisePreDefinition
 import br.com.fitnesspro.to.TOVideoExercisePreDefinition
 import br.com.fitnesspro.to.TOWorkoutGroupPreDefinition
+import br.com.fitnesspro.tuple.ExercisePredefinitionGroupedTuple
 
 class ExercisePreDefinitionRepository(
     context: Context,
@@ -111,5 +112,20 @@ class ExercisePreDefinitionRepository(
 
     suspend fun findTOWorkoutGroupPreDefinitionById(id: String): TOWorkoutGroupPreDefinition? {
         return workoutGroupPreDefinitionDAO.findById(id)?.getTOWorkoutGroupPreDefinition()
+    }
+
+    fun getListGroupedPredefinitions(authenticatedPersonId: String, simpleFilter: String = ""): Pager<Int, ExercisePredefinitionGroupedTuple> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                workoutGroupPreDefinitionDAO.getListGroupedPredefinitions(
+                    authenticatedPersonId = authenticatedPersonId,
+                    simpleFilter = simpleFilter,
+                )
+            }
+        )
     }
 }

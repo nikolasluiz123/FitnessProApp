@@ -146,4 +146,11 @@
     <string name="exercise_pre_definition_screen_group_dialog_list_title">Grupos Musculares Predefinidos</string>
     <string name="pre_definition_screen_workout_place_holder">Buscar por Nome</string>
     <string name="pre_definition_screen_workout_group_empty_message">Não existem grupos musculares predefinidos</string>
+    <string name="exercise_pre_definition_screen_exercise">Exercício</string>
+    <string name="exercise_pre_definition_screen_rest">Descanço</string>
+    <string name="exercise_pre_definition_screen_no_rest">Sem Descanso</string>
+    <string name="exercise_pre_definition_screen_duration">Duração</string>
+    <string name="exercise_pre_definition_no_workout_group">Sem Grupo</string>
+    <string name="pre_definitions_simple_filter_placeholder">Buscar por Grupo ou Exercício</string>
+    <string name="pre_definitions_empty_message">Nenhuma Predefinição encontrada</string>
 </resources>
