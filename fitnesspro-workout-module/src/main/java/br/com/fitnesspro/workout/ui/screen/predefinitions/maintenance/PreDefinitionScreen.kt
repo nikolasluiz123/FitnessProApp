@@ -55,7 +55,6 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.workout.R
-import br.com.fitnesspro.workout.ui.screen.exercise.ExercisePagedDialogItem
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnFinishVideoRecording
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnOpenCameraVideo
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnVideoSelectedOnGallery
@@ -184,7 +183,7 @@ fun PreDefinitionScreen(
                     durationRef, unitDurationRef, exerciseOrderRef, videoGalleryRef) = createRefs()
 
                 if (state.showGroupField) {
-                    OutlinedTextFieldValidation(
+                    PagedListDialogOutlinedTextFieldValidation(
                         modifier = Modifier
                             .fillMaxWidth()
                             .constrainAs(groupRef) {
@@ -193,7 +192,15 @@ fun PreDefinitionScreen(
                                 end.linkTo(parent.end)
                             },
                         field = state.group,
-                        label = stringResource(R.string.pre_definition_screen_label_group),
+                        fieldLabel = stringResource(R.string.pre_definition_screen_label_group),
+                        simpleFilterPlaceholderResId = R.string.pre_definition_screen_workout_place_holder,
+                        emptyMessage = R.string.pre_definition_screen_workout_group_empty_message,
+                        itemLayout = {
+                            WorkoutGroupPreDefinitionPagedDialogItem(
+                                toWorkoutGroupPreDefinition = it,
+                                onItemClick = state.group.dialogListState.onDataListItemClick
+                            )
+                        }
                     )
                 }
 
@@ -212,8 +219,8 @@ fun PreDefinitionScreen(
                     simpleFilterPlaceholderResId = R.string.pre_definition_screen_exercises_place_holder,
                     emptyMessage = R.string.pre_definition_screen_exercises_empty_message,
                     itemLayout = {
-                        ExercisePagedDialogItem(
-                            toExercise = it,
+                        ExercisePreDefinitionPagedDialogItem(
+                            toExercisePreDefinition = it,
                             onItemClick = state.exercise.dialogListState.onDataListItemClick
                         )
                     }

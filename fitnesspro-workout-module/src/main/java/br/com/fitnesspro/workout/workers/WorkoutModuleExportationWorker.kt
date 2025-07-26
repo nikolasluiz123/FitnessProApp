@@ -30,8 +30,8 @@ class WorkoutModuleExportationWorker @AssistedInject constructor(
         entryPoint.getExerciseExecutionExportationRepository().export(serviceToken)
         entryPoint.getVideoExerciseExecutionExportationRepository().export(serviceToken)
 
-        entryPoint.getExercisePreDefinitionExportationRepository().export(serviceToken)
         entryPoint.getWorkoutGroupPreDefinitionExportationRepository().export(serviceToken)
+        entryPoint.getExercisePreDefinitionExportationRepository().export(serviceToken)
         entryPoint.getVideoExercisePreDefinitionExportationRepository().export(serviceToken)
     }
 

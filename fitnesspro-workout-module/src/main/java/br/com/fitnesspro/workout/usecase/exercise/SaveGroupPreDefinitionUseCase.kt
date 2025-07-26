@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.usecase.exercise
 
 import android.content.Context
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOExercisePreDefinition
 import br.com.fitnesspro.to.TOWorkoutGroupPreDefinition
@@ -12,6 +13,7 @@ import java.io.File
 class SaveGroupPreDefinitionUseCase(
     private val context: Context,
     private val exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
+    private val personRepository: PersonRepository,
     private val saveExercisePreDefinitionUseCase: SaveExercisePreDefinitionUseCase
 ) {
     suspend operator fun invoke(
@@ -23,6 +25,8 @@ class SaveGroupPreDefinitionUseCase(
         validateWorkoutGroupPreDefinition(toWorkoutGroupPreDefinition)?.let(validations::add)
 
         if (validations.isEmpty()) {
+            toWorkoutGroupPreDefinition.personalTrainerPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
+
             exercisePreDefinitionRepository.runInTransaction {
                 exercisePreDefinitionRepository.saveWorkoutGroupPreDefinition(toWorkoutGroupPreDefinition)
                 toExercisePreDefinition.workoutGroupPreDefinitionId = toWorkoutGroupPreDefinition.id

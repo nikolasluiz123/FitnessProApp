@@ -139,3 +139,12 @@ fun WorkoutGroupPreDefinitionDTO.getWorkoutGroupPreDefinition(): WorkoutGroupPre
         transmissionState = EnumTransmissionState.TRANSMITTED,
     )
 }
+
+fun WorkoutGroupPreDefinition.getTOWorkoutGroupPreDefinition(): TOWorkoutGroupPreDefinition {
+    return TOWorkoutGroupPreDefinition(
+        id = id,
+        name = name,
+        personalTrainerPersonId = personalTrainerPersonId,
+        active = active
+    )
+}

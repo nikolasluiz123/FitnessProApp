@@ -6,7 +6,6 @@ import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
 import br.com.fitnesspro.core.state.ILoadingUIState
 import br.com.fitnesspro.core.state.MessageDialogState
-import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOExercisePreDefinition
 import br.com.fitnesspro.to.TOWorkoutGroupPreDefinition
 import java.io.File
@@ -16,8 +15,8 @@ data class PreDefinitionUIState(
     val title: String = "",
     val subtitle: String? = null,
     val messageDialogState: MessageDialogState = MessageDialogState(),
-    val group: TextField = TextField(),
-    val exercise: PagedDialogListTextField<TOExercise> = PagedDialogListTextField(),
+    val group: PagedDialogListTextField<TOWorkoutGroupPreDefinition> = PagedDialogListTextField(),
+    val exercise: PagedDialogListTextField<TOExercisePreDefinition> = PagedDialogListTextField(),
     val exerciseOrder: TextField = TextField(),
     val sets: TextField = TextField(),
     val reps: TextField = TextField(),
@@ -31,6 +30,7 @@ data class PreDefinitionUIState(
     val toWorkoutGroupPreDefinition: TOWorkoutGroupPreDefinition = TOWorkoutGroupPreDefinition(),
     val toExercisePredefinition: TOExercisePreDefinition = TOExercisePreDefinition(),
     var notSavedVideoFiles: MutableList<File> = mutableListOf(),
+    var authenticatedPersonId: String? = null,
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = {}
 ): ILoadingUIState

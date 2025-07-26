@@ -197,12 +197,14 @@ class SingletonWorkoutUseCaseModule {
     fun provideSaveGroupPreDefinitionUseCase(
         @ApplicationContext context: Context,
         exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
-        saveExercisePreDefinitionUseCase: SaveExercisePreDefinitionUseCase
+        saveExercisePreDefinitionUseCase: SaveExercisePreDefinitionUseCase,
+        personRepository: PersonRepository
     ): SaveGroupPreDefinitionUseCase {
         return SaveGroupPreDefinitionUseCase(
             context = context,
             exercisePreDefinitionRepository = exercisePreDefinitionRepository,
-            saveExercisePreDefinitionUseCase = saveExercisePreDefinitionUseCase
+            saveExercisePreDefinitionUseCase = saveExercisePreDefinitionUseCase,
+            personRepository = personRepository
         )
     }
 

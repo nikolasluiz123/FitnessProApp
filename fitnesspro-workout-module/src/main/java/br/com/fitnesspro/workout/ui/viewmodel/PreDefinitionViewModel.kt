@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
 import br.com.fitnesspro.compose.components.fields.menu.MenuItem
@@ -24,11 +25,11 @@ import br.com.fitnesspro.core.extensions.toStringOrEmpty
 import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.core.utils.VideoUtils
 import br.com.fitnesspro.core.validation.FieldValidationError
-import br.com.fitnesspro.to.TOExercise
+import br.com.fitnesspro.to.TOExercisePreDefinition
+import br.com.fitnesspro.to.TOWorkoutGroupPreDefinition
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
-import br.com.fitnesspro.workout.ui.navigation.ExerciseScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.PreDefinitionScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.preDefinitionScreenArguments
 import br.com.fitnesspro.workout.ui.state.PreDefinitionUIState
@@ -53,6 +54,7 @@ class PreDefinitionViewModel @Inject constructor(
     private val globalEvents: GlobalEvents,
     private val videoRepository: VideoRepository,
     private val exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
+    private val personRepository: PersonRepository,
     private val saveGroupPreDefinitionUseCase: SaveGroupPreDefinitionUseCase,
     private val saveExercisePreDefinitionUseCase: SaveExercisePreDefinitionUseCase,
     private val saveVideoExercisePreDefinitionFromGalleryUseCase: SaveVideoExercisePreDefinitionFromGalleryUseCase,
@@ -69,7 +71,7 @@ class PreDefinitionViewModel @Inject constructor(
         val args = jsonArgs?.fromJsonNavParamToArgs(PreDefinitionScreenArgs::class.java)!!
 
         initialLoadUIState(args)
-        args.exercisePreDefinitionId?.let(::loadStateEdition)
+        loadStateWithDatabaseInfos(args)
     }
 
     override fun getErrorMessageFrom(throwable: Throwable): String {
@@ -84,12 +86,10 @@ class PreDefinitionViewModel @Inject constructor(
         return globalEvents
     }
 
-    private fun initialLoadUIState(args1: PreDefinitionScreenArgs) {
-        val args = jsonArgs?.fromJsonNavParamToArgs(PreDefinitionScreenArgs::class.java)!!
-
+    private fun initialLoadUIState(args: PreDefinitionScreenArgs) {
         _uiState.value = _uiState.value.copy(
             title = getTitle(args.exercisePreDefinitionId),
-            group = initializeTextFieldGroup(),
+            group = initializePagedDialogListTextFieldGroup(),
             exercise = initializePagedDialogListTextFieldExercise(args.grouped),
             exerciseOrder = initializeTextFieldExerciseOrder(),
             sets = initializeTextFieldSets(),
@@ -103,41 +103,84 @@ class PreDefinitionViewModel @Inject constructor(
         )
     }
 
-    private fun loadStateEdition(exercisePreDefinitionId: String) {
+    private fun loadStateWithDatabaseInfos(args: PreDefinitionScreenArgs) {
         launch {
-            val to = exercisePreDefinitionRepository.findById(exercisePreDefinitionId)!!
-            val convertedRest = getConvertedRestFrom(to.unitRest, to.rest)
-            val convertedDuration = getConvertedDurationFrom(to.unitDuration, to.duration)
+            loadAuthenticatedPerson()
+            loadEditionData(args.exercisePreDefinitionId)
+            loadPreDefinitionList()
+        }
+    }
+
+    private fun loadPreDefinitionList() {
+        if (_uiState.value.showGroupField) {
+            _uiState.value = _uiState.value.copy(
+                exercise = _uiState.value.exercise.copy(
+                    dialogListState = _uiState.value.exercise.dialogListState.copy(
+                        dataList = getListExercisePreDefinitions()
+                    )
+                ),
+                group = _uiState.value.group.copy(
+                    dialogListState = _uiState.value.group.dialogListState.copy(
+                        dataList = getListWorkoutGroupPreDefinitions()
+                    )
+                )
+            )
+        }
+    }
+
+    private suspend fun loadAuthenticatedPerson() {
+        val personId = personRepository.getAuthenticatedTOPerson()?.id
+
+        _uiState.value = _uiState.value.copy(
+            authenticatedPersonId = personId
+        )
+    }
+
+    private suspend fun loadEditionData(exercisePreDefinitionId: String?) {
+        exercisePreDefinitionId?.let { preDefId ->
+            val toExercisePreDef = exercisePreDefinitionRepository.findTOExercisePreDefinitionById(preDefId)!!
+            val toWorkoutPreDef = toExercisePreDef.workoutGroupPreDefinitionId?.let {
+                exercisePreDefinitionRepository.findTOWorkoutGroupPreDefinitionById(it)
+            }
+
+            val convertedRest = getConvertedRestFrom(toExercisePreDef.unitRest, toExercisePreDef.rest)
+            val convertedDuration = getConvertedDurationFrom(toExercisePreDef.unitDuration, toExercisePreDef.duration)
 
             _uiState.value = _uiState.value.copy(
-                title = getTitle(to.id),
-                subtitle = to.name,
+                title = getTitle(toExercisePreDef.id),
+                subtitle = toExercisePreDef.name,
                 exercise = _uiState.value.exercise.copy(
-                    value = to.name!!
+                    value = toExercisePreDef.name!!
                 ),
                 sets = _uiState.value.sets.copy(
-                    value = to.sets.toStringOrEmpty()
+                    value = toExercisePreDef.sets.toStringOrEmpty()
                 ),
                 reps = _uiState.value.reps.copy(
-                    value = to.repetitions.toStringOrEmpty()
+                    value = toExercisePreDef.repetitions.toStringOrEmpty()
                 ),
                 rest = _uiState.value.rest.copy(
                     value = convertedRest
                 ),
                 unitRest = _uiState.value.unitRest.copy(
-                    value = getUnitRestFrom(to.rest)
+                    value = getUnitRestFrom(toExercisePreDef.rest)
                 ),
                 duration = _uiState.value.duration.copy(
                     value = convertedDuration
                 ),
                 unitDuration = _uiState.value.unitDuration.copy(
-                    value = getUnitDurationFrom(to.duration)
+                    value = getUnitDurationFrom(toExercisePreDef.duration)
                 ),
-                toExercisePredefinition = to,
-                inactivateEnabled = true
+                toExercisePredefinition = toExercisePreDef,
+                inactivateEnabled = true,
             )
 
-            loadVideos(to.id)
+            if (toWorkoutPreDef != null) {
+                _uiState.value = _uiState.value.copy(
+                    toWorkoutGroupPreDefinition = toWorkoutPreDef
+                )
+            }
+
+            loadVideos(toExercisePreDef.id)
         }
     }
 
@@ -157,21 +200,60 @@ class PreDefinitionViewModel @Inject constructor(
         }
     }
 
-    private fun initializeTextFieldGroup(): TextField {
-        return TextField(
-            onChange = {
+    private fun initializePagedDialogListTextFieldGroup(): PagedDialogListTextField<TOWorkoutGroupPreDefinition> {
+        return PagedDialogListTextField(
+            dialogListState = PagedDialogListState(
+                dialogTitle = context.getString(R.string.exercise_pre_definition_screen_group_dialog_list_title),
+                onShow = {
+                    _uiState.value = _uiState.value.copy(
+                        group = _uiState.value.group.copy(
+                            dialogListState = _uiState.value.group.dialogListState.copy(show = true)
+                        )
+                    )
+                },
+                onHide = {
+                    _uiState.value = _uiState.value.copy(
+                        group = _uiState.value.group.copy(
+                            dialogListState = _uiState.value.group.dialogListState.copy(show = false)
+                        )
+                    )
+                },
+                onDataListItemClick = { item ->
+                    _uiState.value = _uiState.value.copy(
+                        group = _uiState.value.group.copy(
+                            value = item.getLabel(),
+                            errorMessage = ""
+                        ),
+                        toWorkoutGroupPreDefinition = item
+                    )
+
+                    _uiState.value.group.dialogListState.onHide()
+                },
+                onSimpleFilterChange = { filter ->
+                    _uiState.value = _uiState.value.copy(
+                        group = _uiState.value.group.copy(
+                            dialogListState = _uiState.value.group.dialogListState.copy(
+                                dataList = getListWorkoutGroupPreDefinitions(simpleFilter = filter)
+                            )
+                        )
+                    )
+                },
+            ),
+            onChange = { newText ->
                 _uiState.value = _uiState.value.copy(
                     group = _uiState.value.group.copy(
-                        value = it,
+                        value = newText,
                         errorMessage = ""
                     ),
-                    toExercisePredefinition = _uiState.value.toExercisePredefinition.copy(workoutGroupPreDefinitionName = it)
+                    toWorkoutGroupPreDefinition = _uiState.value.toWorkoutGroupPreDefinition.copy(
+                        name = newText
+                    )
                 )
-            }
+            },
         )
     }
 
-    private fun initializePagedDialogListTextFieldExercise(grouped: Boolean): PagedDialogListTextField<TOExercise> {
+    private fun initializePagedDialogListTextFieldExercise(grouped: Boolean): PagedDialogListTextField<TOExercisePreDefinition> {
         return PagedDialogListTextField(
             dialogListState = PagedDialogListState(
                 showTrailingIcon = grouped,
@@ -197,23 +279,24 @@ class PreDefinitionViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         toExercisePredefinition = _uiState.value.toExercisePredefinition.copy(
+                            name = item.name,
                             sets = item.sets,
                             repetitions = item.repetitions,
                             rest = item.rest,
-                            unitRest = item.unitRest,
+                            unitRest = item.rest?.bestChronoUnit(),
                             duration = item.duration,
-                            unitDuration = item.unitDuration
+                            unitDuration = item.duration?.bestChronoUnit()
                         ),
                         sets = _uiState.value.sets.copy(
-                            value = item.sets.toString(),
+                            value = item.sets.toStringOrEmpty(),
                             errorMessage = ""
                         ),
                         reps = _uiState.value.reps.copy(
-                            value = item.repetitions.toString(),
+                            value = item.repetitions.toStringOrEmpty(),
                             errorMessage = ""
                         ),
                         rest = _uiState.value.rest.copy(
-                            value = item.rest.toString(),
+                            value = getConvertedRestFrom(item.rest?.bestChronoUnit(), item.rest),
                             errorMessage = ""
                         ),
                         unitRest = _uiState.value.unitRest.copy(
@@ -221,7 +304,7 @@ class PreDefinitionViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         duration = _uiState.value.duration.copy(
-                            value = item.duration.toString(),
+                            value = getConvertedDurationFrom(item.duration?.bestChronoUnit(), item.duration),
                             errorMessage = ""
                         ),
                         unitDuration = _uiState.value.unitDuration.copy(
@@ -233,15 +316,13 @@ class PreDefinitionViewModel @Inject constructor(
                     _uiState.value.exercise.dialogListState.onHide()
                 },
                 onSimpleFilterChange = { filter ->
-                    launch {
-                        _uiState.value = _uiState.value.copy(
-                            exercise = _uiState.value.exercise.copy(
-                                dialogListState = _uiState.value.exercise.dialogListState.copy(
-                                    dataList = getListExercisesAndPreDefinitions(simpleFilter = filter)
-                                )
+                    _uiState.value = _uiState.value.copy(
+                        exercise = _uiState.value.exercise.copy(
+                            dialogListState = _uiState.value.exercise.dialogListState.copy(
+                                dataList = getListExercisePreDefinitions(simpleFilter = filter)
                             )
                         )
-                    }
+                    )
                 },
             ),
             onChange = { newText ->
@@ -258,10 +339,16 @@ class PreDefinitionViewModel @Inject constructor(
         )
     }
 
-    private fun getListExercisesAndPreDefinitions(simpleFilter: String = ""): Flow<PagingData<TOExercise>> {
-        val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
+    private fun getListExercisePreDefinitions(simpleFilter: String = ""): Flow<PagingData<TOExercisePreDefinition>> {
+        return _uiState.value.authenticatedPersonId?.let { authenticatedPersonId ->
+            exercisePreDefinitionRepository.getListExercisePreDefinitions(authenticatedPersonId, simpleFilter).flow
+        } ?: emptyFlow()
+    }
 
-        return emptyFlow() // TODO - Fazer uma consulta para trazer apenas exercícios
+    private fun getListWorkoutGroupPreDefinitions(simpleFilter: String = ""): Flow<PagingData<TOWorkoutGroupPreDefinition>> {
+        return _uiState.value.authenticatedPersonId?.let { authenticatedPersonId ->
+            exercisePreDefinitionRepository.getListWorkoutGroupPreDefinitions(authenticatedPersonId, simpleFilter).flow
+        } ?: emptyFlow()
     }
 
     private fun initializeTextFieldExerciseOrder(): TextField {
@@ -558,7 +645,7 @@ class PreDefinitionViewModel @Inject constructor(
 
             if (validationResult.isEmpty()) {
                 onSuccess()
-                loadStateEdition(_uiState.value.toExercisePredefinition.id!!)
+                loadEditionData(_uiState.value.toExercisePredefinition.id!!)
             } else {
                 _uiState.value.onToggleLoading()
                 showValidationMessages(validationResult)

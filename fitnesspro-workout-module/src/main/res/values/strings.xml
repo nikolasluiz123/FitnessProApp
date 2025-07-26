@@ -122,7 +122,7 @@
     <string name="pre_definitions_screen_title">Exercícios Predefinidos</string>
     <string name="pre_definition_screen_label_group">Grupo *</string>
     <string name="pre_definition_screen_label_exercise">Exercício *</string>
-    <string name="pre_definition_screen_exercises_place_holder">Exercícios Predefinidos</string>
+    <string name="pre_definition_screen_exercises_place_holder">Buscar por Nome</string>
     <string name="pre_definition_screen_exercises_empty_message">Não existem exercícios predefinidos</string>
     <string name="pre_definition_screen_label_exercise_order">Ordem do Exercício *</string>
     <string name="pre_definition_screen_label_sets">Séries</string>
@@ -143,4 +143,7 @@
     <string name="workout_group_pre_definition_exportation_description">Exportação das Predefinições dos Grupos Musculares</string>
     <string name="video_exercise_execution_exportation_description">Exportação dos Vídeos das Execuções dos Exercícios</string>
     <string name="video_exercise_pre_definition_exportation_description">Exportação dos Vídeos das Predefinições dos Exercícios</string>
+    <string name="exercise_pre_definition_screen_group_dialog_list_title">Grupos Musculares Predefinidos</string>
+    <string name="pre_definition_screen_workout_place_holder">Buscar por Nome</string>
+    <string name="pre_definition_screen_workout_group_empty_message">Não existem grupos musculares predefinidos</string>
 </resources>

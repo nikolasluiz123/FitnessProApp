@@ -12,6 +12,7 @@ import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.predefinition.ExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 import br.com.fitnesspro.to.TOExercise
+import br.com.fitnesspro.to.TOExercisePreDefinition
 import java.util.StringJoiner
 
 @Dao
@@ -109,16 +110,62 @@ abstract class ExercisePreDefinitionDAO: IntegratedMaintenanceDAO<ExercisePreDef
         return executeExercisesFromWorkoutGroup(SimpleSQLiteQuery(sql.toString(), queryParams.toTypedArray()))
     }
 
+    fun getListPreDefinitions(authenticatedPersonId: String, simpleFilter: String): PagingSource<Int, TOExercisePreDefinition> {
+        val queryParams = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select exercisePreDef.id as id, ")
+            add("        exercisePreDef.name as name, ")
+            add("        exercisePreDef.duration as duration, ")
+            add("        exercisePreDef.repetitions as repetitions, ")
+            add("        exercisePreDef.sets as sets, ")
+            add("        exercisePreDef.rest as rest, ")
+            add("        exercisePreDef.active as active ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from exercise_pre_definition exercisePreDef ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where exercisePreDef.personal_trainer_person_id = ? ")
+            add(" and exercisePreDef.active = 1 ")
+
+            queryParams.add(authenticatedPersonId)
+
+            if (simpleFilter.isNotEmpty()) {
+                add(" and lower(exercisePreDef.name) like ? ")
+                queryParams.add("%${simpleFilter.lowercase()}%")
+            }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by exercisePreDef.name ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(orderBy.toString())
+        }
+
+        return executePreDefinitions(SimpleSQLiteQuery(sql.toString(), queryParams.toTypedArray()))
+    }
+
+    @RawQuery(observedEntities = [ExercisePreDefinition::class])
+    abstract fun executePreDefinitions(query: SupportSQLiteQuery): PagingSource<Int, TOExercisePreDefinition>
+
     @RawQuery(observedEntities = [ExercisePreDefinition::class, WorkoutGroupPreDefinition::class])
     abstract fun executeExercisesFromWorkoutGroup(query: SupportSQLiteQuery): PagingSource<Int, TOExercise>
 
     @Query("select * from exercise_pre_definition where lower(name) = lower(:name) and active = 1")
     abstract suspend fun findExercisePreDefinitionByName(name: String): ExercisePreDefinition?
 
-    @Query("select * from exercise_pre_definition where id = :id and active = 1")
+    @Query("select * from exercise_pre_definition where id = :id")
     abstract suspend fun findExercisePreDefinitionById(id: String): ExercisePreDefinition?
 
-    @Query("select exists(select 1 from exercise_pre_definition where id = :id and active = 1)")
+    @Query("select exists(select 1 from exercise_pre_definition where id = :id)")
     abstract suspend fun hasEntityWithId(id: String): Boolean
 
     suspend fun getExportationData(pageInfos: ExportPageInfos, personId: String): List<ExercisePreDefinition> {

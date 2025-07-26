@@ -1,5 +1,6 @@
 package br.com.fitnesspro.to
 
+import br.com.fitnesspro.core.menu.ITupleListItem
 import java.time.temporal.ChronoUnit
 
 data class TOExercisePreDefinition(
@@ -12,10 +13,11 @@ data class TOExercisePreDefinition(
     var rest: Long? = null,
     var unitRest: ChronoUnit? = null,
     var personalTrainerPersonId: String? = null,
-    var workoutGroupPreDefinitionName: String? = null,
     var workoutGroupPreDefinitionId: String? = null,
     var exerciseOrder: Int? = null,
     var active: Boolean = true
-): BaseTO {
-
+): BaseTO, ITupleListItem {
+    override fun getLabel(): String {
+        return name ?: ""
+    }
 }
