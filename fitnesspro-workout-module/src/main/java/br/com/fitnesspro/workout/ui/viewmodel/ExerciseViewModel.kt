@@ -564,10 +564,7 @@ class ExerciseViewModel @Inject constructor(
             val convertedDuration = getConvertedDurationFrom(toExercise)
 
             _uiState.value = _uiState.value.copy(
-                toExercise = toExercise.copy(
-                    rest = convertedRest.toLongOrNull(),
-                    duration = convertedDuration.toLongOrNull()
-                ),
+                toExercise = toExercise,
                 group = _uiState.value.group.copy(
                     value = toExercise.workoutGroupName!!
                 ),
