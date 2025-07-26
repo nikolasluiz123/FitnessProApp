@@ -20,6 +20,7 @@ import br.com.fitnesspro.compose.components.list.PagedLazyVerticalList
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.ui.navigation.PreDefinitionScreenArgs
 import br.com.fitnesspro.workout.ui.screen.predefinitions.maintenance.callbacks.OnNavigateToPreDefinition
 import br.com.fitnesspro.workout.ui.screen.predefinitions.search.bottomsheet.BottomSheetNewPreDefinition
 import br.com.fitnesspro.workout.ui.state.PreDefinitionsUIState
@@ -76,10 +77,16 @@ fun PreDefinitionsScreen(
                 state = state.simpleFilterState,
                 placeholderResId = R.string.pre_definitions_simple_filter_placeholder
             ) {
-                PreDefinitionList(state)
+                PreDefinitionList(
+                    state = state,
+                    onNavigateToPreDefinition = onNavigateToPreDefinition
+                )
             }
 
-            PreDefinitionList(state)
+            PreDefinitionList(
+                state = state,
+                onNavigateToPreDefinition = onNavigateToPreDefinition
+            )
 
             if (state.showBottomSheetNewPredefinition) {
                 BottomSheetNewPreDefinition(
@@ -92,7 +99,10 @@ fun PreDefinitionsScreen(
 }
 
 @Composable
-private fun PreDefinitionList(state: PreDefinitionsUIState) {
+private fun PreDefinitionList(
+    state: PreDefinitionsUIState,
+    onNavigateToPreDefinition: OnNavigateToPreDefinition?
+) {
     PagedLazyVerticalList(
         modifier = Modifier.fillMaxSize(),
         pagingItems = state.predefinitions.collectAsLazyPagingItems(),
@@ -101,7 +111,17 @@ private fun PreDefinitionList(state: PreDefinitionsUIState) {
         if (tuple.isGroup) {
             PreDefinitionGroupItem(tuple)
         } else {
-            ExercisePreDefinitionItem(tuple)
+            ExercisePreDefinitionItem(
+                predefinition = tuple,
+                onItemClick = { clickedTuple ->
+                    onNavigateToPreDefinition?.onNavigate(
+                        args = PreDefinitionScreenArgs(
+                            grouped = false,
+                            exercisePreDefinitionId = clickedTuple.id
+                        )
+                    )
+                }
+            )
         }
     }
 }

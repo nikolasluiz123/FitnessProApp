@@ -87,6 +87,14 @@ class PreDefinitionViewModel @Inject constructor(
         return globalEvents
     }
 
+    override fun onError(throwable: Throwable) {
+        super.onError(throwable)
+
+        if (_uiState.value.showLoading) {
+            _uiState.value.onToggleLoading()
+        }
+    }
+
     private fun initialLoadUIState(args: PreDefinitionScreenArgs) {
         _uiState.value = _uiState.value.copy(
             title = getTitle(args.exercisePreDefinitionId),
@@ -101,7 +109,11 @@ class PreDefinitionViewModel @Inject constructor(
             unitDuration = initializeDropDownTextFieldUnitDuration(),
             videoGalleryState = initializeVideoGalleryState(),
             messageDialogState = initializeMessageDialogState(),
-            showGroupField = args.grouped
+            showGroupField = args.grouped,
+            onToggleLoading = {
+                _uiState.value = _uiState.value.copy(showLoading = _uiState.value.showLoading.not())
+            }
+
         )
     }
 

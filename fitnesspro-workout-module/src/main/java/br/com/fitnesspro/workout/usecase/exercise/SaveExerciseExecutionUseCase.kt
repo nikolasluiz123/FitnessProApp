@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.usecase.exercise
 
 import android.content.Context
+import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.core.extensions.toMillis
 import br.com.fitnesspro.core.utils.FileUtils
@@ -99,7 +100,10 @@ class SaveExerciseExecutionUseCase(
             else -> null
         }
 
-        if (validationError == null && toExerciseExecution.rest != null) {
+        if (validationError == null &&
+            toExerciseExecution.rest != null &&
+            toExerciseExecution.rest?.bestChronoUnit() != toExerciseExecution.restUnit) {
+
             toExerciseExecution.rest = toExerciseExecution.rest!!.toMillis(toExerciseExecution.restUnit!!)
         }
 
@@ -120,7 +124,10 @@ class SaveExerciseExecutionUseCase(
             else -> null
         }
 
-        if (validationError == null && toExerciseExecution.duration != null) {
+        if (validationError == null &&
+            toExerciseExecution.duration != null &&
+            toExerciseExecution.duration?.bestChronoUnit() != toExerciseExecution.durationUnit) {
+
             toExerciseExecution.duration = toExerciseExecution.duration!!.toMillis(toExerciseExecution.durationUnit!!)
         }
 

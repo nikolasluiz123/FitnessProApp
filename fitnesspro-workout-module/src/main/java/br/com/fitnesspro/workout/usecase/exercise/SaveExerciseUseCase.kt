@@ -227,7 +227,10 @@ class SaveExerciseUseCase(
             else -> null
         }
 
-        if (validationError == null && toExercise.rest != null && toExercise.id == null) {
+        if (validationError == null &&
+            toExercise.rest != null &&
+            toExercise.rest?.bestChronoUnit() != toExercise.unitRest) {
+
             toExercise.rest = toExercise.rest!!.toMillis(toExercise.unitRest!!)
         }
 
@@ -248,7 +251,10 @@ class SaveExerciseUseCase(
             else -> null
         }
 
-        if (validationError == null && toExercise.duration != null && toExercise.id == null) {
+        if (validationError == null &&
+            toExercise.duration != null &&
+            toExercise.duration?.bestChronoUnit() != toExercise.unitDuration) {
+
             toExercise.duration = toExercise.duration!!.toMillis(toExercise.unitDuration!!)
         }
 
