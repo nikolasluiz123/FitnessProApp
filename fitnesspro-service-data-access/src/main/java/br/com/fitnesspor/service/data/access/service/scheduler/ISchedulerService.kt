@@ -1,7 +1,6 @@
 package br.com.fitnesspor.service.data.access.service.scheduler
 
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER
-import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_CONFIG
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_CONFIG_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_CONFIG_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_EXPORT
@@ -40,12 +39,6 @@ interface ISchedulerService {
         @Header("Authorization") token: String,
         @Body schedulerDTOList: List<SchedulerDTO>
     ): Response<ExportationServiceResponse>
-
-    @POST("$SCHEDULER$SCHEDULER_CONFIG")
-    suspend fun saveSchedulerConfig(
-        @Header("Authorization") token: String,
-        @Body schedulerConfigDTO: SchedulerConfigDTO
-    ): Response<PersistenceServiceResponse<SchedulerConfigDTO>>
 
     @POST("$SCHEDULER$SCHEDULER_CONFIG_EXPORT")
     suspend fun saveSchedulerConfigBatch(

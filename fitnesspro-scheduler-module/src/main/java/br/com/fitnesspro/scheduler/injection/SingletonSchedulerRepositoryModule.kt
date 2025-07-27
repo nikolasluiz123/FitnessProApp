@@ -54,12 +54,10 @@ class SingletonSchedulerRepositoryModule {
     fun provideSchedulerConfigRepository(
         @ApplicationContext context: Context,
         schedulerConfigDAO: SchedulerConfigDAO,
-        schedulerWebClient: SchedulerWebClient,
     ): SchedulerConfigRepository {
         return SchedulerConfigRepository(
             context = context,
             schedulerConfigDAO = schedulerConfigDAO,
-            schedulerWebClient = schedulerWebClient,
         )
     }
 
