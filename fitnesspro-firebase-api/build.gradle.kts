@@ -18,7 +18,7 @@ val webClientId: String = localProperties.getProperty("WEB_CLIENT_ID")
 
 android {
     namespace = "br.com.fitnesspro.firebase.api"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26

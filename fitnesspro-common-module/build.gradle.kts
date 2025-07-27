@@ -20,7 +20,7 @@ val appJWT: String = localProperties.getProperty("APP_JWT")
 
 android {
     namespace = "br.com.fitnesspro.common"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26

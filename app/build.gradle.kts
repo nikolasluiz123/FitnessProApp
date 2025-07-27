@@ -21,7 +21,7 @@ plugins {
 
 android {
     namespace = "br.com.fitnesspro"
-    compileSdk = 35
+    compileSdk = 36
 
 //    signingConfigs {
 //        create("release") {
@@ -37,7 +37,7 @@ android {
     defaultConfig {
         applicationId = "br.com.fitnesspro"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.3.0"
 
