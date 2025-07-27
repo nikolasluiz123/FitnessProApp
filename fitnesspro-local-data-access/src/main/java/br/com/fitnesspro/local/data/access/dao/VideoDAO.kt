@@ -25,20 +25,13 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from video_exercise ve ")
-            add(" inner join video v on ve.video_id = v.id ")
-            add(" inner join exercise e on ve.exercise_id = e.id ")
-            add(" inner join workout_group wg on e.workout_group_id = wg.id ")
-            add(" inner join workout w on wg.workout_id = w.id ")
+            add(" from video v ")
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where (w.academy_member_person_id = ? or w.personal_trainer_person_id = ?) ")
-            add(" and v.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
+            add(" where v.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
             add(" limit ? offset ? ")
 
-            params.add(personId)
-            params.add(personId)
             params.add(pageInfos.pageSize)
             params.add(pageInfos.pageSize * pageInfos.pageNumber)
         }
