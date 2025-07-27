@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val firestoreChatRepository: FirestoreChatRepository,
     private val sendChatMessageUseCase: SendChatMessageUseCase,
     private val personRepository: PersonRepository,

@@ -42,8 +42,8 @@ import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnSaveSchedulerC
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_FAB_SAVE
 import br.com.fitnesspro.scheduler.ui.state.SchedulerConfigUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerConfigViewModel
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

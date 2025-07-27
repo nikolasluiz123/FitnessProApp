@@ -62,8 +62,8 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.core.theme.ValueTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 import kotlinx.coroutines.flow.flowOf
 
 

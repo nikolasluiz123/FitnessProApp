@@ -45,8 +45,8 @@ import br.com.fitnesspro.workout.ui.navigation.navigateToRegisterEvolutionScreen
 import br.com.fitnesspro.workout.ui.navigation.preDefinitionScreen
 import br.com.fitnesspro.workout.ui.navigation.preDefinitionsScreen
 import br.com.fitnesspro.workout.ui.navigation.registerEvolutionScreen
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @Composable
 fun FitnessProNavHost(

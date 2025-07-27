@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SchedulerDetailsViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val schedulerRepository: SchedulerRepository,
     private val personRepository: PersonRepository,
     private val globalEvents: GlobalEvents,

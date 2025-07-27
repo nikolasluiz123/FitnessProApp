@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SchedulerConfigViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val personRepository: PersonRepository,
     private val schedulerConfigRepository: SchedulerConfigRepository,
     private val schedulerConfigUseCase: SaveSchedulerConfigUseCase,

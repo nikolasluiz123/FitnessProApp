@@ -51,7 +51,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PreDefinitionViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val globalEvents: GlobalEvents,
     private val videoRepository: VideoRepository,
     private val exercisePreDefinitionRepository: ExercisePreDefinitionRepository,

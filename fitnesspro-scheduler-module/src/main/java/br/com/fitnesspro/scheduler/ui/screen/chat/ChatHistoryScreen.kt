@@ -31,8 +31,8 @@ import br.com.fitnesspro.scheduler.ui.screen.chat.enums.EnumChatHistoryScreenTag
 import br.com.fitnesspro.scheduler.ui.screen.chat.enums.EnumChatHistoryScreenTags.CHAT_HISTORY_SCREEN_FAB_ADD
 import br.com.fitnesspro.scheduler.ui.state.ChatHistoryUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.ChatHistoryViewModel
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 
 @Composable
 fun ChatHistoryScreen(

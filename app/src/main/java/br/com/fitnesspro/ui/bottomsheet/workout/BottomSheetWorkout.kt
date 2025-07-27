@@ -9,8 +9,8 @@ import br.com.fitnesspro.compose.components.bottomsheet.BottomSheet
 import br.com.fitnesspro.core.R.drawable
 import br.com.fitnesspro.firebase.api.analytics.logBottomSheetItemClick
 import br.com.fitnesspro.model.enums.EnumUserType
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 
 @Composable
 fun BottomSheetWorkout(

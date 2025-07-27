@@ -32,8 +32,8 @@ import br.com.fitnesspro.scheduler.ui.screen.details.enums.EnumSchedulerDetailsT
 import br.com.fitnesspro.scheduler.ui.screen.details.enums.EnumSchedulerDetailsTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_SITUATION
 import br.com.fitnesspro.scheduler.ui.state.SchedulerDetailsUIState
 import br.com.fitnesspro.to.TOScheduler
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 
 @Composable
 internal fun SchedulerDetailItem(

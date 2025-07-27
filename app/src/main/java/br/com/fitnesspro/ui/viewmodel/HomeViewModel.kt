@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val userRepository: UserRepository,
     private val personRepository: PersonRepository,
     private val globalEvents: GlobalEvents

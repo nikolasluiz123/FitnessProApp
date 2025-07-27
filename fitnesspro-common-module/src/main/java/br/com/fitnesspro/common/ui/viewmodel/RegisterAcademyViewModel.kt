@@ -43,7 +43,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterAcademyViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val personRepository: PersonRepository,
     private val academyRepository: AcademyRepository,
     private val savePersonAcademyTimeUseCase: SavePersonAcademyTimeUseCase,

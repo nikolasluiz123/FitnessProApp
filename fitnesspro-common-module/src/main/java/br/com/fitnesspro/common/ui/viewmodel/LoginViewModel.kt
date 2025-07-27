@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val defaultLoginUseCase: DefaultLoginUseCase,
     private val googleLoginUseCase: GoogleLoginUseCase,
     private val userRepository: UserRepository,

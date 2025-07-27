@@ -63,8 +63,8 @@ import br.com.fitnesspro.workout.ui.screen.predefinitions.maintenance.callbacks.
 import br.com.fitnesspro.workout.ui.screen.predefinitions.maintenance.enums.EnumPreDefinitionScreenTags
 import br.com.fitnesspro.workout.ui.state.PreDefinitionUIState
 import br.com.fitnesspro.workout.ui.viewmodel.PreDefinitionViewModel
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

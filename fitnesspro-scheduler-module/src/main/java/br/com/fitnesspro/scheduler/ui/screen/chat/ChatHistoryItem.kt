@@ -37,8 +37,8 @@ import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.navigation.ChatArgs
 import br.com.fitnesspro.scheduler.ui.screen.chat.callbacks.OnNavigateToChat
 import br.com.fitnesspro.scheduler.ui.screen.chat.enums.EnumChatHistoryScreenTags
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 import java.time.ZoneId
 
 @Composable

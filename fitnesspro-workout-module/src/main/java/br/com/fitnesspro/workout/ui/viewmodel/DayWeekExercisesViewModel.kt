@@ -44,7 +44,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DayWeekExercisesViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val globalEvents: GlobalEvents,
     private val workoutRepository: WorkoutRepository,
     private val workoutGroupRepository: WorkoutGroupRepository,

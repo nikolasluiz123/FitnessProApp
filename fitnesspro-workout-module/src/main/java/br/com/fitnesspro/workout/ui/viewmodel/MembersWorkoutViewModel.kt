@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MembersWorkoutViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val globalEvents: GlobalEvents,
     private val workoutRepository: WorkoutRepository
 ): FitnessProViewModel() {

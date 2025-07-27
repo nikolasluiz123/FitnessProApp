@@ -38,8 +38,8 @@ import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScr
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_SAVE_KEYBOARD_DONE
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_START_HOUR_FIELD
 import br.com.fitnesspro.scheduler.ui.state.CompromiseUIState
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 
 @Composable
 fun UniqueCompromise(

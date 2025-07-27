@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatHistoryViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val personRepository: PersonRepository,
     private val firestoreChatRepository: FirestoreChatRepository,
     private val globalEvents: GlobalEvents

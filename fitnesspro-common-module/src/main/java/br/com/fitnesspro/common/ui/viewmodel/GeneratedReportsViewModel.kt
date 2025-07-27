@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GeneratedReportsViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val globalEvents: GlobalEvents,
     private val reportRepository: ReportRepository,
     private val deleteReportUseCase: DeleteReportUseCase,

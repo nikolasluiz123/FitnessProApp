@@ -25,8 +25,8 @@ import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.TAB_ROW
 import br.com.fitnesspro.core.theme.TabTitleTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logTabClick
 import br.com.fitnesspro.firebase.api.analytics.logTabScroll
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

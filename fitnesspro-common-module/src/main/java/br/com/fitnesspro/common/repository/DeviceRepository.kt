@@ -8,9 +8,9 @@ import br.com.fitnesspro.mappers.getDevice
 import br.com.fitnesspro.mappers.getDeviceDTO
 import br.com.fitnesspro.mappers.getPersonDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
+import com.google.firebase.Firebase
 import com.google.firebase.installations.FirebaseInstallations
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.ktx.messaging
+import com.google.firebase.messaging.messaging
 import kotlinx.coroutines.tasks.await
 import java.time.ZoneId
 

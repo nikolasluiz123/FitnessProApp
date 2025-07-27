@@ -30,10 +30,9 @@ import br.com.fitnesspro.scheduler.ui.screen.details.callbacks.OnNavigateToCompr
 import br.com.fitnesspro.scheduler.ui.screen.details.enums.EnumSchedulerDetailsTags.SCHEDULER_DETAILS_SCREEN_FAB_ADD
 import br.com.fitnesspro.scheduler.ui.state.SchedulerDetailsUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerDetailsViewModel
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 import java.time.ZoneId
-import java.time.ZoneOffset
 
 @Composable
 fun SchedulerDetailsScreen(

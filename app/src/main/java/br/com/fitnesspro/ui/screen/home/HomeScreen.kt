@@ -53,8 +53,8 @@ import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUT
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_LOGOUT_BUTTON
 import br.com.fitnesspro.ui.state.HomeUIState
 import br.com.fitnesspro.ui.viewmodel.HomeViewModel
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 
 @Composable
 fun HomeScreen(

@@ -47,8 +47,8 @@ import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumExerciseScreenTags
 import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumTabsExerciseScreen
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
 import br.com.fitnesspro.workout.ui.viewmodel.ExerciseViewModel
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.io.File

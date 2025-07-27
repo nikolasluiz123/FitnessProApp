@@ -66,7 +66,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CompromiseViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val personRepository: PersonRepository,
     private val schedulerRepository: SchedulerRepository,
     private val saveCompromiseUseCase: SaveCompromiseUseCase,

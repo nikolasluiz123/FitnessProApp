@@ -45,8 +45,8 @@ import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreen
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerScreenTags.SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB
 import br.com.fitnesspro.scheduler.ui.state.SchedulerUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.SchedulerViewModel
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 
 @Composable
 fun SchedulerScreen(

@@ -64,8 +64,8 @@ import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.core.theme.ValueTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.tuple.AcademyTuple
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
