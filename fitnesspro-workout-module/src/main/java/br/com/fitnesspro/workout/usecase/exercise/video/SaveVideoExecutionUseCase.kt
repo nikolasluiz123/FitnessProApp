@@ -26,7 +26,9 @@ class SaveVideoExecutionUseCase(
             validateVideoDuration(toVideoExerciseExecution.toVideo!!)
             validateVideoSize(toVideoExerciseExecution.toVideo!!, videoFile)
 
-            videoRepository.createExecutionVideo(toVideoExerciseExecution)
+            videoRepository.saveVideoExerciseExecutionLocally(
+                toVideoExerciseExecutionList = listOf(toVideoExerciseExecution)
+            )
 
             null
         } catch (ex: VideoException) {

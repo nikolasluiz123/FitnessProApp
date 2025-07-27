@@ -6,7 +6,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumTransmissionState
-import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.Video
 import java.util.UUID
 
@@ -14,7 +13,7 @@ import java.util.UUID
     tableName = "video_exercise_execution",
     foreignKeys = [
         ForeignKey(
-            entity = Exercise::class,
+            entity = ExerciseExecution::class,
             parentColumns = ["id"],
             childColumns = ["exercise_execution_id"],
             onDelete = ForeignKey.CASCADE

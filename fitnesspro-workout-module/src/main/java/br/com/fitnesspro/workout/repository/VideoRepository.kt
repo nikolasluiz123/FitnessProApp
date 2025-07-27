@@ -105,12 +105,6 @@ class VideoRepository(
         }
     }
 
-    suspend fun createExecutionVideo(toVideoExerciseExecution: TOVideoExerciseExecution) {
-        runInTransaction {
-            saveVideoExerciseExecutionLocally(listOf(toVideoExerciseExecution))
-        }
-    }
-
     suspend fun saveVideoExercisePreDefinitionLocally(toVideoExercisePreDefinitionList: List<TOVideoExercisePreDefinition>) {
         val inserts = toVideoExercisePreDefinitionList.filter { it.id == null }
 
