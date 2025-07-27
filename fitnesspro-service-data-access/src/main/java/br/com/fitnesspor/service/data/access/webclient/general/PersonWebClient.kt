@@ -55,20 +55,6 @@ class PersonWebClient(
         )
     }
 
-    suspend fun savePersonAcademyTime(
-        token: String,
-        personAcademyTime: PersonAcademyTime
-    ): PersistenceServiceResponse<PersonAcademyTimeDTO> {
-        return persistenceServiceErrorHandlingBlock(
-            codeBlock = {
-                personService.savePersonAcademyTime(
-                    token = formatToken(token),
-                    personAcademyTimeDTO = personAcademyTime.getPersonAcademyTimeDTO()
-                ).getResponseBody(PersonAcademyTimeDTO::class.java)
-            }
-        )
-    }
-
     suspend fun savePersonAcademyTimeBatch(
         token: String,
         personAcademyTimeList: List<PersonAcademyTime>
