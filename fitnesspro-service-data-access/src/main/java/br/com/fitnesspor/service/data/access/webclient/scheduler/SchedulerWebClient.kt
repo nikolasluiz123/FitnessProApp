@@ -103,7 +103,7 @@ class SchedulerWebClient(
         return exportationServiceErrorHandlingBlock(
             codeBlock = {
                 schedulerService.saveSchedulerConfigBatch(
-                    token = token,
+                    token = formatToken(token),
                     schedulerConfigDTOList = schedulerConfigList.map(SchedulerConfig::getSchedulerConfigDTO)
                 ).getResponseBody()
             }
