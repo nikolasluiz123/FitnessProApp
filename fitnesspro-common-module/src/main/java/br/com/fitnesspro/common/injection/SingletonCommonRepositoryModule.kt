@@ -87,13 +87,11 @@ class SingletonCommonRepositoryModule {
         @ApplicationContext context: Context,
         academyDAO: AcademyDAO,
         personAcademyTimeDAO: PersonAcademyTimeDAO,
-        personWebClient: PersonWebClient,
     ): AcademyRepository {
         return AcademyRepository(
             context = context,
             academyDAO = academyDAO,
             personAcademyTimeDAO = personAcademyTimeDAO,
-            personWebClient = personWebClient,
         )
     }
 

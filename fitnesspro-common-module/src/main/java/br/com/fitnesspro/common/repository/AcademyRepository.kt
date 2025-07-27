@@ -3,7 +3,6 @@ package br.com.fitnesspro.common.repository
 import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDecorator
@@ -12,7 +11,6 @@ import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.mappers.getPersonAcademyTime
 import br.com.fitnesspro.mappers.getTOAcademy
 import br.com.fitnesspro.mappers.getTOPersonAcademyTime
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.to.TOPersonAcademyTime
@@ -25,14 +23,11 @@ class AcademyRepository(
     context: Context,
     private val academyDAO: AcademyDAO,
     private val personAcademyTimeDAO: PersonAcademyTimeDAO,
-    private val personWebClient: PersonWebClient,
 ): FitnessProRepository(context) {
 
     suspend fun savePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
         val personAcademyTime = toPersonAcademyTime.getPersonAcademyTime()
-
         savePersonAcademyTimeLocally(toPersonAcademyTime, personAcademyTime)
-        savePersonAcademyTimeRemote(personAcademyTime)
     }
 
     private suspend fun savePersonAcademyTimeLocally(
@@ -44,17 +39,6 @@ class AcademyRepository(
             toPersonAcademyTime.id = personAcademyTime.id
         } else {
             personAcademyTimeDAO.update(personAcademyTime, true)
-        }
-    }
-
-    private suspend fun savePersonAcademyTimeRemote(personAcademyTime: PersonAcademyTime) {
-        val response = personWebClient.savePersonAcademyTime(
-            token = getValidToken(),
-            personAcademyTime = personAcademyTime
-        )
-
-        if (response.success) {
-            personAcademyTimeDAO.update(personAcademyTime.copy(transmissionState = EnumTransmissionState.TRANSMITTED))
         }
     }
 
@@ -130,51 +114,6 @@ class AcademyRepository(
     suspend fun inactivatePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
         toPersonAcademyTime.active = false
         savePersonAcademyTime(toPersonAcademyTime)
-    }
-
-    suspend fun savePersonAcademyTimeBatch(toPersonAcademyTimeList: List<TOPersonAcademyTime>) = withContext(IO) {
-        savePersonAcademyTimeBatchLocally(toPersonAcademyTimeList)
-        savePersonAcademyTimeBatchRemote(toPersonAcademyTimeList)
-    }
-
-    private suspend fun savePersonAcademyTimeBatchLocally(toPersonAcademyTimeList: List<TOPersonAcademyTime>) {
-        val insertionList = mutableListOf<PersonAcademyTime>()
-        val updateList = mutableListOf<PersonAcademyTime>()
-
-        toPersonAcademyTimeList.forEach { toPersonAcademyTime ->
-            val personAcademyTime = toPersonAcademyTime.getPersonAcademyTime()
-
-            if (toPersonAcademyTime.id == null) {
-                insertionList.add(personAcademyTime)
-            } else {
-                updateList.add(personAcademyTime)
-            }
-        }
-
-        if (insertionList.isNotEmpty()) {
-            personAcademyTimeDAO.insertBatch(insertionList)
-        }
-
-        if (updateList.isNotEmpty()) {
-            personAcademyTimeDAO.updateBatch(updateList)
-        }
-    }
-
-    private suspend fun savePersonAcademyTimeBatchRemote(toPersonAcademyTimeList: List<TOPersonAcademyTime>) {
-        val personAcademyTimeList = toPersonAcademyTimeList.map { it.getPersonAcademyTime() }
-
-        val response = personWebClient.savePersonAcademyTimeBatch(
-            token = getValidToken(),
-            personAcademyTimeList = personAcademyTimeList
-        )
-
-        if (response.success) {
-            personAcademyTimeDAO.updateBatch(
-                models = personAcademyTimeList.map {
-                    it.copy(transmissionState = EnumTransmissionState.TRANSMITTED)
-                }
-            )
-        }
     }
 
 }
