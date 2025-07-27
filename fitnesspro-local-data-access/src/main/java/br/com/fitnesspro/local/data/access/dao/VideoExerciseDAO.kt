@@ -51,9 +51,7 @@ abstract class VideoExerciseDAO: IntegratedMaintenanceDAO<VideoExercise>() {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select ve.id as id, ")
-            add("        ve.exercise_id as exerciseId, ")
-            add("        ve.video_id as videoId ")
+            add(" select ve.* ")
         }
 
         val from = StringJoiner(QR_NL).apply {
@@ -86,70 +84,11 @@ abstract class VideoExerciseDAO: IntegratedMaintenanceDAO<VideoExercise>() {
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<VideoExercise>
 
-    @Query(" select * from video_exercise where exercise_id in (:exerciseIds) ")
-    abstract suspend fun getListVideoExerciseFromExercises(exerciseIds: List<String>): List<VideoExercise>
+    @Query(" select * from video_exercise where exercise_id in (:exerciseIds) and active = 1 ")
+    abstract suspend fun getListVideoExerciseActiveFromExercises(exerciseIds: List<String>): List<VideoExercise>
 
     @Delete
     abstract suspend fun deleteVideosExercise(videos: List<VideoExercise>)
-
-    suspend fun getExistsVideoExerciseTransmitted(
-        workoutId: String? = null,
-        workoutGroupId: String? = null,
-        exerciseId: String? = null
-    ): Boolean {
-        val params = mutableListOf<Any>()
-
-        val select = StringJoiner(QR_NL).apply {
-            add(" select 1 ")
-        }
-
-        val from = StringJoiner(QR_NL).apply {
-            add(" from video_exercise ve ")
-            add(" inner join exercise e on ve.exercise_id = e.id ")
-
-            when {
-                workoutId != null -> {
-                    add(" inner join workout_group wg on e.workout_group_id = wg.id ")
-                    add(" inner join workout w on wg.workout_id = w.id ")
-                }
-
-                workoutGroupId != null -> {
-                    add(" inner join workout_group wg on e.workout_group_id = wg.id ")
-                }
-            }
-        }
-
-        val where = StringJoiner(QR_NL).apply {
-            add(" where ve.transmission_state = '${EnumTransmissionState.TRANSMITTED.name}' ")
-
-            when {
-                workoutId != null -> {
-                    add(" and w.id = ? ")
-                    params.add(workoutId)
-                }
-
-                workoutGroupId != null -> {
-                    add(" and wg.id = ? ")
-                    params.add(workoutGroupId)
-                }
-
-                exerciseId != null -> {
-                    add(" and e.id = ? ")
-                    params.add(exerciseId)
-                }
-            }
-        }
-
-        val sql = StringJoiner(QR_NL).apply {
-            add(" select exists ( ")
-            add(select.toString())
-            add(from.toString())
-            add(where.toString())
-            add(" ) as existVideo ")
-        }
-
-        return executeQueryExistsVideoExercise(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
-    }
 
     @RawQuery
     abstract suspend fun executeQueryExistsVideoExercise(query: SupportSQLiteQuery): Boolean

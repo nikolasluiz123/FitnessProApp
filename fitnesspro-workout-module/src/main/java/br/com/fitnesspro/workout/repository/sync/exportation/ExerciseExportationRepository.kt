@@ -5,6 +5,7 @@ import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.workout.Exercise
@@ -14,6 +15,7 @@ import br.com.fitnesspro.workout.R
 class ExerciseExportationRepository(
     context: Context,
     private val exerciseDAO: ExerciseDAO,
+    private val workoutGroupDAO: WorkoutGroupDAO,
     private val exerciseWebClient: ExerciseWebClient,
     private val personRepository: PersonRepository
 ): AbstractExportationRepository<Exercise, ExerciseDAO>(context) {
@@ -33,7 +35,13 @@ class ExerciseExportationRepository(
         modelList: List<Exercise>,
         token: String
     ): ExportationServiceResponse {
-        return exerciseWebClient.saveExerciseBatch(token, modelList)
+        val groups = modelList.map { workoutGroupDAO.findById(it.workoutGroupId)!! }
+
+        return exerciseWebClient.saveExerciseBatch(
+            token = token,
+            exerciseList = modelList,
+            workoutGroupList = groups
+        )
     }
 
     override fun getDescription(): String {

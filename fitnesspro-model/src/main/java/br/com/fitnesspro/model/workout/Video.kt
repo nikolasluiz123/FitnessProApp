@@ -24,5 +24,7 @@ data class Video(
     var kbSize: Long? = null,
     var seconds: Long? = null,
     var width: Int? = null,
-    var height: Int? = null
+    var height: Int? = null,
+    @ColumnInfo(name = "active", defaultValue = "true")
+    var active: Boolean = true
 ) : IntegratedModel

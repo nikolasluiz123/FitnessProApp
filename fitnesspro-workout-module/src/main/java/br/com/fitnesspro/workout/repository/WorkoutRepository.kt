@@ -1,13 +1,11 @@
 package br.com.fitnesspro.workout.repository
 
 import android.content.Context
-import br.com.fitnesspor.service.data.access.webclient.workout.WorkoutWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.geTOWorkout
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.workout.R
@@ -19,7 +17,6 @@ class WorkoutRepository(
     private val workoutGroupDAO: WorkoutGroupDAO,
     private val personRepository: PersonRepository,
     private val exerciseRepository: ExerciseRepository,
-    private val workoutWebClient: WorkoutWebClient
 ): FitnessProRepository(context) {
 
     suspend fun getListWorkout(quickFilter: String? = null): List<TOWorkout> {
@@ -43,25 +40,15 @@ class WorkoutRepository(
     }
 
     suspend fun inactivateWorkout(workoutId: String) {
-        val success = inactivateWorkoutRemote(workoutId)
-        inactivateWorkoutLocally(workoutId, success)
-    }
-
-    private suspend fun inactivateWorkoutLocally(workoutId: String, remoteSuccess: Boolean) {
-        saveWorkoutInactivatedLocally(workoutId, remoteSuccess)
+        saveWorkoutInactivatedLocally(workoutId)
         val listWorkoutGroupId = saveWorkoutGroupsInactivatedLocally(workoutId)
-        exerciseRepository.inactivateExercisesFromWorkoutGroupLocally(listWorkoutGroupId, remoteSuccess)
+        exerciseRepository.inactivateExercisesFromWorkoutGroupLocally(listWorkoutGroupId)
     }
 
-    private suspend fun saveWorkoutInactivatedLocally(workoutId: String, remoteSuccess: Boolean) {
+    private suspend fun saveWorkoutInactivatedLocally(workoutId: String) {
         workoutDAO.findWorkoutById(workoutId)?.let {
             it.active = false
-
-            if (remoteSuccess) {
-                it.transmissionState = EnumTransmissionState.TRANSMITTED
-            }
-
-            workoutDAO.update(it)
+            workoutDAO.update(it, true)
         }
     }
 
@@ -76,15 +63,6 @@ class WorkoutRepository(
         workoutGroupDAO.updateBatch(workoutGroups, true)
 
         return ids
-    }
-
-    private suspend fun inactivateWorkoutRemote(workoutId: String): Boolean {
-        val response = workoutWebClient.inactivateWorkout(
-            token = getValidToken(),
-            workoutId = workoutId
-        )
-
-        return response.success
     }
 
     suspend fun getCurrentMemberWorkoutList(): List<CurrentWorkoutDecorator> {

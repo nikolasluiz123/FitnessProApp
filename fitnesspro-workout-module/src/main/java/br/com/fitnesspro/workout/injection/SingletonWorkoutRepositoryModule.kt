@@ -57,7 +57,6 @@ class SingletonWorkoutRepositoryModule {
         workoutGroupDAO: WorkoutGroupDAO,
         personRepository: PersonRepository,
         exerciseRepository: ExerciseRepository,
-        workoutWebClient: WorkoutWebClient
     ): WorkoutRepository {
         return WorkoutRepository(
             context = context,
@@ -65,7 +64,6 @@ class SingletonWorkoutRepositoryModule {
             workoutGroupDAO = workoutGroupDAO,
             personRepository = personRepository,
             exerciseRepository = exerciseRepository,
-            workoutWebClient = workoutWebClient
         )
     }
 
@@ -74,13 +72,11 @@ class SingletonWorkoutRepositoryModule {
         @ApplicationContext context: Context,
         workoutGroupDAO: WorkoutGroupDAO,
         exerciseDAO: ExerciseDAO,
-        workoutWebClient: WorkoutWebClient
     ): WorkoutGroupRepository {
         return WorkoutGroupRepository(
             context = context,
             workoutGroupDAO = workoutGroupDAO,
             exerciseDAO = exerciseDAO,
-            workoutWebClient = workoutWebClient
         )
     }
 
@@ -88,17 +84,13 @@ class SingletonWorkoutRepositoryModule {
     fun provideExerciseRepository(
         @ApplicationContext context: Context,
         exerciseDAO: ExerciseDAO,
-        workoutGroupDAO: WorkoutGroupDAO,
         workoutGroupRepository: WorkoutGroupRepository,
-        exerciseWebClient: ExerciseWebClient,
         videoRepository: VideoRepository
     ): ExerciseRepository {
         return ExerciseRepository(
             context = context,
             exerciseDAO = exerciseDAO,
-            workoutGroupDAO = workoutGroupDAO,
             workoutGroupRepository = workoutGroupRepository,
-            exerciseWebClient = exerciseWebClient,
             videoRepository = videoRepository
         )
     }
@@ -246,12 +238,14 @@ class SingletonWorkoutRepositoryModule {
     fun provideExerciseExportationRepository(
         @ApplicationContext context: Context,
         exerciseDAO: ExerciseDAO,
+        workoutGroupDAO: WorkoutGroupDAO,
         exerciseWebClient: ExerciseWebClient,
         personRepository: PersonRepository
         ): ExerciseExportationRepository {
         return ExerciseExportationRepository(
             context = context,
             exerciseDAO = exerciseDAO,
+            workoutGroupDAO = workoutGroupDAO,
             exerciseWebClient = exerciseWebClient,
             personRepository = personRepository
         )

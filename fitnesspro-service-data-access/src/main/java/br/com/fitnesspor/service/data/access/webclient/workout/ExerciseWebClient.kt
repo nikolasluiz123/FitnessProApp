@@ -9,7 +9,6 @@ import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.mappers.getExerciseDTO
 import br.com.fitnesspro.mappers.getExerciseExecutionDTO
 import br.com.fitnesspro.mappers.getExercisePreDefinitionDTO
-import br.com.fitnesspro.mappers.getNewVideoExerciseDTO
 import br.com.fitnesspro.mappers.getNewVideoExerciseExecutionDTO
 import br.com.fitnesspro.mappers.getVideoDTO
 import br.com.fitnesspro.mappers.getVideoExerciseDTO
@@ -27,7 +26,6 @@ import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExercisePreDefinitionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.NewExerciseExecutionDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
@@ -47,25 +45,17 @@ class ExerciseWebClient(
     private val videoService: IVideoService,
 ): FitnessProWebClient(context) {
 
-    suspend fun saveExercise(token: String, exercise: Exercise, workoutGroup: WorkoutGroup): PersistenceServiceResponse<ExerciseDTO> {
-        return persistenceServiceErrorHandlingBlock(
-            codeBlock = {
-                exerciseService.saveExercise(
-                    token = formatToken(token),
-                    exerciseDTO = exercise.getExerciseDTO(workoutGroup)
-                ).getResponseBody(ExerciseDTO::class.java)
-            }
-        )
-    }
-
     suspend fun saveExerciseBatch(
         token: String,
         exerciseList: List<Exercise>,
+        workoutGroupList: List<WorkoutGroup>
     ): ExportationServiceResponse {
         return exportationServiceErrorHandlingBlock(
             codeBlock = {
+                val groupMap = workoutGroupList.associateBy { it.id }
+
                 val exerciseListDTO = exerciseList.map { exercise ->
-                    exercise.getExerciseDTO(null)
+                    exercise.getExerciseDTO(groupMap[exercise.workoutGroupId]!!)
                 }
 
                 exerciseService.saveExerciseBatch(
@@ -158,17 +148,6 @@ class ExerciseWebClient(
                     token = formatToken(token),
                     videoDTOList = videoListDTO
                 ).getResponseBody()
-            }
-        )
-    }
-
-    suspend fun createExerciseVideo(token: String, video: Video, videoExercise: VideoExercise): PersistenceServiceResponse<NewVideoExerciseDTO> {
-        return persistenceServiceErrorHandlingBlock(
-            codeBlock = {
-                videoService.createExerciseVideo(
-                    token = formatToken(token),
-                    newVideoExerciseDTO = videoExercise.getNewVideoExerciseDTO(video)
-                ).getResponseBody(NewVideoExerciseDTO::class.java)
             }
         )
     }

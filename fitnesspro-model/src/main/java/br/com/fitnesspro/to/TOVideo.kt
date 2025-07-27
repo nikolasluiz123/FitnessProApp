@@ -12,5 +12,6 @@ data class TOVideo(
     var kbSize: Long? = null,
     var seconds: Long? = null,
     var width: Int? = null,
-    var height: Int? = null
+    var height: Int? = null,
+    var active: Boolean = true
 ): BaseTO

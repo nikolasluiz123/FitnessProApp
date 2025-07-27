@@ -24,21 +24,13 @@ fun TOVideo.getVideo(): Video {
         kbSize = kbSize,
         seconds = seconds,
         width = width,
-        height = height
+        height = height,
+        active = active
     )
 
     this.id?.let { model.id = it }
 
     return model
-}
-
-fun Video.getTOVideo(): TOVideo {
-    return TOVideo(
-        id = id,
-        extension = extension,
-        filePath = filePath,
-        date = date
-    )
 }
 
 fun VideoDTO.getVideo(): Video {
@@ -51,6 +43,7 @@ fun VideoDTO.getVideo(): Video {
         seconds = seconds,
         width = width,
         height = height,
+        active = active,
         transmissionState = EnumTransmissionState.TRANSMITTED
     )
 }
@@ -59,6 +52,7 @@ fun TOVideoExercise.getVideoExercise(): VideoExercise {
     val model = VideoExercise(
         exerciseId = exerciseId,
         videoId = toVideo?.id,
+        active = active
     )
 
     this.id?.let { model.id = it }
@@ -66,20 +60,13 @@ fun TOVideoExercise.getVideoExercise(): VideoExercise {
     return model
 }
 
-fun VideoExercise.getTOVideoExercise(toVideo: TOVideo): TOVideoExercise {
-    return TOVideoExercise(
-        id = id,
-        exerciseId = exerciseId,
-        toVideo = toVideo
-    )
-}
-
 fun VideoExerciseDTO.getVideoExercise(): VideoExercise {
     return VideoExercise(
         id = id!!,
         exerciseId = exerciseId,
         transmissionState = EnumTransmissionState.TRANSMITTED,
-        videoId = videoId
+        videoId = videoId,
+        active = active
     )
 }
 
@@ -88,6 +75,7 @@ fun VideoExercise.getVideoExerciseDTO(): VideoExerciseDTO {
         id = id,
         exerciseId = exerciseId,
         videoId = videoId,
+        active = active
     )
 }
 
@@ -101,6 +89,7 @@ fun Video.getVideoDTO(): VideoDTO {
         seconds = seconds,
         width = width,
         height = height,
+        active = active
     )
 }
 

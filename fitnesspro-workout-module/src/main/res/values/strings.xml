@@ -95,9 +95,7 @@
     <string name="workout_group_edit_dialog_msg_inactivated_success">Grupo Muscular excluído com sucesso</string>
     <string name="exercise_screen_msg_video_not_found">Não foi possível encontrar o vídeo para reproduzir. É possível que o mesmo ainda esteja sendo baixado para o dispositivo.</string>
     <string name="network_required_inactivate_exercise_message">Para excluir um exercício é necessário ter conexão com a internet.</string>
-    <string name="network_required_inactivate_workout_group_message">Para excluir um grupo muscular é necessário ter conexão com a internet.</string>
     <string name="exercise_screen_msg_confirm_inactivate_exercise">Você tem certeza de que deseja excluir esse exercício? Essa ação não poderá ser desfeita.</string>
-    <string name="network_required_inactivate_workout_message">Para excluir o treino é necessário ter conexão com a internet.</string>
     <string name="current_workout_title">Treino Atual</string>
     <string name="current_workout_subtitle">%1$s até %2$s</string>
     <string name="exercise_details_screen_label_tab_orientation">Orientações</string>

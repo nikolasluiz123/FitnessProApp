@@ -21,14 +21,7 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select v.id as id, ")
-            add("        v.extension as extension, ")
-            add("        v.file_path as filePath, ")
-            add("        v.date as date, ")
-            add("        v.kb_size as kbSize, ")
-            add("        v.seconds as seconds, ")
-            add("        v.width as width, ")
-            add("        v.height as height ")
+            add(" select v.* ")
         }
 
         val from = StringJoiner(QR_NL).apply {
@@ -64,4 +57,13 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
 
     @Query(" delete from video where id in (:ids) ")
     abstract suspend fun deleteVideos(ids: List<String>)
+
+    @Query("""
+        select v.*
+        from video v
+        inner join video_exercise ve on v.id = ve.video_id
+        where ve.exercise_id in (:exerciseIds)
+        and v.active = 1
+    """)
+    abstract suspend fun getListVideosActiveFromExercise(exerciseIds: List<String>): List<Video>
 }

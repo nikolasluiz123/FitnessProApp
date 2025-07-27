@@ -60,16 +60,12 @@ class SingletonWorkoutUseCaseModule {
 
     @Provides
     fun provideInactivateWorkoutGroupUseCase(
-        @ApplicationContext context: Context,
         workoutGroupRepository: WorkoutGroupRepository,
         exerciseRepository: ExerciseRepository,
-        videoRepository: VideoRepository
     ): InactivateWorkoutGroupUseCase {
         return InactivateWorkoutGroupUseCase(
-            context = context,
             workoutGroupRepository = workoutGroupRepository,
             exerciseRepository = exerciseRepository,
-            videoRepository = videoRepository
         )
     }
 
@@ -97,27 +93,19 @@ class SingletonWorkoutUseCaseModule {
 
     @Provides
     fun provideInactivateExerciseUseCase(
-        @ApplicationContext context: Context,
         exerciseRepository: ExerciseRepository,
-        videoRepository: VideoRepository
     ): InactivateExerciseUseCase {
         return InactivateExerciseUseCase(
-            context = context,
             exerciseRepository = exerciseRepository,
-            videoRepository = videoRepository
         )
     }
 
     @Provides
     fun provideInactivateWorkoutUseCase(
-        @ApplicationContext context: Context,
         workoutRepository: WorkoutRepository,
-        videoRepository: VideoRepository
     ): InactivateWorkoutUseCase {
         return InactivateWorkoutUseCase(
-            context = context,
             workoutRepository = workoutRepository,
-            videoRepository = videoRepository
         )
     }
 

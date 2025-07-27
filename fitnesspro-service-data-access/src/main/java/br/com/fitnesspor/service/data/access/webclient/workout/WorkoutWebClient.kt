@@ -17,26 +17,13 @@ import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupPreDefini
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
 
 class WorkoutWebClient(
     context: Context,
     private val workoutService: IWorkoutService,
 ): FitnessProWebClient(context) {
-
-    suspend fun saveWorkout(token: String, workout: Workout) {
-        persistenceServiceErrorHandlingBlock(
-            codeBlock = {
-                workoutService.saveWorkout(
-                    token = formatToken(token),
-                    workoutDTO = workout.getWorkoutDTO()
-                ).getResponseBody(WorkoutDTO::class.java)
-            }
-        )
-    }
 
     suspend fun saveWorkoutBatch(
         token: String,
@@ -50,17 +37,6 @@ class WorkoutWebClient(
                     token = formatToken(token),
                     workoutDTOList = listDTO
                 ).getResponseBody()
-            }
-        )
-    }
-
-    suspend fun saveWorkoutGroup(token: String, workoutGroup: WorkoutGroup): PersistenceServiceResponse<WorkoutGroupDTO> {
-        return persistenceServiceErrorHandlingBlock(
-            codeBlock = {
-                workoutService.saveWorkoutGroup(
-                    token = formatToken(token),
-                    workoutGroupDTO = workoutGroup.getWorkoutGroupDTO()
-                ).getResponseBody(WorkoutGroupDTO::class.java)
             }
         )
     }
@@ -113,34 +89,6 @@ class WorkoutWebClient(
                     filter = gson.toJson(filter),
                     pageInfos = gson.toJson(pageInfos)
                 ).getResponseBody(WorkoutGroupDTO::class.java)
-            }
-        )
-    }
-
-    suspend fun inactivateWorkoutGroup(
-        token: String,
-        workoutGroupId: String
-    ): FitnessProServiceResponse {
-        return serviceErrorHandlingBlock(
-            codeBlock = {
-                workoutService.inactivateWorkoutGroup(
-                    token = formatToken(token),
-                    workoutGroupId = workoutGroupId
-                ).getResponseBody()
-            }
-        )
-    }
-
-    suspend fun inactivateWorkout(
-        token: String,
-        workoutId: String
-    ): FitnessProServiceResponse {
-        return serviceErrorHandlingBlock(
-            codeBlock = {
-                workoutService.inactivateWorkout(
-                    token = formatToken(token),
-                    workoutId = workoutId
-                ).getResponseBody()
             }
         )
     }

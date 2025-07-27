@@ -35,12 +35,6 @@ import retrofit2.http.Query
 
 interface IExerciseService {
 
-    @POST(EXERCISE)
-    suspend fun saveExercise(
-        @Header("Authorization") token: String,
-        @Body exerciseDTO: ExerciseDTO
-    ): Response<PersistenceServiceResponse<ExerciseDTO>>
-
     @GET("$EXERCISE$EXERCISE_IMPORT")
     suspend fun importExercise(
         @Header("Authorization") token: String,

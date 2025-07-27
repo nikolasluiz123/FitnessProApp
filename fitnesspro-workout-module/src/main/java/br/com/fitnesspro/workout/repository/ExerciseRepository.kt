@@ -1,23 +1,17 @@
 package br.com.fitnesspro.workout.repository
 
 import android.content.Context
-import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
-import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.getExercise
 import br.com.fitnesspro.mappers.getTOExercise
-import br.com.fitnesspro.mappers.getWorkoutGroup
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
 
 class ExerciseRepository(
     context: Context,
     private val exerciseDAO: ExerciseDAO,
-    private val workoutGroupDAO: WorkoutGroupDAO,
     private val workoutGroupRepository: WorkoutGroupRepository,
-    private val exerciseWebClient: ExerciseWebClient,
     private val videoRepository: VideoRepository
 ): FitnessProRepository(context) {
 
@@ -30,13 +24,12 @@ class ExerciseRepository(
 
     suspend fun saveExercise(toExercise: TOExercise) {
         runInTransaction {
-            val toWorkoutGroup = saveWorkoutGroupExerciseLocally(toExercise)
+            saveWorkoutGroupExerciseLocally(toExercise)
             saveExerciseLocally(toExercise)
-            saveExerciseRemote(toExercise, toWorkoutGroup)
         }
     }
 
-    private suspend fun saveWorkoutGroupExerciseLocally(toExercise: TOExercise): TOWorkoutGroup? {
+    private suspend fun saveWorkoutGroupExerciseLocally(toExercise: TOExercise) {
         val toWorkoutGroup = if (toExercise.workoutGroupId == null) {
             TOWorkoutGroup(
                 name = toExercise.workoutGroupName,
@@ -55,8 +48,6 @@ class ExerciseRepository(
             workoutGroupRepository.saveWorkoutGroupLocally(to)
             toExercise.workoutGroupId = to.id
         }
-
-        return toWorkoutGroup
     }
 
     private suspend fun saveExerciseLocally(toExercise: TOExercise) {
@@ -71,51 +62,22 @@ class ExerciseRepository(
         toExercise.id = exercise.id
     }
 
-    private suspend fun saveExerciseRemote(toExercise: TOExercise, toWorkoutGroup: TOWorkoutGroup?) {
-        exerciseWebClient.saveExercise(
-            token = getValidToken(),
-            exercise = toExercise.getExercise(),
-            workoutGroup = toWorkoutGroup?.getWorkoutGroup()!!
-        )
-    }
-
-    suspend fun inactivateExercisesFromWorkoutGroupLocally(listWorkoutGroupId: List<String>, remoteSuccess: Boolean) {
+    suspend fun inactivateExercisesFromWorkoutGroupLocally(listWorkoutGroupId: List<String>) {
         val exercises = exerciseDAO.findExercisesFromWorkoutGroup(listWorkoutGroupId).onEach {
             it.active = false
         }
 
         exerciseDAO.updateBatch(exercises, true)
-
-        if (remoteSuccess) {
-            exercises.forEach {
-                it.transmissionState = EnumTransmissionState.TRANSMITTED
-            }
-
-            exerciseDAO.updateBatch(exercises)
-            videoRepository.deleteVideos(exercises.map { it.id })
-        }
+        videoRepository.inactivateVideoExercise(exercises.map { it.id })
     }
 
     suspend fun inactivateExercise(exerciseId: String) {
         val exercise = exerciseDAO.findById(exerciseId).apply {
             active = false
         }
-        exerciseDAO.update(exercise)
 
-        val workoutGroup = workoutGroupDAO.findById(exercise.workoutGroupId)!!
-
-        val response = exerciseWebClient.saveExercise(
-            token = getValidToken(),
-            exercise = exercise,
-            workoutGroup = workoutGroup
-        )
-
-        if (response.success) {
-            exercise.transmissionState = EnumTransmissionState.TRANSMITTED
-            exerciseDAO.update(exercise)
-
-            videoRepository.deleteVideos(listOf(exerciseId))
-        }
+        exerciseDAO.update(exercise, true)
+        videoRepository.inactivateVideoExercise(listOf(exerciseId))
     }
 
 }

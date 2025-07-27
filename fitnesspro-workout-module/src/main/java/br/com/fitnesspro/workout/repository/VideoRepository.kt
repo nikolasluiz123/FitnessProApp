@@ -11,7 +11,6 @@ import br.com.fitnesspro.mappers.getVideo
 import br.com.fitnesspro.mappers.getVideoExercise
 import br.com.fitnesspro.mappers.getVideoExerciseExecution
 import br.com.fitnesspro.mappers.getVideoExercisePreDefinition
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.to.TOVideoExercise
 import br.com.fitnesspro.to.TOVideoExerciseExecution
 import br.com.fitnesspro.to.TOVideoExercisePreDefinition
@@ -28,7 +27,6 @@ class VideoRepository(
     suspend fun saveVideoExercise(toVideoExercise: TOVideoExercise) {
         runInTransaction {
             saveVideoExerciseLocally(toVideoExercise)
-            saveVideoExerciseRemote(toVideoExercise)
         }
     }
 
@@ -49,29 +47,6 @@ class VideoRepository(
             toVideoExercise.id = videoExercise.id
         } else {
             videoExerciseDAO.update(videoExercise)
-        }
-    }
-
-    private suspend fun saveVideoExerciseRemote(toVideoExercise: TOVideoExercise) {
-        val video = toVideoExercise.toVideo!!.getVideo()
-        val videoExercise = toVideoExercise.getVideoExercise()
-
-        val response = exerciseWebClient.createExerciseVideo(
-            token = getValidToken(),
-            video = video,
-            videoExercise = videoExercise
-        )
-
-        if (response.success) {
-            videoDAO.update(
-                model = video.copy(transmissionState = EnumTransmissionState.TRANSMITTED),
-                writeTransmissionState = true
-            )
-
-            videoExerciseDAO.update(
-                model = videoExercise.copy(transmissionState = EnumTransmissionState.TRANSMITTED),
-                writeTransmissionState = true
-            )
         }
     }
 
@@ -99,19 +74,16 @@ class VideoRepository(
         return videoExercisePreDefinitionDAO.getCountVideosPreDefinition(exercisePreDefinitionId)
     }
 
-    suspend fun deleteVideos(exerciseIds: List<String>) {
-        val videoExerciseList = videoExerciseDAO.getListVideoExerciseFromExercises(exerciseIds)
+    suspend fun inactivateVideoExercise(exerciseIds: List<String>) {
+        val videos = videoDAO.getListVideosActiveFromExercise(exerciseIds).onEach {
+            it.active = false
+        }
+        val videoExerciseList = videoExerciseDAO.getListVideoExerciseActiveFromExercises(exerciseIds).onEach {
+            it.active = false
+        }
 
-        videoDAO.deleteVideos(videoExerciseList.map { it.videoId!! })
-        videoExerciseDAO.deleteVideosExercise(videoExerciseList)
-    }
-
-    suspend fun getExistsVideoExerciseTransmitted(
-        workoutId: String? = null,
-        workoutGroupId: String? = null,
-        exerciseId: String? = null
-    ): Boolean {
-        return videoExerciseDAO.getExistsVideoExerciseTransmitted(workoutId, workoutGroupId, exerciseId)
+        videoDAO.updateBatch(videos, true)
+        videoExerciseDAO.updateBatch(videoExerciseList, true)
     }
 
     suspend fun saveVideoExerciseExecutionLocally(toVideoExerciseExecutionList: List<TOVideoExerciseExecution>) {
