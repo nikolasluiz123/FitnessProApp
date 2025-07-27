@@ -112,31 +112,23 @@ class VideoRepository(
     }
 
     suspend fun saveVideoExercisePreDefinitionLocally(toVideoExercisePreDefinitionList: List<TOVideoExercisePreDefinition>) {
-        val (inserts, updates) = toVideoExercisePreDefinitionList.partition { it.id == null }
+        val inserts = toVideoExercisePreDefinitionList.filter { it.id == null }
 
-        if (inserts.isNotEmpty()) saveVideoExercisePreDefinitionLocally(inserts, isInsert = true)
-        if (updates.isNotEmpty()) saveVideoExercisePreDefinitionLocally(updates, isInsert = false)
-    }
-
-    private suspend fun saveVideoExercisePreDefinitionLocally(list: List<TOVideoExercisePreDefinition>, isInsert: Boolean) {
-        val videoPreDefinitionList = list.map {
-            val videoPreDefinition = it.getVideoExercisePreDefinition()
-            if (isInsert) it.id = videoPreDefinition.id
-            videoPreDefinition
-        }
-
-        val videoList = list.mapNotNull {
-            it.toVideo?.getVideo()?.also { video ->
-                if (isInsert) it.toVideo?.id = video.id
+        if (inserts.isNotEmpty()) {
+            val videoList = inserts.map {
+                val video = it.toVideo?.getVideo()!!
+                it.toVideo?.id = video.id
+                video
             }
-        }
 
-        if (isInsert) {
+            val videoPreDefinitionList = inserts.map {
+                val videoPreDefinition = it.getVideoExercisePreDefinition()
+                it.id = videoPreDefinition.id
+                videoPreDefinition
+            }
+
             videoDAO.insertBatch(videoList)
             videoExercisePreDefinitionDAO.insertBatch(videoPreDefinitionList)
-        } else {
-            videoDAO.updateBatch(videoList)
-            videoExercisePreDefinitionDAO.updateBatch(videoPreDefinitionList)
         }
     }
 }
