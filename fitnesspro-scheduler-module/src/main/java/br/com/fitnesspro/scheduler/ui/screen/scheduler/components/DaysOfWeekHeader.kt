@@ -40,7 +40,7 @@ internal fun DaysOfWeekHeader() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DaysOfWeekHeaderPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -50,7 +50,7 @@ private fun DaysOfWeekHeaderPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DaysOfWeekHeaderPreviewLight() {
     FitnessProTheme {

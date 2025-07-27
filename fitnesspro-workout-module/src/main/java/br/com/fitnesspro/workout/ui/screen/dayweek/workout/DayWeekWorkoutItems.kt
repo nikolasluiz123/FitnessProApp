@@ -269,7 +269,7 @@ private fun getLabelSetsAndReps(toExercise: TOExercise): String {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun GroupItemPreview() {
     FitnessProTheme {
@@ -279,7 +279,7 @@ private fun GroupItemPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekWorkoutItemPreview() {
     FitnessProTheme {
@@ -289,7 +289,7 @@ private fun DayWeekWorkoutItemPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekWorkoutItem2Preview() {
     FitnessProTheme {
@@ -299,7 +299,7 @@ private fun DayWeekWorkoutItem2Preview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekWorkoutItem3Preview() {
     FitnessProTheme {
@@ -309,7 +309,7 @@ private fun DayWeekWorkoutItem3Preview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekWorkoutItem4Preview() {
     FitnessProTheme {
@@ -319,7 +319,7 @@ private fun DayWeekWorkoutItem4Preview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun GroupItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -329,7 +329,7 @@ private fun GroupItemPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekWorkoutItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -339,7 +339,7 @@ private fun DayWeekWorkoutItemPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekWorkoutItem2PreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -349,7 +349,7 @@ private fun DayWeekWorkoutItem2PreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekWorkoutItem3PreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -359,7 +359,7 @@ private fun DayWeekWorkoutItem3PreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekWorkoutItem4PreviewDark() {
     FitnessProTheme(darkTheme = true) {

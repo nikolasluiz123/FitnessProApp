@@ -101,7 +101,7 @@ fun VideoGalleryHeader(title: String, modifier: Modifier) {
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun VideoGalleryEmptyCollapsedPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -113,7 +113,7 @@ private fun VideoGalleryEmptyCollapsedPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun VideoGalleryEmptyExpandedPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -125,7 +125,7 @@ private fun VideoGalleryEmptyExpandedPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun VideoGalleryExpandedPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -137,7 +137,7 @@ private fun VideoGalleryExpandedPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun VideoGalleryCollapsedPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -149,7 +149,7 @@ private fun VideoGalleryCollapsedPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun VideoGalleryEmptyExpandedPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -161,7 +161,7 @@ private fun VideoGalleryEmptyExpandedPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun VideoGalleryEmptyCollapsedPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -173,7 +173,7 @@ private fun VideoGalleryEmptyCollapsedPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun VideoGalleryCollapsedPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -185,7 +185,7 @@ private fun VideoGalleryCollapsedPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun VideoGalleryExpandedPreviewLight() {
     FitnessProTheme(darkTheme = false) {

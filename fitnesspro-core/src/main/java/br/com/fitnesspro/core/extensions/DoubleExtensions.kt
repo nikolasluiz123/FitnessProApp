@@ -12,7 +12,7 @@ fun Double?.formatToDecimal(): String {
 
 fun String.toDoubleValue(): Double? {
     return try {
-        DecimalFormat.getInstance().parse(this) as Double
+        DecimalFormat.getInstance().parse(this)?.toDouble()
     } catch (_: Exception) {
         return null
     }

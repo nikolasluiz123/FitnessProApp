@@ -25,7 +25,6 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExercisePreDefinitionDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.NewExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
@@ -34,7 +33,6 @@ import br.com.fitnesspro.shared.communication.dtos.workout.VideoExercisePreDefin
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
@@ -216,44 +214,6 @@ class ExerciseWebClient(
                     token = formatToken(token),
                     videoDTOs = videosListDTO
                 ).getResponseBody()
-            }
-        )
-    }
-
-    suspend fun newExerciseExecution(
-        token: String,
-        exerciseExecution: ExerciseExecution,
-        videos: List<Video>,
-        videoExerciseExecutionList: List<VideoExerciseExecution>
-    ): FitnessProServiceResponse {
-        return serviceErrorHandlingBlock(
-            codeBlock = {
-                val videosById = videos.associateBy { it.id }
-
-                val videosDTO = videoExerciseExecutionList.map { videoExec ->
-                    videoExec.getNewVideoExerciseExecutionDTO(video = videosById[videoExec.videoId]!!)
-                }
-
-                val exerciseExecutionDTO = NewExerciseExecutionDTO(
-                    exerciseExecutionDTO = exerciseExecution.getExerciseExecutionDTO(),
-                    videosDTO = videosDTO
-                )
-
-                exerciseService.newExerciseExecution(
-                    token = formatToken(token),
-                    newExerciseExecutionDTO = exerciseExecutionDTO
-                ).getResponseBody()
-            }
-        )
-    }
-
-    suspend fun saveExerciseExecution(token: String, exerciseExecution: ExerciseExecution): PersistenceServiceResponse<ExerciseExecutionDTO> {
-        return persistenceServiceErrorHandlingBlock(
-            codeBlock = {
-                exerciseService.saveExerciseExecution(
-                    token = formatToken(token),
-                    exerciseExecutionDTO = exerciseExecution.getExerciseExecutionDTO()
-                ).getResponseBody(ExerciseExecutionDTO::class.java)
             }
         )
     }

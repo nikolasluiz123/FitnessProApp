@@ -197,7 +197,7 @@ fun TimePickerDialog(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProDatePickerDialogPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -211,7 +211,7 @@ private fun FitnessProDatePickerDialogPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun TimePickerDialogPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -225,7 +225,7 @@ private fun TimePickerDialogPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProDatePickerDialogPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -239,7 +239,7 @@ private fun FitnessProDatePickerDialogPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun TimePickerDialogPreviewLight() {
     FitnessProTheme(darkTheme = false) {

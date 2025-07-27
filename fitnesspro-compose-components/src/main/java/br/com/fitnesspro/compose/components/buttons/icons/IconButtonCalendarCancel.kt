@@ -29,7 +29,7 @@ fun IconButtonCalendarCancel(
 
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonCalendarCancelPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -39,7 +39,7 @@ fun IconButtonCalendarCancelPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonCalendarCancelPreviewLight() {
     FitnessProTheme(darkTheme = false) {

@@ -250,7 +250,7 @@ fun LoginScreen(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun LoginScreenPreview() {
     FitnessProTheme {
@@ -260,7 +260,7 @@ private fun LoginScreenPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun LoginScreenDarkPreview() {
     FitnessProTheme(darkTheme = true) {
@@ -270,7 +270,7 @@ private fun LoginScreenDarkPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun LoginScreenDarkDisabledPreview() {
     FitnessProTheme(darkTheme = true) {
@@ -284,7 +284,7 @@ private fun LoginScreenDarkDisabledPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun LoginScreenDisabledPreview() {
     FitnessProTheme() {

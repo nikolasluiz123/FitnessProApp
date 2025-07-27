@@ -120,7 +120,7 @@ fun HorizontalLabeledSwitchButton(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProSwitchButtonCheckedPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -135,7 +135,7 @@ private fun FitnessProSwitchButtonCheckedPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProSwitchButtonUncheckedPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -150,7 +150,7 @@ private fun FitnessProSwitchButtonUncheckedPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun HorizontalLabeledSwitchButtonCheckedPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -166,7 +166,7 @@ private fun HorizontalLabeledSwitchButtonCheckedPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProSwitchButtonCheckedPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -181,7 +181,7 @@ private fun FitnessProSwitchButtonCheckedPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProSwitchButtonUncheckedPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -196,7 +196,7 @@ private fun FitnessProSwitchButtonUncheckedPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun HorizontalLabeledSwitchButtonCheckedPreviewLight() {
     FitnessProTheme(darkTheme = false) {

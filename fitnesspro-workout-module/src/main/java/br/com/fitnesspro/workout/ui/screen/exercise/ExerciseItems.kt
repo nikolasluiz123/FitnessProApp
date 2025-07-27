@@ -65,7 +65,7 @@ fun GroupDialogItem(toWorkoutGroup: TOWorkoutGroup, onItemClick: (TOWorkoutGroup
     FitnessProHorizontalDivider()
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExercisePagedDialogItemPreview() {
     FitnessProTheme {
@@ -77,7 +77,7 @@ private fun ExercisePagedDialogItemPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun GroupDialogItemPreview() {
     FitnessProTheme {
@@ -89,7 +89,7 @@ private fun GroupDialogItemPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExercisePagedDialogItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -101,7 +101,7 @@ private fun ExercisePagedDialogItemPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun GroupDialogItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {

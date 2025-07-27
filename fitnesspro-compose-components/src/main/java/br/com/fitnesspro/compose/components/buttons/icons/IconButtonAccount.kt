@@ -28,7 +28,7 @@ fun IconButtonAccount(
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonAccountPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -38,7 +38,7 @@ fun IconButtonAccountPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonAccountPreviewLight() {
     FitnessProTheme(darkTheme = false) {

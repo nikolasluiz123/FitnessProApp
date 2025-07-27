@@ -60,7 +60,7 @@ fun ExerciseExecutionItem(
             item.weight?.formatToDecimal()?.let {
                 LabeledText(
                     label = stringResource(R.string.exercise_execution_label_weight),
-                    value = it,
+                    value = stringResource(R.string.exercise_details_item_weight, it),
                     modifier = Modifier
                         .width(width.dp)
                         .padding(start = 8.dp, top = 8.dp)

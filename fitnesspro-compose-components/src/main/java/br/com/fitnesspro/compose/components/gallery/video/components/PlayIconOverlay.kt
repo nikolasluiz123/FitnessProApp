@@ -26,7 +26,7 @@ fun PlayIconOverlay(hasThumbnail: Boolean) {
     )
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun PlayIconOverlayPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -36,7 +36,7 @@ private fun PlayIconOverlayPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun PlayIconOverlayPreviewLight() {
     FitnessProTheme(darkTheme = false) {

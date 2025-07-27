@@ -35,7 +35,7 @@ fun IconButtonArrowBack(
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonArrowBackPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -45,7 +45,7 @@ fun IconButtonArrowBackPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonArrowBackPreviewLight() {
     FitnessProTheme(darkTheme = false) {

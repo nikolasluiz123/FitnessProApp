@@ -170,7 +170,7 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
 
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RegisterUserTabGeneralPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -183,7 +183,7 @@ private fun RegisterUserTabGeneralPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RegisterUserTabGeneralProfessionalPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -196,7 +196,7 @@ private fun RegisterUserTabGeneralProfessionalPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RegisterUserTabGeneralAuthenticatedServicePreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -210,7 +210,7 @@ private fun RegisterUserTabGeneralAuthenticatedServicePreviewDark() {
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RegisterUserTabGeneralPreview() {
     FitnessProTheme {
@@ -223,7 +223,7 @@ private fun RegisterUserTabGeneralPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RegisterUserTabGeneralProfessionalPreview() {
     FitnessProTheme {
@@ -236,7 +236,7 @@ private fun RegisterUserTabGeneralProfessionalPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RegisterUserTabGeneralAuthenticatedServicePreview() {
     FitnessProTheme {

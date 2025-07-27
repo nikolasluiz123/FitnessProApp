@@ -80,7 +80,7 @@ fun SquaredButton(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SquaredButtonPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -94,7 +94,7 @@ private fun SquaredButtonPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SquaredButtonDisabledPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -108,7 +108,7 @@ private fun SquaredButtonDisabledPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SquaredButtonPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -122,7 +122,7 @@ private fun SquaredButtonPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SquaredButtonDisabledPreviewDark() {
     FitnessProTheme(darkTheme = true) {

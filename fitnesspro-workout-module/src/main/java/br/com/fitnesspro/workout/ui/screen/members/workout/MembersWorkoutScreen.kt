@@ -118,7 +118,7 @@ fun MembersWorkoutScreen(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun MembersWorkoutScreenEmptyPreview() {
     FitnessProTheme {
@@ -130,7 +130,7 @@ private fun MembersWorkoutScreenEmptyPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun MembersWorkoutScreenEmptyPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -142,7 +142,7 @@ private fun MembersWorkoutScreenEmptyPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun MembersWorkoutScreenPreview() {
     FitnessProTheme {
@@ -154,7 +154,7 @@ private fun MembersWorkoutScreenPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun MembersWorkoutScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {

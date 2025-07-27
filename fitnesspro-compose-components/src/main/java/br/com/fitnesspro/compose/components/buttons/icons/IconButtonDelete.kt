@@ -38,7 +38,7 @@ fun IconButtonDelete(
 
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonDeletePreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -48,7 +48,7 @@ fun IconButtonDeletePreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonDeletePreviewLight() {
     FitnessProTheme(darkTheme = false) {

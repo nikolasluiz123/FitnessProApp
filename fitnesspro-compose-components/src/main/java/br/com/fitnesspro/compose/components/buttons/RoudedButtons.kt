@@ -81,7 +81,7 @@ fun RoundedFacebookButton(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RoundedGoogleButtonPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -91,7 +91,7 @@ private fun RoundedGoogleButtonPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RoundedFacebookButtonPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -101,7 +101,7 @@ private fun RoundedFacebookButtonPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RoundedGoogleButtonPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -111,7 +111,7 @@ private fun RoundedGoogleButtonPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RoundedFacebookButtonPreviewLight() {
     FitnessProTheme(darkTheme = false) {

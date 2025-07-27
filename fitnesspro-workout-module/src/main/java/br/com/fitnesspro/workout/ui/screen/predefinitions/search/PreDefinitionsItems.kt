@@ -207,7 +207,7 @@ private fun getLabelSetsAndReps(predefinition: ExercisePredefinitionGroupedTuple
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExercisePreDefinitionItemPreview() {
     FitnessProTheme {
@@ -220,7 +220,7 @@ private fun ExercisePreDefinitionItemPreview() {
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun PreDefinitionGroupItemPreview() {
     FitnessProTheme {
@@ -233,7 +233,7 @@ private fun PreDefinitionGroupItemPreview() {
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExercisePreDefinitionItemDarkPreview() {
     FitnessProTheme(darkTheme = true) {
@@ -245,7 +245,7 @@ private fun ExercisePreDefinitionItemDarkPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun PreDefinitionGroupItemDarkPreview() {
     FitnessProTheme(darkTheme = true) {

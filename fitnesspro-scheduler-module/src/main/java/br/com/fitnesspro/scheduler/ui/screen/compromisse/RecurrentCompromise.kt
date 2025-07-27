@@ -154,7 +154,7 @@ internal fun RecurrentCompromise(state: CompromiseUIState) {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RecurrentCompromisePreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -166,7 +166,7 @@ private fun RecurrentCompromisePreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RecurrentCompromisePreviewLight() {
     FitnessProTheme(darkTheme = false) {

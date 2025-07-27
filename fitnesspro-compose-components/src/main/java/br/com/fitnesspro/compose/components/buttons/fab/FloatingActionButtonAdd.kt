@@ -40,7 +40,7 @@ fun FloatingActionButtonAdd(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun FloatingActionButtonAddPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -50,7 +50,7 @@ fun FloatingActionButtonAddPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun FloatingActionButtonAddPreviewLight() {
     FitnessProTheme(darkTheme = false) {

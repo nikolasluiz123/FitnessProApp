@@ -104,7 +104,7 @@ fun FitnessProTextButton(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProButtonPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -117,7 +117,7 @@ private fun FitnessProButtonPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProOutlinedButtonPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -130,7 +130,7 @@ private fun FitnessProOutlinedButtonPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProTextButtonPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -144,7 +144,7 @@ private fun FitnessProTextButtonPreviewDark() {
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProButtonPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -157,7 +157,7 @@ private fun FitnessProButtonPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProOutlinedButtonPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -170,7 +170,7 @@ private fun FitnessProOutlinedButtonPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProTextButtonPreviewLight() {
     FitnessProTheme(darkTheme = false) {

@@ -101,7 +101,7 @@ fun SimpleFilter(
     )
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SimpleFilterPreviewWithTextDark() {
     FitnessProTheme(darkTheme = true) {
@@ -119,7 +119,7 @@ private fun SimpleFilterPreviewWithTextDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SimpleFilterPreviewWithLight() {
     FitnessProTheme {
@@ -137,7 +137,7 @@ private fun SimpleFilterPreviewWithLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SimpleFilterPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -155,7 +155,7 @@ private fun SimpleFilterPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SimpleFilterPreviewLight() {
     FitnessProTheme {

@@ -61,7 +61,7 @@ internal fun DayCell(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayCellPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -74,7 +74,7 @@ private fun DayCellPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayCellPreviewLight() {
     FitnessProTheme {

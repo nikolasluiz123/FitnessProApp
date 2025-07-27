@@ -53,7 +53,7 @@ fun App(content: @Composable () -> Unit = { LoginScreen() }) {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun AppPreview() {
     FitnessProTheme {

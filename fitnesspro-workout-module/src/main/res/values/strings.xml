@@ -151,4 +151,5 @@
     <string name="exercise_pre_definition_no_workout_group">Sem Grupo</string>
     <string name="pre_definitions_simple_filter_placeholder">Buscar por Grupo ou Exercício</string>
     <string name="pre_definitions_empty_message">Nenhuma Predefinição encontrada</string>
+    <string name="exercise_details_item_weight">%1$s KG</string>
 </resources>

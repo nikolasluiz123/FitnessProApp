@@ -520,7 +520,7 @@ fun <T: ITupleListItem> ListDialogOutlinedTextFieldValidation(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun OutlinedTextFieldValidationEmptyPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -536,7 +536,7 @@ fun OutlinedTextFieldValidationEmptyPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun OutlinedTextFieldValidationPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -553,7 +553,7 @@ fun OutlinedTextFieldValidationPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun OutlinedTextFieldValidationWithoutErrorPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -570,7 +570,7 @@ fun OutlinedTextFieldValidationWithoutErrorPreviewDark() {
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun OutlinedTextFieldValidationEmptyPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -586,7 +586,7 @@ fun OutlinedTextFieldValidationEmptyPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun OutlinedTextFieldValidationPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -603,7 +603,7 @@ fun OutlinedTextFieldValidationPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun OutlinedTextFieldValidationWithoutErrorPreviewLight() {
     FitnessProTheme(darkTheme = false) {

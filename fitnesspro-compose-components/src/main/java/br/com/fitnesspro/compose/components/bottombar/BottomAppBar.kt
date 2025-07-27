@@ -38,7 +38,7 @@ fun FitnessProBottomAppBar(
     )
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProBottomAppBarPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -58,7 +58,7 @@ private fun FitnessProBottomAppBarPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProBottomAppBarPreviewLight() {
     FitnessProTheme(darkTheme = false) {

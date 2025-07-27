@@ -226,7 +226,7 @@ private fun ReportsList(
     )
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun GeneratedReportsScreenEmptyDarkPreview() {
     FitnessProTheme(darkTheme = true) {
@@ -238,7 +238,7 @@ private fun GeneratedReportsScreenEmptyDarkPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun GeneratedReportsScreenDarkPreview() {
     FitnessProTheme(darkTheme = true) {
@@ -250,7 +250,7 @@ private fun GeneratedReportsScreenDarkPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun GeneratedReportsScreenEmptyPreview() {
     FitnessProTheme {
@@ -262,7 +262,7 @@ private fun GeneratedReportsScreenEmptyPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun GeneratedReportsScreenPreview() {
     FitnessProTheme {

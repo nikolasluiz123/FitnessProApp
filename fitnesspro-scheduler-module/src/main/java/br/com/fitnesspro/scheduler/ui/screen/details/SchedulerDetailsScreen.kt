@@ -130,7 +130,7 @@ private fun getEmptyMessage(state: SchedulerDetailsUIState): Int {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SchedulerDetailsPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -142,7 +142,7 @@ private fun SchedulerDetailsPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SchedulerDetailsEmptyPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -154,7 +154,7 @@ private fun SchedulerDetailsEmptyPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SchedulerDetailsPreviewLight() {
     FitnessProTheme {
@@ -166,7 +166,7 @@ private fun SchedulerDetailsPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SchedulerDetailsEmptyPreviewLight() {
     FitnessProTheme {

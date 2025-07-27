@@ -28,7 +28,7 @@ fun IconButtonSearch(
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonSearchPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -38,7 +38,7 @@ fun IconButtonSearchPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonSearchPreviewLight() {
     FitnessProTheme(darkTheme = false) {

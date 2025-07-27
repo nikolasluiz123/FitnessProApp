@@ -82,7 +82,7 @@ private fun Modifier.appendScroll(state: VideoGalleryState): Modifier {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ThumbnailsViewerCollapsedPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -95,7 +95,7 @@ private fun ThumbnailsViewerCollapsedPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ThumbnailsViewerCollapsedPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -108,7 +108,7 @@ private fun ThumbnailsViewerCollapsedPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ThumbnailsViewerExpandedPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -121,7 +121,7 @@ private fun ThumbnailsViewerExpandedPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ThumbnailsViewerExpandedManyValuesPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -134,7 +134,7 @@ private fun ThumbnailsViewerExpandedManyValuesPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ThumbnailsViewerExpandedPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -147,7 +147,7 @@ private fun ThumbnailsViewerExpandedPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ThumbnailsViewerExpandedManyValuesPreviewLight() {
     FitnessProTheme(darkTheme = false) {

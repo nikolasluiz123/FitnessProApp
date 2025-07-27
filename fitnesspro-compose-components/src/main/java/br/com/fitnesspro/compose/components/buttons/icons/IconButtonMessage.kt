@@ -38,7 +38,7 @@ fun IconButtonMessage(
 
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonMessagePreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -48,7 +48,7 @@ fun IconButtonMessagePreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonMessagePreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -58,7 +58,7 @@ fun IconButtonMessagePreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonMessageWithMessagesPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -68,7 +68,7 @@ fun IconButtonMessageWithMessagesPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonMessageWithMessagesPreviewLight() {
     FitnessProTheme(darkTheme = false) {

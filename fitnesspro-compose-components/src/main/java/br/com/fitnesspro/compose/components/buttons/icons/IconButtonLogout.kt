@@ -27,7 +27,7 @@ fun IconButtonLogout(
     )
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun IconButtonLogoutPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -37,7 +37,7 @@ private fun IconButtonLogoutPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun IconButtonLogoutPreviewLight() {
     FitnessProTheme(darkTheme = false) {

@@ -30,7 +30,7 @@ fun IconButtonClose(
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonClosePreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -40,7 +40,7 @@ fun IconButtonClosePreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonClosePreviewLight() {
     FitnessProTheme(darkTheme = false) {

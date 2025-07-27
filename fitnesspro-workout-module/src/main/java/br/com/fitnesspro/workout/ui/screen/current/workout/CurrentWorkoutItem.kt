@@ -73,7 +73,7 @@ fun CurrentWorkoutItem(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CurrentWorkoutItemPreview() {
     FitnessProTheme {
@@ -85,7 +85,7 @@ private fun CurrentWorkoutItemPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CurrentWorkoutItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {

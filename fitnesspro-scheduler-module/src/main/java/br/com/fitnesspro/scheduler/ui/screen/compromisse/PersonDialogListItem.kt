@@ -64,7 +64,7 @@ internal fun PersonDialogListItem(
     FitnessProHorizontalDivider()
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun MemberDialogListItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -76,7 +76,7 @@ private fun MemberDialogListItemPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun MemberDialogListItemPreviewLight() {
     FitnessProTheme {

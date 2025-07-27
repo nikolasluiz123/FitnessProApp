@@ -1,10 +1,8 @@
 package br.com.fitnesspor.service.data.access.service.workout
 
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE
-import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_EXECUTION
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_EXECUTION_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_EXECUTION_IMPORT
-import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_EXECUTION_NEW
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_EXECUTION_VIDEO_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_EXECUTION_VIDEO_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_EXPORT
@@ -18,14 +16,11 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1.EXERCISE_VID
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExercisePreDefinitionDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.NewExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExercisePreDefinitionDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -86,18 +81,6 @@ interface IExerciseService {
         @Header("Authorization") token: String,
         @Body videoDTOs: List<VideoExerciseExecutionDTO>
     ): Response<ExportationServiceResponse>
-
-    @POST("$EXERCISE$EXERCISE_EXECUTION_NEW")
-    suspend fun newExerciseExecution(
-        @Header("Authorization") token: String,
-        @Body newExerciseExecutionDTO: NewExerciseExecutionDTO
-    ): Response<FitnessProServiceResponse>
-
-    @POST("$EXERCISE$EXERCISE_EXECUTION")
-    suspend fun saveExerciseExecution(
-        @Header("Authorization") token: String,
-        @Body exerciseExecutionDTO: ExerciseExecutionDTO
-    ): Response<PersistenceServiceResponse<ExerciseExecutionDTO>>
 
     @POST("$EXERCISE$EXERCISE_PREDEFINITION_EXPORT")
     suspend fun saveExercisePreDefinitionBatch(

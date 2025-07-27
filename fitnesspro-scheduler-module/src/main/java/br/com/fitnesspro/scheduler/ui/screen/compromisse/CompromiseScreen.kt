@@ -321,7 +321,7 @@ private fun showSuccessMessage(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CompromiseScreenInclusionMemberPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -333,7 +333,7 @@ private fun CompromiseScreenInclusionMemberPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CompromiseScreenEditionMemberPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -345,7 +345,7 @@ private fun CompromiseScreenEditionMemberPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CompromiseScreenEditionCancelatedMemberPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -357,7 +357,7 @@ private fun CompromiseScreenEditionCancelatedMemberPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CompromiseScreenInclusionPersonalTrainerPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -369,7 +369,7 @@ private fun CompromiseScreenInclusionPersonalTrainerPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CompromiseScreenRecurrentInclusionPersonalTrainerPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -382,7 +382,7 @@ private fun CompromiseScreenRecurrentInclusionPersonalTrainerPreviewDark() {
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CompromiseScreenInclusionMemberPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -394,7 +394,7 @@ private fun CompromiseScreenInclusionMemberPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CompromiseScreenEditionMemberPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -406,7 +406,7 @@ private fun CompromiseScreenEditionMemberPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CompromiseScreenEditionCancelatedMemberPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -418,7 +418,7 @@ private fun CompromiseScreenEditionCancelatedMemberPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CompromiseScreenInclusionPersonalTrainerPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -430,7 +430,7 @@ private fun CompromiseScreenInclusionPersonalTrainerPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CompromiseScreenRecurrentInclusionPersonalTrainerPreviewLight() {
     FitnessProTheme(darkTheme = false) {

@@ -64,8 +64,8 @@ fun ExerciseDetailsTabEvolution(
 @Preview
 @Composable
 private fun ExerciseDetailsTabEvolutionPreview() {
-    Surface {
-        FitnessProTheme {
+    FitnessProTheme {
+        Surface {
             ExerciseDetailsTabEvolution(
                 state = defaultExerciseDetailsUIState
             )
@@ -76,8 +76,8 @@ private fun ExerciseDetailsTabEvolutionPreview() {
 @Preview
 @Composable
 private fun ExerciseDetailsTabEvolutionPreviewDark() {
-    Surface {
-        FitnessProTheme(darkTheme = true) {
+    FitnessProTheme(darkTheme = true) {
+        Surface {
             ExerciseDetailsTabEvolution(
                 state = defaultExerciseDetailsUIState
             )

@@ -168,7 +168,7 @@ fun AuthenticationBottomSheet(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun AuthenticationBottomSheetPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -182,7 +182,7 @@ private fun AuthenticationBottomSheetPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun AuthenticationBottomSheetPreviewLight() {
     FitnessProTheme(darkTheme = false) {

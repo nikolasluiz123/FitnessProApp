@@ -136,7 +136,7 @@ fun AcademyTimeItem(item: TOPersonAcademyTime, onClick: () -> Unit) {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RegisterUserTabAcademiesPreview() {
     val state = RegisterUserUIState(
@@ -187,7 +187,7 @@ private fun RegisterUserTabAcademiesPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RegisterUserTabAcademiesEmptyPreview() {
     val state = RegisterUserUIState(academies = mutableListOf())

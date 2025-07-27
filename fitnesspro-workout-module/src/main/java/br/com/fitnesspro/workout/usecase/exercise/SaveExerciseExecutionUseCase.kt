@@ -39,7 +39,7 @@ class SaveExerciseExecutionUseCase(
                 val toVideos = getListTOVideoExecutionFromFiles(videoFiles)
 
                 validateAllVideos(videoFiles, toVideos)
-                exerciseExecutionRepository.newExerciseExecution(toExerciseExecution, toVideos)
+                exerciseExecutionRepository.saveExerciseExecution(toExerciseExecution, toVideos)
             }
         }
 

@@ -395,7 +395,7 @@ private fun <T : ITupleListItem> ListDialog(
 
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProDialogMessageErrorPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -410,7 +410,7 @@ private fun FitnessProDialogMessageErrorPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProDialogMessageConfirmationPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -425,7 +425,7 @@ private fun FitnessProDialogMessageConfirmationPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProDialogMessageInformationPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -440,7 +440,7 @@ private fun FitnessProDialogMessageInformationPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProDialogPagedListPreviewDark() {
     val fakeList = PagingData.from(
@@ -477,7 +477,7 @@ private fun FitnessProDialogPagedListPreviewDark() {
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProDialogMessageErrorPreviewLight() {
     FitnessProTheme {
@@ -492,7 +492,7 @@ private fun FitnessProDialogMessageErrorPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProDialogMessageConfirmationPreviewLight() {
     FitnessProTheme {
@@ -507,7 +507,7 @@ private fun FitnessProDialogMessageConfirmationPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProDialogMessageInformationPreviewLight() {
     FitnessProTheme {
@@ -522,7 +522,7 @@ private fun FitnessProDialogMessageInformationPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun FitnessProDialogPagedListPreviewLight() {
     val fakeList = PagingData.from(

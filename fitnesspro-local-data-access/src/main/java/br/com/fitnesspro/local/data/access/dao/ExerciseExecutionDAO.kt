@@ -42,6 +42,13 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
             add(" from exercise_execution e")
         }
 
+        val whereDates = StringJoiner(QR_NL).apply {
+            add(" where e.exercise_id = ? ")
+            add(" and e.active = 1 ")
+
+            queryParams.add(exerciseId)
+        }
+
         val groupByDates = StringJoiner(QR_NL).apply {
             add(" group by date(e.date)")
         }
@@ -49,6 +56,7 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
         val sqlDates = StringJoiner(QR_NL).apply {
             add(selectDates.toString())
             add(fromDates.toString())
+            add(whereDates.toString())
             add(groupByDates.toString())
         }
 
@@ -74,7 +82,7 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
             add(fromExecutions.toString())
         }
 
-        val where = StringJoiner(QR_NL).apply {
+        val whereExecutions = StringJoiner(QR_NL).apply {
             add(" where e.exercise_id = ? ")
             add(" and e.active = 1 ")
 
@@ -89,7 +97,7 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
             add(sqlDates.toString())
             add(" union all ")
             add(sqlExecutions.toString())
-            add(where.toString())
+            add(whereExecutions.toString())
             add(orderBy.toString())
         }
 

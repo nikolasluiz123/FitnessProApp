@@ -60,7 +60,7 @@ fun WorkoutGroupPreDefinitionPagedDialogItem(
     FitnessProHorizontalDivider()
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExercisePreDefinitionPagedDialogItemPreview() {
     FitnessProTheme {
@@ -72,7 +72,7 @@ private fun ExercisePreDefinitionPagedDialogItemPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun WorkoutGroupPreDefinitionPagedDialogItemPreview() {
     FitnessProTheme {
@@ -84,7 +84,7 @@ private fun WorkoutGroupPreDefinitionPagedDialogItemPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExercisePreDefinitionPagedDialogItemDarkPreview() {
     FitnessProTheme(darkTheme = true) {
@@ -96,7 +96,7 @@ private fun ExercisePreDefinitionPagedDialogItemDarkPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun WorkoutGroupPreDefinitionPagedDialogItemDarkPreview() {
     FitnessProTheme(darkTheme = true) {

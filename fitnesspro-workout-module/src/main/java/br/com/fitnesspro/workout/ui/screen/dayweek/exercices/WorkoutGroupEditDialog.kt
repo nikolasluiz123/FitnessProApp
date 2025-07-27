@@ -239,7 +239,7 @@ private fun DialogTextButton(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun WorkoutGroupEditDialogPreview() {
     FitnessProTheme {
@@ -251,7 +251,7 @@ private fun WorkoutGroupEditDialogPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun WorkoutGroupEditDialogPreviewDark() {
     FitnessProTheme(darkTheme = true) {

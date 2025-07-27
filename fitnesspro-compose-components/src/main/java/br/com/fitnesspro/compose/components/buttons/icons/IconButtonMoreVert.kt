@@ -27,7 +27,7 @@ fun IconButtonMoreVert(onClick: () -> Unit = { }) {
 
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonMoreVertPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -37,7 +37,7 @@ fun IconButtonMoreVertPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun IconButtonMoreVertPreviewLight() {
     FitnessProTheme(darkTheme = false) {

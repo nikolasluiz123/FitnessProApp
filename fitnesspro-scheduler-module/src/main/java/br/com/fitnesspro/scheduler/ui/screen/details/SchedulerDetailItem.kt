@@ -163,7 +163,7 @@ internal fun SchedulerDetailItem(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SchedulerDetailItemAcademyMemberPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -176,7 +176,7 @@ private fun SchedulerDetailItemAcademyMemberPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SchedulerDetailItemProfessionalPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -189,7 +189,7 @@ private fun SchedulerDetailItemProfessionalPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SchedulerDetailItemAcademyMemberPreviewLight() {
     FitnessProTheme {
@@ -202,7 +202,7 @@ private fun SchedulerDetailItemAcademyMemberPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SchedulerDetailItemProfessionalPreviewLight() {
     FitnessProTheme {

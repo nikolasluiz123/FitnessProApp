@@ -35,5 +35,7 @@ data class VideoExerciseExecution(
     @ColumnInfo(name = "exercise_execution_id", index = true)
     var exerciseExecutionId: String? = null,
     @ColumnInfo(name = "video_id", index = true)
-    var videoId: String? = null
+    var videoId: String? = null,
+    @ColumnInfo(name = "active", defaultValue = "true")
+    var active: Boolean = true
 ): IntegratedModel

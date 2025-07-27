@@ -208,7 +208,7 @@ fun SchedulerScreen(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun ScheduleScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -220,7 +220,7 @@ fun ScheduleScreenPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun ScheduleScreenPersonalPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -232,7 +232,7 @@ fun ScheduleScreenPersonalPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun ScheduleScreenPreviewLight() {
     FitnessProTheme {
@@ -244,7 +244,7 @@ fun ScheduleScreenPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun ScheduleScreenPersonalPreviewLight() {
     FitnessProTheme {

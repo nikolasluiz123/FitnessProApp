@@ -134,7 +134,7 @@ fun ExerciseDetailsScreen(
     }
 }
 
-@Preview
+@Preview(apiLevel = 35, device = "id:small_phone")
 @Composable
 private fun ExerciseDetailsDefaultLightPreview() {
     FitnessProTheme {
@@ -147,7 +147,7 @@ private fun ExerciseDetailsDefaultLightPreview() {
 }
 
 
-@Preview
+@Preview(apiLevel = 35, device = "id:small_phone")
 @Composable
 private fun ExerciseDetailsDefaultDarkPreview() {
     FitnessProTheme(darkTheme = true) {

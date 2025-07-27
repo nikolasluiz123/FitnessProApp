@@ -1,7 +1,6 @@
 package br.com.fitnesspro.workout.repository
 
 import android.content.Context
-import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
@@ -21,7 +20,6 @@ class VideoRepository(
     private val videoExerciseDAO: VideoExerciseDAO,
     private val videoExerciseExecutionDAO: VideoExerciseExecutionDAO,
     private val videoExercisePreDefinitionDAO: VideoExercisePreDefinitionDAO,
-    private val exerciseWebClient: ExerciseWebClient
 ): FitnessProRepository(context) {
 
     suspend fun saveVideoExercise(toVideoExercise: TOVideoExercise) {
@@ -87,47 +85,30 @@ class VideoRepository(
     }
 
     suspend fun saveVideoExerciseExecutionLocally(toVideoExerciseExecutionList: List<TOVideoExerciseExecution>) {
-        val (inserts, updates) = toVideoExerciseExecutionList.partition { it.id == null }
+        val inserts = toVideoExerciseExecutionList.filter { it.id == null }
 
-        if (inserts.isNotEmpty()) saveVideoExerciseExecutionLocally(inserts, isInsert = true)
-        if (updates.isNotEmpty()) saveVideoExerciseExecutionLocally(updates, isInsert = false)
-    }
-
-    private suspend fun saveVideoExerciseExecutionLocally(list: List<TOVideoExerciseExecution>, isInsert: Boolean) {
-        val videoExecutionList = list.map {
-            val videoExecution = it.getVideoExerciseExecution()
-            if (isInsert) it.id = videoExecution.id
-            videoExecution
-        }
-
-        val videoList = list.mapNotNull {
-            it.toVideo?.getVideo()?.also { video ->
-                if (isInsert) it.toVideo?.id = video.id
+        if (inserts.isNotEmpty()) {
+            val videoList = inserts.map {
+                val video = it.toVideo?.getVideo()!!
+                it.toVideo?.id = video.id
+                video
             }
-        }
 
-        if (isInsert) {
+            val videoExecutionList = inserts.map {
+                val videoExecution = it.getVideoExerciseExecution()
+                it.id = videoExecution.id
+                videoExecution
+            }
+
             videoDAO.insertBatch(videoList)
             videoExerciseExecutionDAO.insertBatch(videoExecutionList)
-        } else {
-            videoDAO.updateBatch(videoList)
-            videoExerciseExecutionDAO.updateBatch(videoExecutionList)
         }
     }
 
     suspend fun createExecutionVideo(toVideoExerciseExecution: TOVideoExerciseExecution) {
         runInTransaction {
-            saveVideoExerciseExecutionLocally(listOf(toVideoExerciseExecution), isInsert = true)
-            createExecutionVideoRemote(toVideoExerciseExecution)
+            saveVideoExerciseExecutionLocally(listOf(toVideoExerciseExecution))
         }
-    }
-
-    private suspend fun createExecutionVideoRemote(toVideoExerciseExecution: TOVideoExerciseExecution) {
-        exerciseWebClient.createExecutionVideo(
-            token = getValidToken(),
-            videoExecution = toVideoExerciseExecution.getVideoExerciseExecution(),
-            video = toVideoExerciseExecution.toVideo!!.getVideo()
-        )
     }
 
     suspend fun saveVideoExercisePreDefinitionLocally(toVideoExercisePreDefinitionList: List<TOVideoExercisePreDefinition>) {

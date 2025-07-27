@@ -83,7 +83,7 @@ internal fun MemberSchedulerConfigScreen(state: SchedulerConfigUIState) {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun MemberSchedulerConfigScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -95,7 +95,7 @@ private fun MemberSchedulerConfigScreenPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun MemberSchedulerConfigScreenPreviewLight() {
     FitnessProTheme {

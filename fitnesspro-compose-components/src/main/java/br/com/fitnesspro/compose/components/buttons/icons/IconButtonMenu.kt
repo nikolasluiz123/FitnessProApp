@@ -31,7 +31,7 @@ fun MenuIconButton(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun MenuIconButtonPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -41,7 +41,7 @@ private fun MenuIconButtonPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun MenuIconButtonPreviewLight() {
     FitnessProTheme(darkTheme = false) {

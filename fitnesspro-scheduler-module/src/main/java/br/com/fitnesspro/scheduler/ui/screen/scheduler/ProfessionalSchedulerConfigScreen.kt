@@ -163,7 +163,7 @@ internal fun ProfessionalSchedulerConfigScreen(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ProfessionalSchedulerConfigScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -175,7 +175,7 @@ private fun ProfessionalSchedulerConfigScreenPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ProfessionalSchedulerConfigScreenPreviewLight() {
     FitnessProTheme {

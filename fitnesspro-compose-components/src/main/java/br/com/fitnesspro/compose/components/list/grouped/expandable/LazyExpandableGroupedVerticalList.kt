@@ -208,7 +208,7 @@ private val groupsExpanded = mutableListOf(
     )
 )
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExpandableListExpandedPreview() {
     FitnessProTheme {
@@ -226,7 +226,7 @@ private fun ExpandableListExpandedPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExpandableListPreview() {
     FitnessProTheme {
@@ -244,7 +244,7 @@ private fun ExpandableListPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExpandableListEmptyPreview() {
     FitnessProTheme {
@@ -262,7 +262,7 @@ private fun ExpandableListEmptyPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExpandableSectionPreview() {
     FitnessProTheme {

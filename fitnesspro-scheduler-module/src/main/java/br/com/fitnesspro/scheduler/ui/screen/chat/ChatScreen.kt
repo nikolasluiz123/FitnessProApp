@@ -88,7 +88,7 @@ fun ChatScreen(
 
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ChatScreenPreviewLight() {
     FitnessProTheme {
@@ -100,7 +100,7 @@ private fun ChatScreenPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ChatScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {

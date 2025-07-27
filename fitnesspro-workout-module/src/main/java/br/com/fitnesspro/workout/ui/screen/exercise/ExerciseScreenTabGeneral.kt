@@ -235,7 +235,7 @@ fun ExerciseScreenTabGeneral(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExerciseScreenTabGeneralNewPreview() {
     FitnessProTheme {
@@ -247,7 +247,7 @@ private fun ExerciseScreenTabGeneralNewPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExerciseScreenTabGeneralNewPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -259,7 +259,7 @@ private fun ExerciseScreenTabGeneralNewPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExerciseScreenTabGeneralPreview() {
     FitnessProTheme {
@@ -271,7 +271,7 @@ private fun ExerciseScreenTabGeneralPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExerciseScreenTabGeneralPreviewDark() {
     FitnessProTheme(darkTheme = true) {

@@ -117,7 +117,6 @@ class SingletonWorkoutRepositoryModule {
         videoExerciseDAO: VideoExerciseDAO,
         videoExerciseExecutionDAO: VideoExerciseExecutionDAO,
         videoExercisePreDefinitionDAO: VideoExercisePreDefinitionDAO,
-        exerciseWebClient: ExerciseWebClient
     ): VideoRepository {
         return VideoRepository(
             context = context,
@@ -125,7 +124,6 @@ class SingletonWorkoutRepositoryModule {
             videoExerciseDAO = videoExerciseDAO,
             videoExerciseExecutionDAO = videoExerciseExecutionDAO,
             videoExercisePreDefinitionDAO = videoExercisePreDefinitionDAO,
-            exerciseWebClient = exerciseWebClient
         )
     }
 
@@ -286,13 +284,11 @@ class SingletonWorkoutRepositoryModule {
         @ApplicationContext context: Context,
         exerciseExecutionDAO: ExerciseExecutionDAO,
         videoRepository: VideoRepository,
-        exerciseWebClient: ExerciseWebClient
     ): ExerciseExecutionRepository {
         return ExerciseExecutionRepository(
             context = context,
             exerciseExecutionDAO = exerciseExecutionDAO,
             videoRepository = videoRepository,
-            exerciseWebClient = exerciseWebClient
         )
     }
 

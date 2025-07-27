@@ -82,7 +82,7 @@ internal fun SchedulerHeader(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SchedulerHeaderPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -96,7 +96,7 @@ private fun SchedulerHeaderPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SchedulerHeaderPreviewLight() {
     FitnessProTheme {

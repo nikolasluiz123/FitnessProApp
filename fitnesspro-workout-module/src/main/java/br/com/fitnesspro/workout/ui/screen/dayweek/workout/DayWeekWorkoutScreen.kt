@@ -93,7 +93,7 @@ fun DayWeekWorkoutScreen(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun DayWeekWorkoutScreenPreview() {
     FitnessProTheme {
@@ -103,7 +103,7 @@ fun DayWeekWorkoutScreenPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun DayWeekWorkoutScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {

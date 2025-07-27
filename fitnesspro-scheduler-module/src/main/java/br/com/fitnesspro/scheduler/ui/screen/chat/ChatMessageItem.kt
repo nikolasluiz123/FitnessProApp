@@ -104,7 +104,7 @@ private fun getDrawableStateMessage(item: MessageDocument): Int? {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ChatMessageItemPreviewLight() {
     FitnessProTheme {
@@ -117,7 +117,7 @@ private fun ChatMessageItemPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ChatMessageItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -130,7 +130,7 @@ private fun ChatMessageItemPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ChatMessageItemOtherUserPreviewLight() {
     FitnessProTheme {
@@ -147,7 +147,7 @@ private fun ChatMessageItemOtherUserPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ChatMessageItemOtherUserPreviewDark() {
     FitnessProTheme(darkTheme = true) {

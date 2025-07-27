@@ -145,7 +145,7 @@ fun ChatHistoryScreen(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ChatHistoryScreenEmptyDark() {
     FitnessProTheme(darkTheme = true) {
@@ -157,7 +157,7 @@ private fun ChatHistoryScreenEmptyDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ChatHistoryScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -169,7 +169,7 @@ private fun ChatHistoryScreenPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ChatHistoryScreenEmpty() {
     FitnessProTheme {
@@ -181,7 +181,7 @@ private fun ChatHistoryScreenEmpty() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ChatHistoryScreenPreview() {
     FitnessProTheme {

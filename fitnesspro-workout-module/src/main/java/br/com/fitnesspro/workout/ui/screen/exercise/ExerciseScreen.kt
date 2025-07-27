@@ -221,7 +221,7 @@ private fun showSuccessMessage(coroutineScope: CoroutineScope, snackbarHostState
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExerciseScreenNewPreview() {
     FitnessProTheme {
@@ -233,7 +233,7 @@ private fun ExerciseScreenNewPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExerciseScreenNewPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -245,7 +245,7 @@ private fun ExerciseScreenNewPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExerciseScreenPreview() {
     FitnessProTheme {
@@ -257,7 +257,7 @@ private fun ExerciseScreenPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExerciseScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -269,7 +269,7 @@ private fun ExerciseScreenPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExerciseScreenTabVideosPreview() {
     FitnessProTheme {
@@ -281,7 +281,7 @@ private fun ExerciseScreenTabVideosPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ExerciseScreenTabVideosPreviewDark() {
     FitnessProTheme(darkTheme = true) {

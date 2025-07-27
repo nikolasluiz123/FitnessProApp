@@ -51,7 +51,7 @@ fun VideoThumbnail(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun VideoThumbnailPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -61,7 +61,7 @@ private fun VideoThumbnailPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun VideoThumbnailPreviewLight() {
     FitnessProTheme(darkTheme = false) {

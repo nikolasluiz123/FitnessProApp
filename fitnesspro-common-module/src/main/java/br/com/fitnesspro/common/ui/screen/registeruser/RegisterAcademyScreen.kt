@@ -322,7 +322,7 @@ private fun showSaveSuccessMessage(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RegisterAcademyPreview() {
     FitnessProTheme {

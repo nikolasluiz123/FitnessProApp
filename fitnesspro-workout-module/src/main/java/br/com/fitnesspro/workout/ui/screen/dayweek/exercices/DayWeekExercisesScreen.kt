@@ -257,7 +257,7 @@ fun DayWeekExercisesScreen(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekExercisesScreenPreview() {
     FitnessProTheme {
@@ -269,7 +269,7 @@ private fun DayWeekExercisesScreenPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekExercisesScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -281,7 +281,7 @@ private fun DayWeekExercisesScreenPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekExercisesScreenOverDuePreview() {
     FitnessProTheme {
@@ -293,7 +293,7 @@ private fun DayWeekExercisesScreenOverDuePreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekExercisesScreenOverDuePreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -305,7 +305,7 @@ private fun DayWeekExercisesScreenOverDuePreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekExercisesScreenEmptyPreview() {
     FitnessProTheme {
@@ -317,7 +317,7 @@ private fun DayWeekExercisesScreenEmptyPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekExercisesScreenEmptyPreviewDark() {
     FitnessProTheme(darkTheme = true) {

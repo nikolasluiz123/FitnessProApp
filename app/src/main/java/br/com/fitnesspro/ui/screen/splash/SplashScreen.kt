@@ -72,7 +72,7 @@ fun adaptiveIconPainterResource(@DrawableRes id: Int): Painter {
     return BitmapPainter(adaptiveIcon.toBitmap().asImageBitmap())
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SplashScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -82,7 +82,7 @@ private fun SplashScreenPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun SplashScreenPreviewLight() {
     FitnessProTheme(darkTheme = false) {

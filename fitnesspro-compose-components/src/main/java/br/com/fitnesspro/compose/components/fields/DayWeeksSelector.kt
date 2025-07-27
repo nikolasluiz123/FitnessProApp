@@ -105,7 +105,7 @@ private fun DayWeekCell(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeeksSelectorPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -120,7 +120,7 @@ private fun DayWeeksSelectorPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeeksSelectorWithSelectedValuesPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -135,7 +135,7 @@ private fun DayWeeksSelectorWithSelectedValuesPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeeksSelectorPreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -150,7 +150,7 @@ private fun DayWeeksSelectorPreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeeksSelectorWithSelectedValuesPreviewLight() {
     FitnessProTheme(darkTheme = false) {

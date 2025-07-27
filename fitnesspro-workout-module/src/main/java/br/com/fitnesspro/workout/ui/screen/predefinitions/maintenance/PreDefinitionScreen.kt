@@ -397,7 +397,7 @@ private fun showSuccessMessage(coroutineScope: CoroutineScope, snackbarHostState
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun PreDefinitionScreenPreview() {
     FitnessProTheme {
@@ -409,7 +409,7 @@ private fun PreDefinitionScreenPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun PreDefinitionScreenGroupedPreview() {
     FitnessProTheme {
@@ -421,7 +421,7 @@ private fun PreDefinitionScreenGroupedPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun PreDefinitionScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -433,7 +433,7 @@ private fun PreDefinitionScreenPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun PreDefinitionScreenGroupedPreviewDark() {
     FitnessProTheme(darkTheme = true) {

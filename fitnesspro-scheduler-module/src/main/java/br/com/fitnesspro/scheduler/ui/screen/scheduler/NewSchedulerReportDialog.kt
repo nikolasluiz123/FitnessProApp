@@ -230,7 +230,7 @@ private fun DialogTextButton(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun NewSchedulerReportDialogPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -242,7 +242,7 @@ fun NewSchedulerReportDialogPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 fun NewSchedulerReportDialogPreviewLight() {
     FitnessProTheme {

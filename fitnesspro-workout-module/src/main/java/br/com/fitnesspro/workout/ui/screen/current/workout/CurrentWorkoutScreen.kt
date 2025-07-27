@@ -92,7 +92,7 @@ fun CurrentWorkoutScreen(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CurrentWorkoutScreenPreview() {
     FitnessProTheme {
@@ -105,7 +105,7 @@ private fun CurrentWorkoutScreenPreview() {
 }
 
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CurrentWorkoutScreenPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -117,7 +117,7 @@ private fun CurrentWorkoutScreenPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CurrentWorkoutScreenEmptyPreview() {
     FitnessProTheme {
@@ -129,7 +129,7 @@ private fun CurrentWorkoutScreenEmptyPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun CurrentWorkoutScreenEmptyPreviewDark() {
     FitnessProTheme(darkTheme = true) {

@@ -166,7 +166,7 @@ private fun getThresholds(
     return thresholds
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DaysGridPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -176,7 +176,7 @@ private fun DaysGridPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DaysGridPreviewLight() {
     FitnessProTheme {

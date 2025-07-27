@@ -5,7 +5,6 @@ import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
 import br.com.fitnesspro.model.workout.execution.VideoExerciseExecution
 import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
-import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
@@ -93,18 +92,11 @@ fun Video.getVideoDTO(): VideoDTO {
     )
 }
 
-fun VideoExercise.getNewVideoExerciseDTO(video: Video): NewVideoExerciseDTO {
-    return NewVideoExerciseDTO(
-        id = id,
-        exerciseId = exerciseId,
-        videoDTO = video.getVideoDTO()
-    )
-}
-
 fun TOVideoExerciseExecution.getVideoExerciseExecution(): VideoExerciseExecution {
     val model = VideoExerciseExecution(
         exerciseExecutionId = exerciseExecutionId,
         videoId = toVideo?.id,
+        active = active
     )
 
     this.id?.let { model.id = it }
@@ -117,6 +109,7 @@ fun VideoExerciseExecution.getVideoExerciseExecutionDTO(): VideoExerciseExecutio
         id = id,
         exerciseExecutionId = exerciseExecutionId,
         videoId = videoId,
+        active = active
     )
 }
 
@@ -124,7 +117,8 @@ fun VideoExerciseExecution.getNewVideoExerciseExecutionDTO(video: Video): NewVid
     return NewVideoExerciseExecutionDTO(
         id = id,
         exerciseExecutionId = exerciseExecutionId,
-        videoDTO = video.getVideoDTO()
+        videoDTO = video.getVideoDTO(),
+        active = active
     )
 }
 
@@ -152,7 +146,8 @@ fun VideoExerciseExecutionDTO.getVideoExerciseExecution(): VideoExerciseExecutio
         id = id!!,
         exerciseExecutionId = exerciseExecutionId,
         transmissionState = EnumTransmissionState.TRANSMITTED,
-        videoId = videoId
+        videoId = videoId,
+        active = active
     )
 }
 

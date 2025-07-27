@@ -243,7 +243,7 @@ private fun showSaveSuccessMessage(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RegisterUserScreenTabGeneralPreview() {
     FitnessProTheme {
@@ -255,7 +255,7 @@ private fun RegisterUserScreenTabGeneralPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun RegisterUserScreenTabAcademiesPreview() {
     FitnessProTheme {

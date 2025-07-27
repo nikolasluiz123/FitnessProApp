@@ -39,7 +39,7 @@ fun DayWeekWorkoutGroupItem(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekWorkoutGroupItemPreview() {
     FitnessProTheme {
@@ -49,7 +49,7 @@ private fun DayWeekWorkoutGroupItemPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun DayWeekWorkoutGroupItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {

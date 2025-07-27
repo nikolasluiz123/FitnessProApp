@@ -93,7 +93,7 @@ private fun getReportInformation(context: Context, report: TOReport): String {
     return "$date - $size"
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun GeneratedReportItemDarkPreview() {
     FitnessProTheme(darkTheme = true) {
@@ -105,7 +105,7 @@ private fun GeneratedReportItemDarkPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun GeneratedReportItemPreview() {
     FitnessProTheme {

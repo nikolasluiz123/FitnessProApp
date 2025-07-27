@@ -162,7 +162,7 @@ internal fun getFormatedMessageDate(context: Context, date: Long): String {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ChatHistoryItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -175,7 +175,7 @@ private fun ChatHistoryItemPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun ChatHistoryItemPreviewLight() {
     FitnessProTheme {

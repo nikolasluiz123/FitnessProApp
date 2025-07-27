@@ -248,7 +248,7 @@ private fun UniqueCompromiseEditable(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun UniqueCompromisePreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -260,7 +260,7 @@ private fun UniqueCompromisePreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun UniqueCompromisePreviewLight() {
     FitnessProTheme(darkTheme = false) {
@@ -272,7 +272,7 @@ private fun UniqueCompromisePreviewLight() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun UniqueCompromiseCanceledPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -284,7 +284,7 @@ private fun UniqueCompromiseCanceledPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun UniqueCompromiseCanceledPreviewLight() {
     FitnessProTheme(darkTheme = false) {

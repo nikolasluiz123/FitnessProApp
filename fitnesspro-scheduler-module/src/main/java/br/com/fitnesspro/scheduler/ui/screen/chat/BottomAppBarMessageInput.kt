@@ -89,7 +89,7 @@ internal fun BottomAppBarMessageInput(
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun BottomAppBarMessageInputPreviewDark() {
     FitnessProTheme(darkTheme = true) {
@@ -102,7 +102,7 @@ private fun BottomAppBarMessageInputPreviewDark() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun BottomAppBarMessageInputPreviewLight() {
     FitnessProTheme {

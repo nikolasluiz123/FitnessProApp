@@ -72,7 +72,7 @@ fun MemberWorkoutItem(toWorkout: TOWorkout, onItemClick: (TOWorkout) -> Unit = {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun MemberWorkoutItemPreview() {
     FitnessProTheme {
@@ -84,7 +84,7 @@ private fun MemberWorkoutItemPreview() {
     }
 }
 
-@Preview(device = "id:small_phone")
+@Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
 private fun MemberWorkoutItemPreviewDark() {
     FitnessProTheme(darkTheme = true) {
