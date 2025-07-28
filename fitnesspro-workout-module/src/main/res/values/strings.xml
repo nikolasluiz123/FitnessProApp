@@ -152,4 +152,5 @@
     <string name="pre_definitions_simple_filter_placeholder">Buscar por Grupo ou Exercício</string>
     <string name="pre_definitions_empty_message">Nenhuma Predefinição encontrada</string>
     <string name="exercise_details_item_weight">%1$s KG</string>
+    <string name="exercise_pre_definition_screen_msg_confirm_inactivate_exercise_pre_definition">Você tem certeza que deseja excluir essa predefinição de exercício e os vídeos? Essa operação não poderá ser desfeita.</string>
 </resources>

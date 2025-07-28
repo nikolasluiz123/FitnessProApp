@@ -59,4 +59,13 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
         and v.active = 1
     """)
     abstract suspend fun getListVideosActiveFromExercise(exerciseIds: List<String>): List<Video>
+
+    @Query("""
+        select v.*
+        from video v
+        inner join video_exercise_pre_definition ve on v.id = ve.video_id
+        where ve.exercise_pre_definition_id in (:exerciseIds)
+        and v.active = 1
+    """)
+    abstract suspend fun getListVideosActiveFromPreDefinition(exerciseIds: List<String>): List<Video>
 }

@@ -126,6 +126,7 @@ fun TOVideoExercisePreDefinition.getVideoExercisePreDefinition(): VideoExerciseP
     val model = VideoExercisePreDefinition(
         exercisePreDefinitionId = exercisePreDefinitionId,
         videoId = toVideo?.id,
+        active = active
     )
 
     id?.let { model.id = it }
@@ -138,6 +139,7 @@ fun VideoExercisePreDefinition.getVideoExercisePreDefinitionDTO(): VideoExercise
         id = id,
         exercisePreDefinitionId = exercisePreDefinitionId,
         videoId = videoId,
+        active = active
     )
 }
 
@@ -156,6 +158,7 @@ fun VideoExercisePreDefinitionDTO.getVideoExercisePreDefinition(): VideoExercise
         id = id!!,
         exercisePreDefinitionId = exercisePreDefinitionId,
         transmissionState = EnumTransmissionState.TRANSMITTED,
-        videoId = videoId
+        videoId = videoId,
+        active = active
     )
 }

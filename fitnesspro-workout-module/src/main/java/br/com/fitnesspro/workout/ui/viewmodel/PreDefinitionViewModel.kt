@@ -15,6 +15,7 @@ import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
+import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
@@ -34,6 +35,7 @@ import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.ui.navigation.PreDefinitionScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.preDefinitionScreenArguments
 import br.com.fitnesspro.workout.ui.state.PreDefinitionUIState
+import br.com.fitnesspro.workout.usecase.exercise.InactivateExercisePreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExercisePreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveGroupPreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExercisePreDefinitionFields
@@ -60,10 +62,12 @@ class PreDefinitionViewModel @Inject constructor(
     private val saveExercisePreDefinitionUseCase: SaveExercisePreDefinitionUseCase,
     private val saveVideoExercisePreDefinitionFromGalleryUseCase: SaveVideoExercisePreDefinitionFromGalleryUseCase,
     private val saveVideoPreDefinitionUseCase: SaveVideoPreDefinitionUseCase,
+    private val inactivateExercisePreDefinitionUseCase: InactivateExercisePreDefinitionUseCase,
     savedStateHandle: SavedStateHandle
 ): FitnessProViewModel() {
 
-    private val _uiState: MutableStateFlow<PreDefinitionUIState> = MutableStateFlow(PreDefinitionUIState())
+    private val _uiState: MutableStateFlow<PreDefinitionUIState> =
+        MutableStateFlow(PreDefinitionUIState())
     val uiState get() = _uiState.asStateFlow()
 
     val jsonArgs: String? = savedStateHandle[preDefinitionScreenArguments]
@@ -152,13 +156,16 @@ class PreDefinitionViewModel @Inject constructor(
 
     private suspend fun loadEditionData(exercisePreDefinitionId: String?) {
         exercisePreDefinitionId?.let { preDefId ->
-            val toExercisePreDef = exercisePreDefinitionRepository.findTOExercisePreDefinitionById(preDefId)!!
+            val toExercisePreDef =
+                exercisePreDefinitionRepository.findTOExercisePreDefinitionById(preDefId)!!
             val toWorkoutPreDef = toExercisePreDef.workoutGroupPreDefinitionId?.let {
                 exercisePreDefinitionRepository.findTOWorkoutGroupPreDefinitionById(it)
             }
 
-            val convertedRest = getConvertedRestFrom(toExercisePreDef.unitRest, toExercisePreDef.rest)
-            val convertedDuration = getConvertedDurationFrom(toExercisePreDef.unitDuration, toExercisePreDef.duration)
+            val convertedRest =
+                getConvertedRestFrom(toExercisePreDef.unitRest, toExercisePreDef.rest)
+            val convertedDuration =
+                getConvertedDurationFrom(toExercisePreDef.unitDuration, toExercisePreDef.duration)
 
             _uiState.value = _uiState.value.copy(
                 title = getTitle(toExercisePreDef.id),
@@ -318,7 +325,10 @@ class PreDefinitionViewModel @Inject constructor(
                             errorMessage = ""
                         ),
                         duration = _uiState.value.duration.copy(
-                            value = getConvertedDurationFrom(item.duration?.bestChronoUnit(), item.duration),
+                            value = getConvertedDurationFrom(
+                                item.duration?.bestChronoUnit(),
+                                item.duration
+                            ),
                             errorMessage = ""
                         ),
                         unitDuration = _uiState.value.unitDuration.copy(
@@ -355,13 +365,19 @@ class PreDefinitionViewModel @Inject constructor(
 
     private fun getListExercisePreDefinitions(simpleFilter: String = ""): Flow<PagingData<TOExercisePreDefinition>> {
         return _uiState.value.authenticatedPersonId?.let { authenticatedPersonId ->
-            exercisePreDefinitionRepository.getListExercisePreDefinitions(authenticatedPersonId, simpleFilter).flow
+            exercisePreDefinitionRepository.getListExercisePreDefinitions(
+                authenticatedPersonId,
+                simpleFilter
+            ).flow
         } ?: emptyFlow()
     }
 
     private fun getListWorkoutGroupPreDefinitions(simpleFilter: String = ""): Flow<PagingData<TOWorkoutGroupPreDefinition>> {
         return _uiState.value.authenticatedPersonId?.let { authenticatedPersonId ->
-            exercisePreDefinitionRepository.getListWorkoutGroupPreDefinitions(authenticatedPersonId, simpleFilter).flow
+            exercisePreDefinitionRepository.getListWorkoutGroupPreDefinitions(
+                authenticatedPersonId,
+                simpleFilter
+            ).flow
         } ?: emptyFlow()
     }
 
@@ -374,7 +390,9 @@ class PreDefinitionViewModel @Inject constructor(
                             value = it,
                             errorMessage = ""
                         ),
-                        toExercisePredefinition = _uiState.value.toExercisePredefinition.copy(exerciseOrder = it.toIntOrNull())
+                        toExercisePredefinition = _uiState.value.toExercisePredefinition.copy(
+                            exerciseOrder = it.toIntOrNull()
+                        )
                     )
                 }
             }
@@ -403,7 +421,9 @@ class PreDefinitionViewModel @Inject constructor(
                         value = it,
                         errorMessage = ""
                     ),
-                    toExercisePredefinition = _uiState.value.toExercisePredefinition.copy(repetitions = it.toIntOrNull())
+                    toExercisePredefinition = _uiState.value.toExercisePredefinition.copy(
+                        repetitions = it.toIntOrNull()
+                    )
                 )
             }
         )
@@ -582,7 +602,10 @@ class PreDefinitionViewModel @Inject constructor(
         }
     }
 
-    private suspend fun onFinishVideoRecordingEdition(exercisePreDefinitionId: String, onSuccess: () -> Unit) {
+    private suspend fun onFinishVideoRecordingEdition(
+        exercisePreDefinitionId: String,
+        onSuccess: () -> Unit
+    ) {
         val validationResult = saveVideoPreDefinitionUseCase(
             exercisePreDefinitionId = exercisePreDefinitionId,
             videoFile = _uiState.value.notSavedVideoFiles.first()
@@ -729,6 +752,22 @@ class PreDefinitionViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun onInactivate(onSuccess: () -> Unit) {
+        _uiState.value.toExercisePredefinition.id?.let { exercisePreDefinitionId ->
+            _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
+                message = context.getString(R.string.exercise_pre_definition_screen_msg_confirm_inactivate_exercise_pre_definition),
+                onConfirm = {
+                    _uiState.value.onToggleLoading()
+
+                    launch {
+                        inactivateExercisePreDefinitionUseCase(exercisePreDefinitionId)
+                        onSuccess()
+                    }
+                }
+            )
         }
     }
 }

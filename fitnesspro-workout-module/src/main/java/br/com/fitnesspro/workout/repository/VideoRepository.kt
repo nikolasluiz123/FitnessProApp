@@ -84,6 +84,18 @@ class VideoRepository(
         videoExerciseDAO.updateBatch(videoExerciseList, true)
     }
 
+    suspend fun inactivateVideoExercisePreDefinition(exercisePreDefinitionIds: List<String>) {
+        val videos = videoDAO.getListVideosActiveFromPreDefinition(exercisePreDefinitionIds).onEach {
+            it.active = false
+        }
+        val videoExercisePreDefinitionList = videoExercisePreDefinitionDAO.getListVideoPreDefinitionActiveFromExercises(exercisePreDefinitionIds).onEach {
+            it.active = false
+        }
+
+        videoDAO.updateBatch(videos, true)
+        videoExercisePreDefinitionDAO.updateBatch(videoExercisePreDefinitionList, true)
+    }
+
     suspend fun saveVideoExerciseExecutionLocally(toVideoExerciseExecutionList: List<TOVideoExerciseExecution>) {
         val inserts = toVideoExerciseExecutionList.filter { it.id == null }
 

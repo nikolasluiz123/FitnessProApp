@@ -128,4 +128,13 @@ class ExercisePreDefinitionRepository(
             }
         )
     }
+
+    suspend fun inactivateExercisePreDefinition(exercisePreDefinitionId: String) {
+        val exercisePreDefinition = exercisePreDefinitionDAO.findById(exercisePreDefinitionId).apply {
+            active = false
+        }
+
+        exercisePreDefinitionDAO.update(exercisePreDefinition, true)
+        videoRepository.inactivateVideoExercisePreDefinition(listOf(exercisePreDefinitionId))
+    }
 }

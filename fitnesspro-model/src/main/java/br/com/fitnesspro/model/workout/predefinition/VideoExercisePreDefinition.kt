@@ -34,5 +34,6 @@ data class VideoExercisePreDefinition(
     @ColumnInfo(name = "exercise_pre_definition_id", index = true)
     var exercisePreDefinitionId: String? = null,
     @ColumnInfo(name = "video_id", index = true)
-    var videoId: String? = null
+    var videoId: String? = null,
+    var active: Boolean = true
 ): IntegratedModel

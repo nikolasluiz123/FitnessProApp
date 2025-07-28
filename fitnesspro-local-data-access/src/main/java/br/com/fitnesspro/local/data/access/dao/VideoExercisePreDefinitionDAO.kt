@@ -53,4 +53,7 @@ abstract class VideoExercisePreDefinitionDAO: IntegratedMaintenanceDAO<VideoExer
 
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<VideoExercisePreDefinition>
+
+    @Query(" select * from video_exercise_pre_definition where exercise_pre_definition_id in (:exerciseIds) and active = 1 ")
+    abstract suspend fun getListVideoPreDefinitionActiveFromExercises(exerciseIds: List<String>): List<VideoExercisePreDefinition>
 }

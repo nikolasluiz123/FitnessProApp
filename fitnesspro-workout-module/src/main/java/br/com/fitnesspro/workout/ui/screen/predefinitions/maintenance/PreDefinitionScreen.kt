@@ -82,7 +82,8 @@ fun PreDefinitionScreen(
         onFinishVideoRecording = viewModel::onFinishVideoRecording,
         onVideoSelectedOnGallery = viewModel::onVideoSelectedOnGallery,
         onVideoClick = viewModel::onVideoClick,
-        onSaveClick = viewModel::onSavePreDefinition
+        onSaveClick = viewModel::onSavePreDefinition,
+        onInactivateClick = viewModel::onInactivate
     )
 }
 

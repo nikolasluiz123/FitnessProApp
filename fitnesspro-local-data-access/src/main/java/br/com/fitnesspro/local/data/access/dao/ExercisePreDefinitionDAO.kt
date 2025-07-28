@@ -202,4 +202,7 @@ abstract class ExercisePreDefinitionDAO: IntegratedMaintenanceDAO<ExercisePreDef
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<ExercisePreDefinition>
 
+    @Query("select * from exercise_pre_definition where id = :id")
+    abstract suspend fun findById(id: String): ExercisePreDefinition
+
 }

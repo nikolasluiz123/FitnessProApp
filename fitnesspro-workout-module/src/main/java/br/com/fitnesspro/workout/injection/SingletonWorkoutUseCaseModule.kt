@@ -8,6 +8,7 @@ import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
+import br.com.fitnesspro.workout.usecase.exercise.InactivateExercisePreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.InactivateExerciseUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseExecutionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExercisePreDefinitionUseCase
@@ -196,5 +197,13 @@ class SingletonWorkoutUseCaseModule {
         )
     }
 
+    @Provides
+    fun provideInactivateExercisePreDefinitionUseCase(
+        exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
+    ): InactivateExercisePreDefinitionUseCase {
+        return InactivateExercisePreDefinitionUseCase(
+            exercisePreDefinitionRepository = exercisePreDefinitionRepository,
+        )
+    }
 
 }
