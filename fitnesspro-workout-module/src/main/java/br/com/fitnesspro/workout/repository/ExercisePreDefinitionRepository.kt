@@ -10,6 +10,7 @@ import br.com.fitnesspro.mappers.getExercisePreDefinition
 import br.com.fitnesspro.mappers.getTOExercisePreDefinition
 import br.com.fitnesspro.mappers.getTOWorkoutGroupPreDefinition
 import br.com.fitnesspro.mappers.getWorkoutGroupPreDefinition
+import br.com.fitnesspro.model.workout.predefinition.ExercisePreDefinition
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOExercisePreDefinition
 import br.com.fitnesspro.to.TOVideoExercisePreDefinition
@@ -129,12 +130,28 @@ class ExercisePreDefinitionRepository(
         )
     }
 
-    suspend fun inactivateExercisePreDefinition(exercisePreDefinitionId: String) {
-        val exercisePreDefinition = exercisePreDefinitionDAO.findById(exercisePreDefinitionId).apply {
-            active = false
+    suspend fun inactivateWorkoutGroupPreDefinition(workoutGroupPreDefinitionId: String) {
+        val workoutGroupPreDefinition = workoutGroupPreDefinitionDAO.findById(workoutGroupPreDefinitionId)!!
+        workoutGroupPreDefinition.active = false
+
+        workoutGroupPreDefinitionDAO.update(workoutGroupPreDefinition, true)
+
+        val exercisePreDefinitionList = exercisePreDefinitionDAO.findByWorkoutGroupPreDefinitionId(workoutGroupPreDefinitionId)
+        inactivateExercisePreDefinition(exercisePreDefinitionList)
+    }
+
+    suspend fun inactivateExercisePreDefinition(exercisePreDefinitionIdList: List<String>) {
+        val exercisePreDefinitionList = exercisePreDefinitionDAO.findByIds(exercisePreDefinitionIdList).onEach {
+            it.active = false
         }
 
-        exercisePreDefinitionDAO.update(exercisePreDefinition, true)
-        videoRepository.inactivateVideoExercisePreDefinition(listOf(exercisePreDefinitionId))
+        inactivateExercisePreDefinition(exercisePreDefinitionList, exercisePreDefinitionIdList)
+    }
+
+    suspend fun inactivateExercisePreDefinition(exercisePreDefinitionList: List<ExercisePreDefinition>, exercisePreDefinitionIdList: List<String>? = null) {
+        exercisePreDefinitionDAO.updateBatch(exercisePreDefinitionList, true)
+
+        val listIds = exercisePreDefinitionIdList ?: exercisePreDefinitionList.map { it.id }
+        videoRepository.inactivateVideoExercisePreDefinition(listIds)
     }
 }

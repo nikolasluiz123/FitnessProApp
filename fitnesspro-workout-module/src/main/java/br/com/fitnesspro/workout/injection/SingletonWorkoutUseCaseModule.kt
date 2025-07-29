@@ -8,8 +8,10 @@ import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
+import br.com.fitnesspro.workout.usecase.exercise.EditWorkoutGroupPreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.InactivateExercisePreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.InactivateExerciseUseCase
+import br.com.fitnesspro.workout.usecase.exercise.InactivateWorkoutGroupPreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseExecutionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExercisePreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseUseCase
@@ -202,6 +204,26 @@ class SingletonWorkoutUseCaseModule {
         exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
     ): InactivateExercisePreDefinitionUseCase {
         return InactivateExercisePreDefinitionUseCase(
+            exercisePreDefinitionRepository = exercisePreDefinitionRepository,
+        )
+    }
+
+    @Provides
+    fun provideEditWorkoutGroupPreDefinitionUseCase(
+        @ApplicationContext context: Context,
+        exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
+    ): EditWorkoutGroupPreDefinitionUseCase {
+        return EditWorkoutGroupPreDefinitionUseCase(
+            context = context,
+            exercisePreDefinitionRepository = exercisePreDefinitionRepository,
+        )
+    }
+
+    @Provides
+    fun provideInactivateWorkoutGroupPreDefinitionUseCase(
+        exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
+    ): InactivateWorkoutGroupPreDefinitionUseCase {
+        return InactivateWorkoutGroupPreDefinitionUseCase(
             exercisePreDefinitionRepository = exercisePreDefinitionRepository,
         )
     }

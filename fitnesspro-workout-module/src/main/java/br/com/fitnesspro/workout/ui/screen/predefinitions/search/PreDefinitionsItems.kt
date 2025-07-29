@@ -2,7 +2,6 @@ package br.com.fitnesspro.workout.ui.screen.predefinitions.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -132,19 +131,16 @@ fun ExercisePreDefinitionItem(
 fun PreDefinitionGroupItem(
     predefinition: ExercisePredefinitionGroupedTuple,
     onItemClick: (ExercisePredefinitionGroupedTuple) -> Unit = {},
-    onItemLongClick: (ExercisePredefinitionGroupedTuple) -> Unit = {}
 ) {
     Box(
         Modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.surfaceVariant)
-            .combinedClickable(
+            .clickable(
                 onClick = {
                     onItemClick(predefinition)
                 },
-                onLongClick = {
-                    onItemLongClick(predefinition)
-                }
+                enabled = predefinition.id != null
             )
             .padding(8.dp)
     ) {

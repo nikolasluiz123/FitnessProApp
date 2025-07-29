@@ -14,6 +14,8 @@ data class PreDefinitionsUIState(
     val messageDialogState: MessageDialogState = MessageDialogState(),
     val simpleFilterState: SimpleFilterState = SimpleFilterState(),
     val predefinitions: Flow<PagingData<ExercisePredefinitionGroupedTuple>> = emptyFlow(),
+    var workoutGroupPreDefinitionIdEdited: String? = null,
+    val workoutGroupPreDefinitionGroupDialogUIState: PreDefinitionGroupDialogUIState = PreDefinitionGroupDialogUIState(),
     val authenticatedPersonId: String? = null,
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = {}

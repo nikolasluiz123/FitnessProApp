@@ -205,4 +205,10 @@ abstract class ExercisePreDefinitionDAO: IntegratedMaintenanceDAO<ExercisePreDef
     @Query("select * from exercise_pre_definition where id = :id")
     abstract suspend fun findById(id: String): ExercisePreDefinition
 
+    @Query("select * from exercise_pre_definition where id in (:ids)")
+    abstract suspend fun findByIds(ids: List<String>): List<ExercisePreDefinition>
+
+    @Query("select * from exercise_pre_definition where workout_group_pre_definition_id = :workoutGroupPreDefinitionId")
+    abstract suspend fun findByWorkoutGroupPreDefinitionId(workoutGroupPreDefinitionId: String): List<ExercisePreDefinition>
+
 }

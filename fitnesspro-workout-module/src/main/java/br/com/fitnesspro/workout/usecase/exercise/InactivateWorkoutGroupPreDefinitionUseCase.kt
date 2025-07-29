@@ -2,14 +2,13 @@ package br.com.fitnesspro.workout.usecase.exercise
 
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 
-class InactivateExercisePreDefinitionUseCase(
+class InactivateWorkoutGroupPreDefinitionUseCase(
     private val exercisePreDefinitionRepository: ExercisePreDefinitionRepository
 ) {
 
-    suspend operator fun invoke(exercisePreDefinitionId: String) {
+    suspend operator fun invoke(workoutGroupPreDefinitionId: String) {
         exercisePreDefinitionRepository.runInTransaction {
-            exercisePreDefinitionRepository.inactivateExercisePreDefinition(listOf(exercisePreDefinitionId))
+            exercisePreDefinitionRepository.inactivateWorkoutGroupPreDefinition(workoutGroupPreDefinitionId)
         }
     }
-
 }

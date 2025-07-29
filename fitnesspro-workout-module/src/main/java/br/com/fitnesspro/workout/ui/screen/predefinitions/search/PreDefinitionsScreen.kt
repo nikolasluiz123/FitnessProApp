@@ -7,10 +7,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.collectAsLazyPagingItems
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
@@ -21,7 +25,10 @@ import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndi
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.navigation.PreDefinitionScreenArgs
+import br.com.fitnesspro.workout.ui.screen.predefinitions.maintenance.WorkoutGroupPreDefinitionGroupDialog
+import br.com.fitnesspro.workout.ui.screen.predefinitions.maintenance.callbacks.OnInactivateWorkoutGroupPreDefinition
 import br.com.fitnesspro.workout.ui.screen.predefinitions.maintenance.callbacks.OnNavigateToPreDefinition
+import br.com.fitnesspro.workout.ui.screen.predefinitions.maintenance.callbacks.OnSaveWorkoutGroupPreDefinition
 import br.com.fitnesspro.workout.ui.screen.predefinitions.search.bottomsheet.BottomSheetNewPreDefinition
 import br.com.fitnesspro.workout.ui.state.PreDefinitionsUIState
 import br.com.fitnesspro.workout.ui.viewmodel.PreDefinitionsViewModel
@@ -37,7 +44,10 @@ fun PreDefinitionsScreen(
     PreDefinitionsScreen(
         state = state,
         onBackClick = onBackClick,
-        onNavigateToPreDefinition = onNavigateToPreDefinition
+        onNavigateToPreDefinition = onNavigateToPreDefinition,
+        onSaveWorkoutGroupPreDefinitionClick = viewModel::onSaveWorkoutGroupPreDefinition,
+        onInactivateWorkoutGroupPreDefinitionClick = viewModel::onInactivateWorkoutGroupPreDefinition,
+        onLoadDataWorkoutGroupPreDefinitionEdition = viewModel::onLoadDataWorkoutGroupPreDefinitionEdition
     )
 }
 
@@ -46,8 +56,15 @@ fun PreDefinitionsScreen(
 fun PreDefinitionsScreen(
     state: PreDefinitionsUIState,
     onBackClick: () -> Unit = { },
-    onNavigateToPreDefinition: OnNavigateToPreDefinition? = null
+    onNavigateToPreDefinition: OnNavigateToPreDefinition? = null,
+    onSaveWorkoutGroupPreDefinitionClick: OnSaveWorkoutGroupPreDefinition? = null,
+    onInactivateWorkoutGroupPreDefinitionClick: OnInactivateWorkoutGroupPreDefinition? = null,
+    onLoadDataWorkoutGroupPreDefinitionEdition: () -> Unit = {}
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             SimpleFitnessProTopAppBar(
@@ -71,6 +88,16 @@ fun PreDefinitionsScreen(
         ) {
             FitnessProLinearProgressIndicator(state.showLoading)
             FitnessProMessageDialog(state.messageDialogState)
+
+            WorkoutGroupPreDefinitionGroupDialog(
+                state = state.workoutGroupPreDefinitionGroupDialogUIState,
+                onSaveClick = onSaveWorkoutGroupPreDefinitionClick,
+                onInactivateClick = onInactivateWorkoutGroupPreDefinitionClick,
+                onLoadDataEdition = onLoadDataWorkoutGroupPreDefinitionEdition,
+                snackbarHostState = snackbarHostState,
+                coroutineScope = coroutineScope,
+                context = context
+            )
 
             SimpleFilter(
                 modifier = Modifier.fillMaxWidth(),
@@ -109,7 +136,13 @@ private fun PreDefinitionList(
         emptyMessageResId = R.string.pre_definitions_empty_message,
     ) { tuple ->
         if (tuple.isGroup) {
-            PreDefinitionGroupItem(tuple)
+            PreDefinitionGroupItem(
+                predefinition = tuple,
+                onItemClick = {
+                    state.workoutGroupPreDefinitionIdEdited = it.id
+                    state.workoutGroupPreDefinitionGroupDialogUIState.onShowDialogChange(true)
+                }
+            )
         } else {
             ExercisePreDefinitionItem(
                 predefinition = tuple,
