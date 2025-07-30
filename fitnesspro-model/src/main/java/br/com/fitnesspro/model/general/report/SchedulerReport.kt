@@ -37,5 +37,6 @@ data class SchedulerReport(
     @ColumnInfo(name = "report_id", index = true)
     var reportId: String? = null,
     @ColumnInfo(name = "report_context")
-    var context: EnumReportContext? = null
+    var context: EnumReportContext? = null,
+    var active: Boolean = true
 ): IntegratedModel

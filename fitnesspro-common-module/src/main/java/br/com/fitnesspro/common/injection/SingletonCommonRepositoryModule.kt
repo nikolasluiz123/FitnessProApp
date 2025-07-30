@@ -4,7 +4,6 @@ import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
-import br.com.fitnesspor.service.data.access.webclient.general.ReportWebClient
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.ApplicationRepository
@@ -30,6 +29,7 @@ import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
+import br.com.fitnesspro.local.data.access.dao.SchedulerReportDAO
 import br.com.fitnesspro.local.data.access.dao.ServiceTokenDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import dagger.Module
@@ -240,14 +240,14 @@ class SingletonCommonRepositoryModule {
     fun provideReportRepository(
         @ApplicationContext context: Context,
         reportDAO: ReportDAO,
-        personRepository: PersonRepository,
-        reportWebClient: ReportWebClient
+        schedulerReportDAO: SchedulerReportDAO,
+        personRepository: PersonRepository
     ): ReportRepository {
         return ReportRepository(
             context = context,
             reportDAO = reportDAO,
-            personRepository = personRepository,
-            reportWebClient = reportWebClient
+            schedulerReportDAO = schedulerReportDAO,
+            personRepository = personRepository
         )
     }
 }

@@ -6,14 +6,58 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumReportContext
+import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.to.TOReport
 import java.util.StringJoiner
 
 @Dao
-abstract class ReportDAO: MaintenanceDAO<Report>() {
+abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
+
+    suspend fun getExportationData(reportContext: EnumReportContext, pageInfos: ExportPageInfos): List<Report> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select * ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from report ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where report.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
+
+            when (reportContext) {
+                EnumReportContext.SCHEDULERS_REPORT -> {
+                    add(" and exists ( ")
+                    add("                select 1 ")
+                    add("                from scheduler_report sr ")
+                    add("                where sr.report_id = report.id ")
+                    add("            ) ")
+                }
+            }
+
+            add(" limit ? offset ? ")
+
+            params.add(pageInfos.pageSize)
+            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        return executeQueryExportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery
+    abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Report>
 
     suspend fun getListGeneratedReports(
         context: EnumReportContext,
@@ -42,12 +86,13 @@ abstract class ReportDAO: MaintenanceDAO<Report>() {
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where 1 = 1 ")
+            add(" where report.active = 1 ")
 
             when (context) {
                 EnumReportContext.SCHEDULERS_REPORT -> {
                     add(" and sr.person_id = ? ")
                     add(" and sr.report_context = '${context.name}' ")
+                    add(" and sr.active = 1 ")
 
                     params.add(authenticatedPersonId)
                 }

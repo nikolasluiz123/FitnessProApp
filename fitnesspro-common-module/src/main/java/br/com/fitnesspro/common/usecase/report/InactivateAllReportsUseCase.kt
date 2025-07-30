@@ -4,13 +4,15 @@ import br.com.fitnesspro.common.repository.ReportRepository
 import br.com.fitnesspro.mappers.getReport
 import br.com.fitnesspro.model.enums.EnumReportContext
 
-class DeleteAllReportsUseCase(
+class InactivateAllReportsUseCase(
     private val reportRepository: ReportRepository
 ) {
 
     suspend operator fun invoke(reportContext: EnumReportContext) {
-        val reports = reportRepository.getListReports(reportContext).map { it.getReport() }
-        reportRepository.deleteAllReports(reports)
+        reportRepository.runInTransaction {
+            val reports = reportRepository.getListReports(reportContext).map { it.getReport() }
+            reportRepository.inactivateAllReports(reportContext, reports)
+        }
     }
 
 }

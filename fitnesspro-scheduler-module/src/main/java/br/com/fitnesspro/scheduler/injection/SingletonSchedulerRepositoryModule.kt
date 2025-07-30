@@ -14,6 +14,7 @@ import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.scheduler.repository.SchedulerReportRepository
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
+import br.com.fitnesspro.scheduler.repository.sync.exportation.ReportFromSchedulerExportationRepository
 import br.com.fitnesspro.scheduler.repository.sync.exportation.SchedulerExportationRepository
 import br.com.fitnesspro.scheduler.repository.sync.exportation.SchedulerReportExportationRepository
 import br.com.fitnesspro.scheduler.repository.sync.importation.ReportFromSchedulerImportationRepository
@@ -99,8 +100,7 @@ class SingletonSchedulerRepositoryModule {
             context = context,
             schedulerDAO = schedulerDAO,
             schedulerReportDAO = schedulerReportDAO,
-            reportDAO = reportDAO,
-            reportWebClient = reportWebClient
+            reportDAO = reportDAO
         )
     }
 
@@ -137,14 +137,25 @@ class SingletonSchedulerRepositoryModule {
     @Provides
     fun provideSchedulerReportExportationRepository(
         @ApplicationContext context: Context,
-        reportDAO: ReportDAO,
         schedulerReportDAO: SchedulerReportDAO,
         reportWebClient: ReportWebClient
     ): SchedulerReportExportationRepository {
         return SchedulerReportExportationRepository(
             context = context,
-            reportDAO = reportDAO,
             schedulerReportDAO = schedulerReportDAO,
+            reportWebClient = reportWebClient
+        )
+    }
+
+    @Provides
+    fun provideReportFromSchedulerExportationRepository(
+        @ApplicationContext context: Context,
+        reportDAO: ReportDAO,
+        reportWebClient: ReportWebClient
+    ): ReportFromSchedulerExportationRepository {
+        return ReportFromSchedulerExportationRepository(
+            context = context,
+            reportDAO = reportDAO,
             reportWebClient = reportWebClient
         )
     }

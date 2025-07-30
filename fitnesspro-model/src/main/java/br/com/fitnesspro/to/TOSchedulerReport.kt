@@ -6,5 +6,6 @@ data class TOSchedulerReport(
     override var id: String? = null,
     var personId: String? = null,
     var reportId: String? = null,
-    var context: EnumReportContext? = null
+    var context: EnumReportContext? = null,
+    var active: Boolean = true
 ): BaseTO

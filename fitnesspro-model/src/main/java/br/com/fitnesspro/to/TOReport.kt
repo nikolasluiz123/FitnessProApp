@@ -8,5 +8,6 @@ data class TOReport(
     var extension: String? = null,
     var filePath: String? = null,
     var date: LocalDateTime? = null,
-    var kbSize: Long? = null
+    var kbSize: Long? = null,
+    var active: Boolean = true
 ): BaseTO

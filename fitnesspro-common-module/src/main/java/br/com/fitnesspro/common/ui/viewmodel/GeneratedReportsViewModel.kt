@@ -8,8 +8,8 @@ import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.navigation.GeneratedReportsScreenArgs
 import br.com.fitnesspro.common.ui.navigation.generatedReportsArguments
 import br.com.fitnesspro.common.ui.state.GeneratedReportsUIState
-import br.com.fitnesspro.common.usecase.report.DeleteAllReportsUseCase
-import br.com.fitnesspro.common.usecase.report.DeleteReportUseCase
+import br.com.fitnesspro.common.usecase.report.InactivateAllReportsUseCase
+import br.com.fitnesspro.common.usecase.report.InactivateReportUseCase
 import br.com.fitnesspro.compose.components.filter.SimpleFilterState
 import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
@@ -30,8 +30,8 @@ class GeneratedReportsViewModel @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val globalEvents: GlobalEvents,
     private val reportRepository: ReportRepository,
-    private val deleteReportUseCase: DeleteReportUseCase,
-    private val deleteAllReportsUseCase: DeleteAllReportsUseCase,
+    private val inactivateReportUseCase: InactivateReportUseCase,
+    private val inactivateAllReportsUseCase: InactivateAllReportsUseCase,
     savedStateHandle: SavedStateHandle
 ): FitnessProViewModel() {
 
@@ -150,14 +150,14 @@ class GeneratedReportsViewModel @Inject constructor(
         )
     }
 
-    fun onDeleteAllReportsClick(onSuccess: () -> Unit) {
+    fun onInactivateAllReportsClick(onSuccess: () -> Unit) {
         _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
             message = context.getString(R.string.generated_reports_delete_all_reports_confirmation_message),
             onConfirm = {
                 _uiState.value.onToggleLoading()
 
                 launch {
-                    deleteAllReportsUseCase(_uiState.value.reportContext!!)
+                    inactivateAllReportsUseCase(_uiState.value.reportContext!!)
                     updateReports()
                     onSuccess()
                 }
@@ -165,9 +165,9 @@ class GeneratedReportsViewModel @Inject constructor(
         )
     }
 
-    fun onDeleteReportClick(report: TOReport, onSuccess: () -> Unit) {
+    fun onInactivateReportClick(report: TOReport, onSuccess: () -> Unit) {
         launch {
-            deleteReportUseCase(report)
+            inactivateReportUseCase(_uiState.value.reportContext!!, report)
             updateReports()
             onSuccess()
         }

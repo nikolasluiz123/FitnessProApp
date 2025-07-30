@@ -1,19 +1,18 @@
 package br.com.fitnesspro.common.repository
 
 import android.content.Context
-import br.com.fitnesspor.service.data.access.webclient.general.ReportWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.ReportDAO
+import br.com.fitnesspro.local.data.access.dao.SchedulerReportDAO
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.model.general.report.Report
-import br.com.fitnesspro.pdf.generator.utils.ReportFileUtils
 import br.com.fitnesspro.to.TOReport
 
 class ReportRepository(
     context: Context,
     private val reportDAO: ReportDAO,
-    private val personRepository: PersonRepository,
-    private val reportWebClient: ReportWebClient
+    private val schedulerReportDAO: SchedulerReportDAO,
+    private val personRepository: PersonRepository
 ): FitnessProRepository(context) {
 
     suspend fun getListReports(context: EnumReportContext, quickFilter: String? = null): List<TOReport> {
@@ -22,44 +21,45 @@ class ReportRepository(
         return reportDAO.getListGeneratedReports(context, authenticatedPersonId, quickFilter)
     }
 
-    suspend fun deleteSchedulerReport(reportId: String) {
+    suspend fun inactivateReport(context: EnumReportContext, reportId: String) {
         runInTransaction {
-            deleteReportLocally(reportId)
-            deleteReportRemote(reportId)
+            val report = reportDAO.getReportById(reportId)!!.apply {
+                active = false
+            }
+
+            reportDAO.update(report, true)
+
+            when (context) {
+                EnumReportContext.SCHEDULERS_REPORT -> {
+                    val schedulerReport = schedulerReportDAO.getSchedulerReportByReportId(reportId).apply {
+                        active = false
+                    }
+
+                    schedulerReportDAO.update(schedulerReport, true)
+                }
+            }
         }
     }
 
-    private suspend fun deleteReportRemote(reportId: String) {
-        reportWebClient.deleteSchedulerReport(
-            token = getValidToken(),
-            reportId = reportId
-        )
-    }
+    suspend fun inactivateAllReports(context: EnumReportContext, reports: List<Report>) {
+        val reportIds = mutableListOf<String>()
 
-    private suspend fun deleteReportLocally(reportId: String) {
-        reportDAO.getReportById(reportId)?.let { report ->
-            ReportFileUtils.deleteReportFile(context, report.filePath!!)
-            reportDAO.deleteReport(report)
-        }
-    }
+        val reportList = reports.onEach {
+            it.active = false
 
-    suspend fun deleteAllReports(reports: List<Report>) {
-        runInTransaction {
-            deleteReportsLocally(reports)
-            deleteReportsRemote()
+            reportIds.add(it.id)
         }
 
-    }
+        reportDAO.updateBatch(reportList, true)
 
-    private suspend fun deleteReportsRemote() {
-        reportWebClient.deleteAllSchedulerReport(getValidToken())
-    }
+        when (context) {
+            EnumReportContext.SCHEDULERS_REPORT -> {
+                val schedulerReportList = schedulerReportDAO.getSchedulerReportByReportIdIn(reportIds).onEach {
+                    it.active = false
+                }
 
-    private suspend fun deleteReportsLocally(reports: List<Report>) {
-        reportDAO.deleteReports(reports)
-
-        reports.forEach { report ->
-            ReportFileUtils.deleteReportFile(context, report.filePath!!)
+                schedulerReportDAO.updateBatch(schedulerReportList, true)
+            }
         }
     }
 }

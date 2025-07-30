@@ -1,5 +1,6 @@
 package br.com.fitnesspro.scheduler.injection
 
+import br.com.fitnesspro.scheduler.repository.sync.exportation.ReportFromSchedulerExportationRepository
 import br.com.fitnesspro.scheduler.repository.sync.exportation.SchedulerExportationRepository
 import br.com.fitnesspro.scheduler.repository.sync.exportation.SchedulerReportExportationRepository
 import br.com.fitnesspro.scheduler.repository.sync.importation.ReportFromSchedulerImportationRepository
@@ -22,5 +23,7 @@ interface IScheduleWorkersEntryPoint {
     fun getSchedulerExportationRepository(): SchedulerExportationRepository
 
     fun getSchedulerReportExportationRepository(): SchedulerReportExportationRepository
+
+    fun getReportFromSchedulerExportationRepository(): ReportFromSchedulerExportationRepository
 
 }

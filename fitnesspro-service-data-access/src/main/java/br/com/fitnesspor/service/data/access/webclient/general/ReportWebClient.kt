@@ -15,9 +15,7 @@ import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.ReportImportFilter
 import br.com.fitnesspro.shared.communication.query.filter.importation.SchedulerReportImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
 
 class ReportWebClient(
@@ -25,30 +23,27 @@ class ReportWebClient(
     private val reportService: IReportService,
 ): FitnessProWebClient(context) {
 
-    suspend fun saveSchedulerReport(token: String, report: Report, schedulerReport: SchedulerReport): PersistenceServiceResponse<SchedulerReportDTO> {
-        return persistenceServiceErrorHandlingBlock(
-            codeBlock = {
-                val dto = schedulerReport.getSchedulerReportDTO(report.getReportDTO())
-
-                reportService.saveSchedulerReport(
-                    token = formatToken(token),
-                    schedulerReportDTO = dto
-                ).getResponseBody(SchedulerReportDTO::class.java)
-            }
-        )
-    }
-
-    suspend fun saveSchedulerReportBatch(token: String, reports: List<Report>, schedulerReports: List<SchedulerReport>): ExportationServiceResponse {
+    suspend fun saveSchedulerReportBatch(token: String, schedulerReports: List<SchedulerReport>): ExportationServiceResponse {
         return exportationServiceErrorHandlingBlock(
             codeBlock = {
-                val schedulerReportDTOList = schedulerReports.map { schedulerReport ->
-                    val report = reports.first { it.id == schedulerReport.reportId }
-                    schedulerReport.getSchedulerReportDTO(report.getReportDTO())
-                }
+                val schedulerReportDTOList = schedulerReports.map(SchedulerReport::getSchedulerReportDTO)
 
                 reportService.saveSchedulerReportBatch(
                     token = formatToken(token),
                     schedulerReportDTOList = schedulerReportDTOList
+                ).getResponseBody()
+            }
+        )
+    }
+
+    suspend fun saveReportBatch(token: String, reports: List<Report>): ExportationServiceResponse {
+        return exportationServiceErrorHandlingBlock(
+            codeBlock = {
+                val reportDTOList = reports.map(Report::getReportDTO)
+
+                reportService.saveReportBatch(
+                    token = formatToken(token),
+                    reportDTOList = reportDTOList
                 ).getResponseBody()
             }
         )
@@ -86,25 +81,6 @@ class ReportWebClient(
                     filter = gson.toJson(filter),
                     pageInfos = gson.toJson(pageInfos)
                 ).getResponseBody(SchedulerReportDTO::class.java)
-            }
-        )
-    }
-
-    suspend fun deleteSchedulerReport(token: String, reportId: String): FitnessProServiceResponse {
-        return serviceErrorHandlingBlock(
-            codeBlock = {
-                reportService.deleteSchedulerReport(
-                    token = formatToken(token),
-                    reportId = reportId
-                ).getResponseBody()
-            }
-        )
-    }
-
-    suspend fun deleteAllSchedulerReport(token: String): FitnessProServiceResponse {
-        return serviceErrorHandlingBlock(
-            codeBlock = {
-                reportService.deleteAllSchedulerReport(token = formatToken(token)).getResponseBody()
             }
         )
     }

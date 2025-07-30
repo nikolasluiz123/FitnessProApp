@@ -28,8 +28,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import br.com.fitnesspro.common.ui.screen.report.callback.OnDeleteAllReportsClick
-import br.com.fitnesspro.common.ui.screen.report.callback.OnDeleteReportClick
+import br.com.fitnesspro.common.ui.screen.report.callback.OnInactivateAllReportsClick
+import br.com.fitnesspro.common.ui.screen.report.callback.OnInactivateReportClick
 import br.com.fitnesspro.common.ui.state.GeneratedReportsUIState
 import br.com.fitnesspro.common.ui.viewmodel.GeneratedReportsViewModel
 import br.com.fitnesspro.compose.components.R
@@ -58,8 +58,8 @@ fun GeneratedReportsScreen(
     GeneratedReportsScreen(
         state = state,
         onNavigateBackClick = onNavigateBackClick,
-        onDeleteAllReportsClick = viewModel::onDeleteAllReportsClick,
-        onDeleteReportClick = viewModel::onDeleteReportClick,
+        onInactivateAllReportsClick = viewModel::onInactivateAllReportsClick,
+        onInactivateReportClick = viewModel::onInactivateReportClick,
         onUpdateReports = viewModel::onUpdateReports
     )
 }
@@ -69,8 +69,8 @@ fun GeneratedReportsScreen(
 fun GeneratedReportsScreen(
     state: GeneratedReportsUIState = GeneratedReportsUIState(),
     onNavigateBackClick: () -> Unit = {},
-    onDeleteAllReportsClick: OnDeleteAllReportsClick? = null,
-    onDeleteReportClick: OnDeleteReportClick? = null,
+    onInactivateAllReportsClick: OnInactivateAllReportsClick? = null,
+    onInactivateReportClick: OnInactivateReportClick? = null,
     onUpdateReports: () -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -87,7 +87,7 @@ fun GeneratedReportsScreen(
                     IconButtonDelete(
                         iconModifier = Modifier.size(24.dp),
                         onClick = {
-                            onDeleteAllReportsClick?.onExecute(
+                            onInactivateAllReportsClick?.onExecute(
                                 onSuccess = {
                                     state.onToggleLoading()
 
@@ -133,7 +133,7 @@ fun GeneratedReportsScreen(
                 ReportsList(
                     state = state,
                     context = context,
-                    onDeleteReportClick = onDeleteReportClick,
+                    onInactivateReportClick = onInactivateReportClick,
                     coroutineScope = coroutineScope,
                     snackbarHostState = snackbarHostState
                 )
@@ -145,7 +145,7 @@ fun GeneratedReportsScreen(
             ReportsList(
                 state = state,
                 context = context,
-                onDeleteReportClick = onDeleteReportClick,
+                onInactivateReportClick = onInactivateReportClick,
                 coroutineScope = coroutineScope,
                 snackbarHostState = snackbarHostState
             )
@@ -187,7 +187,7 @@ private fun CustomHeader(state: GeneratedReportsUIState) {
 private fun ReportsList(
     state: GeneratedReportsUIState,
     context: Context,
-    onDeleteReportClick: OnDeleteReportClick?,
+    onInactivateReportClick: OnInactivateReportClick?,
     coroutineScope: CoroutineScope,
     snackbarHostState: SnackbarHostState
 ) {
@@ -207,7 +207,7 @@ private fun ReportsList(
                 onDeleteClick = {
                     state.onToggleLoading()
 
-                    onDeleteReportClick?.onExecute(
+                    onInactivateReportClick?.onExecute(
                         report = it,
                         onSuccess = {
                             state.onToggleLoading()

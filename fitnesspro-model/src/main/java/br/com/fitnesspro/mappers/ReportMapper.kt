@@ -17,6 +17,7 @@ fun TOReport.getReport(): Report {
         filePath = filePath,
         date = date!!,
         kbSize = kbSize,
+        active = active
     )
 
     id?.let { model.id = it }
@@ -28,32 +29,13 @@ fun TOSchedulerReport.getSchedulerReport(): SchedulerReport {
     val model = SchedulerReport(
         personId = personId,
         reportId = reportId,
-        context = context
+        context = context,
+        active = active
     )
 
     id?.let { model.id = it }
 
     return model
-}
-
-fun Report.getTOReport(): TOReport {
-    return TOReport(
-        id = id,
-        name = name,
-        extension = extension,
-        filePath = filePath,
-        date = date,
-        kbSize = kbSize,
-    )
-}
-
-fun SchedulerReport.getTOSchedulerReport(): TOSchedulerReport {
-    return TOSchedulerReport(
-        id = id,
-        personId = personId,
-        reportId = reportId,
-        context = context
-    )
 }
 
 fun ReportDTO.getReport(): Report {
@@ -64,6 +46,7 @@ fun ReportDTO.getReport(): Report {
         filePath = filePath,
         date = date!!,
         kbSize = kbSize,
+        active = active
     )
 }
 
@@ -72,8 +55,9 @@ fun SchedulerReportDTO.getSchedulerReport(): SchedulerReport {
         id = id!!,
         transmissionState = EnumTransmissionState.TRANSMITTED,
         personId = personId,
-        reportId = report?.id,
-        context = getEnumReportContext(reportContext!!)
+        reportId = reportId,
+        context = getEnumReportContext(reportContext!!),
+        active = active
     )
 }
 
@@ -85,15 +69,17 @@ fun Report.getReportDTO(): ReportDTO {
         filePath = filePath,
         date = date,
         kbSize = kbSize,
+        active = active
     )
 }
 
-fun SchedulerReport.getSchedulerReportDTO(reportDTO: ReportDTO): SchedulerReportDTO {
+fun SchedulerReport.getSchedulerReportDTO(): SchedulerReportDTO {
     return SchedulerReportDTO(
         id = id,
         personId = personId,
-        report = reportDTO,
-        reportContext = getEnumReportContextService(context!!)
+        reportId = reportId,
+        reportContext = getEnumReportContextService(context!!),
+        active = active
     )
 }
 

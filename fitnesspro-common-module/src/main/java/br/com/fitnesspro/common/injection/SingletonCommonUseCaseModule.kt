@@ -9,8 +9,8 @@ import br.com.fitnesspro.common.usecase.academy.SavePersonAcademyTimeUseCase
 import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
 import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
-import br.com.fitnesspro.common.usecase.report.DeleteAllReportsUseCase
-import br.com.fitnesspro.common.usecase.report.DeleteReportUseCase
+import br.com.fitnesspro.common.usecase.report.InactivateAllReportsUseCase
+import br.com.fitnesspro.common.usecase.report.InactivateReportUseCase
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
 import br.com.fitnesspro.core.security.DefaultPasswordHasher
 import br.com.fitnesspro.core.security.IPasswordHasher
@@ -86,11 +86,9 @@ class SingletonCommonUseCaseModule {
 
     @Provides
     fun provideDeleteReportUseCase(
-        @ApplicationContext context: Context,
         reportRepository: ReportRepository
-    ): DeleteReportUseCase {
-        return DeleteReportUseCase(
-            context = context,
+    ): InactivateReportUseCase {
+        return InactivateReportUseCase(
             reportRepository = reportRepository
         )
     }
@@ -98,8 +96,8 @@ class SingletonCommonUseCaseModule {
     @Provides
     fun provideDeleteAllReportsUseCase(
         reportRepository: ReportRepository
-    ): DeleteAllReportsUseCase {
-        return DeleteAllReportsUseCase(
+    ): InactivateAllReportsUseCase {
+        return InactivateAllReportsUseCase(
             reportRepository = reportRepository
         )
     }

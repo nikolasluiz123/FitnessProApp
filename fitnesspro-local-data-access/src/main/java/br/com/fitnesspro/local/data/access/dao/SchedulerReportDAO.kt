@@ -47,4 +47,10 @@ abstract class SchedulerReportDAO: IntegratedMaintenanceDAO<SchedulerReport>() {
 
     @Query("select exists (select 1 from scheduler_report where id = :id)")
     abstract suspend fun hasEntityWithId(id: String): Boolean
+
+    @Query("select * from scheduler_report where report_id = :reportId")
+    abstract suspend fun getSchedulerReportByReportId(reportId: String): SchedulerReport
+
+    @Query("select * from scheduler_report where report_id in (:reportIds)")
+    abstract suspend fun getSchedulerReportByReportIdIn(reportIds: List<String>): List<SchedulerReport>
 }

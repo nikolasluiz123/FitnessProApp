@@ -40,6 +40,6 @@
     <string name="generated_reports_simple_filter_placeholder">Buscar por Nome</string>
     <string name="generated_reports_empty_message">Você ainda não gerou nenhum relatório desse tipo</string>
     <string name="generated_reports_new_report_success_message">Relatório gerado com sucesso</string>
-    <string name="generated_reports_all_reports_deleted_success_message">Todos os relatórios desse tipo foram deletados com sucesso.</string>
-    <string name="generated_reports_report_deleted_success_message">Relatório deletado com sucesso</string>
+    <string name="generated_reports_all_reports_deleted_success_message">Todos os relatórios desse tipo foram excluídos com sucesso.</string>
+    <string name="generated_reports_report_deleted_success_message">Relatório excluído com sucesso</string>
 </resources>
