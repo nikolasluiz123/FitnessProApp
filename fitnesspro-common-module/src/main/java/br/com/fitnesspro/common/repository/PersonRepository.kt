@@ -36,7 +36,7 @@ class PersonRepository(
         toPerson: TOPerson,
         isRegisterServiceAuth: Boolean,
         forceInsertLocally: Boolean = false
-    ) = withContext(IO) {
+    ) {
         val user = toPerson.user!!.getUser()
         val person = toPerson.getPerson()
 
@@ -99,77 +99,6 @@ class PersonRepository(
         return response.success
     }
 
-    suspend fun savePersonBatch(toPersons: List<TOPerson>) = withContext(IO) {
-        runInTransaction {
-            savePersonBatchLocally(toPersons)
-            savePersonBatchRemote(toPersons)
-        }
-    }
-
-    private suspend fun savePersonBatchLocally(toPersons: List<TOPerson>) {
-        val insertionUserList = mutableListOf<User>()
-        val insertionPersonList = mutableListOf<Person>()
-
-        val updateUserList = mutableListOf<User>()
-        val updatePersonList = mutableListOf<Person>()
-
-        toPersons.forEach { toPerson ->
-            val user = toPerson.user!!.getUser()
-            val person = toPerson.getPerson()
-
-            if (toPerson.id == null) {
-                insertionUserList.add(user)
-                insertionPersonList.add(person)
-            } else {
-                updateUserList.add(user)
-                updatePersonList.add(person)
-            }
-        }
-
-        if (insertionUserList.isNotEmpty()) {
-            userDAO.insertBatch(insertionUserList)
-        }
-
-        if (updateUserList.isNotEmpty()) {
-            userDAO.updateBatch(updateUserList)
-        }
-
-        if (insertionPersonList.isNotEmpty()) {
-            personDAO.insertBatch(insertionPersonList)
-        }
-
-        if (updatePersonList.isNotEmpty()) {
-            personDAO.updateBatch(updatePersonList)
-        }
-    }
-
-    private suspend fun savePersonBatchRemote(toPersons: List<TOPerson>) {
-        val users = mutableListOf<User>()
-        val persons = mutableListOf<Person>()
-
-        toPersons.forEach { toPerson ->
-            val user = toPerson.user?.getUser()!!
-            val person = toPerson.getPerson()
-
-            users.add(user)
-            persons.add(person)
-        }
-
-        val response = personWebClient.savePersonBatch(
-            token = getValidToken(withoutAuthentication = true),
-            persons = persons,
-            users = users
-        )
-
-        if (response.success) {
-            val transmittedUsers = users.map { it.copy(transmissionState = EnumTransmissionState.TRANSMITTED) }
-            val transmittedPersons = persons.map { it.copy(transmissionState = EnumTransmissionState.TRANSMITTED) }
-
-            userDAO.updateBatch(transmittedUsers)
-            personDAO.updateBatch(transmittedPersons)
-        }
-    }
-
     suspend fun getTOPersonById(personId: String): TOPerson = withContext(IO) {
         val person = personDAO.findPersonById(personId)
         val user = userDAO.findById(person.userId!!)
@@ -207,16 +136,16 @@ class PersonRepository(
         )
     }
 
-    suspend fun findPersonById(personId: String): Person = withContext(IO) {
-        personDAO.findPersonById(personId)
+    suspend fun findPersonById(personId: String): Person {
+        return personDAO.findPersonById(personId)
     }
 
-    suspend fun findPersonByUserId(userId: String): Person = withContext(IO) {
-        personDAO.findPersonByUserId(userId)
+    suspend fun findPersonByUserId(userId: String): Person {
+        return personDAO.findPersonByUserId(userId)
     }
 
-    suspend fun findPersonByEmailRemote(email: String, password: String?): SingleValueServiceResponse<PersonDTO?> = withContext(IO) {
-        personWebClient.findPersonByEmail(
+    suspend fun findPersonByEmailRemote(email: String, password: String?): SingleValueServiceResponse<PersonDTO?> {
+        return personWebClient.findPersonByEmail(
             token = getValidToken(withoutAuthentication = true),
             email = email,
             password = password

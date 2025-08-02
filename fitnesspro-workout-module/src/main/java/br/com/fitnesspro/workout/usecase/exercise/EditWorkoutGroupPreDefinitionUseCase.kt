@@ -7,6 +7,8 @@ import br.com.fitnesspro.to.TOWorkoutGroupPreDefinition
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExercisePreDefinitionFields
 import br.com.fitnesspro.workout.usecase.workout.enums.EnumValidatedWorkoutGroupFields
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class EditWorkoutGroupPreDefinitionUseCase(
     private val context: Context,
@@ -17,7 +19,9 @@ class EditWorkoutGroupPreDefinitionUseCase(
         validateName(toWorkoutGroup)?.let(validationResults::add)
 
         if (validationResults.isEmpty()) {
-            exercisePreDefinitionRepository.saveWorkoutGroupPreDefinition(toWorkoutGroup)
+            withContext(IO) {
+                exercisePreDefinitionRepository.saveWorkoutGroupPreDefinition(toWorkoutGroup)
+            }
         }
 
         return validationResults

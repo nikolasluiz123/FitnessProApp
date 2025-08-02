@@ -36,8 +36,7 @@ abstract class AbstractSaveVideoUseCase(
 
         if (toVideo.kbSize!! > maxVideoSizeKB) {
             val compressor = VideoCompressor(context)
-            val params =
-                CompressionParams(file = videoFile, targetMaxSizeMb = 7, resolutionHeight = 480)
+            val params = CompressionParams(file = videoFile, targetMaxSizeMb = 7, resolutionHeight = 480)
 
             val compressedFile = compressor.compress(params)
 

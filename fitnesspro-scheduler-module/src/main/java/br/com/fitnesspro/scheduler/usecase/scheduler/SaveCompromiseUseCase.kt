@@ -8,6 +8,8 @@ import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
 import br.com.fitnesspro.to.TOScheduler
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class SaveCompromiseUseCase(
     private val context: Context,
@@ -20,12 +22,12 @@ class SaveCompromiseUseCase(
         toScheduler: TOScheduler,
         type: EnumSchedulerType,
         recurrentConfig: CompromiseRecurrentConfig? = null
-    ): MutableList<FieldValidationError<EnumValidatedCompromiseFields>> {
+    ): MutableList<FieldValidationError<EnumValidatedCompromiseFields>> = withContext(IO) {
         if (!context.isNetworkAvailable()) {
             throw NoLoggingException(context.getString(R.string.network_required_save_schedule_message))
         }
 
-        return when (type) {
+        when (type) {
             EnumSchedulerType.SUGGESTION -> {
                 suggestionCompromiseUseCase.saveCompromiseSuggestion(toScheduler)
             }

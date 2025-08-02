@@ -25,7 +25,7 @@ class AcademyRepository(
     private val personAcademyTimeDAO: PersonAcademyTimeDAO,
 ): FitnessProRepository(context) {
 
-    suspend fun savePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) = withContext(IO) {
+    suspend fun savePersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime) {
         val personAcademyTime = toPersonAcademyTime.getPersonAcademyTime()
         savePersonAcademyTimeLocally(toPersonAcademyTime, personAcademyTime)
     }
@@ -54,8 +54,8 @@ class AcademyRepository(
         )
     }
 
-    suspend fun getConflictPersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime): PersonAcademyTime? = withContext(IO) {
-        personAcademyTimeDAO.getConflictPersonAcademyTime(
+    suspend fun getConflictPersonAcademyTime(toPersonAcademyTime: TOPersonAcademyTime): PersonAcademyTime? {
+        return personAcademyTimeDAO.getConflictPersonAcademyTime(
             personAcademyTimeId = toPersonAcademyTime.id,
             personId = toPersonAcademyTime.personId!!,
             dayOfWeek = toPersonAcademyTime.dayOfWeek!!,
@@ -96,8 +96,8 @@ class AcademyRepository(
         personId: String,
         academyId: String? = null,
         dayOfWeek: DayOfWeek? = null
-    ): List<PersonAcademyTime> = withContext(IO) {
-        personAcademyTimeDAO.getAcademyTimes(
+    ): List<PersonAcademyTime> {
+        return personAcademyTimeDAO.getAcademyTimes(
             personId = personId,
             academyId = academyId,
             dayOfWeek = dayOfWeek

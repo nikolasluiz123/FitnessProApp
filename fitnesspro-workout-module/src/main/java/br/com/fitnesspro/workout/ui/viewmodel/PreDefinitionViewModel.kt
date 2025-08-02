@@ -156,8 +156,7 @@ class PreDefinitionViewModel @Inject constructor(
 
     private suspend fun loadEditionData(exercisePreDefinitionId: String?) {
         exercisePreDefinitionId?.let { preDefId ->
-            val toExercisePreDef =
-                exercisePreDefinitionRepository.findTOExercisePreDefinitionById(preDefId)!!
+            val toExercisePreDef = exercisePreDefinitionRepository.findTOExercisePreDefinitionById(preDefId)!!
             val toWorkoutPreDef = toExercisePreDef.workoutGroupPreDefinitionId?.let {
                 exercisePreDefinitionRepository.findTOWorkoutGroupPreDefinitionById(it)
             }

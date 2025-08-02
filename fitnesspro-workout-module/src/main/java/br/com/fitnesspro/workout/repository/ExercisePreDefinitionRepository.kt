@@ -16,6 +16,8 @@ import br.com.fitnesspro.to.TOExercisePreDefinition
 import br.com.fitnesspro.to.TOVideoExercisePreDefinition
 import br.com.fitnesspro.to.TOWorkoutGroupPreDefinition
 import br.com.fitnesspro.tuple.ExercisePredefinitionGroupedTuple
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class ExercisePreDefinitionRepository(
     context: Context,
@@ -107,12 +109,12 @@ class ExercisePreDefinitionRepository(
         }
     }
 
-    suspend fun findTOExercisePreDefinitionById(id: String): TOExercisePreDefinition? {
-        return exercisePreDefinitionDAO.findExercisePreDefinitionById(id)?.getTOExercisePreDefinition()
+    suspend fun findTOExercisePreDefinitionById(id: String): TOExercisePreDefinition? = withContext(IO) {
+        exercisePreDefinitionDAO.findExercisePreDefinitionById(id)?.getTOExercisePreDefinition()
     }
 
-    suspend fun findTOWorkoutGroupPreDefinitionById(id: String): TOWorkoutGroupPreDefinition? {
-        return workoutGroupPreDefinitionDAO.findById(id)?.getTOWorkoutGroupPreDefinition()
+    suspend fun findTOWorkoutGroupPreDefinitionById(id: String): TOWorkoutGroupPreDefinition? = withContext(IO) {
+        workoutGroupPreDefinitionDAO.findById(id)?.getTOWorkoutGroupPreDefinition()
     }
 
     fun getListGroupedPredefinitions(authenticatedPersonId: String, simpleFilter: String = ""): Pager<Int, ExercisePredefinitionGroupedTuple> {

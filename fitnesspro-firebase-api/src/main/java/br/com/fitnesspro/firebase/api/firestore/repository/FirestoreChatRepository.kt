@@ -32,7 +32,7 @@ class FirestoreChatRepository(
         senderPersonId: String,
         receiverPersonId: String,
         chatId: String
-    ) = withContext(IO) {
+    ) {
         val messageDocument = MessageDocument(text = message, personSenderId = senderPersonId)
 
         firestoreChatService.sendMessage(
@@ -43,8 +43,8 @@ class FirestoreChatRepository(
         )
     }
 
-    suspend fun getChatDocument(personId: String, chatId: String): ChatDocument = withContext(IO) {
-        firestoreChatService.getChatDocument(personId, chatId)
+    suspend fun getChatDocument(personId: String, chatId: String): ChatDocument {
+        return firestoreChatService.getChatDocument(personId, chatId)
     }
 
     suspend fun getChatIdFromPerson(senderPerson: TOPerson, receiverPerson: TOPerson): String = withContext(IO) {

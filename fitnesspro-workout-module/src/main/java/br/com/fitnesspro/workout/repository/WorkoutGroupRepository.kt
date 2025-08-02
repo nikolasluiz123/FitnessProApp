@@ -8,10 +8,14 @@ import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.getTOWorkoutGroup
 import br.com.fitnesspro.mappers.getWorkoutGroup
 import br.com.fitnesspro.model.workout.WorkoutGroup
+import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 
 class WorkoutGroupRepository(
@@ -21,31 +25,38 @@ class WorkoutGroupRepository(
 ): FitnessProRepository(context) {
 
     suspend fun getListDayWeekExercisesGroupDecorator(workoutId: String): List<DayWeekExercicesGroupDecorator> {
-        val workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(workoutId).onEach {
-            it.name = it.name ?: context.getString(R.string.workout_group_default_name)
-        }
-        val weeks = workoutGroups.map { it.dayWeek!! }.distinct().sortedBy { it.ordinal }
+        lateinit var workoutGroups: List<WorkoutGroup>
+        lateinit var allExercises: List<TOExercise>
 
-        val workoutGroupIds = workoutGroups.map { it.id }
-        val allExercises = exerciseDAO.getExercisesFromWorkoutGroup(workoutGroupIds)
-        val exercisesByGroupId = allExercises.groupBy { it.workoutGroupId!! }
-
-        return weeks.map { week ->
-            val groupsFromWeek = workoutGroups.filter { it.dayWeek == week }
-
-            val groupsDecorator = groupsFromWeek.map { workoutGroup ->
-                WorkoutGroupDecorator(
-                    id = workoutGroup.id,
-                    label = workoutGroup.name!!,
-                    items = exercisesByGroupId[workoutGroup.id] ?: emptyList()
-                )
+        withContext(IO) {
+            workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(workoutId).onEach {
+                it.name = it.name ?: context.getString(R.string.workout_group_default_name)
             }
 
-            DayWeekExercicesGroupDecorator(
-                id = week.name,
-                label = week.getFirstPartFullDisplayName(),
-                items = groupsDecorator
-            )
+            allExercises = exerciseDAO.getExercisesFromWorkoutGroup(workoutGroups.map { it.id })
+        }
+
+        return withContext(Default) {
+            val exercisesByGroupId = allExercises.groupBy { it.workoutGroupId!! }
+            val weeks = workoutGroups.map { it.dayWeek!! }.distinct().sortedBy { it.ordinal }
+
+            weeks.map { week ->
+                val groupsFromWeek = workoutGroups.filter { it.dayWeek == week }
+
+                val groupsDecorator = groupsFromWeek.map { workoutGroup ->
+                    WorkoutGroupDecorator(
+                        id = workoutGroup.id,
+                        label = workoutGroup.name!!,
+                        items = exercisesByGroupId[workoutGroup.id] ?: emptyList()
+                    )
+                }
+
+                DayWeekExercicesGroupDecorator(
+                    id = week.name,
+                    label = week.getFirstPartFullDisplayName(),
+                    items = groupsDecorator
+                )
+            }
         }
     }
 
@@ -54,8 +65,8 @@ class WorkoutGroupRepository(
         dayOfWeek: DayOfWeek? = null,
         workoutGroupId: String? = null,
         simpleFilter: String? = null
-    ): List<TOWorkoutGroup> {
-        return workoutGroupDAO.getWorkoutGroupsFromWorkout(
+    ): List<TOWorkoutGroup> = withContext(IO) {
+        workoutGroupDAO.getWorkoutGroupsFromWorkout(
             workoutId = workoutId,
             dayOfWeek = dayOfWeek,
             workoutGroupId = workoutGroupId,
@@ -100,20 +111,27 @@ class WorkoutGroupRepository(
     }
 
     suspend fun getListWorkoutGroupDecorator(workoutId: String, dayOfWeek: DayOfWeek): List<WorkoutGroupDecorator> {
-        val workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(workoutId, dayOfWeek).onEach {
-            it.name = it.name ?: context.getString(R.string.workout_group_default_name)
+        lateinit var workoutGroups: List<WorkoutGroup>
+        lateinit var allExercises: List<TOExercise>
+
+        withContext(IO) {
+            workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(workoutId, dayOfWeek).onEach {
+                it.name = it.name ?: context.getString(R.string.workout_group_default_name)
+            }
+
+            allExercises = exerciseDAO.getExercisesFromWorkoutGroup(workoutGroups.map { it.id })
         }
 
-        val workoutGroupIds = workoutGroups.map { it.id }
-        val allExercises = exerciseDAO.getExercisesFromWorkoutGroup(workoutGroupIds)
-        val exercisesByGroupId = allExercises.groupBy { it.workoutGroupId!! }
+        return withContext(Default) {
+            val exercisesByGroupId = allExercises.groupBy { it.workoutGroupId!! }
 
-        return workoutGroups.map { workoutGroup ->
-            WorkoutGroupDecorator(
-                id = workoutGroup.id,
-                label = workoutGroup.name!!,
-                items = exercisesByGroupId[workoutGroup.id] ?: emptyList()
-            )
+            workoutGroups.map { workoutGroup ->
+                WorkoutGroupDecorator(
+                    id = workoutGroup.id,
+                    label = workoutGroup.name!!,
+                    items = exercisesByGroupId[workoutGroup.id] ?: emptyList()
+                )
+            }
         }
     }
 }

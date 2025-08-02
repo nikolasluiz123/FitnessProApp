@@ -34,18 +34,20 @@ class UserRepository(
     private val serviceTokenRepository: ServiceTokenRepository
 ): FitnessProRepository(context) {
 
-    suspend fun hasUserWithEmail(email: String, userId: String?): Boolean = withContext(IO) {
-        userDAO.hasUserWithEmail(email, userId)
+    suspend fun hasUserWithEmail(email: String, userId: String?): Boolean {
+        return userDAO.hasUserWithEmail(email, userId)
     }
 
-    suspend fun hasUserWithCredentials(email: String, password: String): Boolean = withContext(IO) {
-        userDAO.hasUserWithCredentials(email, password)
+    suspend fun hasUserWithCredentials(email: String, password: String): Boolean {
+        return userDAO.hasUserWithCredentials(email, password)
     }
 
-    suspend fun authenticate(email: String, password: String): Unit = withContext(IO) {
-        saveUserIdDataStore(email)
-        authenticateRemote(email, password)
-        authenticateFirebase(email, password)
+    suspend fun authenticate(email: String, password: String) {
+        runInTransaction {
+            saveUserIdDataStore(email)
+            authenticateRemote(email, password)
+            authenticateFirebase(email, password)
+        }
     }
 
     private suspend fun saveUserIdDataStore(email: String) {
@@ -66,23 +68,21 @@ class UserRepository(
     }
 
     private suspend fun authenticateRemote(email: String, password: String) {
-        runInTransaction {
-            val authenticationDTO = getAuthenticationDTO(email, password)
+        val authenticationDTO = getAuthenticationDTO(email, password)
 
-            val response = authenticationWebClient.authenticate(
-                token = getValidToken(withoutAuthentication = true),
-                authenticationDTO = authenticationDTO
-            )
+        val response = authenticationWebClient.authenticate(
+            token = getValidToken(withoutAuthentication = true),
+            authenticationDTO = authenticationDTO
+        )
 
-            val userExistsLocally = userDAO.hasUserWithEmailAndPassword(email, password)
+        val userExistsLocally = userDAO.hasUserWithEmailAndPassword(email, password)
 
-            if (response.success) {
-                serviceTokenRepository.saveTokenInformation(response.tokens)
-            } else if (response.code == HTTP_NOT_FOUND && context.isNetworkAvailable() && userExistsLocally) {
-                savePersonRemoteAndAuthenticateAgain(email, password)
-            } else {
-                throw ServiceException(response.error!!)
-            }
+        if (response.success) {
+            serviceTokenRepository.saveTokenInformation(response.tokens)
+        } else if (response.code == HTTP_NOT_FOUND && context.isNetworkAvailable() && userExistsLocally) {
+            savePersonRemoteAndAuthenticateAgain(email, password)
+        } else {
+            throw ServiceException(response.error!!)
         }
     }
 
@@ -106,20 +106,20 @@ class UserRepository(
         }
     }
 
-    suspend fun signInWithGoogle(): AuthResult? = withContext(IO) {
-        firebaseGoogleAuthenticationService.signIn()
+    suspend fun signInWithGoogle(): AuthResult? {
+        return firebaseGoogleAuthenticationService.signIn()
     }
 
     suspend fun getAuthenticatedTOUser(): TOUser? = withContext(IO) {
         getAuthenticatedUser()?.let(User::getTOUser)
     }
 
-    suspend fun findUserById(userId: String): User? = withContext(IO) {
-        userDAO.findById(userId)
+    suspend fun findUserById(userId: String): User? {
+        return userDAO.findById(userId)
     }
 
-    suspend fun findUserByEmail(email: String): User? = withContext(IO) {
-        userDAO.findByEmail(email)
+    suspend fun findUserByEmail(email: String): User? {
+        return userDAO.findByEmail(email)
     }
 
     suspend fun logout() = withContext(IO) {

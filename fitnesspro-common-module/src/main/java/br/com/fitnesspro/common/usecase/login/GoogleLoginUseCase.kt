@@ -8,6 +8,8 @@ import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.mappers.getTOPerson
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class GoogleLoginUseCase(
     private val context: Context,
@@ -15,8 +17,8 @@ class GoogleLoginUseCase(
     private val personRepository: PersonRepository
 ) {
 
-    suspend operator fun invoke(authAgain: Boolean = false): GoogleAuthResult? {
-        return userRepository.signInWithGoogle()?.let {  authResult ->
+    suspend operator fun invoke(authAgain: Boolean = false): GoogleAuthResult? = withContext(IO) {
+        return@withContext userRepository.signInWithGoogle()?.let { authResult ->
             val toPerson = TOPerson(
                 name = authResult.user?.displayName,
                 phone = authResult.user?.phoneNumber,
@@ -29,7 +31,7 @@ class GoogleLoginUseCase(
             val userExistsLocally = userRepository.hasUserWithEmail(authResult.user?.email!!, null)
 
             if (!networkAvailable && !userExistsLocally) {
-                return GoogleAuthResult(errorMessage = context.getString(R.string.validation_msg_network_required_login))
+                return@let GoogleAuthResult(errorMessage = context.getString(R.string.validation_msg_network_required_login))
             }
 
             val findPersonRemoteResponse = personRepository.findPersonByEmailRemote(
@@ -38,7 +40,7 @@ class GoogleLoginUseCase(
             )
 
             if (!userExistsLocally && !findPersonRemoteResponse.success) {
-                return GoogleAuthResult(errorMessage = findPersonRemoteResponse.error!!)
+                return@let GoogleAuthResult(errorMessage = findPersonRemoteResponse.error!!)
             }
 
             val toPersonRemote = findPersonRemoteResponse.value?.getTOPerson()
@@ -65,11 +67,11 @@ class GoogleLoginUseCase(
                 }
 
                 authAgain && !isSameUser -> {
-                    return GoogleAuthResult(errorMessage = context.getString(R.string.validation_msg_not_same_user_auth_again))
+                    return@let GoogleAuthResult(errorMessage = context.getString(R.string.validation_msg_not_same_user_auth_again))
                 }
             }
 
-            return GoogleAuthResult(
+            return@let GoogleAuthResult(
                 success = true,
                 userExists = userExistsLocally || toPersonRemote != null,
                 toPerson = toPerson,

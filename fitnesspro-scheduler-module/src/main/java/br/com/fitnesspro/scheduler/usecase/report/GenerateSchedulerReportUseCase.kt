@@ -17,6 +17,8 @@ import br.com.fitnesspro.scheduler.ui.state.NewSchedulerReportResult
 import br.com.fitnesspro.scheduler.usecase.report.enums.EnumValidatedSchedulerReportFields
 import br.com.fitnesspro.to.TOReport
 import br.com.fitnesspro.to.TOSchedulerReport
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.ZoneId
 
@@ -66,7 +68,7 @@ class GenerateSchedulerReportUseCase(
 
     private suspend fun generateReport(filter: SchedulerReportFilter): File {
         val report = SchedulerPDFReport(context, filter)
-        val reportGenerator = PDFReportGenerator<SchedulerReportFilter>(context, report)
+        val reportGenerator = PDFReportGenerator(context, report)
 
         return reportGenerator.generatePdfFile(pageSize = EnumPageSize.A4)
     }
@@ -75,7 +77,7 @@ class GenerateSchedulerReportUseCase(
         reportResult: NewSchedulerReportResult,
         file: File,
         filter: SchedulerReportFilter
-    ) {
+    ) = withContext(IO) {
         val toReport = TOReport(
             name = reportResult.reportName!!,
             extension = file.extension,

@@ -12,6 +12,8 @@ import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.to.TOScheduler
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import java.time.ZoneId
 
 class CancelSchedulerUseCase(
@@ -20,7 +22,7 @@ class CancelSchedulerUseCase(
     private val personRepository: PersonRepository
 ) {
 
-    suspend operator fun invoke(toScheduler: TOScheduler, schedulerType: EnumSchedulerType): ValidationError? {
+    suspend operator fun invoke(toScheduler: TOScheduler, schedulerType: EnumSchedulerType): ValidationError? = withContext(IO) {
         val result = validate(toScheduler)
 
         if (result == null) {
@@ -33,7 +35,7 @@ class CancelSchedulerUseCase(
             }
         }
 
-        return result
+        result
     }
 
     private fun validate(toScheduler: TOScheduler): ValidationError? {

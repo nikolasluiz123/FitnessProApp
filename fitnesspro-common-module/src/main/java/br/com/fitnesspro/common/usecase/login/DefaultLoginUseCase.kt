@@ -11,6 +11,8 @@ import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.mappers.getTOPerson
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class DefaultLoginUseCase(
     private val context: Context,
@@ -19,7 +21,7 @@ class DefaultLoginUseCase(
     private val personRepository: PersonRepository,
 ) {
 
-    suspend fun execute(email: String?, password: String?, authAgain: Boolean = false): List<FieldValidationError<EnumValidatedLoginFields>> {
+    suspend fun execute(email: String?, password: String?, authAgain: Boolean = false): List<FieldValidationError<EnumValidatedLoginFields>> = withContext(IO) {
         val validationsResults = mutableListOf(
             validateEmail(email),
             validatePassword(password),
@@ -35,7 +37,7 @@ class DefaultLoginUseCase(
             )
         }
 
-        return validationsResults
+        validationsResults
     }
 
     private fun validatePassword(password: String?): FieldValidationError<EnumValidatedLoginFields>? {

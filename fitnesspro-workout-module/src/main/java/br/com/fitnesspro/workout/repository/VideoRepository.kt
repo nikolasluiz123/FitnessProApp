@@ -13,6 +13,8 @@ import br.com.fitnesspro.mappers.getVideoExercisePreDefinition
 import br.com.fitnesspro.to.TOVideoExercise
 import br.com.fitnesspro.to.TOVideoExerciseExecution
 import br.com.fitnesspro.to.TOVideoExercisePreDefinition
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class VideoRepository(
     context: Context,
@@ -48,16 +50,16 @@ class VideoRepository(
         }
     }
 
-    suspend fun getVideoExercises(exerciseId: String): List<String> {
-        return videoExerciseDAO.getListVideoFilePathsFromExercise(exerciseId)
+    suspend fun getVideoExercises(exerciseId: String): List<String> = withContext(IO) {
+        videoExerciseDAO.getListVideoFilePathsFromExercise(exerciseId)
     }
 
-    suspend fun getVideoExerciseExecution(exerciseExecutionId: String): List<String> {
-        return videoExerciseDAO.getListVideoFilePathsFromExecution(exerciseExecutionId)
+    suspend fun getVideoExerciseExecution(exerciseExecutionId: String): List<String> = withContext(IO) {
+        videoExerciseDAO.getListVideoFilePathsFromExecution(exerciseExecutionId)
     }
 
-    suspend fun getVideoExercisePreDefinition(exercisePreDefinitionId: String): List<String> {
-        return videoExerciseDAO.getListVideoFilePathsFromPreDefinition(exercisePreDefinitionId)
+    suspend fun getVideoExercisePreDefinition(exercisePreDefinitionId: String): List<String> = withContext(IO) {
+        videoExerciseDAO.getListVideoFilePathsFromPreDefinition(exercisePreDefinitionId)
     }
 
     suspend fun getCountVideosExercise(exerciseId: String): Int {

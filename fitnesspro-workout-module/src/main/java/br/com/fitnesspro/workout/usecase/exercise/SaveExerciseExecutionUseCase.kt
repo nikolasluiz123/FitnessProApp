@@ -15,6 +15,8 @@ import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseExecutionFields
 import br.com.fitnesspro.workout.usecase.exercise.exception.VideoException
 import br.com.fitnesspro.workout.usecase.exercise.video.SaveVideoExecutionUseCase
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.ZoneId
 
@@ -26,7 +28,7 @@ class SaveExerciseExecutionUseCase(
     suspend operator fun invoke(
         toExerciseExecution: TOExerciseExecution,
         videoFiles: List<File>
-    ): List<FieldValidationError<EnumValidatedExerciseExecutionFields>> {
+    ): List<FieldValidationError<EnumValidatedExerciseExecutionFields>> = withContext(IO) {
         val validations = validateExerciseExecution(toExerciseExecution)
 
         if (validations.isEmpty()) {
@@ -43,7 +45,7 @@ class SaveExerciseExecutionUseCase(
             }
         }
 
-        return validations
+        validations
     }
 
     private fun getListTOVideoExecutionFromFiles(videoFiles: List<File>): List<TOVideoExerciseExecution> {

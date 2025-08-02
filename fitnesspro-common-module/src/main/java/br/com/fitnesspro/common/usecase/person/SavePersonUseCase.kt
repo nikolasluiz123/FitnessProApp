@@ -15,6 +15,8 @@ import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.security.IPasswordHasher
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOPerson
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import java.time.ZoneId
 
 class SavePersonUseCase(
@@ -25,7 +27,7 @@ class SavePersonUseCase(
     private val passwordHasher: IPasswordHasher
 ) {
 
-    suspend fun execute(toPerson: TOPerson, isRegisterServiceAuth: Boolean): List<FieldValidationError<EnumValidatedPersonFields>> {
+    suspend fun execute(toPerson: TOPerson, isRegisterServiceAuth: Boolean): List<FieldValidationError<EnumValidatedPersonFields>> = withContext(IO) {
         val validationResults = mutableListOf<FieldValidationError<EnumValidatedPersonFields>>()
         validationResults.addAll(validateUser(toPerson))
         validationResults.addAll(validatePerson(toPerson))
@@ -39,7 +41,7 @@ class SavePersonUseCase(
             }
         }
 
-        return validationResults
+        validationResults
     }
 
     private fun validatePerson(toPerson: TOPerson): MutableList<FieldValidationError<EnumValidatedPersonFields>> {

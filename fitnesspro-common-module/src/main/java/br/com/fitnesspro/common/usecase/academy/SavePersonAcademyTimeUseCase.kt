@@ -8,20 +8,22 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOPersonAcademyTime
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class SavePersonAcademyTimeUseCase(
     private val context: Context,
     private val academyRepository: AcademyRepository
 ) {
 
-    suspend fun execute(toPersonAcademyTime: TOPersonAcademyTime): List<FieldValidationError<EnumValidatedAcademyFields>> {
+    suspend fun execute(toPersonAcademyTime: TOPersonAcademyTime): List<FieldValidationError<EnumValidatedAcademyFields>> = withContext(IO) {
         val validationsResults = getAllValidationResults(toPersonAcademyTime)
 
         if (validationsResults.isEmpty()) {
             academyRepository.savePersonAcademyTime(toPersonAcademyTime)
         }
 
-        return validationsResults
+        validationsResults
     }
 
     private suspend fun getAllValidationResults(toPersonAcademyTime: TOPersonAcademyTime): List<FieldValidationError<EnumValidatedAcademyFields>> {

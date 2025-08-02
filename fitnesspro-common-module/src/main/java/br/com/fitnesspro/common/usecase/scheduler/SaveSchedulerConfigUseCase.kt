@@ -11,6 +11,8 @@ import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOSchedulerConfig
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class SaveSchedulerConfigUseCase(
     private val context: Context,
@@ -20,7 +22,7 @@ class SaveSchedulerConfigUseCase(
     suspend fun saveConfig(
         toPerson: TOPerson,
         toSchedulerConfig: TOSchedulerConfig? = null
-    ): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields>> {
+    ): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields>> = withContext(IO) {
         val personConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(toPerson.id!!)
 
         val config = when {
@@ -50,7 +52,7 @@ class SaveSchedulerConfigUseCase(
             schedulerConfigRepository.saveSchedulerConfig(config)
         }
 
-        return validationResults
+        validationResults
     }
 
     private fun validateSchedulerConfig(config: TOSchedulerConfig, userType: EnumUserType): MutableList<FieldValidationError<EnumValidatedSchedulerConfigFields>> {

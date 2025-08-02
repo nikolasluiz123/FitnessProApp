@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 abstract class FitnessProCoroutineWorker(
     protected val context: Context,
@@ -16,15 +18,15 @@ abstract class FitnessProCoroutineWorker(
 
     open fun getMaxRetryTimeMillis(): Long = 60_000L
 
-    override suspend fun doWork(): Result {
+    override suspend fun doWork() = withContext(IO) {
         val startTime = inputData.getLong("startTime", System.currentTimeMillis())
         val elapsed = System.currentTimeMillis() - startTime
 
         if (elapsed > getMaxRetryTimeMillis()) {
-            return Result.failure()
+            Result.failure()
         }
 
-        return try {
+        try {
             onWork()
             Result.success()
         } catch (e: Exception) {

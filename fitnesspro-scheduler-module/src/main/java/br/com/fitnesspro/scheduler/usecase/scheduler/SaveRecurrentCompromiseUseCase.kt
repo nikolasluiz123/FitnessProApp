@@ -12,6 +12,8 @@ import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields
 import br.com.fitnesspro.to.TOScheduler
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -28,34 +30,37 @@ class SaveRecurrentCompromiseUseCase(
         validations.addAll(validateConfigRecurrentCompromise(toScheduler, config))
 
         if (validations.isEmpty()) {
-            val scheduleDates = generateSequence(config.dateStart!!) { it.plusDays(1) }
-                .takeWhile { it <= config.dateEnd!! }
-                .filter { config.dayWeeks.contains(it.dayOfWeek) }
-                .toList()
-
             val professional = personRepository.getTOPersonById(toScheduler.professionalPersonId!!)
+            lateinit var schedules: List<TOScheduler>
 
-            val schedules = scheduleDates.map { date ->
-                val newStart = toScheduler.dateTimeStart!!
-                    .withYear(date.year)
-                    .withMonth(date.monthValue)
-                    .withDayOfMonth(date.dayOfMonth)
+            withContext(Default) {
+                val scheduleDates = generateSequence(config.dateStart!!) { it.plusDays(1) }
+                    .takeWhile { it <= config.dateEnd!! }
+                    .filter { config.dayWeeks.contains(it.dayOfWeek) }
+                    .toList()
 
-                val newEnd = toScheduler.dateTimeEnd!!
-                    .withYear(date.year)
-                    .withMonth(date.monthValue)
-                    .withDayOfMonth(date.dayOfMonth)
+                schedules = scheduleDates.map { date ->
+                    val newStart = toScheduler.dateTimeStart!!
+                        .withYear(date.year)
+                        .withMonth(date.monthValue)
+                        .withDayOfMonth(date.dayOfMonth)
 
-                TOScheduler(
-                    academyMemberPersonId = toScheduler.academyMemberPersonId,
-                    professionalPersonId = toScheduler.professionalPersonId,
-                    dateTimeStart = newStart,
-                    dateTimeEnd = newEnd,
-                    professionalType = professional.user?.type!!,
-                    situation = EnumSchedulerSituation.SCHEDULED,
-                    compromiseType = EnumCompromiseType.RECURRENT,
-                    observation = toScheduler.observation
-                )
+                    val newEnd = toScheduler.dateTimeEnd!!
+                        .withYear(date.year)
+                        .withMonth(date.monthValue)
+                        .withDayOfMonth(date.dayOfMonth)
+
+                    TOScheduler(
+                        academyMemberPersonId = toScheduler.academyMemberPersonId,
+                        professionalPersonId = toScheduler.professionalPersonId,
+                        dateTimeStart = newStart,
+                        dateTimeEnd = newEnd,
+                        professionalType = professional.user?.type!!,
+                        situation = EnumSchedulerSituation.SCHEDULED,
+                        compromiseType = EnumCompromiseType.RECURRENT,
+                        observation = toScheduler.observation
+                    )
+                }
             }
 
             validateSchedulerConflictRecurrentCompromise(schedules)?.let(validations::add)

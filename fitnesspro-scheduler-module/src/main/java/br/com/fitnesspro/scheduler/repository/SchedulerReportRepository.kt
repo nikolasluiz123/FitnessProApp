@@ -13,6 +13,8 @@ import br.com.fitnesspro.to.TOReport
 import br.com.fitnesspro.to.TOSchedulerReport
 import br.com.fitnesspro.tuple.reports.schedulers.SchedulerReportTuple
 import br.com.fitnesspro.tuple.reports.schedulers.SchedulersResumeSessionReportTuple
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class SchedulerReportRepository(
     context: Context,
@@ -21,12 +23,12 @@ class SchedulerReportRepository(
     private val reportDAO: ReportDAO
 ): FitnessProRepository(context) {
 
-    suspend fun getSchedulerReportResume(filter: SchedulerReportFilter): SchedulersResumeSessionReportTuple {
-        return schedulerDAO.getSchedulerReportResume(filter)
+    suspend fun getSchedulerReportResume(filter: SchedulerReportFilter): SchedulersResumeSessionReportTuple = withContext(IO) {
+        schedulerDAO.getSchedulerReportResume(filter)
     }
 
-    suspend fun getListSchedulerReportTuple(filter: SchedulerReportFilter, situation: EnumSchedulerSituation): List<SchedulerReportTuple> {
-        return schedulerDAO.getListSchedulerReportTuple(filter, situation)
+    suspend fun getListSchedulerReportTuple(filter: SchedulerReportFilter, situation: EnumSchedulerSituation): List<SchedulerReportTuple> = withContext(IO) {
+        schedulerDAO.getListSchedulerReportTuple(filter, situation)
     }
 
     suspend fun saveSchedulerReport(toReport: TOReport, toSchedulerReport: TOSchedulerReport) {

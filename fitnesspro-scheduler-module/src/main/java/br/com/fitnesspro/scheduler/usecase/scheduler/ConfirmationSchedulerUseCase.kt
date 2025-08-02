@@ -10,22 +10,24 @@ import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.to.TOScheduler
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class ConfirmationSchedulerUseCase(
     private val context: Context,
     private val schedulerRepository: SchedulerRepository,
 ) {
 
-    suspend operator fun invoke(toScheduler: TOScheduler, schedulerType: EnumSchedulerType): ValidationError? {
-        val result = validate(toScheduler)
+    suspend operator fun invoke(toScheduler: TOScheduler, schedulerType: EnumSchedulerType): ValidationError? = withContext(IO) {
+            val result = validate(toScheduler)
 
-        if (result == null) {
-            toScheduler.situation = if (toScheduler.situation == SCHEDULED) CONFIRMED else COMPLETED
-            schedulerRepository.saveScheduler(toScheduler, schedulerType)
+            if (result == null) {
+                toScheduler.situation = if (toScheduler.situation == SCHEDULED) CONFIRMED else COMPLETED
+                schedulerRepository.saveScheduler(toScheduler, schedulerType)
+            }
+
+            result
         }
-
-        return result
-    }
 
     private fun validate(toScheduler: TOScheduler): ValidationError? {
         return if (toScheduler.situation in listOf(CANCELLED, COMPLETED, null)) {

@@ -7,9 +7,13 @@ import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.geTOWorkout
 import br.com.fitnesspro.model.workout.Workout
+import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.current.workout.decorator.CurrentWorkoutDecorator
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class WorkoutRepository(
     context: Context,
@@ -19,14 +23,14 @@ class WorkoutRepository(
     private val exerciseRepository: ExerciseRepository,
 ): FitnessProRepository(context) {
 
-    suspend fun getListWorkout(quickFilter: String? = null): List<TOWorkout> {
+    suspend fun getListWorkout(quickFilter: String? = null): List<TOWorkout> = withContext(IO) {
         val authPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
-        return workoutDAO.getWorkoutsFromPersonalTrainer(authPersonId, quickFilter)
+        workoutDAO.getWorkoutsFromPersonalTrainer(authPersonId, quickFilter)
     }
 
-    suspend fun findWorkoutById(id: String): TOWorkout? {
+    suspend fun findWorkoutById(id: String): TOWorkout? = withContext(IO) {
         val workout = workoutDAO.findWorkoutById(id)
-        return getTOWorkoutFrom(workout)
+        getTOWorkoutFrom(workout)
     }
 
     private suspend fun getTOWorkoutFrom(workout: Workout?): TOWorkout? {
@@ -66,25 +70,31 @@ class WorkoutRepository(
     }
 
     suspend fun getCurrentMemberWorkoutList(): List<CurrentWorkoutDecorator> {
-        val authPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
-        val groups = workoutDAO.getListWorkoutGroupsFromCurrentWorkout(authPersonId)
+        lateinit var groups: List<WorkoutGroup>
 
-        return groups
-            .groupBy { it.dayWeek }
-            .map { (day, groups) ->
-                CurrentWorkoutDecorator(
-                    dayWeek = day!!,
-                    muscularGroups = groups.sortedBy { it.groupOrder }.joinToString(", ") {
-                        it.name ?: context.getString(R.string.workout_group_default_name)
-                    }
-                )
-            }
+        withContext(IO) {
+            val authPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
+            groups = workoutDAO.getListWorkoutGroupsFromCurrentWorkout(authPersonId)
+        }
+
+        return withContext(Default) {
+            groups
+                .groupBy { it.dayWeek }
+                .map { (day, groups) ->
+                    CurrentWorkoutDecorator(
+                        dayWeek = day!!,
+                        muscularGroups = groups.sortedBy { it.groupOrder }.joinToString(", ") {
+                            it.name ?: context.getString(R.string.workout_group_default_name)
+                        }
+                    )
+                }
+        }
     }
 
-    suspend fun getCurrentMemberWorkout(): TOWorkout? {
+    suspend fun getCurrentMemberWorkout(): TOWorkout? = withContext(IO) {
         val authPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
         val workout = workoutDAO.getCurrentMemberWorkout(authPersonId)
-        return getTOWorkoutFrom(workout)
+        getTOWorkoutFrom(workout)
     }
 
 }

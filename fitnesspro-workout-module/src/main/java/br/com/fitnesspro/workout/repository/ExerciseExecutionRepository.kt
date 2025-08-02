@@ -10,6 +10,8 @@ import br.com.fitnesspro.mappers.getTOExerciseExecution
 import br.com.fitnesspro.to.TOExerciseExecution
 import br.com.fitnesspro.to.TOVideoExerciseExecution
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class ExerciseExecutionRepository(
     context: Context,
@@ -17,8 +19,8 @@ class ExerciseExecutionRepository(
     private val videoRepository: VideoRepository,
 ) : FitnessProRepository(context) {
 
-    suspend fun findById(id: String): TOExerciseExecution? {
-        return exerciseExecutionDAO.findById(id)?.getTOExerciseExecution()
+    suspend fun findById(id: String): TOExerciseExecution? = withContext(IO) {
+        exerciseExecutionDAO.findById(id)?.getTOExerciseExecution()
     }
 
     suspend fun saveExerciseExecution(

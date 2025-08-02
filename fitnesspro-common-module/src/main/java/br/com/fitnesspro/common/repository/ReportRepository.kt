@@ -22,21 +22,19 @@ class ReportRepository(
     }
 
     suspend fun inactivateReport(context: EnumReportContext, reportId: String) {
-        runInTransaction {
-            val report = reportDAO.getReportById(reportId)!!.apply {
-                active = false
-            }
+        val report = reportDAO.getReportById(reportId)!!.apply {
+            active = false
+        }
 
-            reportDAO.update(report, true)
+        reportDAO.update(report, true)
 
-            when (context) {
-                EnumReportContext.SCHEDULERS_REPORT -> {
-                    val schedulerReport = schedulerReportDAO.getSchedulerReportByReportId(reportId).apply {
-                        active = false
-                    }
-
-                    schedulerReportDAO.update(schedulerReport, true)
+        when (context) {
+            EnumReportContext.SCHEDULERS_REPORT -> {
+                val schedulerReport = schedulerReportDAO.getSchedulerReportByReportId(reportId).apply {
+                    active = false
                 }
+
+                schedulerReportDAO.update(schedulerReport, true)
             }
         }
     }

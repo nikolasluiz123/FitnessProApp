@@ -8,6 +8,8 @@ import br.com.fitnesspro.to.TOWorkoutGroupPreDefinition
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExercisePreDefinitionFields
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExercisePreDefinitionFields.GROUP
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class SaveGroupPreDefinitionUseCase(
@@ -20,7 +22,7 @@ class SaveGroupPreDefinitionUseCase(
         toWorkoutGroupPreDefinition: TOWorkoutGroupPreDefinition,
         toExercisePreDefinition: TOExercisePreDefinition,
         videoFiles: List<File>
-    ): List<FieldValidationError<EnumValidatedExercisePreDefinitionFields>> {
+    ): List<FieldValidationError<EnumValidatedExercisePreDefinitionFields>> = withContext(IO) {
         val validations = mutableListOf<FieldValidationError<EnumValidatedExercisePreDefinitionFields>>()
         validateWorkoutGroupPreDefinition(toWorkoutGroupPreDefinition)?.let(validations::add)
 
@@ -41,7 +43,7 @@ class SaveGroupPreDefinitionUseCase(
             }
         }
 
-        return validations
+        validations
     }
 
     private fun validateWorkoutGroupPreDefinition(toWorkoutGroupPreDefinition: TOWorkoutGroupPreDefinition): FieldValidationError<EnumValidatedExercisePreDefinitionFields>? {

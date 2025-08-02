@@ -37,11 +37,13 @@ class SchedulerRepository(
     suspend fun saveScheduler(
         toScheduler: TOScheduler,
         schedulerType: EnumSchedulerType
-    ) = withContext(IO) {
-        val scheduler = toScheduler.getScheduler()
+    ) {
+        runInTransaction {
+            val scheduler = toScheduler.getScheduler()
 
-        saveSchedulerLocally(toScheduler, scheduler)
-        saveSchedulerRemote(scheduler, schedulerType)
+            saveSchedulerLocally(toScheduler, scheduler)
+            saveSchedulerRemote(scheduler, schedulerType)
+        }
     }
 
     private suspend fun saveSchedulerLocally(
@@ -110,8 +112,8 @@ class SchedulerRepository(
         userType: EnumUserType,
         start: OffsetDateTime,
         end: OffsetDateTime
-    ): Boolean = withContext(IO) {
-        schedulerDAO.getHasSchedulerConflict(
+    ): Boolean {
+        return schedulerDAO.getHasSchedulerConflict(
             schedulerId = schedulerId,
             personId = personId,
             userType = userType,
@@ -120,7 +122,7 @@ class SchedulerRepository(
         )
     }
 
-    suspend fun saveRecurrentScheduler(schedules: List<TOScheduler>) = withContext(IO) {
+    suspend fun saveRecurrentScheduler(schedules: List<TOScheduler>) {
         val schedulers = schedules.map { it.getScheduler() }.sortedBy {
             it.dateTimeStart?.toLocalDate()!!
         }

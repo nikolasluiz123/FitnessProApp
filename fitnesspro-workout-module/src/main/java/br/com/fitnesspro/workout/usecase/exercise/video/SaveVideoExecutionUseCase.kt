@@ -10,6 +10,8 @@ import br.com.fitnesspro.to.TOVideoExerciseExecution
 import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.usecase.exercise.exception.VideoException
 import br.com.fitnesspro.workout.usecase.exercise.video.common.AbstractSaveVideoUseCase
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.ZoneId
 
@@ -18,8 +20,8 @@ class SaveVideoExecutionUseCase(
     private val videoRepository: VideoRepository
 ): AbstractSaveVideoUseCase(context) {
 
-    suspend operator fun invoke(exerciseExecutionId: String, videoFile: File): ValidationError? {
-        return try {
+    suspend operator fun invoke(exerciseExecutionId: String, videoFile: File): ValidationError? = withContext(IO) {
+        try {
             val toVideoExerciseExecution = getTOVideoExecution(videoFile, exerciseExecutionId)
 
             validateVideosLimit(toVideoExerciseExecution)

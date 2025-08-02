@@ -15,6 +15,8 @@ import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFie
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFields.EXERCISE_GROUP_ORDER
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFields.EXERCISE_ORDER
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFields.OBSERVATION
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class SaveExerciseUseCase(
     private val context: Context,
@@ -23,7 +25,7 @@ class SaveExerciseUseCase(
     private val exerciseRepository: ExerciseRepository
 
 ) {
-    suspend operator fun invoke(toExercise: TOExercise): List<FieldValidationError<EnumValidatedExerciseFields>> {
+    suspend operator fun invoke(toExercise: TOExercise): List<FieldValidationError<EnumValidatedExerciseFields>> = withContext(IO) {
         val validationResults = mutableListOf<FieldValidationError<EnumValidatedExerciseFields>>()
         validationResults.addAll(validateWorkoutGroup(toExercise))
         validationResults.addAll(validateExercise(toExercise))
@@ -32,7 +34,7 @@ class SaveExerciseUseCase(
             exerciseRepository.saveExercise(toExercise)
         }
 
-        return validationResults
+        validationResults
     }
 
     private suspend fun validateWorkoutGroup(toExercise: TOExercise): List<FieldValidationError<EnumValidatedExerciseFields>> {

@@ -7,6 +7,8 @@ import br.com.fitnesspro.mappers.getExercise
 import br.com.fitnesspro.mappers.getTOExercise
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class ExerciseRepository(
     context: Context,
@@ -15,11 +17,11 @@ class ExerciseRepository(
     private val videoRepository: VideoRepository
 ): FitnessProRepository(context) {
 
-    suspend fun findById(id: String): TOExercise {
+    suspend fun findById(id: String): TOExercise = withContext(IO) {
         val exercise = exerciseDAO.findById(id)
         val workoutGroup = workoutGroupRepository.findWorkoutGroupById(exercise.workoutGroupId)
 
-        return exercise.getTOExercise(workoutGroup)
+        exercise.getTOExercise(workoutGroup)
     }
 
     suspend fun saveExercise(toExercise: TOExercise) {

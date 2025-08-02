@@ -7,15 +7,13 @@ import br.com.fitnesspro.mappers.getSchedulerConfig
 import br.com.fitnesspro.mappers.getTOSchedulerConfig
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.to.TOSchedulerConfig
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.withContext
 
 class SchedulerConfigRepository(
     context: Context,
     private val schedulerConfigDAO: SchedulerConfigDAO,
 ): FitnessProRepository(context) {
 
-    suspend fun saveSchedulerConfig(toSchedulerConfig: TOSchedulerConfig) = withContext(IO) {
+    suspend fun saveSchedulerConfig(toSchedulerConfig: TOSchedulerConfig) {
         val schedulerConfig = toSchedulerConfig.getSchedulerConfig()
         saveSchedulerConfigLocally(toSchedulerConfig, schedulerConfig)
     }
@@ -32,7 +30,7 @@ class SchedulerConfigRepository(
         }
     }
 
-    suspend fun getTOSchedulerConfigByPersonId(personId: String): TOSchedulerConfig? = withContext(IO) {
-         schedulerConfigDAO.findSchedulerConfigByPersonId(personId)?.let(SchedulerConfig::getTOSchedulerConfig)
+    suspend fun getTOSchedulerConfigByPersonId(personId: String): TOSchedulerConfig? {
+         return schedulerConfigDAO.findSchedulerConfigByPersonId(personId)?.let(SchedulerConfig::getTOSchedulerConfig)
     }
 }

@@ -6,6 +6,8 @@ import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.usecase.workout.enums.EnumValidatedWorkoutGroupFields
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
 class EditWorkoutGroupUseCase(
     private val context: Context,
@@ -18,7 +20,9 @@ class EditWorkoutGroupUseCase(
         validateWorkoutGroupOrder(toWorkoutGroup)?.let(validationResults::add)
 
         if (validationResults.isEmpty()) {
-            workoutGroupRepository.saveWorkoutGroup(toWorkoutGroup)
+            withContext(IO) {
+                workoutGroupRepository.saveWorkoutGroup(toWorkoutGroup)
+            }
         }
 
         return validationResults

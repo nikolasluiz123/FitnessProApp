@@ -16,6 +16,8 @@ import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExercisePreDefinitionFields
 import br.com.fitnesspro.workout.usecase.exercise.exception.VideoException
 import br.com.fitnesspro.workout.usecase.exercise.video.SaveVideoPreDefinitionUseCase
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.ZoneId
 
@@ -29,7 +31,7 @@ class SaveExercisePreDefinitionUseCase(
         toExercisePreDefinition: TOExercisePreDefinition,
         videoFiles: List<File>,
         transactional: Boolean = true
-    ): List<FieldValidationError<EnumValidatedExercisePreDefinitionFields>> {
+    ): List<FieldValidationError<EnumValidatedExercisePreDefinitionFields>> = withContext(IO) {
         val validations = validateExercisePreDefinition(toExercisePreDefinition)
 
         if (validations.isEmpty()) {
@@ -42,7 +44,7 @@ class SaveExercisePreDefinitionUseCase(
             }
         }
 
-        return validations
+        validations
     }
 
     private suspend fun save(toExercisePreDefinition: TOExercisePreDefinition, videoFiles: List<File>) {
