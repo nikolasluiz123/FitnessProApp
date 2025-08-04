@@ -1,7 +1,6 @@
 package br.com.fitnesspro.common.ui.viewmodel
 
 import android.content.Context
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.AcademyRepository
@@ -14,21 +13,16 @@ import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDec
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen.ACADEMY
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen.GENERAL
 import br.com.fitnesspro.common.ui.state.RegisterUserUIState
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
 import br.com.fitnesspro.compose.components.fields.menu.MenuItem
-import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
-import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
-import br.com.fitnesspro.compose.components.fields.state.TabState
-import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.callback.showInformationDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
-import br.com.fitnesspro.core.extensions.parseToLocalDate
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
@@ -48,7 +42,7 @@ class RegisterUserViewModel @Inject constructor(
     private val academyRepository: AcademyRepository,
     private val globalEvents: GlobalEvents,
     savedStateHandle: SavedStateHandle
-) : FitnessProViewModel() {
+) : FitnessProStatefulViewModel() {
 
     private val _uiState: MutableStateFlow<RegisterUserUIState> = MutableStateFlow(RegisterUserUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -57,12 +51,91 @@ class RegisterUserViewModel @Inject constructor(
 
     init {
         jsonArgs?.fromJsonNavParamToArgs(RegisterUserScreenArgs::class.java)?.let { args ->
-            initialLoadUIState(args)
+            initialLoadUIState()
             loadUIStateWithAuthenticatedPerson(args)
             loadUIStateWithPersonAuthService(args)
 
             showDialogRegisterUserAuthenticatedWithService(args)
         }
+    }
+
+    override fun initialLoadUIState() {
+        val args = jsonArgs?.fromJsonNavParamToArgs(RegisterUserScreenArgs::class.java)!!
+
+        _uiState.value = _uiState.value.copy(
+            title = getTitle(context = args.context, toPersonAuthenticated = null),
+            context = args.context,
+            isVisibleFieldPhone = isVisibleFieldPhone(context = args.context, toPerson = null),
+            tabState = createTabState(
+                getCurrentState = { _uiState.value.tabState },
+                updateState = { _uiState.value = _uiState.value.copy(tabState = it) },
+                tabs = getTabsWithDefaultState()
+            ),
+            name = createTextFieldState(
+                getCurrentState = { _uiState.value.name },
+                updateState = {
+                    _uiState.value = _uiState.value.copy(
+                        name = it,
+                        toPerson = _uiState.value.toPerson.copy(name = it.value)
+                    )
+                }
+            ),
+            email = createTextFieldState(
+                getCurrentState = { _uiState.value.email },
+                updateState = {
+                    _uiState.value = _uiState.value.copy(
+                        email = it,
+                        toPerson = _uiState.value.toPerson.copy(user = _uiState.value.toPerson.user?.copy(email = it.value))
+                    )
+                }
+            ),
+            password = createTextFieldState(
+                getCurrentState = { _uiState.value.password },
+                updateState = {
+                    _uiState.value = _uiState.value.copy(
+                        password = it,
+                        toPerson = _uiState.value.toPerson.copy(user = _uiState.value.toPerson.user?.copy(password = it.value))
+                    )
+                }
+            ),
+            birthDate = createDatePickerFieldState(
+                getCurrentState = { _uiState.value.birthDate },
+                updateState = { _uiState.value = _uiState.value.copy(birthDate = it) },
+                onDateChange = {
+                    _uiState.value = _uiState.value.copy(
+                        toPerson = _uiState.value.toPerson.copy(birthDate = it)
+                    )
+                }
+            ),
+            phone = createTextFieldState(
+                getCurrentState = { _uiState.value.phone },
+                updateState = {
+                    _uiState.value = _uiState.value.copy(
+                        phone = it,
+                        toPerson = _uiState.value.toPerson.copy(phone = it.value)
+                    )
+                }
+            ),
+            userType = createDropDownTextFieldState(
+                items = getMenuItemsUserType(),
+                getCurrentState = { _uiState.value.userType },
+                updateState = { _uiState.value = _uiState.value.copy(userType = it) },
+                onItemClick = {
+                    _uiState.value = _uiState.value.copy(
+                        toPerson = _uiState.value.toPerson.copy(user = _uiState.value.toPerson.user?.copy(type = it))
+                    )
+                }
+            ),
+            messageDialogState = createMessageDialogState(
+                getCurrentState = { _uiState.value.messageDialogState },
+                updateState = { _uiState.value = _uiState.value.copy(messageDialogState = it) }
+            ),
+            onToggleLoading = {
+                _uiState.value = _uiState.value.copy(
+                    showLoading = _uiState.value.showLoading.not()
+                )
+            }
+        )
     }
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
@@ -91,118 +164,38 @@ class RegisterUserViewModel @Inject constructor(
         }
     }
 
-    private fun initialLoadUIState(args: RegisterUserScreenArgs) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                title = getTitle(context = args.context, toPersonAuthenticated = null),
-                context = args.context,
-                tabState = TabState(
-                    tabs = getTabsWithDefaultState(),
-                    onSelectTab = { selectedTab ->
-                        _uiState.value = _uiState.value.copy(
-                            tabState = _uiState.value.tabState.copy(
-                                tabs = getTabListWithSelectedTab(selectedTab)
-                            )
-                        )
-                    }
-                ),
-                isVisibleFieldPhone = isVisibleFieldPhone(context = args.context, toPerson = null),
-                name = initializeNameTextField(),
-                email = initializeEmailTextField(),
-                password = initializePasswordTextField(),
-                birthDate = initializeBirthDatePickerField(),
-                phone = initializePhoneTextField(),
-                userType = initializeUserTypeDropDownMenu(),
-                messageDialogState = initializeMessageDialogState(),
-                onToggleLoading = {
+    private fun getMenuItemsUserType(): List<MenuItem<EnumUserType?>> = EnumUserType.entries.map {
+        MenuItem(
+            value = it,
+            label = it.getLabel(context)!!
+        )
+    }
+
+    private fun loadUIStateWithAuthenticatedPerson(args: RegisterUserScreenArgs) {
+        launch {
+            if (args.context == null && args.toPersonAuthService == null) {
+                val authenticatedTOPerson = personRepository.getAuthenticatedTOPerson()
+                authenticatedTOPerson?.user?.password = null
+
+                authenticatedTOPerson?.let { toPerson ->
                     _uiState.value = _uiState.value.copy(
-                        showLoading = _uiState.value.showLoading.not()
-                    )
-                }
-            )
-        }
-    }
-
-    private fun initializeMessageDialogState(): MessageDialogState {
-        return MessageDialogState(
-            onShowDialog = { type, message, onConfirm, onCancel ->
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        dialogType = type,
-                        dialogMessage = message,
-                        showDialog = true,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                )
-            },
-            onHideDialog = {
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        showDialog = false
-                    )
-                )
-            }
-        )
-    }
-
-    private fun initializeUserTypeDropDownMenu(): DropDownTextField<EnumUserType?> {
-        val items = EnumUserType.entries.map {
-            MenuItem<EnumUserType?>(
-                value = it,
-                label = it.getLabel(context)!!
-            )
-        }
-
-        return DropDownTextField(
-            dataList = items,
-            dataListFiltered = items.toMutableList(),
-            onDropDownDismissRequest = {
-                _uiState.value = _uiState.value.copy(
-                    userType = _uiState.value.userType.copy(expanded = false)
-                )
-            },
-            onDropDownExpandedChange = {
-                _uiState.value = _uiState.value.copy(
-                    userType = _uiState.value.userType.copy(expanded = it)
-                )
-            },
-            onDataListItemClick = {
-                _uiState.value = _uiState.value.copy(
-                    userType = _uiState.value.userType.copy(
-                        value = it.value?.getLabel(context)!!,
-                        expanded = false,
-                        errorMessage = ""
-                    ),
-                    toPerson = _uiState.value.toPerson.copy(
-                        user = _uiState.value.toPerson.user?.copy(type = it.value)
-                    )
-                )
-            },
-            onChange = {
-                // TODO - Talvez o filtro
-            }
-        )
-    }
-
-    private fun loadUIStateWithAuthenticatedPerson(args: RegisterUserScreenArgs) = launch {
-        if (args.context == null && args.toPersonAuthService == null) {
-            val authenticatedTOPerson = personRepository.getAuthenticatedTOPerson()
-            authenticatedTOPerson?.user?.password = null
-
-            authenticatedTOPerson?.let { toPerson ->
-                _uiState.update {
-                    it.copy(
                         title = getTitle(context = null, toPersonAuthenticated = toPerson),
                         subtitle = toPerson.name!!,
                         toPerson = toPerson,
                         academies = getAcademiesFromAuthenticatedPerson(toPerson.id!!),
-                        isVisibleFieldPhone = isVisibleFieldPhone(context = null, toPerson = toPerson),
-                        name = it.name.copy(value = toPerson.name!!),
-                        email = it.email.copy(value = toPerson.user?.email!!),
-                        birthDate = it.birthDate.copy(value = toPerson.birthDate?.format(DATE_ONLY_NUMBERS) ?: ""),
-                        phone = it.phone.copy(value = toPerson.phone ?: ""),
-                        tabState = it.tabState.copy(tabs = getTabListAllEnabled())
+                        isVisibleFieldPhone = isVisibleFieldPhone(
+                            context = null,
+                            toPerson = toPerson
+                        ),
+                        name = _uiState.value.name.copy(value = toPerson.name!!),
+                        email = _uiState.value.email.copy(value = toPerson.user?.email!!),
+                        birthDate = _uiState.value.birthDate.copy(
+                            value = toPerson.birthDate?.format(
+                                DATE_ONLY_NUMBERS
+                            ) ?: ""
+                        ),
+                        phone = _uiState.value.phone.copy(value = toPerson.phone ?: ""),
+                        tabState = _uiState.value.tabState.copy(tabs = getTabListAllEnabled())
                     )
                 }
             }
@@ -211,17 +204,15 @@ class RegisterUserViewModel @Inject constructor(
 
     private fun loadUIStateWithPersonAuthService(args: RegisterUserScreenArgs) {
         args.toPersonAuthService?.let {  toPerson ->
-            _uiState.update {
-                it.copy(
-                    title = getTitle(authenticationService = true),
-                    toPerson = toPerson,
-                    isVisibleFieldPhone = isVisibleFieldPhone(context = null, toPerson = toPerson),
-                    name = it.name.copy(value = toPerson.name!!),
-                    email = it.email.copy(value = toPerson.user?.email!!),
-                    phone = it.phone.copy(value = toPerson.phone ?: ""),
-                    isRegisterServiceAuth = true
-                )
-            }
+            _uiState.value = _uiState.value.copy(
+                title = getTitle(authenticationService = true),
+                toPerson = toPerson,
+                isVisibleFieldPhone = isVisibleFieldPhone(context = null, toPerson = toPerson),
+                name = _uiState.value.name.copy(value = toPerson.name!!),
+                email = _uiState.value.email.copy(value = toPerson.user?.email!!),
+                phone = _uiState.value.phone.copy(value = toPerson.phone ?: ""),
+                isRegisterServiceAuth = true
+            )
         }
     }
 
@@ -245,96 +236,6 @@ class RegisterUserViewModel @Inject constructor(
                 )
             }
         }
-    }
-
-    private fun initializePhoneTextField(): TextField {
-        return TextField(onChange = {
-            _uiState.value = _uiState.value.copy(
-                phone = _uiState.value.phone.copy(
-                    value = it,
-                    errorMessage = ""
-                ),
-                toPerson = _uiState.value.toPerson.copy(phone = it)
-            )
-        })
-    }
-
-    private fun initializeBirthDatePickerField(): DatePickerTextField {
-        return DatePickerTextField(
-            onDatePickerOpenChange = { newOpen ->
-                _uiState.value = _uiState.value.copy(
-                    birthDate = _uiState.value.birthDate.copy(datePickerOpen = newOpen)
-                )
-            },
-            onDateChange = { newDate ->
-                _uiState.value = _uiState.value.copy(
-                    birthDate = _uiState.value.birthDate.copy(
-                        value = newDate.format(DATE_ONLY_NUMBERS),
-                        errorMessage = ""
-                    ),
-                )
-
-                _uiState.value.birthDate.onDatePickerDismiss()
-            },
-            onDatePickerDismiss = {
-                _uiState.value = _uiState.value.copy(
-                    birthDate = _uiState.value.birthDate.copy(datePickerOpen = false)
-                )
-            },
-            onChange = { text ->
-                if (text.isDigitsOnly()) {
-                    _uiState.value = _uiState.value.copy(
-                        birthDate = _uiState.value.birthDate.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        toPerson = _uiState.value.toPerson.copy(
-                            birthDate = text.parseToLocalDate(DATE_ONLY_NUMBERS)
-                        )
-                    )
-                }
-            }
-        )
-    }
-
-    private fun initializePasswordTextField(): TextField {
-        return TextField(onChange = {
-            _uiState.value = _uiState.value.copy(
-                password = _uiState.value.password.copy(
-                    value = it,
-                    errorMessage = ""
-                ),
-                toPerson = _uiState.value.toPerson.copy(
-                    user = _uiState.value.toPerson.user?.copy(password = it)
-                )
-            )
-        })
-    }
-
-    private fun initializeEmailTextField(): TextField {
-        return TextField(onChange = {
-            _uiState.value = _uiState.value.copy(
-                email = _uiState.value.email.copy(
-                    value = it,
-                    errorMessage = ""
-                ),
-                toPerson = _uiState.value.toPerson.copy(
-                    user = _uiState.value.toPerson.user?.copy(email = it)
-                )
-            )
-        })
-    }
-
-    private fun initializeNameTextField(): TextField {
-        return TextField(onChange = {
-            _uiState.value = _uiState.value.copy(
-                name = _uiState.value.name.copy(
-                    value = it,
-                    errorMessage = ""
-                ),
-                toPerson = _uiState.value.toPerson.copy(name = it)
-            )
-        })
     }
 
     private fun isVisibleFieldPhone(
@@ -432,12 +333,6 @@ class RegisterUserViewModel @Inject constructor(
                 enabled = false
             )
         )
-    }
-
-    private fun getTabListWithSelectedTab(selectedTab: Tab): MutableList<Tab> {
-        return _uiState.value.tabState.tabs.map { tab ->
-            tab.copy(selected = tab.enum == selectedTab.enum)
-        }.toMutableList()
     }
 
     private fun getTabListAllEnabled(): MutableList<Tab> {

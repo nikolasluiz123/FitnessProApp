@@ -4,24 +4,18 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import br.com.fitnesspro.common.ui.event.GlobalEvents
-import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
-import br.com.fitnesspro.compose.components.fields.menu.MenuItem
-import br.com.fitnesspro.compose.components.fields.menu.getLabelOrEmptyIfNullValue
-import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
-import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
+import br.com.fitnesspro.compose.components.fields.menu.getChronoUnitMenuItems
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.formatToDecimal
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
-import br.com.fitnesspro.core.extensions.millisTo
+import br.com.fitnesspro.core.extensions.getChronoUnitLabel
+import br.com.fitnesspro.core.extensions.getStringFromConvertedChronoUnitValue
 import br.com.fitnesspro.core.extensions.openVideoPlayer
-import br.com.fitnesspro.core.extensions.toDoubleValue
-import br.com.fitnesspro.core.extensions.toIntOrNull
 import br.com.fitnesspro.core.extensions.toStringOrEmpty
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.core.utils.VideoUtils
 import br.com.fitnesspro.core.validation.FieldValidationError
@@ -57,7 +51,7 @@ class RegisterEvolutionViewModel @Inject constructor(
     private val saveVideoExecutionFromGalleryUseCase: SaveVideoExecutionFromGalleryUseCase,
     private val saveExerciseExecutionUseCase: SaveExerciseExecutionUseCase,
     savedStateHandle: SavedStateHandle
-): FitnessProViewModel() {
+): FitnessProStatefulViewModel() {
 
     private val _uiState: MutableStateFlow<RegisterEvolutionUIState> = MutableStateFlow(RegisterEvolutionUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -67,6 +61,86 @@ class RegisterEvolutionViewModel @Inject constructor(
     init {
         initialLoadUIState()
         loadUIStateWithDatabaseInfos()
+    }
+
+    override fun initialLoadUIState() {
+        _uiState.value = _uiState.value.copy(
+            weight = createDoubleValueTextFieldState(
+                getCurrentState = { _uiState.value.weight },
+                onValueChange = { state, value ->
+                    _uiState.value = _uiState.value.copy(
+                        weight = state,
+                        toExerciseExecution = _uiState.value.toExerciseExecution.copy(weight = value)
+                    )
+                }
+            ),
+            repetitions = createIntValueTextFieldState(
+                getCurrentState = { _uiState.value.repetitions },
+                onValueChange = { state, value ->
+                    _uiState.value = _uiState.value.copy(
+                        repetitions = state,
+                        toExerciseExecution = _uiState.value.toExerciseExecution.copy(repetitions = value)
+                    )
+                }
+            ),
+            rest = createLongValueTextFieldState(
+                getCurrentState = { _uiState.value.rest },
+                onValueChange = { state, value ->
+                    _uiState.value = _uiState.value.copy(
+                        rest = state,
+                        toExerciseExecution = _uiState.value.toExerciseExecution.copy(rest = value)
+                    )
+                }
+            ),
+            restUnit = createDropDownTextFieldState(
+                items = ChronoUnit.entries.getChronoUnitMenuItems(context),
+                getCurrentState = { _uiState.value.restUnit },
+                updateState = { _uiState.value = _uiState.value.copy(restUnit = it) },
+                onItemClick = {
+                    _uiState.value = _uiState.value.copy(
+                        toExerciseExecution = _uiState.value.toExerciseExecution.copy(
+                            restUnit = it
+                        )
+                    )
+                }
+            ),
+            duration = createLongValueTextFieldState(
+                getCurrentState = { _uiState.value.duration },
+                onValueChange = { state, value ->
+                    _uiState.value = _uiState.value.copy(
+                        duration = state,
+                        toExerciseExecution = _uiState.value.toExerciseExecution.copy(duration = value)
+                    )
+                }
+            ),
+            durationUnit = createDropDownTextFieldState(
+                items = ChronoUnit.entries.getChronoUnitMenuItems(context),
+                getCurrentState = { _uiState.value.durationUnit },
+                updateState = { _uiState.value = _uiState.value.copy(durationUnit = it) },
+                onItemClick = {
+                    _uiState.value = _uiState.value.copy(
+                        toExerciseExecution = _uiState.value.toExerciseExecution.copy(
+                            durationUnit = it
+                        )
+                    )
+                }
+            ),
+            videoGalleryState = createVideoGalleryState(
+                getCurrentState = { _uiState.value.videoGalleryState },
+                updateState = { _uiState.value = _uiState.value.copy(videoGalleryState = it) },
+                title = context.getString(R.string.register_evolution_screen_video_gallery_title)
+            ),
+            messageDialogState = createMessageDialogState(
+                getCurrentState = { _uiState.value.messageDialogState },
+                updateState = { _uiState.value = _uiState.value.copy(messageDialogState = it) }
+            ),
+            onToggleLoading = {
+                _uiState.value = _uiState.value.copy(showLoading = _uiState.value.showLoading.not())
+            },
+            onFabVisibilityChange = {
+                _uiState.value = _uiState.value.copy(fabVisible = it)
+            }
+        )
     }
 
     override fun getErrorMessageFrom(throwable: Throwable): String {
@@ -93,202 +167,6 @@ class RegisterEvolutionViewModel @Inject constructor(
         return globalEvents
     }
 
-    private fun initialLoadUIState() {
-        _uiState.value = _uiState.value.copy(
-            weight = initializeTextFieldWeight(),
-            repetitions = initializeTextFieldReps(),
-            rest = initializeTextFieldRest(),
-            restUnit = initializeDropDownTextFieldrestUnit(),
-            duration = initializeTextFieldDuration(),
-            durationUnit = initializeDropDownTextFieldUnitDuration(),
-            videoGalleryState = initializeVideoGalleryState(),
-            messageDialogState = initializeMessageDialogState(),
-            onToggleLoading = {
-                _uiState.value = _uiState.value.copy(showLoading = _uiState.value.showLoading.not())
-            },
-            onFabVisibilityChange = {
-                _uiState.value = _uiState.value.copy(fabVisible = it)
-            }
-        )
-    }
-
-    private fun initializeMessageDialogState(): MessageDialogState {
-        return MessageDialogState(
-            onShowDialog = { type, message, onConfirm, onCancel ->
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        dialogType = type,
-                        dialogMessage = message,
-                        showDialog = true,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                )
-            },
-            onHideDialog = {
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        showDialog = false
-                    )
-                )
-            }
-        )
-    }
-
-    private fun initializeTextFieldWeight(): TextField {
-        return TextField(
-            onChange = {
-                _uiState.value = _uiState.value.copy(
-                    weight = _uiState.value.weight.copy(
-                        value = it,
-                        errorMessage = ""
-                    ),
-                    toExerciseExecution = _uiState.value.toExerciseExecution.copy(weight = it.toDoubleValue())
-                )
-            }
-        )
-    }
-
-    private fun initializeTextFieldReps(): TextField {
-        return TextField(
-            onChange = {
-                _uiState.value = _uiState.value.copy(
-                    repetitions = _uiState.value.repetitions.copy(
-                        value = it,
-                        errorMessage = ""
-                    ),
-                    toExerciseExecution = _uiState.value.toExerciseExecution.copy(repetitions = it.toIntOrNull())
-                )
-            }
-        )
-    }
-
-    private fun initializeTextFieldRest(): TextField {
-        return TextField(
-            onChange = {
-                _uiState.value = _uiState.value.copy(
-                    rest = _uiState.value.rest.copy(
-                        value = it,
-                        errorMessage = ""
-                    ),
-                    toExerciseExecution = _uiState.value.toExerciseExecution.copy(rest = it.toLongOrNull())
-                )
-            }
-        )
-    }
-
-    private fun initializeDropDownTextFieldrestUnit(): DropDownTextField<ChronoUnit?> {
-        val items = getChronoUnitMenuItems()
-
-        return DropDownTextField(
-            dataList = items,
-            dataListFiltered = items,
-            onDropDownDismissRequest = {
-                _uiState.value = _uiState.value.copy(
-                    restUnit = _uiState.value.restUnit.copy(expanded = false)
-                )
-            },
-            onDropDownExpandedChange = {
-                _uiState.value = _uiState.value.copy(
-                    restUnit = _uiState.value.restUnit.copy(expanded = it)
-                )
-            },
-            onDataListItemClick = {
-                _uiState.value = _uiState.value.copy(
-                    restUnit = _uiState.value.restUnit.copy(
-                        value = it.getLabelOrEmptyIfNullValue(),
-                        errorMessage = ""
-                    ),
-                    toExerciseExecution = _uiState.value.toExerciseExecution.copy(
-                        restUnit = it.value
-                    )
-                )
-
-                _uiState.value.restUnit.onDropDownDismissRequest()
-            }
-        )
-    }
-
-    private fun initializeTextFieldDuration(): TextField {
-        return TextField(
-            onChange = {
-                _uiState.value = _uiState.value.copy(
-                    duration = _uiState.value.duration.copy(
-                        value = it,
-                        errorMessage = ""
-                    ),
-                    toExerciseExecution = _uiState.value.toExerciseExecution.copy(duration = it.toLongOrNull())
-                )
-            }
-        )
-    }
-
-    private fun initializeDropDownTextFieldUnitDuration(): DropDownTextField<ChronoUnit?> {
-        val items = getChronoUnitMenuItems()
-
-        return DropDownTextField(
-            dataList = items,
-            dataListFiltered = items,
-            onDropDownDismissRequest = {
-                _uiState.value = _uiState.value.copy(
-                    durationUnit = _uiState.value.durationUnit.copy(expanded = false)
-                )
-            },
-            onDropDownExpandedChange = {
-                _uiState.value = _uiState.value.copy(
-                    durationUnit = _uiState.value.durationUnit.copy(expanded = it)
-                )
-            },
-            onDataListItemClick = {
-                _uiState.value = _uiState.value.copy(
-                    durationUnit = _uiState.value.durationUnit.copy(
-                        value = it.getLabelOrEmptyIfNullValue(),
-                        errorMessage = ""
-                    ),
-                    toExerciseExecution = _uiState.value.toExerciseExecution.copy(
-                        durationUnit = it.value
-                    )
-                )
-
-                _uiState.value.durationUnit.onDropDownDismissRequest()
-            }
-        )
-    }
-
-    private fun initializeVideoGalleryState(): VideoGalleryState {
-        return VideoGalleryState(
-            title = context.getString(R.string.register_evolution_screen_video_gallery_title),
-            isScrollEnabled = true,
-            onViewModeChange = {
-                _uiState.value = _uiState.value.copy(
-                    videoGalleryState = _uiState.value.videoGalleryState.copy(
-                        viewMode = it
-                    )
-                )
-            }
-        )
-    }
-
-    private fun getChronoUnitMenuItems(): List<MenuItem<ChronoUnit?>> {
-        val units = ChronoUnit.entries.slice(ChronoUnit.SECONDS.ordinal..ChronoUnit.HOURS.ordinal)
-
-        return units.map { unit ->
-            MenuItem(
-                label = getLabelFromChronoUnit(unit),
-                value = unit
-            )
-        }
-    }
-
-    private fun getLabelFromChronoUnit(unit: ChronoUnit): String {
-        return when (unit) {
-            ChronoUnit.SECONDS -> context.getString(R.string.exercise_screen_chrono_unit_seconds)
-            ChronoUnit.MINUTES -> context.getString(R.string.exercise_screen_chrono_unit_minutes)
-            ChronoUnit.HOURS -> context.getString(R.string.exercise_screen_chrono_unit_hours)
-            else -> throw IllegalArgumentException("Valor invalido para recuperar um label de ChronoUnit")
-        }
-    }
-
     private fun loadUIStateWithDatabaseInfos() {
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(RegisterEvolutionScreenArgs::class.java)!!
@@ -303,16 +181,16 @@ class RegisterEvolutionViewModel @Inject constructor(
 
     private fun loadExecutionInfosEdition(toExerciseExecution: TOExerciseExecution?) {
         toExerciseExecution?.let { to ->
-            val convertedRest = getConvertedRestFrom(to.restUnit, to.rest)
-            val convertedDuration = getConvertedDurationFrom(to.durationUnit, to.duration)
+            val convertedRest =  to.restUnit.getStringFromConvertedChronoUnitValue(to.rest)
+            val convertedDuration = to.durationUnit.getStringFromConvertedChronoUnitValue(to.duration)
 
             _uiState.value = _uiState.value.copy(
                 weight = _uiState.value.weight.copy(value = to.weight.formatToDecimal()),
                 repetitions = _uiState.value.repetitions.copy(value = to.repetitions.toStringOrEmpty()),
                 rest = _uiState.value.rest.copy(value = convertedRest),
-                restUnit = _uiState.value.restUnit.copy(value = getUnitRestFrom(to.rest)),
+                restUnit = _uiState.value.restUnit.copy(value = to.rest.getChronoUnitLabel(context)),
                 duration = _uiState.value.duration.copy(value = convertedDuration),
-                durationUnit = _uiState.value.durationUnit.copy(value = getUnitDurationFrom(to.duration)),
+                durationUnit = _uiState.value.durationUnit.copy(value = to.duration.getChronoUnitLabel(context)),
                 toExerciseExecution = to.copy(
                     duration = convertedDuration.toLongOrNull(),
                     rest = convertedRest.toLongOrNull()
@@ -349,16 +227,16 @@ class RegisterEvolutionViewModel @Inject constructor(
                     value = toExercise.repetitions.toStringOrEmpty(),
                 ),
                 rest = _uiState.value.rest.copy(
-                    value = getConvertedRestFrom(toExercise.unitRest, toExercise.rest)
+                    value = toExercise.rest?.bestChronoUnit().getStringFromConvertedChronoUnitValue(toExercise.rest),
                 ),
                 restUnit = _uiState.value.restUnit.copy(
-                    value = getUnitRestFrom(toExercise.rest)
+                    value = toExercise.rest.getChronoUnitLabel(context)
                 ),
                 duration = _uiState.value.duration.copy(
-                    value = getConvertedDurationFrom(toExercise.unitDuration, toExercise.duration)
+                    value = toExercise.duration?.bestChronoUnit().getStringFromConvertedChronoUnitValue(toExercise.duration)
                 ),
                 durationUnit = _uiState.value.durationUnit.copy(
-                    value = getUnitDurationFrom(toExercise.duration)
+                    value = toExercise.duration.getChronoUnitLabel(context)
                 ),
                 toExerciseExecution = _uiState.value.toExerciseExecution.copy(
                     repetitions = toExercise.repetitions,
@@ -370,22 +248,6 @@ class RegisterEvolutionViewModel @Inject constructor(
                 )
             )
         }
-    }
-
-    private fun getUnitDurationFrom(duration: Long?): String {
-        return duration?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
-    }
-
-    private fun getUnitRestFrom(rest: Long?): String {
-        return rest?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
-    }
-
-    private fun getConvertedDurationFrom(unitDuration: ChronoUnit?, duration: Long?): String {
-        return unitDuration?.let { duration?.millisTo(it) }.toStringOrEmpty()
-    }
-
-    private fun getConvertedRestFrom(unitRest: ChronoUnit?, rest: Long?): String {
-        return unitRest?.let { rest?.millisTo(it) }.toStringOrEmpty()
     }
 
     fun onOpenCameraVideo(file: File) {
@@ -531,6 +393,5 @@ class RegisterEvolutionViewModel @Inject constructor(
                 }
             }
         }
-
     }
 }

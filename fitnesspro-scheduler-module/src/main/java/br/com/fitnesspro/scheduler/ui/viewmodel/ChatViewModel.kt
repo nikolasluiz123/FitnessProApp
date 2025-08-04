@@ -4,11 +4,9 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
-import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
-import br.com.fitnesspro.compose.components.fields.state.TextField
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.navigation.ChatArgs
@@ -19,7 +17,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,7 +27,7 @@ class ChatViewModel @Inject constructor(
     private val personRepository: PersonRepository,
     private val globalEvents: GlobalEvents,
     savedStateHandle: SavedStateHandle
-): FitnessProViewModel() {
+): FitnessProStatefulViewModel() {
 
     private val _uiState: MutableStateFlow<ChatUIState> = MutableStateFlow(ChatUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -44,6 +41,20 @@ class ChatViewModel @Inject constructor(
         addListeners()
     }
 
+    override fun initialLoadUIState() {
+        _uiState.value = _uiState.value.copy(
+            title = context.getString(R.string.chat_screen_title),
+            messageTextField = createTextFieldState(
+                getCurrentState = { _uiState.value.messageTextField },
+                updateState = { _uiState.value = _uiState.value.copy(messageTextField = it) },
+            ),
+            messageDialogState = createMessageDialogState(
+                getCurrentState = { _uiState.value.messageDialogState },
+                updateState = { _uiState.value = _uiState.value.copy(messageDialogState = it) }
+            )
+        )
+    }
+
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
     override fun getErrorMessageFrom(throwable: Throwable): String {
@@ -54,65 +65,19 @@ class ChatViewModel @Inject constructor(
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
     }
 
-    private fun initialLoadUIState() {
-        _uiState.update {
-            it.copy(
-                title = context.getString(R.string.chat_screen_title),
-                messageTextField = initializeMessageTextField(),
-                messageDialogState = initializeMessageDialogState()
-            )
-        }
-    }
-
-    private fun initializeMessageTextField(): TextField {
-        return TextField(onChange = {
-            _uiState.value = _uiState.value.copy(
-                messageTextField = _uiState.value.messageTextField.copy(
-                    value = it,
-                    errorMessage = ""
-                )
-            )
-        })
-    }
-
-    private fun initializeMessageDialogState(): MessageDialogState {
-        return MessageDialogState(
-            onShowDialog = { type, message, onConfirm, onCancel ->
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        dialogType = type,
-                        dialogMessage = message,
-                        showDialog = true,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                )
-            },
-            onHideDialog = {
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        showDialog = false
-                    )
-                )
-            }
-        )
-    }
-
     private fun loadUIStateWithDatabaseInfos() {
         val args = jsonArgs?.fromJsonNavParamToArgs(ChatArgs::class.java)!!
 
         launch {
             val authenticatedPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
 
-            _uiState.update {
-                it.copy(
-                    subtitle = firestoreChatRepository.getPersonNameFromChat(
-                        personId = authenticatedPersonId,
-                        chatId = args.chatId,
-                    ),
-                    authenticatedPersonId = authenticatedPersonId
-                )
-            }
+            _uiState.value = _uiState.value.copy(
+                subtitle = firestoreChatRepository.getPersonNameFromChat(
+                    personId = authenticatedPersonId,
+                    chatId = args.chatId,
+                ),
+                authenticatedPersonId = authenticatedPersonId
+            )
         }
     }
 

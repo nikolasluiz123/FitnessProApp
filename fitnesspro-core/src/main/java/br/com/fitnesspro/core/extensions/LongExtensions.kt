@@ -71,3 +71,7 @@ fun Long.bestChronoUnit(): ChronoUnit {
 fun Long.toReadableFileSize(context: Context): String {
     return Formatter.formatFileSize(context, this * 1024)
 }
+
+fun Long?.getChronoUnitLabel(context: Context): String {
+    return this?.bestChronoUnit()?.getLabelFromChronoUnit(context) ?: ""
+}

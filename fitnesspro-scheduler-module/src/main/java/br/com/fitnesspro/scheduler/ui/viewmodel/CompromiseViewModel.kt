@@ -1,31 +1,21 @@
 package br.com.fitnesspro.scheduler.ui.viewmodel
 
 import android.content.Context
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
-import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
-import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.compose.components.fields.state.DayWeeksSelectorField
-import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
-import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
-import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
 import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME_ONLY_NUMBERS
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getOffsetDateTime
-import br.com.fitnesspro.core.extensions.parseTimeToOffsetDateTime
-import br.com.fitnesspro.core.extensions.parseToLocalDate
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.model.enums.EnumCompromiseType.FIRST
@@ -59,7 +49,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import java.time.LocalDate
 import java.time.ZoneOffset
 import javax.inject.Inject
@@ -75,7 +64,7 @@ class CompromiseViewModel @Inject constructor(
     private val globalEvents: GlobalEvents,
     private val chatRepository: FirestoreChatRepository,
     savedStateHandle: SavedStateHandle
-) : FitnessProViewModel() {
+) : FitnessProStatefulViewModel() {
 
     private val _uiState: MutableStateFlow<CompromiseUIState> = MutableStateFlow(CompromiseUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -83,8 +72,121 @@ class CompromiseViewModel @Inject constructor(
     private val jsonArgs: String? = savedStateHandle[compromiseArguments]
 
     init {
-        initialUIStateLoad()
+        initialLoadUIState()
         loadUIStateWithDatabaseInfos()
+    }
+
+    override fun initialLoadUIState() {
+        val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
+
+        _uiState.value = _uiState.value.copy(
+            subtitle = getSubtitle(args.date),
+            professional = createPagedDialogListTextField(
+                getCurrentState = { _uiState.value.professional },
+                updateState = { _uiState.value = _uiState.value.copy(professional = it) },
+                dialogTitle = context.getString(R.string.compromise_screen_label_professional_list),
+                getDataListFlow = { filter ->
+                    getListProfessional(
+                        authenticatedPerson = _uiState.value.authenticatedPerson,
+                        args = args,
+                        simpleFilter = filter
+                    )
+                },
+                onDataListItemClick = { personTuple ->
+                    _uiState.value = _uiState.value.copy(
+                        toScheduler = _uiState.value.toScheduler.copy(
+                            professionalName = personTuple.getLabel(),
+                            professionalPersonId = personTuple.id,
+                            professionalType = personTuple.userType
+                        )
+                    )
+                }
+            ),
+            member = createPagedDialogListTextField(
+                getCurrentState = { _uiState.value.member },
+                updateState = { _uiState.value = _uiState.value.copy(member = it) },
+                dialogTitle = context.getString(R.string.compromise_screen_label_member_list),
+                getDataListFlow = { filter ->
+                    getListMembers(
+                        authenticatedPerson = _uiState.value.authenticatedPerson,
+                        args = args,
+                        simpleFilter = filter
+                    )
+                },
+                onDataListItemClick = {
+                    _uiState.value = _uiState.value.copy(
+                        toScheduler = _uiState.value.toScheduler.copy(
+                            academyMemberName = it.getLabel(),
+                            academyMemberPersonId = it.id,
+                        )
+                    )
+                }
+            ),
+            dateStart = createDatePickerFieldState(
+                getCurrentState = { _uiState.value.dateStart },
+                updateState = { _uiState.value = _uiState.value.copy(dateStart = it) },
+                onDateChange = {
+                    _uiState.value = _uiState.value.copy(
+                        recurrentConfig = _uiState.value.recurrentConfig.copy(
+                            dateStart = it
+                        )
+                    )
+                },
+            ),
+            dateEnd = createDatePickerFieldState(
+                getCurrentState = { _uiState.value.dateEnd },
+                updateState = { _uiState.value = _uiState.value.copy(dateEnd = it) },
+                onDateChange = {
+                    _uiState.value = _uiState.value.copy(
+                        recurrentConfig = _uiState.value.recurrentConfig.copy(
+                            dateEnd = it
+                        )
+                    )
+                },
+            ),
+            hourStart = createTimePickerTextField(
+                getCurrentState = { _uiState.value.hourStart },
+                updateState = { _uiState.value = _uiState.value.copy(hourStart = it) },
+                onTimeChange = { newTime ->
+                    _uiState.value = _uiState.value.copy(
+                        toScheduler = _uiState.value.toScheduler.copy(
+                            dateTimeStart = newTime?.let(getDateFromPeriod()::getOffsetDateTime)
+                        )
+                    )
+                }
+            ),
+            hourEnd = createTimePickerTextField(
+                getCurrentState = { _uiState.value.hourEnd },
+                updateState = { _uiState.value = _uiState.value.copy(hourEnd = it) },
+                onTimeChange = { newTime ->
+                    _uiState.value = _uiState.value.copy(
+                        toScheduler = _uiState.value.toScheduler.copy(
+                            dateTimeEnd = newTime?.let(getDateFromPeriod()::getOffsetDateTime)
+                        )
+                    )
+                }
+            ),
+            observation = createTextFieldState(
+                getCurrentState = { _uiState.value.observation },
+                updateState = {
+                    _uiState.value = _uiState.value.copy(
+                        observation = it,
+                        toScheduler = _uiState.value.toScheduler.copy(observation = it.value)
+                    )
+                },
+            ),
+            messageDialogState = createMessageDialogState(
+                getCurrentState = { _uiState.value.messageDialogState },
+                updateState = { _uiState.value = _uiState.value.copy(messageDialogState = it) }
+            ),
+            dayWeeksSelectorField = initializeDayWeeksSelectorField(),
+            recurrent = args.recurrent,
+            onToggleLoading = {
+                _uiState.value = _uiState.value.copy(
+                    showLoading = _uiState.value.showLoading.not()
+                )
+            }
+        )
     }
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
@@ -105,31 +207,6 @@ class CompromiseViewModel @Inject constructor(
         }
     }
 
-    private fun initialUIStateLoad() {
-        val args = jsonArgs?.fromJsonNavParamToArgs(CompromiseScreenArgs::class.java)!!
-
-        _uiState.update {
-            it.copy(
-                subtitle = getSubtitle(args.date),
-                professional = initializeProfessionalPagedDialogListField(args),
-                member = initializeMemberPagedDialogListField(args),
-                dateStart = initializeDateStartDatePickerField(),
-                dateEnd = initializeDateEndDatePickerField(),
-                hourStart = initializeHourStartTimePickerField(),
-                hourEnd = initializeHourEndTimePickerField(),
-                observation = initializeObservationField(),
-                messageDialogState = initializeMessageDialogState(),
-                dayWeeksSelectorField = initializeDayWeeksSelectorField(),
-                recurrent = args.recurrent,
-                onToggleLoading = {
-                    _uiState.value = _uiState.value.copy(
-                        showLoading = _uiState.value.showLoading.not()
-                    )
-                }
-            )
-        }
-    }
-
     private fun initializeDayWeeksSelectorField(): DayWeeksSelectorField {
         return DayWeeksSelectorField(
             onSelect = {
@@ -138,119 +215,6 @@ class CompromiseViewModel @Inject constructor(
                         dayWeeks = _uiState.value.dayWeeksSelectorField.selected.toList()
                     )
                 )
-            }
-        )
-    }
-
-    private fun initializeMessageDialogState(): MessageDialogState {
-        return MessageDialogState(
-            onShowDialog = { type, message, onConfirm, onCancel ->
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        dialogType = type,
-                        dialogMessage = message,
-                        showDialog = true,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                )
-            },
-            onHideDialog = {
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        showDialog = false
-                    )
-                )
-            }
-        )
-    }
-
-    private fun initializeObservationField(): TextField {
-        return TextField(
-            onChange = { text ->
-                _uiState.value = _uiState.value.copy(
-                    observation = _uiState.value.observation.copy(
-                        value = text,
-                        errorMessage = ""
-                    ),
-                    toScheduler = _uiState.value.toScheduler.copy(observation = text.ifEmpty { null })
-                )
-            }
-        )
-    }
-
-    private fun initializeHourEndTimePickerField(): TimePickerTextField {
-        return TimePickerTextField(
-            onTimePickerOpenChange = { newOpen ->
-                _uiState.value = _uiState.value.copy(
-                    hourEnd = _uiState.value.hourEnd.copy(timePickerOpen = newOpen)
-                )
-            },
-            onTimeChange = { newTime ->
-                _uiState.value = _uiState.value.copy(
-                    hourEnd = _uiState.value.hourEnd.copy(
-                        value = newTime.format(TIME_ONLY_NUMBERS),
-                        errorMessage = ""
-                    ),
-                    toScheduler = _uiState.value.toScheduler.copy(
-                        dateTimeEnd = getDateFromPeriod().getOffsetDateTime(newTime)
-                    )
-                )
-            },
-            onTimeDismiss = {
-                _uiState.value = _uiState.value.copy(
-                    hourEnd = _uiState.value.hourEnd.copy(timePickerOpen = false)
-                )
-            },
-            onChange = { text ->
-                if (text.isDigitsOnly()) {
-                    _uiState.value = _uiState.value.copy(
-                        hourEnd = _uiState.value.hourEnd.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        toScheduler = _uiState.value.toScheduler.copy(
-                            dateTimeEnd = text.parseTimeToOffsetDateTime(getDateFromPeriod(), TIME_ONLY_NUMBERS)
-                        )
-                    )
-                }
-            }
-        )
-    }
-
-    private fun initializeHourStartTimePickerField(): TimePickerTextField {
-        return TimePickerTextField(
-            onTimePickerOpenChange = { newOpen ->
-                _uiState.value = _uiState.value.copy(
-                    hourStart = _uiState.value.hourStart.copy(timePickerOpen = newOpen)
-                )
-            },
-            onTimeChange = { newTime ->
-                _uiState.value = _uiState.value.copy(
-                    hourStart = _uiState.value.hourStart.copy(
-                        value = newTime.format(TIME_ONLY_NUMBERS),
-                        errorMessage = ""
-                    ),
-                    toScheduler = _uiState.value.toScheduler.copy(dateTimeStart = getDateFromPeriod().getOffsetDateTime(newTime))
-                )
-            },
-            onTimeDismiss = {
-                _uiState.value = _uiState.value.copy(
-                    hourStart = _uiState.value.hourStart.copy(timePickerOpen = false)
-                )
-            },
-            onChange = { text ->
-                if (text.isDigitsOnly()) {
-                    _uiState.value = _uiState.value.copy(
-                        hourStart = _uiState.value.hourStart.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        toScheduler = _uiState.value.toScheduler.copy(
-                            dateTimeStart = text.parseTimeToOffsetDateTime(getDateFromPeriod(), TIME_ONLY_NUMBERS)
-                        )
-                    )
-                }
             }
         )
     }
@@ -271,201 +235,6 @@ class CompromiseViewModel @Inject constructor(
         return args.date ?: dateNow(ZoneOffset.UTC)
     }
 
-    private fun initializeDateEndDatePickerField(): DatePickerTextField {
-        return DatePickerTextField(
-            onDatePickerOpenChange = { newOpen ->
-                _uiState.value = _uiState.value.copy(
-                    dateEnd = _uiState.value.dateEnd.copy(datePickerOpen = newOpen)
-                )
-            },
-            onDateChange = { newDate ->
-                _uiState.value = _uiState.value.copy(
-                    dateEnd = _uiState.value.dateEnd.copy(
-                        value = newDate.format(DATE_ONLY_NUMBERS),
-                        errorMessage = ""
-                    ),
-                    recurrentConfig = _uiState.value.recurrentConfig.copy(
-                        dateEnd = newDate
-                    )
-                )
-
-                _uiState.value.dateEnd.onDatePickerDismiss()
-            },
-            onDatePickerDismiss = {
-                _uiState.value = _uiState.value.copy(
-                    dateEnd = _uiState.value.dateEnd.copy(datePickerOpen = false)
-                )
-            },
-            onChange = { text ->
-                if (text.isDigitsOnly()) {
-                    _uiState.value = _uiState.value.copy(
-                        dateEnd = _uiState.value.dateEnd.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        recurrentConfig = _uiState.value.recurrentConfig.copy(
-                            dateEnd = text.parseToLocalDate(DATE_ONLY_NUMBERS)
-                        )
-                    )
-                }
-            },
-        )
-    }
-
-    private fun initializeDateStartDatePickerField(): DatePickerTextField {
-        return DatePickerTextField(
-            onDatePickerOpenChange = { newOpen ->
-                _uiState.value = _uiState.value.copy(
-                    dateStart = _uiState.value.dateStart.copy(datePickerOpen = newOpen)
-                )
-            },
-            onDateChange = { newDate ->
-                _uiState.value = _uiState.value.copy(
-                    dateStart = _uiState.value.dateStart.copy(
-                        value = newDate.format(DATE_ONLY_NUMBERS),
-                        errorMessage = ""
-                    ),
-                    recurrentConfig = _uiState.value.recurrentConfig.copy(
-                        dateStart = newDate
-                    )
-                )
-
-                _uiState.value.dateStart.onDatePickerDismiss()
-            },
-            onDatePickerDismiss = {
-                _uiState.value = _uiState.value.copy(
-                    dateStart = _uiState.value.dateStart.copy(datePickerOpen = false)
-                )
-            },
-            onChange = { text ->
-                if (text.isDigitsOnly()) {
-                    _uiState.value = _uiState.value.copy(
-                        dateStart = _uiState.value.dateStart.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        recurrentConfig = _uiState.value.recurrentConfig.copy(
-                            dateStart = text.parseToLocalDate(DATE_ONLY_NUMBERS)
-                        )
-                    )
-                }
-            }
-        )
-    }
-
-    private fun initializeMemberPagedDialogListField(args: CompromiseScreenArgs): PagedDialogListTextField<PersonTuple> {
-        return PagedDialogListTextField(
-            dialogListState = PagedDialogListState(
-                dialogTitle = context.getString(R.string.compromise_screen_label_member_list),
-                onShow = {
-                    _uiState.value = _uiState.value.copy(
-                        member = _uiState.value.member.copy(
-                            dialogListState = _uiState.value.member.dialogListState.copy(show = true)
-                        )
-                    )
-                },
-                onHide = {
-                    _uiState.value = _uiState.value.copy(
-                        member = _uiState.value.member.copy(
-                            dialogListState = _uiState.value.member.dialogListState.copy(show = false)
-                        )
-                    )
-                },
-                onDataListItemClick = { item ->
-                    _uiState.value = _uiState.value.copy(
-                        member = _uiState.value.member.copy(
-                            value = item.getLabel(),
-                            errorMessage = ""
-                        ),
-                        toScheduler = _uiState.value.toScheduler.copy(
-                            academyMemberName = item.getLabel(),
-                            academyMemberPersonId = item.id,
-                        )
-                    )
-
-                    _uiState.value.member.dialogListState.onHide()
-                },
-                onSimpleFilterChange = { filter ->
-                    _uiState.value = _uiState.value.copy(
-                        member = _uiState.value.member.copy(
-                            dialogListState = _uiState.value.member.dialogListState.copy(
-                                dataList = getListMembers(
-                                    authenticatedPerson = _uiState.value.authenticatedPerson,
-                                    simpleFilter = filter,
-                                    args = args
-                                )
-                            )
-                        )
-                    )
-                },
-            ),
-            onChange = { newText ->
-                _uiState.value = _uiState.value.copy(
-                    member = _uiState.value.member.copy(
-                        value = newText,
-                    )
-                )
-            }
-        )
-    }
-
-    private fun initializeProfessionalPagedDialogListField(args: CompromiseScreenArgs): PagedDialogListTextField<PersonTuple> {
-        return PagedDialogListTextField(
-            dialogListState = PagedDialogListState(
-                dialogTitle = context.getString(R.string.compromise_screen_label_professional_list),
-                onShow = {
-                    _uiState.value = _uiState.value.copy(
-                        professional = _uiState.value.professional.copy(
-                            dialogListState = _uiState.value.professional.dialogListState.copy(show = true)
-                        )
-                    )
-                },
-                onHide = {
-                    _uiState.value = _uiState.value.copy(
-                        professional = _uiState.value.professional.copy(
-                            dialogListState = _uiState.value.professional.dialogListState.copy(show = false)
-                        )
-                    )
-                },
-                onDataListItemClick = { item ->
-                    _uiState.value = _uiState.value.copy(
-                        professional = _uiState.value.professional.copy(
-                            value = item.getLabel(),
-                            errorMessage = ""
-                        ),
-                        toScheduler = _uiState.value.toScheduler.copy(
-                            professionalName = item.getLabel(),
-                            professionalPersonId = item.id,
-                            professionalType = item.userType
-                        )
-                    )
-
-                    _uiState.value.professional.dialogListState.onHide()
-                },
-                onSimpleFilterChange = { filter ->
-                    _uiState.value = _uiState.value.copy(
-                        professional = _uiState.value.professional.copy(
-                            dialogListState = _uiState.value.professional.dialogListState.copy(
-                                dataList = getListProfessional(
-                                    authenticatedPerson = _uiState.value.authenticatedPerson,
-                                    simpleFilter = filter,
-                                    args = args
-                                )
-                            )
-                        )
-                    )
-                },
-            ),
-            onChange = { newText ->
-                _uiState.value = _uiState.value.copy(
-                    professional = _uiState.value.professional.copy(
-                        value = newText,
-                    )
-                )
-            }
-        )
-    }
-
     private fun loadUIStateWithDatabaseInfos() {
         launch {
             val toPerson = personRepository.getAuthenticatedTOPerson()!!
@@ -474,27 +243,25 @@ class CompromiseViewModel @Inject constructor(
             val menuItemListProfessional = getListProfessional(authenticatedPerson = toPerson, args = args)
             val menuItemListMembers = getListMembers(authenticatedPerson = toPerson, args = args)
 
-            _uiState.update { state ->
-                state.copy(
-                    title = getTitle(
-                        userType = userType,
-                        recurrent = args.recurrent,
-                    ),
+            _uiState.value = _uiState.value.copy(
+                title = getTitle(
                     userType = userType,
-                    professional = _uiState.value.professional.copy(
-                        dialogListState = _uiState.value.professional.dialogListState.copy(
-                            dataList = menuItemListProfessional
-                        )
-                    ),
-                    member = _uiState.value.member.copy(
-                        dialogListState = _uiState.value.member.dialogListState.copy(
-                            dataList = menuItemListMembers
-                        )
-                    ),
-                    toScheduler = getToSchedulerWithDefaultInfos(toPerson, args),
-                    authenticatedPerson = toPerson
-                )
-            }
+                    recurrent = args.recurrent,
+                ),
+                userType = userType,
+                professional = _uiState.value.professional.copy(
+                    dialogListState = _uiState.value.professional.dialogListState.copy(
+                        dataList = menuItemListProfessional
+                    )
+                ),
+                member = _uiState.value.member.copy(
+                    dialogListState = _uiState.value.member.dialogListState.copy(
+                        dataList = menuItemListMembers
+                    )
+                ),
+                toScheduler = getToSchedulerWithDefaultInfos(toPerson, args),
+                authenticatedPerson = toPerson
+            )
 
             initializeEditionInfos()
         }
@@ -529,37 +296,35 @@ class CompromiseViewModel @Inject constructor(
         val toScheduler = id?.let { schedulerRepository.getTOSchedulerById(it) }
 
         toScheduler?.let { to ->
-            _uiState.update { state ->
-                state.copy(
-                    title = getTitle(
-                        userType = _uiState.value.userType!!,
-                        recurrent = args.recurrent,
-                        toScheduler = to
-                    ),
-                    subtitle = getSubtitle(to),
-                    professional = _uiState.value.professional.copy(
-                        value = to.professionalName!!,
-                        errorMessage = ""
-                    ),
-                    member = _uiState.value.member.copy(
-                        value = to.academyMemberName!!,
-                        errorMessage = ""
-                    ),
-                    hourStart = _uiState.value.hourStart.copy(
-                        value = to.dateTimeStart!!.format(TIME_ONLY_NUMBERS)
-                    ),
-                    hourEnd = _uiState.value.hourEnd.copy(
-                        value = to.dateTimeEnd!!.format(TIME_ONLY_NUMBERS)
-                    ),
-                    observation = _uiState.value.observation.copy(
-                        value = to.observation ?: ""
-                    ),
-                    toScheduler = to,
-                    isEnabledMessageButton = true,
-                    isEnabledDeleteButton = true,
-                    isEnabledConfirmButton = true
-                )
-            }
+            _uiState.value = _uiState.value.copy(
+                title = getTitle(
+                    userType = _uiState.value.userType!!,
+                    recurrent = args.recurrent,
+                    toScheduler = to
+                ),
+                subtitle = getSubtitle(to),
+                professional = _uiState.value.professional.copy(
+                    value = to.professionalName!!,
+                    errorMessage = ""
+                ),
+                member = _uiState.value.member.copy(
+                    value = to.academyMemberName!!,
+                    errorMessage = ""
+                ),
+                hourStart = _uiState.value.hourStart.copy(
+                    value = to.dateTimeStart!!.format(TIME_ONLY_NUMBERS)
+                ),
+                hourEnd = _uiState.value.hourEnd.copy(
+                    value = to.dateTimeEnd!!.format(TIME_ONLY_NUMBERS)
+                ),
+                observation = _uiState.value.observation.copy(
+                    value = to.observation ?: ""
+                ),
+                toScheduler = to,
+                isEnabledMessageButton = true,
+                isEnabledDeleteButton = true,
+                isEnabledConfirmButton = true
+            )
         }
     }
 

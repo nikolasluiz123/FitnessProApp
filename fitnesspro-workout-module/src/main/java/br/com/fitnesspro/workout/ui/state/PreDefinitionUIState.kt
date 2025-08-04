@@ -5,6 +5,7 @@ import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextFiel
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
 import br.com.fitnesspro.core.state.ILoadingUIState
+import br.com.fitnesspro.core.state.IThrowableUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.to.TOExercisePreDefinition
 import br.com.fitnesspro.to.TOWorkoutGroupPreDefinition
@@ -14,7 +15,6 @@ import java.time.temporal.ChronoUnit
 data class PreDefinitionUIState(
     val title: String = "",
     val subtitle: String? = null,
-    val messageDialogState: MessageDialogState = MessageDialogState(),
     val group: PagedDialogListTextField<TOWorkoutGroupPreDefinition> = PagedDialogListTextField(),
     val exercise: PagedDialogListTextField<TOExercisePreDefinition> = PagedDialogListTextField(),
     val exerciseOrder: TextField = TextField(),
@@ -31,6 +31,7 @@ data class PreDefinitionUIState(
     val toExercisePredefinition: TOExercisePreDefinition = TOExercisePreDefinition(),
     var notSavedVideoFiles: MutableList<File> = mutableListOf(),
     var authenticatedPersonId: String? = null,
+    override val messageDialogState: MessageDialogState = MessageDialogState(),
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = {}
-): ILoadingUIState
+): ILoadingUIState, IThrowableUIState

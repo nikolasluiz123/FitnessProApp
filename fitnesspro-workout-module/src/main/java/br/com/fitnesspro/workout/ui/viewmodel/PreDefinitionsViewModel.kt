@@ -3,12 +3,9 @@ package br.com.fitnesspro.workout.ui.viewmodel
 import android.content.Context
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
-import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
-import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.compose.components.filter.SimpleFilterState
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOWorkoutGroupPreDefinition
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
@@ -31,7 +28,7 @@ class PreDefinitionsViewModel @Inject constructor(
     private val personRepository: PersonRepository,
     private val editWorkoutGroupPreDefinitionUseCase: EditWorkoutGroupPreDefinitionUseCase,
     private val inactivateWorkoutGroupPreDefinitionUseCase: InactivateWorkoutGroupPreDefinitionUseCase
-): FitnessProViewModel() {
+): FitnessProStatefulViewModel() {
 
     private val _uiState: MutableStateFlow<PreDefinitionsUIState> = MutableStateFlow(PreDefinitionsUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -41,23 +38,40 @@ class PreDefinitionsViewModel @Inject constructor(
         loadStateWithDatabaseInfos()
     }
 
-    private fun loadStateWithDatabaseInfos() {
-        launch {
-            val personId = personRepository.getAuthenticatedTOPerson()?.id!!
-
-            _uiState.value = _uiState.value.copy(
-                authenticatedPersonId = personId,
-                predefinitions = exercisePreDefinitionRepository.getListGroupedPredefinitions(personId).flow
-            )
-        }
-    }
-
-    private fun initialLoadUIState() {
+    override fun initialLoadUIState() {
         _uiState.value = _uiState.value.copy(
-            simpleFilterState = initializeSimpleFilterState(),
-            messageDialogState = initializeMessageDialogState(),
+            simpleFilterState = createSimpleFilterState(
+                getCurrentState = { _uiState.value.simpleFilterState },
+                updateState = { newState -> _uiState.value = _uiState.value.copy(simpleFilterState = newState) },
+                onSimpleFilterChange = {
+                    _uiState.value.authenticatedPersonId?.let { personId ->
+                        _uiState.value = _uiState.value.copy(
+                            predefinitions = exercisePreDefinitionRepository.getListGroupedPredefinitions(
+                                authenticatedPersonId = personId,
+                                simpleFilter = it
+                            ).flow
+                        )
+                    }
+                }
+            ),
+            messageDialogState = createMessageDialogState(
+                getCurrentState = { _uiState.value.messageDialogState },
+                updateState = { newState -> _uiState.value = _uiState.value.copy(messageDialogState = newState) }
+            ),
             workoutGroupPreDefinitionGroupDialogUIState = PreDefinitionGroupDialogUIState(
-                name = initializeEditWorkoutGroupPreDefinitionTextFieldName(),
+                name = createTextFieldState(
+                    getCurrentState = { _uiState.value.workoutGroupPreDefinitionGroupDialogUIState.name },
+                    updateState = { newState ->
+                        _uiState.value = _uiState.value.copy(
+                            workoutGroupPreDefinitionGroupDialogUIState = _uiState.value.workoutGroupPreDefinitionGroupDialogUIState.copy(
+                                name = newState,
+                                toWorkoutGroupPreDefinition = _uiState.value.workoutGroupPreDefinitionGroupDialogUIState.toWorkoutGroupPreDefinition.copy(
+                                    name = newState.value
+                                )
+                            )
+                        )
+                    }
+                ),
                 onShowDialogChange = { show ->
                     _uiState.value = _uiState.value.copy(
                         workoutGroupPreDefinitionGroupDialogUIState = _uiState.value.workoutGroupPreDefinitionGroupDialogUIState.copy(
@@ -85,73 +99,27 @@ class PreDefinitionsViewModel @Inject constructor(
         )
     }
 
-    private fun initializeEditWorkoutGroupPreDefinitionTextFieldName(): TextField {
-        return TextField(
-            onChange = { text ->
-                _uiState.value = _uiState.value.copy(
-                    workoutGroupPreDefinitionGroupDialogUIState = _uiState.value.workoutGroupPreDefinitionGroupDialogUIState.copy(
-                        name = _uiState.value.workoutGroupPreDefinitionGroupDialogUIState.name.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        toWorkoutGroupPreDefinition = _uiState.value.workoutGroupPreDefinitionGroupDialogUIState.toWorkoutGroupPreDefinition.copy(
-                            name = text.ifEmpty { null }
-                        )
-                    )
-                )
-            }
-        )
+    override fun getErrorMessageFrom(throwable: Throwable): String {
+        return context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
     }
 
-    private fun initializeMessageDialogState(): MessageDialogState {
-        return MessageDialogState(
-            onShowDialog = { type, message, onConfirm, onCancel ->
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        dialogType = type,
-                        dialogMessage = message,
-                        showDialog = true,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                )
-            },
-            onHideDialog = {
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        showDialog = false
-                    )
-                )
-            }
-        )
+    override fun onShowErrorDialog(message: String) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
     }
 
-    private fun initializeSimpleFilterState(): SimpleFilterState {
-        return SimpleFilterState(
-            onSimpleFilterChange = { filterText ->
-                _uiState.value = _uiState.value.copy(
-                    simpleFilterState = _uiState.value.simpleFilterState.copy(
-                        quickFilter = filterText
-                    )
-                )
+    override fun getGlobalEventsBus(): GlobalEvents {
+        return globalEvents
+    }
 
-                _uiState.value.authenticatedPersonId?.let { personId ->
-                    _uiState.value = _uiState.value.copy(
-                        predefinitions = exercisePreDefinitionRepository.getListGroupedPredefinitions(
-                            authenticatedPersonId = personId,
-                            simpleFilter = filterText
-                        ).flow
-                    )
-                }
-            },
-            onExpandedChange = {
-                _uiState.value = _uiState.value.copy(
-                    simpleFilterState = _uiState.value.simpleFilterState.copy(
-                        simpleFilterExpanded = it
-                    )
-                )
-            }
-        )
+    private fun loadStateWithDatabaseInfos() {
+        launch {
+            val personId = personRepository.getAuthenticatedTOPerson()?.id!!
+
+            _uiState.value = _uiState.value.copy(
+                authenticatedPersonId = personId,
+                predefinitions = exercisePreDefinitionRepository.getListGroupedPredefinitions(personId).flow
+            )
+        }
     }
 
     fun onSaveWorkoutGroupPreDefinition(onSuccess: () -> Unit) {
@@ -221,17 +189,5 @@ class PreDefinitionsViewModel @Inject constructor(
 
     private fun getEditWorkoutDialogTitle(toWorkoutGroup: TOWorkoutGroupPreDefinition): String {
         return context.getString(br.com.fitnesspro.workout.R.string.workout_group_pre_definition_edit_dialog_title, toWorkoutGroup.name)
-    }
-
-    override fun getErrorMessageFrom(throwable: Throwable): String {
-        return context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
-    }
-
-    override fun onShowErrorDialog(message: String) {
-        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
-    }
-
-    override fun getGlobalEventsBus(): GlobalEvents {
-        return globalEvents
     }
 }

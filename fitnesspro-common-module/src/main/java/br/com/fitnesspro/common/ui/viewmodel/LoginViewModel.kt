@@ -5,14 +5,13 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.state.LoginUIState
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
 import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
-import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.isNetworkAvailable
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOPerson
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -20,7 +19,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,14 +28,34 @@ class LoginViewModel @Inject constructor(
     private val googleLoginUseCase: GoogleLoginUseCase,
     private val userRepository: UserRepository,
     private val globalEvents: GlobalEvents
-) : FitnessProViewModel() {
+) : FitnessProStatefulViewModel() {
 
     private val _uiState: MutableStateFlow<LoginUIState> = MutableStateFlow(LoginUIState())
     val uiState get() = _uiState.asStateFlow()
 
     init {
-        initialUIStateLoad()
+        initialLoadUIState()
         loadEmailAuthenticatedUser()
+    }
+
+    override fun initialLoadUIState() {
+        _uiState.value = _uiState.value.copy(
+            email = createTextFieldState(
+                getCurrentState = { _uiState.value.email },
+                updateState = { _uiState.value = _uiState.value.copy(email = it) }
+            ),
+            password = createTextFieldState(
+                getCurrentState = { _uiState.value.password },
+                updateState = { _uiState.value = _uiState.value.copy(password = it) }
+            ),
+            messageDialogState = createMessageDialogState(
+                getCurrentState = { _uiState.value.messageDialogState },
+                updateState = { _uiState.value = _uiState.value.copy(messageDialogState = it) }
+            ),
+            onToggleLoading = {
+                _uiState.value = _uiState.value.copy(showLoading = !_uiState.value.showLoading)
+            },
+        )
     }
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
@@ -70,67 +88,11 @@ class LoginViewModel @Inject constructor(
         launch {
             userRepository.getAuthenticatedTOUser()?.apply {
                 _uiState.value = _uiState.value.copy(
-                    email = _uiState.value.email.copy(
-                        value = email!!
-                    )
+                    email = _uiState.value.email.copy(value = email!!)
                 )
             }
         }
     }
-
-    private fun initialUIStateLoad() {
-        _uiState.update { currentState ->
-            currentState.copy(
-                email = initializeEmailTextField(),
-                password = initializePasswordTextField(),
-                messageDialogState = initializeMessageDialogState(),
-                onToggleLoading = {
-                    _uiState.value = _uiState.value.copy(showLoading = !_uiState.value.showLoading)
-                },
-            )
-        }
-    }
-
-    private fun initializeMessageDialogState(): MessageDialogState {
-        return MessageDialogState(
-            onShowDialog = { type, message, onConfirm, onCancel ->
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        dialogType = type,
-                        dialogMessage = message,
-                        showDialog = true,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                )
-            },
-            onHideDialog = {
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        showDialog = false
-                    )
-                )
-            }
-        )
-    }
-
-    private fun initializePasswordTextField() = TextField(onChange = {
-        _uiState.value = _uiState.value.copy(
-            password = _uiState.value.password.copy(
-                value = it,
-                errorMessage = ""
-            )
-        )
-    })
-
-    private fun initializeEmailTextField() = TextField(onChange = {
-        _uiState.value = _uiState.value.copy(
-            email = _uiState.value.email.copy(
-                value = it,
-                errorMessage = ""
-            )
-        )
-    })
 
     fun login(onSuccess: () -> Unit) {
         launch {

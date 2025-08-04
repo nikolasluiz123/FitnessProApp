@@ -1,16 +1,11 @@
 package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.event.GlobalEvents
-import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.compose.components.fields.menu.MenuItem
-import br.com.fitnesspro.compose.components.fields.menu.getLabelOrEmptyIfNullValue
-import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
-import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.compose.components.filter.SimpleFilterState
 import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
@@ -18,8 +13,6 @@ import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
-import br.com.fitnesspro.core.extensions.toIntOrNull
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.to.TOWorkoutGroup
@@ -30,10 +23,10 @@ import br.com.fitnesspro.workout.ui.navigation.dayWeekExercisesScreenArguments
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
 import br.com.fitnesspro.workout.ui.state.DayWeekExercisesUIState
 import br.com.fitnesspro.workout.ui.state.WorkoutGroupEditDialogUIState
-import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutUseCase
 import br.com.fitnesspro.workout.usecase.workout.EditWorkoutGroupUseCase
-import br.com.fitnesspro.workout.usecase.workout.enums.EnumValidatedWorkoutGroupFields
 import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutGroupUseCase
+import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutUseCase
+import br.com.fitnesspro.workout.usecase.workout.enums.EnumValidatedWorkoutGroupFields
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,7 +45,7 @@ class DayWeekExercisesViewModel @Inject constructor(
     private val inactivateWorkoutGroupUseCase: InactivateWorkoutGroupUseCase,
     private val inactivateWorkoutUseCase: InactivateWorkoutUseCase,
     savedStateHandle: SavedStateHandle
-): FitnessProViewModel() {
+): FitnessProStatefulViewModel() {
 
     private val _uiState: MutableStateFlow<DayWeekExercisesUIState> = MutableStateFlow(DayWeekExercisesUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -64,36 +57,68 @@ class DayWeekExercisesViewModel @Inject constructor(
         loadUIStateWithDatabaseInfos()
     }
 
-    override fun onError(throwable: Throwable) {
-        super.onError(throwable)
-
-        if (_uiState.value.showLoading) {
-            _uiState.value.onToggleLoading()
-        }
-
-        if (_uiState.value.workoutGroupEditDialogUIState.showLoading) {
-            _uiState.value.workoutGroupEditDialogUIState.onToggleLoading()
-        }
-    }
-
-    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
-
-    override fun getErrorMessageFrom(throwable: Throwable): String {
-        return context.getString(R.string.unknown_error_message)
-    }
-
-    override fun onShowErrorDialog(message: String) {
-        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
-    }
-
-    private fun initialLoadUIState() {
+    override fun initialLoadUIState() {
         _uiState.value = _uiState.value.copy(
-            simpleFilterState = initializeSimpleFilterState(),
-            messageDialogState = initializeMessageDialogState(),
+            simpleFilterState = createSimpleFilterState(
+                getCurrentState = { _uiState.value.simpleFilterState },
+                updateState = { newState -> _uiState.value = _uiState.value.copy(simpleFilterState = newState) },
+                onSimpleFilterChange = {
+                    _uiState.value = _uiState.value.copy(
+                        filteredGroups = _uiState.value.groups.toMutableList().filter(it)
+                    )
+                }
+            ),
+            messageDialogState = createMessageDialogState(
+                getCurrentState = { _uiState.value.messageDialogState },
+                updateState = { newState -> _uiState.value = _uiState.value.copy(messageDialogState = newState) }
+            ),
             workoutGroupEditDialogUIState = WorkoutGroupEditDialogUIState(
-                name = initializeEditWorkoutGroupTextFieldName(),
-                order = initializeEditWorkoutGroupTextFieldOrder(),
-                dayWeek = initializeEditWorkoutGroupDropDownTextFieldDayWeek(),
+                name = createTextFieldState(
+                    getCurrentState = { _uiState.value.workoutGroupEditDialogUIState.name },
+                    updateState = { newState ->
+                        _uiState.value = _uiState.value.copy(
+                            workoutGroupEditDialogUIState = _uiState.value.workoutGroupEditDialogUIState.copy(
+                                name = newState,
+                                toWorkoutGroup = _uiState.value.workoutGroupEditDialogUIState.toWorkoutGroup.copy(
+                                    name = newState.value
+                                )
+                            )
+                        )
+                    },
+                ),
+                order = createIntValueTextFieldState(
+                    getCurrentState = { _uiState.value.workoutGroupEditDialogUIState.order },
+                    onValueChange = { state, value ->
+                        _uiState.value = _uiState.value.copy(
+                            workoutGroupEditDialogUIState = _uiState.value.workoutGroupEditDialogUIState.copy(
+                                order = state,
+                                toWorkoutGroup = _uiState.value.workoutGroupEditDialogUIState.toWorkoutGroup.copy(
+                                    order = value
+                                )
+                            )
+                        )
+                    }
+                ),
+                dayWeek = createDropDownTextFieldState(
+                    items = getMenuItemsDayOfWeek(),
+                    getCurrentState = { _uiState.value.workoutGroupEditDialogUIState.dayWeek },
+                    updateState = {
+                        _uiState.value = _uiState.value.copy(
+                            workoutGroupEditDialogUIState = _uiState.value.workoutGroupEditDialogUIState.copy(
+                                dayWeek = it
+                            )
+                        )
+                    },
+                    onItemClick = {
+                        _uiState.value = _uiState.value.copy(
+                            workoutGroupEditDialogUIState = _uiState.value.workoutGroupEditDialogUIState.copy(
+                                toWorkoutGroup = _uiState.value.workoutGroupEditDialogUIState.toWorkoutGroup.copy(
+                                    dayWeek = it
+                                )
+                            )
+                        )
+                    }
+                ),
                 onShowDialogChange = { show ->
                     _uiState.value = _uiState.value.copy(
                         workoutGroupEditDialogUIState = _uiState.value.workoutGroupEditDialogUIState.copy(
@@ -121,130 +146,32 @@ class DayWeekExercisesViewModel @Inject constructor(
         )
     }
 
-    private fun initializeEditWorkoutGroupTextFieldName(): TextField {
-        return TextField(
-            onChange = { text ->
-                _uiState.value = _uiState.value.copy(
-                    workoutGroupEditDialogUIState = _uiState.value.workoutGroupEditDialogUIState.copy(
-                        name = _uiState.value.workoutGroupEditDialogUIState.name.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        toWorkoutGroup = _uiState.value.workoutGroupEditDialogUIState.toWorkoutGroup.copy(
-                            name = text.ifEmpty { null }
-                        )
-                    )
-                )
-            }
-        )
-    }
+    override fun onError(throwable: Throwable) {
+        super.onError(throwable)
 
-    private fun initializeEditWorkoutGroupTextFieldOrder(): TextField {
-        return TextField(
-            onChange = { text ->
-                if (text.isDigitsOnly()) {
-                    _uiState.value = _uiState.value.copy(
-                        workoutGroupEditDialogUIState = _uiState.value.workoutGroupEditDialogUIState.copy(
-                            order = _uiState.value.workoutGroupEditDialogUIState.order.copy(
-                                value = text,
-                                errorMessage = ""
-                            ),
-                            toWorkoutGroup = _uiState.value.workoutGroupEditDialogUIState.toWorkoutGroup.copy(
-                                order = text.toIntOrNull()
-                            )
-                        )
-                    )
-                }
-            }
-        )
-    }
-
-    private fun initializeEditWorkoutGroupDropDownTextFieldDayWeek(): DropDownTextField<DayOfWeek> {
-        val items = DayOfWeek.entries.map {
-            MenuItem<DayOfWeek?>(
-                value = it,
-                label = it.getFirstPartFullDisplayName()
-            )
+        if (_uiState.value.showLoading) {
+            _uiState.value.onToggleLoading()
         }
 
-        return DropDownTextField(
-            dataList = items,
-            dataListFiltered = items,
-            onDropDownDismissRequest = {
-                _uiState.value = _uiState.value.copy(
-                    workoutGroupEditDialogUIState = _uiState.value.workoutGroupEditDialogUIState.copy(
-                        dayWeek = _uiState.value.workoutGroupEditDialogUIState.dayWeek.copy(expanded = false)
-                    ),
-                )
-            },
-            onDropDownExpandedChange = {
-                _uiState.value = _uiState.value.copy(
-                    workoutGroupEditDialogUIState = _uiState.value.workoutGroupEditDialogUIState.copy(
-                        dayWeek = _uiState.value.workoutGroupEditDialogUIState.dayWeek.copy(expanded = it)
-                    )
-                )
-            },
-            onDataListItemClick = {
-                _uiState.value = _uiState.value.copy(
-                    workoutGroupEditDialogUIState = _uiState.value.workoutGroupEditDialogUIState.copy(
-                        dayWeek = _uiState.value.workoutGroupEditDialogUIState.dayWeek.copy(
-                            value = it.getLabelOrEmptyIfNullValue(),
-                            errorMessage = ""
-                        ),
-                        toWorkoutGroup = _uiState.value.workoutGroupEditDialogUIState.toWorkoutGroup.copy(
-                            dayWeek = it.value
-                        )
-                    )
-                )
-
-                _uiState.value.workoutGroupEditDialogUIState.dayWeek.onDropDownDismissRequest()
-            }
-        )
+        if (_uiState.value.workoutGroupEditDialogUIState.showLoading) {
+            _uiState.value.workoutGroupEditDialogUIState.onToggleLoading()
+        }
     }
 
-    private fun initializeSimpleFilterState(): SimpleFilterState {
-        return SimpleFilterState(
-            onSimpleFilterChange = { filterText ->
-                _uiState.value = _uiState.value.copy(
-                    simpleFilterState = _uiState.value.simpleFilterState.copy(
-                        quickFilter = filterText
-                    )
-                )
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
 
-                _uiState.value = _uiState.value.copy(
-                    filteredGroups = _uiState.value.groups.toMutableList().filter(filterText)
-                )
-            },
-            onExpandedChange = {
-                _uiState.value = _uiState.value.copy(
-                    simpleFilterState = _uiState.value.simpleFilterState.copy(
-                        simpleFilterExpanded = it
-                    )
-                )
-            }
-        )
+    override fun getErrorMessageFrom(throwable: Throwable): String {
+        return context.getString(R.string.unknown_error_message)
     }
 
-    private fun initializeMessageDialogState(): MessageDialogState {
-        return MessageDialogState(
-            onShowDialog = { type, message, onConfirm, onCancel ->
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        dialogType = type,
-                        dialogMessage = message,
-                        showDialog = true,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                )
-            },
-            onHideDialog = {
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        showDialog = false
-                    )
-                )
-            }
+    override fun onShowErrorDialog(message: String) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
+    }
+
+    private fun getMenuItemsDayOfWeek(): List<MenuItem<DayOfWeek?>> = DayOfWeek.entries.map {
+        MenuItem(
+            value = it,
+            label = it.getFirstPartFullDisplayName()
         )
     }
 

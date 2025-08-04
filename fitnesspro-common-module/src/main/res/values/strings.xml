@@ -137,4 +137,5 @@
     <string name="reports_from_scheduler_importation_descrition">Importação de Relatórios de Agendamentos</string>
     <string name="scheduler_report_importation_descrition">Importação das Entidade Relacionais de Relatórios de Agendamento</string>
     <string name="sync_module_report_from_scheduler">Exportação dos Relatórios do Módulo de Agendamento</string>
+    <string name="generated_reports_delete_report_confirmation_message">Tem certeza que deseja deletar permanentemente o relatório? Essa ação não poderá ser desfeita.</string>
 </resources>

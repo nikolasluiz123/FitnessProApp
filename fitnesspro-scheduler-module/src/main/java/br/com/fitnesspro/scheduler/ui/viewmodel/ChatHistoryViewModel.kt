@@ -4,10 +4,8 @@ import android.content.Context
 import androidx.paging.PagingData
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
-import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
-import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.model.enums.EnumUserType.ACADEMY_MEMBER
 import br.com.fitnesspro.model.enums.EnumUserType.NUTRITIONIST
@@ -21,7 +19,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,7 +27,7 @@ class ChatHistoryViewModel @Inject constructor(
     private val personRepository: PersonRepository,
     private val firestoreChatRepository: FirestoreChatRepository,
     private val globalEvents: GlobalEvents
-): FitnessProViewModel() {
+): FitnessProStatefulViewModel() {
 
     private val _uiState: MutableStateFlow<ChatHistoryUIState> = MutableStateFlow(ChatHistoryUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -40,6 +37,40 @@ class ChatHistoryViewModel @Inject constructor(
         loadUIStateWithDatabaseInfos()
 
         addChatListListener()
+    }
+
+    override fun initialLoadUIState() {
+        _uiState.value = _uiState.value.copy(
+            title = context.getString(R.string.chat_history_title),
+            messageDialogState = createMessageDialogState(
+                getCurrentState = { _uiState.value.messageDialogState },
+                updateState = { _uiState.value = _uiState.value.copy(messageDialogState = it) }
+            ),
+            membersDialogState = createPagedDialogListState(
+                dialogTitle = context.getString(R.string.chat_history_screen_label_members_list),
+                getCurrentState = { _uiState.value.membersDialogState },
+                updateState = { _uiState.value = _uiState.value.copy(membersDialogState = it) },
+                onDataListItemClick = { item -> startChat(item.id) },
+                getDataListFlow = { filter ->
+                    getListMembers(
+                        authenticatedPerson = _uiState.value.authenticatedPerson,
+                        filter = filter
+                    )
+                }
+            ),
+            professionalsDialogState = createPagedDialogListState(
+                dialogTitle = context.getString(R.string.chat_history_screen_label_professionals_list),
+                getCurrentState = { _uiState.value.professionalsDialogState },
+                updateState = { _uiState.value = _uiState.value.copy(professionalsDialogState = it) },
+                onDataListItemClick = { item -> startChat(item.id) },
+                getDataListFlow = { filter ->
+                    getListProfessionals(
+                        authenticatedPerson = _uiState.value.authenticatedPerson,
+                        filter = filter
+                    )
+                }
+            )
+        )
     }
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
@@ -55,100 +86,6 @@ class ChatHistoryViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         firestoreChatRepository.removeChatListListener()
-    }
-
-    private fun initialLoadUIState() {
-        _uiState.update {
-            it.copy(
-                title = context.getString(R.string.chat_history_title),
-                messageDialogState = initializeMessageDialogState(),
-                membersDialogState = initializeMembersPagedDialogList(),
-                professionalsDialogState = initializeProfessionalsPagedDialogList()
-            )
-        }
-    }
-
-    private fun initializeMessageDialogState(): MessageDialogState {
-        return MessageDialogState(
-            onShowDialog = { type, message, onConfirm, onCancel ->
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        dialogType = type,
-                        dialogMessage = message,
-                        showDialog = true,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                )
-            },
-            onHideDialog = {
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        showDialog = false
-                    )
-                )
-            }
-        )
-    }
-
-    private fun initializeMembersPagedDialogList(): PagedDialogListState<PersonTuple> {
-        return PagedDialogListState(
-            dialogTitle = context.getString(R.string.chat_history_screen_label_members_list),
-            onShow = {
-                _uiState.value = _uiState.value.copy(
-                    membersDialogState = _uiState.value.membersDialogState.copy(show = true)
-                )
-            },
-            onHide = {
-                _uiState.value = _uiState.value.copy(
-                    membersDialogState = _uiState.value.membersDialogState.copy(show = false)
-                )
-            },
-            onDataListItemClick = { item ->
-                startChat(item.id)
-                _uiState.value.membersDialogState.onHide()
-            },
-            onSimpleFilterChange = { filter ->
-                _uiState.value = _uiState.value.copy(
-                    membersDialogState = _uiState.value.membersDialogState.copy(
-                        dataList = getListMembers(
-                            authenticatedPerson = _uiState.value.authenticatedPerson,
-                            filter = filter
-                        )
-                    )
-                )
-            }
-        )
-    }
-
-    private fun initializeProfessionalsPagedDialogList(): PagedDialogListState<PersonTuple> {
-        return PagedDialogListState(
-            dialogTitle = context.getString(R.string.chat_history_screen_label_professionals_list),
-            onShow = {
-                _uiState.value = _uiState.value.copy(
-                    professionalsDialogState = _uiState.value.professionalsDialogState.copy(show = true)
-                )
-            },
-            onHide = {
-                _uiState.value = _uiState.value.copy(
-                    professionalsDialogState = _uiState.value.professionalsDialogState.copy(show = false)
-                )
-            },
-            onDataListItemClick = { item ->
-                startChat(item.id)
-                _uiState.value.professionalsDialogState.onHide()
-            },
-            onSimpleFilterChange = { filter ->
-                _uiState.value = _uiState.value.copy(
-                    professionalsDialogState = _uiState.value.professionalsDialogState.copy(
-                        dataList = getListProfessionals(
-                            authenticatedPerson = _uiState.value.authenticatedPerson,
-                            filter = filter
-                        )
-                    )
-                )
-            }
-        )
     }
 
     private fun getListMembers(authenticatedPerson: TOPerson, filter: String = ""): Flow<PagingData<PersonTuple>> {
@@ -187,18 +124,16 @@ class ChatHistoryViewModel @Inject constructor(
         launch {
             val authenticatedPerson = personRepository.getAuthenticatedTOPerson()!!
 
-            _uiState.update {
-                it.copy(
-                    authenticatedPerson = authenticatedPerson,
-                    userType = authenticatedPerson.user?.type!!,
-                    membersDialogState = _uiState.value.membersDialogState.copy(
-                        dataList = getListMembers(authenticatedPerson = authenticatedPerson)
-                    ),
-                    professionalsDialogState = _uiState.value.professionalsDialogState.copy(
-                        dataList = getListProfessionals(authenticatedPerson = authenticatedPerson)
-                    )
+            _uiState.value = _uiState.value.copy(
+                authenticatedPerson = authenticatedPerson,
+                userType = authenticatedPerson.user?.type!!,
+                membersDialogState = _uiState.value.membersDialogState.copy(
+                    dataList = getListMembers(authenticatedPerson = authenticatedPerson)
+                ),
+                professionalsDialogState = _uiState.value.professionalsDialogState.copy(
+                    dataList = getListProfessionals(authenticatedPerson = authenticatedPerson)
                 )
-            }
+            )
         }
     }
 

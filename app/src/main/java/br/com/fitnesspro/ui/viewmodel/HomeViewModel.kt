@@ -6,7 +6,7 @@ import br.com.fitnesspro.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
-import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProViewModel
 import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.callback.showInformationDialog

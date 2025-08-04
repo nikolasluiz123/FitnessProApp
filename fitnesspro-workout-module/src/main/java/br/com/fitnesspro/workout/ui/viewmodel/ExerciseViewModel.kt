@@ -2,33 +2,21 @@ package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
 import android.net.Uri
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
-import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
-import br.com.fitnesspro.compose.components.fields.menu.MenuItem
-import br.com.fitnesspro.compose.components.fields.menu.getLabelOrEmptyIfNullValue
-import br.com.fitnesspro.compose.components.fields.state.DialogListState
-import br.com.fitnesspro.compose.components.fields.state.DialogListTextField
-import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
-import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
-import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
-import br.com.fitnesspro.compose.components.fields.state.TabState
-import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
+import br.com.fitnesspro.compose.components.fields.menu.getChronoUnitMenuItems
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
+import br.com.fitnesspro.core.extensions.getChronoUnitLabel
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
-import br.com.fitnesspro.core.extensions.millisTo
+import br.com.fitnesspro.core.extensions.getStringFromConvertedChronoUnitValue
 import br.com.fitnesspro.core.extensions.openVideoPlayer
-import br.com.fitnesspro.core.extensions.toIntOrNull
 import br.com.fitnesspro.core.extensions.toStringOrEmpty
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.core.utils.VideoUtils
 import br.com.fitnesspro.core.validation.FieldValidationError
@@ -54,7 +42,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import java.io.File
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
@@ -74,7 +61,7 @@ class ExerciseViewModel @Inject constructor(
     private val saveExerciseVideoFromGalleryUseCase: SaveExerciseVideoFromGalleryUseCase,
     private val inactivateExerciseUseCase: InactivateExerciseUseCase,
     savedStateHandle: SavedStateHandle
-): FitnessProViewModel() {
+): FitnessProStatefulViewModel() {
 
     private val _uiState: MutableStateFlow<ExerciseUIState> = MutableStateFlow(ExerciseUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -84,6 +71,143 @@ class ExerciseViewModel @Inject constructor(
     init {
         initialLoadUIState()
         loadUIStateWithDatabaseInfos()
+    }
+
+    override fun initialLoadUIState() {
+        val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
+
+        _uiState.value = _uiState.value.copy(
+            group = createDialogListTextField(
+                getCurrentState = { _uiState.value.group },
+                updateState = { _uiState.value = _uiState.value.copy(group = it) },
+                dialogTitle = context.getString(R.string.exercise_screen_group_dialog_list_title),
+                getDataList = { getListWorkoutGroups(it) },
+                onDataListItemClick = {
+                    _uiState.value = _uiState.value.copy(
+                        toExercise = _uiState.value.toExercise.copy(
+                            workoutGroupId = it.id,
+                            workoutGroupName = it.name
+                        )
+                    )
+                }
+            ),
+            groupOrder = createIntValueTextFieldState(
+                getCurrentState = { _uiState.value.groupOrder },
+                onValueChange = { state, value ->
+                    _uiState.value = _uiState.value.copy(
+                        groupOrder = state,
+                        toExercise = _uiState.value.toExercise.copy(groupOrder = value)
+                    )
+                },
+            ),
+            exercise = createPagedDialogListTextField(
+                getCurrentState = { _uiState.value.exercise },
+                updateState = { _uiState.value = _uiState.value.copy(exercise = it) },
+                dialogTitle = context.getString(R.string.exercise_screen_exercise_dialog_list_title),
+                getDataListFlow = ::getListExercisesAndPreDefinitions,
+                onDataListItemClick = {
+                    _uiState.value = _uiState.value.copy(
+                        toExercise = it
+                    )
+                }
+            ),
+            exerciseOrder = createIntValueTextFieldState(
+                getCurrentState = { _uiState.value.exerciseOrder },
+                onValueChange = { state, value ->
+                    _uiState.value = _uiState.value.copy(
+                        exerciseOrder = state,
+                        toExercise = _uiState.value.toExercise.copy(exerciseOrder = value)
+                    )
+                },
+            ),
+            sets = createIntValueTextFieldState(
+                getCurrentState = { _uiState.value.sets },
+                onValueChange = { state, value ->
+                    _uiState.value = _uiState.value.copy(
+                        sets = state,
+                        toExercise = _uiState.value.toExercise.copy(sets = value)
+                    )
+                },
+            ),
+            reps = createIntValueTextFieldState(
+                getCurrentState = { _uiState.value.reps },
+                onValueChange = { state, value ->
+                    _uiState.value = _uiState.value.copy(
+                        reps = state,
+                        toExercise = _uiState.value.toExercise.copy(repetitions = value)
+                    )
+                },
+            ),
+            rest = createLongValueTextFieldState(
+                getCurrentState = { _uiState.value.rest },
+                onValueChange = { state, value ->
+                    _uiState.value = _uiState.value.copy(
+                        rest = state,
+                        toExercise = _uiState.value.toExercise.copy(rest = value)
+                    )
+                },
+            ),
+            unitRest = createDropDownTextFieldState(
+                items = ChronoUnit.entries.getChronoUnitMenuItems(context),
+                getCurrentState = { _uiState.value.unitRest },
+                updateState = { _uiState.value = _uiState.value.copy(unitRest = it) },
+                onItemClick = {
+                    _uiState.value = _uiState.value.copy(
+                        toExercise = _uiState.value.toExercise.copy(unitRest = it)
+                    )
+                }
+            ),
+            duration = createLongValueTextFieldState(
+                getCurrentState = { _uiState.value.duration },
+                onValueChange = { state, value ->
+                    _uiState.value = _uiState.value.copy(
+                        duration = state,
+                        toExercise = _uiState.value.toExercise.copy(duration = value)
+                    )
+                },
+            ),
+            unitDuration = createDropDownTextFieldState(
+                items = ChronoUnit.entries.getChronoUnitMenuItems(context),
+                getCurrentState = { _uiState.value.unitDuration },
+                updateState = { _uiState.value = _uiState.value.copy(unitDuration = it) },
+                onItemClick = {
+                    _uiState.value = _uiState.value.copy(
+                        toExercise = _uiState.value.toExercise.copy(unitDuration = it)
+                    )
+                }
+            ),
+            observation = createTextFieldState(
+                getCurrentState = { _uiState.value.observation },
+                updateState = {
+                    _uiState.value = _uiState.value.copy(
+                        observation = it,
+                        toExercise = _uiState.value.toExercise.copy(observation = it.value)
+                    )
+                },
+            ),
+            videoGalleryState = createVideoGalleryState(
+                title = context.getString(R.string.exercise_screen_video_gallery_title),
+                isScrollEnabled = false,
+                getCurrentState = { _uiState.value.videoGalleryState },
+                updateState = { _uiState.value = _uiState.value.copy(videoGalleryState = it) },
+            ),
+            tabState = createTabState(
+                getCurrentState = { _uiState.value.tabState },
+                updateState = { _uiState.value = _uiState.value.copy(tabState = it) },
+                tabs = getTabsWithDefaultState()
+            ),
+            messageDialogState = createMessageDialogState(
+                getCurrentState = { _uiState.value.messageDialogState },
+                updateState = { _uiState.value = _uiState.value.copy(messageDialogState = it) },
+            ),
+            toExercise = _uiState.value.toExercise.copy(
+                workoutId = args.workoutId,
+                dayWeek = args.dayWeek
+            ),
+            onToggleLoading = {
+                _uiState.value = _uiState.value.copy(showLoading = _uiState.value.showLoading.not())
+            }
+        )
     }
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
@@ -104,49 +228,6 @@ class ExerciseViewModel @Inject constructor(
         }
     }
 
-    private fun initialLoadUIState() {
-        val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
-
-        _uiState.update {
-            it.copy(
-                group = initializeDialogListTextFieldGroup(),
-                groupOrder = initializeTextFieldGroupOrder(),
-                exercise = initializePagedDialogListTextFieldExercise(),
-                exerciseOrder = initializeTextFieldExerciseOrder(),
-                sets = initializeTextFieldSets(),
-                reps = initializeTextFieldReps(),
-                rest = initializeTextFieldRest(),
-                unitRest = initializeDropDownTextFieldUnitRest(),
-                duration = initializeTextFieldDuration(),
-                unitDuration = initializeDropDownTextFieldUnitDuration(),
-                observation = initializeTextFieldObservation(),
-                videoGalleryState = initializeVideoGalleryState(),
-                tabState = initializeTabState(),
-                messageDialogState = initializeMessageDialogState(),
-                toExercise = _uiState.value.toExercise.copy(
-                    workoutId = args.workoutId,
-                    dayWeek = args.dayWeek
-                ),
-                onToggleLoading = {
-                    _uiState.value = _uiState.value.copy(showLoading = _uiState.value.showLoading.not())
-                }
-            )
-        }
-    }
-
-    private fun initializeTabState(): TabState {
-        return TabState(
-            tabs = getTabsWithDefaultState(),
-            onSelectTab = { selectedTab ->
-                _uiState.value = _uiState.value.copy(
-                    tabState = _uiState.value.tabState.copy(
-                        tabs = getTabListWithSelectedTab(selectedTab)
-                    )
-                )
-            }
-        )
-    }
-
     private fun getTabsWithDefaultState(): MutableList<Tab> {
         return mutableListOf(
             Tab(
@@ -162,128 +243,10 @@ class ExerciseViewModel @Inject constructor(
         )
     }
 
-    private fun getTabListWithSelectedTab(selectedTab: Tab): MutableList<Tab> {
-        return _uiState.value.tabState.tabs.map { tab ->
-            tab.copy(selected = tab.enum == selectedTab.enum)
-        }.toMutableList()
-    }
-
     private fun getTabListAllEnabled(): MutableList<Tab> {
         return _uiState.value.tabState.tabs.map { tab ->
             tab.copy(enabled = true)
         }.toMutableList()
-    }
-
-    private fun initializeMessageDialogState(): MessageDialogState {
-        return MessageDialogState(
-            onShowDialog = { type, message, onConfirm, onCancel ->
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        dialogType = type,
-                        dialogMessage = message,
-                        showDialog = true,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                )
-            },
-            onHideDialog = {
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        showDialog = false
-                    )
-                )
-            }
-        )
-    }
-
-    private fun initializeDialogListTextFieldGroup(): DialogListTextField<TOWorkoutGroup> {
-        return DialogListTextField(
-            dialogListState = DialogListState(
-                dialogTitle = context.getString(R.string.exercise_screen_group_dialog_list_title),
-                onShow = {
-                    _uiState.value = _uiState.value.copy(
-                        group = _uiState.value.group.copy(
-                            dialogListState = _uiState.value.group.dialogListState.copy(show = true)
-                        )
-                    )
-                },
-                onHide = {
-                    _uiState.value = _uiState.value.copy(
-                        group = _uiState.value.group.copy(
-                            dialogListState = _uiState.value.group.dialogListState.copy(show = false)
-                        )
-                    )
-                },
-                onDataListItemClick = { item ->
-                    _uiState.value = _uiState.value.copy(
-                        group = _uiState.value.group.copy(
-                            value = item.getLabel(),
-                            errorMessage = ""
-                        ),
-                        toExercise = _uiState.value.toExercise.copy(
-                            workoutGroupId = item.id,
-                            workoutGroupName = item.name
-                        )
-                    )
-
-                    _uiState.value.group.dialogListState.onHide()
-                },
-                onSimpleFilterChange = { filter ->
-                    launch {
-                        _uiState.value = _uiState.value.copy(
-                            group = _uiState.value.group.copy(
-                                dialogListState = _uiState.value.group.dialogListState.copy(
-                                    dataList = getListWorkoutGroups(simpleFilter = filter)
-                                )
-                            )
-                        )
-                    }
-                },
-            ),
-            onChange = {
-                _uiState.value = _uiState.value.copy(
-                    group = _uiState.value.group.copy(
-                        value = it,
-                    ),
-                    toExercise = _uiState.value.toExercise.copy(
-                        workoutGroupName = it
-                    )
-                )
-            }
-        )
-    }
-
-    private fun initializeTextFieldGroupOrder(): TextField {
-        return TextField(
-            onChange = {
-                if (it.isDigitsOnly()) {
-                    _uiState.value = _uiState.value.copy(
-                        groupOrder = _uiState.value.groupOrder.copy(
-                            value = it,
-                            errorMessage = ""
-                        ),
-                        toExercise = _uiState.value.toExercise.copy(groupOrder = it.toIntOrNull())
-                    )
-                }
-            }
-        )
-    }
-
-    private fun initializeTextFieldExerciseOrder(): TextField {
-        return TextField(
-            onChange = {
-                if (it.isDigitsOnly()) {
-                    _uiState.value = _uiState.value.copy(
-                        exerciseOrder = _uiState.value.exerciseOrder.copy(
-                            value = it,
-                            errorMessage = ""
-                        ),
-                        toExercise = _uiState.value.toExercise.copy(exerciseOrder = it.toIntOrNull())
-                    )
-                }
-            }
-        )
     }
 
     private suspend fun getListWorkoutGroups(simpleFilter: String): List<TOWorkoutGroup> {
@@ -297,61 +260,6 @@ class ExerciseViewModel @Inject constructor(
         )
     }
 
-    private fun initializePagedDialogListTextFieldExercise(): PagedDialogListTextField<TOExercise> {
-        return PagedDialogListTextField(
-            dialogListState = PagedDialogListState(
-                dialogTitle = context.getString(R.string.exercise_screen_exercise_dialog_list_title),
-                onShow = {
-                    _uiState.value = _uiState.value.copy(
-                        exercise = _uiState.value.exercise.copy(
-                            dialogListState = _uiState.value.exercise.dialogListState.copy(show = true)
-                        )
-                    )
-                },
-                onHide = {
-                    _uiState.value = _uiState.value.copy(
-                        exercise = _uiState.value.exercise.copy(
-                            dialogListState = _uiState.value.exercise.dialogListState.copy(show = false)
-                        )
-                    )
-                },
-                onDataListItemClick = { item ->
-                    _uiState.value = _uiState.value.copy(
-                        exercise = _uiState.value.exercise.copy(
-                            value = item.getLabel(),
-                            errorMessage = ""
-                        ),
-                        toExercise = item
-                    )
-
-                    _uiState.value.exercise.dialogListState.onHide()
-                },
-                onSimpleFilterChange = { filter ->
-                    launch {
-                        _uiState.value = _uiState.value.copy(
-                            exercise = _uiState.value.exercise.copy(
-                                dialogListState = _uiState.value.exercise.dialogListState.copy(
-                                    dataList = getListExercisesAndPreDefinitions(simpleFilter = filter)
-                                )
-                            )
-                        )
-                    }
-                },
-            ),
-            onChange = { newText ->
-                _uiState.value = _uiState.value.copy(
-                    exercise = _uiState.value.exercise.copy(
-                        value = newText,
-                        errorMessage = ""
-                    ),
-                    toExercise = _uiState.value.toExercise.copy(
-                        name = newText
-                    )
-                )
-            }
-        )
-    }
-
     private fun getListExercisesAndPreDefinitions(simpleFilter: String = ""): Flow<PagingData<TOExercise>> {
         val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
 
@@ -360,165 +268,6 @@ class ExerciseViewModel @Inject constructor(
             simpleFilter = simpleFilter,
             workoutId = args.workoutId
         ).flow
-    }
-
-    private fun initializeTextFieldSets(): TextField {
-        return TextField(
-           onChange = {
-               _uiState.value = _uiState.value.copy(
-                   sets = _uiState.value.sets.copy(
-                       value = it,
-                       errorMessage = ""
-                   ),
-                   toExercise = _uiState.value.toExercise.copy(sets = it.toIntOrNull())
-               )
-           }
-        )
-    }
-
-    private fun initializeTextFieldReps(): TextField {
-        return TextField(
-            onChange = {
-                _uiState.value = _uiState.value.copy(
-                    reps = _uiState.value.reps.copy(
-                        value = it,
-                        errorMessage = ""
-                    ),
-                    toExercise = _uiState.value.toExercise.copy(repetitions = it.toIntOrNull())
-                )
-            }
-        )
-    }
-
-    private fun initializeTextFieldRest(): TextField {
-        return TextField(
-            onChange = {
-                _uiState.value = _uiState.value.copy(
-                    rest = _uiState.value.rest.copy(
-                        value = it,
-                        errorMessage = ""
-                    ),
-                    toExercise = _uiState.value.toExercise.copy(rest = it.toLongOrNull())
-                )
-            }
-        )
-    }
-
-    private fun initializeDropDownTextFieldUnitRest(): DropDownTextField<ChronoUnit?> {
-        val items = getChronoUnitMenuItems()
-
-        return DropDownTextField(
-            dataList = items,
-            dataListFiltered = items,
-            onDropDownDismissRequest = {
-                _uiState.value = _uiState.value.copy(
-                    unitRest = _uiState.value.unitRest.copy(expanded = false)
-                )
-            },
-            onDropDownExpandedChange = {
-                _uiState.value = _uiState.value.copy(
-                    unitRest = _uiState.value.unitRest.copy(expanded = it)
-                )
-            },
-            onDataListItemClick = {
-                _uiState.value = _uiState.value.copy(
-                    unitRest = _uiState.value.unitRest.copy(
-                        value = it.getLabelOrEmptyIfNullValue(),
-                        errorMessage = ""
-                    ),
-                    toExercise = _uiState.value.toExercise.copy(
-                        unitRest = it.value
-                    )
-                )
-
-                _uiState.value.unitRest.onDropDownDismissRequest()
-            }
-        )
-    }
-
-    private fun initializeTextFieldDuration(): TextField {
-        return TextField(
-            onChange = {
-                _uiState.value = _uiState.value.copy(
-                    duration = _uiState.value.duration.copy(
-                        value = it,
-                        errorMessage = ""
-                    ),
-                    toExercise = _uiState.value.toExercise.copy(duration = it.toLongOrNull())
-                )
-            }
-        )
-    }
-
-    private fun initializeDropDownTextFieldUnitDuration(): DropDownTextField<ChronoUnit?> {
-        val items = getChronoUnitMenuItems()
-
-        return DropDownTextField(
-            dataList = items,
-            dataListFiltered = items,
-            onDropDownDismissRequest = {
-                _uiState.value = _uiState.value.copy(
-                    unitDuration = _uiState.value.unitDuration.copy(expanded = false)
-                )
-            },
-            onDropDownExpandedChange = {
-                _uiState.value = _uiState.value.copy(
-                    unitDuration = _uiState.value.unitDuration.copy(expanded = it)
-                )
-            },
-            onDataListItemClick = {
-                _uiState.value = _uiState.value.copy(
-                    unitDuration = _uiState.value.unitDuration.copy(
-                        value = it.getLabelOrEmptyIfNullValue(),
-                        errorMessage = ""
-                    ),
-                    toExercise = _uiState.value.toExercise.copy(
-                        unitDuration = it.value
-                    )
-                )
-
-                _uiState.value.unitDuration.onDropDownDismissRequest()
-            }
-        )
-    }
-
-    private fun getChronoUnitMenuItems(): List<MenuItem<ChronoUnit?>> {
-        val units = ChronoUnit.entries.slice(ChronoUnit.SECONDS.ordinal..ChronoUnit.HOURS.ordinal)
-
-        return units.map { unit ->
-            MenuItem(
-                label = getLabelFromChronoUnit(unit),
-                value = unit
-            )
-        }
-    }
-
-    private fun initializeTextFieldObservation(): TextField {
-        return TextField(
-            onChange = {
-                _uiState.value = _uiState.value.copy(
-                    observation = _uiState.value.observation.copy(
-                        value = it,
-                        errorMessage = ""
-                    ),
-                    toExercise = _uiState.value.toExercise.copy(observation = it)
-                )
-            }
-        )
-    }
-
-    private fun initializeVideoGalleryState(): VideoGalleryState {
-        return VideoGalleryState(
-            title = context.getString(R.string.exercise_screen_video_gallery_title),
-            isScrollEnabled = false,
-            onViewModeChange = {
-                _uiState.value = _uiState.value.copy(
-                    videoGalleryState = _uiState.value.videoGalleryState.copy(
-                        viewMode = it
-                    )
-                )
-            }
-        )
     }
 
     private fun loadUIStateWithDatabaseInfos() {
@@ -560,8 +309,8 @@ class ExerciseViewModel @Inject constructor(
         exerciseId?.let { id ->
             val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
             val toExercise = exerciseRepository.findById(id)
-            val convertedRest = getConvertedRestFrom(toExercise)
-            val convertedDuration = getConvertedDurationFrom(toExercise)
+            val convertedRest =  toExercise.unitRest.getStringFromConvertedChronoUnitValue(toExercise.rest)
+            val convertedDuration = toExercise.unitDuration.getStringFromConvertedChronoUnitValue(toExercise.duration)
 
             _uiState.value = _uiState.value.copy(
                 toExercise = toExercise,
@@ -587,13 +336,13 @@ class ExerciseViewModel @Inject constructor(
                     value = convertedRest
                 ),
                 unitRest = _uiState.value.unitRest.copy(
-                    value = getUnitRestFrom(toExercise)
+                    value = toExercise.rest.getChronoUnitLabel(context)
                 ),
                 duration = _uiState.value.duration.copy(
                     value = convertedDuration
                 ),
                 unitDuration = _uiState.value.unitDuration.copy(
-                    value = getUnitDurationFrom(toExercise)
+                    value = toExercise.duration.getChronoUnitLabel(context)
                 ),
                 observation = _uiState.value.observation.copy(
                     value = toExercise.observation ?: ""
@@ -612,28 +361,12 @@ class ExerciseViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(
                 videoGalleryState = _uiState.value.videoGalleryState.copy(
                     videoPaths = videoFilePaths,
-                    thumbCache = videoFilePaths.associate { filePath ->
-                        filePath to VideoUtils.generateVideoThumbnail(filePath)
+                    thumbCache = videoFilePaths.associateWith { filePath ->
+                        VideoUtils.generateVideoThumbnail(filePath)
                     }
                 )
             )
         }
-    }
-
-    private fun getUnitDurationFrom(toExercise: TOExercise): String {
-        return toExercise.duration?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
-    }
-
-    private fun getUnitRestFrom(toExercise: TOExercise): String {
-        return toExercise.rest?.bestChronoUnit()?.let { getLabelFromChronoUnit(it) } ?: ""
-    }
-
-    private fun getConvertedDurationFrom(toExercise: TOExercise): String {
-        return toExercise.unitDuration?.let { toExercise.duration?.millisTo(it) }.toStringOrEmpty()
-    }
-
-    private fun getConvertedRestFrom(toExercise: TOExercise): String {
-        return toExercise.unitRest?.let { toExercise.rest?.millisTo(it) }.toStringOrEmpty()
     }
 
     private suspend fun loadAuthenticatedPerson() {
@@ -671,15 +404,6 @@ class ExerciseViewModel @Inject constructor(
                     groupOrder = selectedGroup.order
                 )
             )
-        }
-    }
-
-    private fun getLabelFromChronoUnit(unit: ChronoUnit): String {
-        return when (unit) {
-            ChronoUnit.SECONDS -> context.getString(R.string.exercise_screen_chrono_unit_seconds)
-            ChronoUnit.MINUTES -> context.getString(R.string.exercise_screen_chrono_unit_minutes)
-            ChronoUnit.HOURS -> context.getString(R.string.exercise_screen_chrono_unit_hours)
-            else -> throw IllegalArgumentException("Valor invalido para recuperar um label de ChronoUnit")
         }
     }
 

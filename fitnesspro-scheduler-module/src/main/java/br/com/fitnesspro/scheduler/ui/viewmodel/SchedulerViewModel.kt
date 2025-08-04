@@ -1,18 +1,11 @@
 package br.com.fitnesspro.scheduler.ui.viewmodel
 
 import android.content.Context
-import androidx.core.text.isDigitsOnly
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
-import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
-import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
-import br.com.fitnesspro.compose.components.fields.state.TextField
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.parseToLocalDate
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
@@ -27,7 +20,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,7 +30,7 @@ class SchedulerViewModel @Inject constructor(
     private val personRepository: PersonRepository,
     private val globalEvents: GlobalEvents,
     private val generateSchedulerReportUseCase: GenerateSchedulerReportUseCase
-) : FitnessProViewModel() {
+) : FitnessProStatefulViewModel() {
 
     private val _uiState: MutableStateFlow<SchedulerUIState> = MutableStateFlow(SchedulerUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -67,25 +59,72 @@ class SchedulerViewModel @Inject constructor(
         }
     }
 
-    private fun initialLoadUIState() {
-        _uiState.update {
-            it.copy(
-                title = context.getString(R.string.schedule_screen_title),
-                onSelectYearMonth = { newYearMonth ->
-                    _uiState.value = _uiState.value.copy(selectedYearMonth = newYearMonth)
-                    updateSchedules()
-                },
-                messageDialogState = initializeMessageDialogState(),
-                newSchedulerReportDialogUIState = initializeNewSchedulerReportDialogUIState()
-            )
-        }
+    override fun initialLoadUIState() {
+        _uiState.value = _uiState.value.copy(
+            title = context.getString(R.string.schedule_screen_title),
+            onSelectYearMonth = { newYearMonth ->
+                _uiState.value = _uiState.value.copy(selectedYearMonth = newYearMonth)
+                updateSchedules()
+            },
+            messageDialogState = createMessageDialogState(
+                getCurrentState = { _uiState.value.messageDialogState },
+                updateState = { newState -> _uiState.value = _uiState.value.copy(messageDialogState = newState) }
+            ),
+            newSchedulerReportDialogUIState = initializeNewSchedulerReportDialogUIState()
+        )
     }
 
     private fun initializeNewSchedulerReportDialogUIState(): NewSchedulerReportDialogUIState {
         return NewSchedulerReportDialogUIState(
-            name = initReportNameTextField(),
-            dateStart = initReportDateStartDatePickerField(),
-            dateEnd = initReportDateEndDatePickerField(),
+            name = createTextFieldState(
+                getCurrentState = { _uiState.value.newSchedulerReportDialogUIState.name },
+                updateState = { newState ->
+                    _uiState.value = _uiState.value.copy(
+                        newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
+                            name = newState,
+                            result = _uiState.value.newSchedulerReportDialogUIState.result.copy(reportName = newState.value)
+                        )
+                    )
+                },
+            ),
+            dateStart = createDatePickerFieldState(
+                getCurrentState = { _uiState.value.newSchedulerReportDialogUIState.dateStart },
+                updateState = {
+                    _uiState.value = _uiState.value.copy(
+                        newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
+                            dateStart = it
+                        )
+                    )
+                },
+                onDateChange = { newLocalDate ->
+                    _uiState.value = _uiState.value.copy(
+                        newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
+                            result = _uiState.value.newSchedulerReportDialogUIState.result.copy(
+                                dateStart = newLocalDate
+                            )
+                        )
+                    )
+                }
+            ),
+            dateEnd = createDatePickerFieldState(
+                getCurrentState = { _uiState.value.newSchedulerReportDialogUIState.dateEnd },
+                updateState = {
+                    _uiState.value = _uiState.value.copy(
+                        newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
+                            dateEnd = it
+                        )
+                    )
+                },
+                onDateChange = { newLocalDate ->
+                    _uiState.value = _uiState.value.copy(
+                        newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
+                            result = _uiState.value.newSchedulerReportDialogUIState.result.copy(
+                                dateEnd = newLocalDate
+                            )
+                        )
+                    )
+                }
+            ),
             onDismissRequest = initReportOnDismiss(),
             onToggleLoading = initReportOnToggleLoading(),
             onShow = initReportOnShowDialog()
@@ -116,132 +155,16 @@ class SchedulerViewModel @Inject constructor(
         )
     }
 
-    private fun initReportDateEndDatePickerField(): DatePickerTextField = DatePickerTextField(
-        onDatePickerOpenChange = { newOpen ->
-            _uiState.value = _uiState.value.copy(
-                newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
-                    dateEnd = _uiState.value.newSchedulerReportDialogUIState.dateEnd.copy(
-                        datePickerOpen = newOpen
-                    )
-                )
-            )
-        },
-        onDateChange = { newDate ->
-            _uiState.value = _uiState.value.copy(
-                newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
-                    dateEnd = _uiState.value.newSchedulerReportDialogUIState.dateEnd.copy(
-                        value = newDate.format(DATE_ONLY_NUMBERS),
-                        errorMessage = ""
-                    )
-                )
-            )
-
-            _uiState.value.newSchedulerReportDialogUIState.dateEnd.onDatePickerDismiss()
-        },
-        onDatePickerDismiss = {
-            _uiState.value = _uiState.value.copy(
-                newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
-                    dateEnd = _uiState.value.newSchedulerReportDialogUIState.dateEnd.copy(
-                        datePickerOpen = false
-                    )
-                )
-            )
-        },
-        onChange = { text ->
-            if (text.isDigitsOnly()) {
-                _uiState.value = _uiState.value.copy(
-                    newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
-                        dateEnd = _uiState.value.newSchedulerReportDialogUIState.dateEnd.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        result = _uiState.value.newSchedulerReportDialogUIState.result.copy(
-                            dateEnd = text.parseToLocalDate(DATE_ONLY_NUMBERS)
-                        )
-                    )
-                )
-            }
-        }
-    )
-
-    private fun initReportDateStartDatePickerField(): DatePickerTextField = DatePickerTextField(
-        onDatePickerOpenChange = { newOpen ->
-            _uiState.value = _uiState.value.copy(
-                newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
-                    dateStart = _uiState.value.newSchedulerReportDialogUIState.dateStart.copy(
-                        datePickerOpen = newOpen
-                    )
-                )
-            )
-        },
-        onDateChange = { newDate ->
-            _uiState.value = _uiState.value.copy(
-                newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
-                    dateStart = _uiState.value.newSchedulerReportDialogUIState.dateStart.copy(
-                        value = newDate.format(DATE_ONLY_NUMBERS),
-                        errorMessage = ""
-                    )
-                )
-            )
-
-            _uiState.value.newSchedulerReportDialogUIState.dateStart.onDatePickerDismiss()
-        },
-        onDatePickerDismiss = {
-            _uiState.value = _uiState.value.copy(
-                newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
-                    dateStart = _uiState.value.newSchedulerReportDialogUIState.dateStart.copy(
-                        datePickerOpen = false
-                    )
-                )
-            )
-        },
-        onChange = { text ->
-            if (text.isDigitsOnly()) {
-                _uiState.value = _uiState.value.copy(
-                    newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
-                        dateStart = _uiState.value.newSchedulerReportDialogUIState.dateStart.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        result = _uiState.value.newSchedulerReportDialogUIState.result.copy(
-                            dateStart = text.parseToLocalDate(DATE_ONLY_NUMBERS)
-                        )
-                    )
-                )
-            }
-        }
-    )
-
-    private fun initReportNameTextField(): TextField {
-        return TextField(
-            onChange = { text ->
-                _uiState.value = _uiState.value.copy(
-                    newSchedulerReportDialogUIState = _uiState.value.newSchedulerReportDialogUIState.copy(
-                        name = _uiState.value.newSchedulerReportDialogUIState.name.copy(
-                            value = text,
-                            errorMessage = ""
-                        ),
-                        result = _uiState.value.newSchedulerReportDialogUIState.result.copy(
-                            reportName = text
-                        )
-                    )
-                )
-            }
-        )
-    }
-
     private fun loadUIStateWithDatabaseInfos() {
         launch {
             val toPerson = personRepository.getAuthenticatedTOPerson()!!
             val userType = toPerson.user?.type!!
 
-            _uiState.update {
-                it.copy(
-                    userType = userType,
-                    toSchedulerConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(toPerson.id!!),
-                    isVisibleFabRecurrentScheduler = userType == EnumUserType.PERSONAL_TRAINER
-                )
-            }
+            _uiState.value = _uiState.value.copy(
+                userType = userType,
+                toSchedulerConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(toPerson.id!!),
+                isVisibleFabRecurrentScheduler = userType == EnumUserType.PERSONAL_TRAINER
+            )
         }
     }
 
@@ -261,29 +184,6 @@ class SchedulerViewModel @Inject constructor(
 
             _uiState.value = _uiState.value.copy(schedules = decorators)
         }
-    }
-
-    private fun initializeMessageDialogState(): MessageDialogState {
-        return MessageDialogState(
-            onShowDialog = { type, message, onConfirm, onCancel ->
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        dialogType = type,
-                        dialogMessage = message,
-                        showDialog = true,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                )
-            },
-            onHideDialog = {
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        showDialog = false
-                    )
-                )
-            }
-        )
     }
 
     fun onGenerateReport(onSuccess: (filePath: String) -> Unit) {

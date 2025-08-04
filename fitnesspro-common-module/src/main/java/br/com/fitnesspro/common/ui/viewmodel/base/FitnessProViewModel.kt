@@ -1,4 +1,4 @@
-package br.com.fitnesspro.common.ui.viewmodel
+package br.com.fitnesspro.common.ui.viewmodel.base
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

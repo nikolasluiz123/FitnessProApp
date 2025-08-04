@@ -6,6 +6,7 @@ import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextFiel
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
 import br.com.fitnesspro.core.state.ILoadingUIState
+import br.com.fitnesspro.core.state.IThrowableUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.usecase.scheduler.CompromiseRecurrentConfig
@@ -32,8 +33,8 @@ data class CompromiseUIState(
     val isEnabledMessageButton: Boolean = false,
     val isEnabledConfirmButton: Boolean = false,
     val hasNewMessages: Boolean = false,
-    val messageDialogState: MessageDialogState = MessageDialogState(),
     val authenticatedPerson: TOPerson = TOPerson(),
+    override val messageDialogState: MessageDialogState = MessageDialogState(),
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = { }
-): ILoadingUIState
+): ILoadingUIState, IThrowableUIState

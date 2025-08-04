@@ -1,8 +1,9 @@
 package br.com.fitnesspro.workout.usecase.exercise.enums
 
+import br.com.fitnesspro.core.enums.IEnumFieldValidation
 import br.com.fitnesspro.workout.R
 
-enum class EnumValidatedExerciseFields(val labelResId: Int, val maxLength: Int = 0) {
+enum class EnumValidatedExerciseFields(override val labelResId: Int, override val maxLength: Int) : IEnumFieldValidation {
     EXERCISE_GROUP(R.string.enum_exercise_group, 255),
     EXERCISE_GROUP_ORDER(R.string.enum_exercise_group_order, 0),
     EXERCISE(R.string.enum_exercise, 255),

@@ -2,6 +2,7 @@ package br.com.fitnesspro.common.ui.screen.login
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -13,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +25,7 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginClick
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginWithGoogle
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumAuthenticationBottomSheetTags
+import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_DONE_BUTTON
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_LOGIN_BUTTON
 import br.com.fitnesspro.common.ui.state.BottomSheetAuthenticationUIState
 import br.com.fitnesspro.common.ui.viewmodel.BottomSheetAuthenticationViewModel
@@ -61,11 +63,11 @@ fun AuthenticationBottomSheet(
     onLoginWithGoogleClick: OnLoginWithGoogle? = null,
     onLoginClick: OnLoginClick? = null,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     val bottomSheetState = rememberStandardBottomSheetState(
         initialValue = if (state.showBottomSheet) Expanded else Hidden,
         skipHiddenState = false
     )
-    val context = LocalContext.current
 
     if (state.showBottomSheet) {
         ModalBottomSheet(
@@ -124,6 +126,13 @@ fun AuthenticationBottomSheet(
                     field = state.password,
                     label = stringResource(R.string.login_screen_label_password),
                     keyboardOptions = LastPasswordKeyboardOptions,
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            keyboardController?.hide()
+                            Firebase.analytics.logButtonClick(LOGIN_SCREEN_DONE_BUTTON)
+                            onLoginClick?.onExecute(onSuccess = { })
+                        }
+                    )
                 )
 
                 FitnessProButton(

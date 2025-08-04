@@ -205,8 +205,6 @@ private fun ReportsList(
                     }
                 },
                 onDeleteClick = {
-                    state.onToggleLoading()
-
                     onInactivateReportClick?.onExecute(
                         report = it,
                         onSuccess = {

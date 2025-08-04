@@ -4,13 +4,10 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
 import br.com.fitnesspro.common.ui.event.GlobalEvents
-import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
-import br.com.fitnesspro.compose.components.fields.state.TabState
-import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.compose.components.tabs.Tab
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
@@ -33,7 +30,7 @@ class ExerciseDetailsViewModel @Inject constructor(
     private val exerciseRepository: ExerciseRepository,
     private val exerciseExecutionRepository: ExerciseExecutionRepository,
     savedStateHandle: SavedStateHandle
-): FitnessProViewModel() {
+): FitnessProStatefulViewModel() {
 
     private val _uiState: MutableStateFlow<ExerciseDetailsUIState> = MutableStateFlow(ExerciseDetailsUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -44,6 +41,29 @@ class ExerciseDetailsViewModel @Inject constructor(
         initialLoadUIState()
         loadEvolutionList()
         loadUIStateWithDatabaseInfos()
+    }
+
+    override fun initialLoadUIState() {
+        _uiState.value = _uiState.value.copy(
+            tabState = createTabState(
+                getCurrentState = { _uiState.value.tabState },
+                updateState = { newState -> _uiState.value = _uiState.value.copy(tabState = newState) },
+                tabs = getTabsWithDefaultState()
+            ),
+            messageDialogState = createMessageDialogState(
+                getCurrentState = { _uiState.value.messageDialogState },
+                updateState = { newState -> _uiState.value = _uiState.value.copy(messageDialogState = newState) }
+            ),
+            videoGalleryState = createVideoGalleryState(
+                title = context.getString(R.string.exercise_screen_video_gallery_title),
+                isScrollEnabled = false,
+                getCurrentState = { _uiState.value.videoGalleryState },
+                updateState = { newState -> _uiState.value = _uiState.value.copy(videoGalleryState = newState) }
+            ),
+            onToggleLoading = {
+                _uiState.value = _uiState.value.copy(showLoading = _uiState.value.showLoading.not())
+            }
+        )
     }
 
     private fun loadEvolutionList() {
@@ -64,17 +84,6 @@ class ExerciseDetailsViewModel @Inject constructor(
         return globalEvents
     }
 
-    private fun initialLoadUIState() {
-        _uiState.value = _uiState.value.copy(
-            tabState = initializeTabState(),
-            messageDialogState = initializeMessageDialogState(),
-            videoGalleryState = initializeVideoGalleryState(),
-            onToggleLoading = {
-                _uiState.value = _uiState.value.copy(showLoading = _uiState.value.showLoading.not())
-            }
-        )
-    }
-
     private fun loadUIStateWithDatabaseInfos() {
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseDetailsScreenArgs::class.java)!!
@@ -85,19 +94,6 @@ class ExerciseDetailsViewModel @Inject constructor(
                 toExercise = toExercise
             )
         }
-    }
-
-    private fun initializeTabState(): TabState {
-        return TabState(
-            tabs = getTabsWithDefaultState(),
-            onSelectTab = { selectedTab ->
-                _uiState.value = _uiState.value.copy(
-                    tabState = _uiState.value.tabState.copy(
-                        tabs = getTabListWithSelectedTab(selectedTab)
-                    )
-                )
-            }
-        )
     }
 
     private fun getTabsWithDefaultState(): MutableList<Tab> {
@@ -112,49 +108,6 @@ class ExerciseDetailsViewModel @Inject constructor(
                 selected = false,
                 enabled = true
             )
-        )
-    }
-
-    private fun getTabListWithSelectedTab(selectedTab: Tab): MutableList<Tab> {
-        return _uiState.value.tabState.tabs.map { tab ->
-            tab.copy(selected = tab.enum == selectedTab.enum)
-        }.toMutableList()
-    }
-
-    private fun initializeMessageDialogState(): MessageDialogState {
-        return MessageDialogState(
-            onShowDialog = { type, message, onConfirm, onCancel ->
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        dialogType = type,
-                        dialogMessage = message,
-                        showDialog = true,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                )
-            },
-            onHideDialog = {
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        showDialog = false
-                    )
-                )
-            }
-        )
-    }
-
-    private fun initializeVideoGalleryState(): VideoGalleryState {
-        return VideoGalleryState(
-            title = context.getString(R.string.exercise_screen_video_gallery_title),
-            isScrollEnabled = false,
-            onViewModeChange = {
-                _uiState.value = _uiState.value.copy(
-                    videoGalleryState = _uiState.value.videoGalleryState.copy(
-                        viewMode = it
-                    )
-                )
-            }
         )
     }
 

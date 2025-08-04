@@ -4,6 +4,7 @@ import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
 import br.com.fitnesspro.core.state.ILoadingUIState
+import br.com.fitnesspro.core.state.IThrowableUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.to.TOExerciseExecution
 import java.io.File
@@ -18,12 +19,12 @@ data class RegisterEvolutionUIState(
     val restUnit: DropDownTextField<ChronoUnit?> = DropDownTextField(),
     val duration: TextField = TextField(),
     val durationUnit: DropDownTextField<ChronoUnit?> = DropDownTextField(),
-    val messageDialogState: MessageDialogState = MessageDialogState(),
     val toExerciseExecution: TOExerciseExecution = TOExerciseExecution(),
     val videoGalleryState: VideoGalleryState = VideoGalleryState(),
     var notSavedVideoFiles: MutableList<File> = mutableListOf(),
     val onFabVisibilityChange: (Boolean) -> Unit = {},
     val fabVisible: Boolean = true,
+    override val messageDialogState: MessageDialogState = MessageDialogState(),
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = { }
-): ILoadingUIState
+): ILoadingUIState, IThrowableUIState

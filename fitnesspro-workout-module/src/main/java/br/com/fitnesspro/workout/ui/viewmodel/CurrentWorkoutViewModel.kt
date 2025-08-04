@@ -2,11 +2,10 @@ package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
 import br.com.fitnesspro.common.ui.event.GlobalEvents
-import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.repository.WorkoutRepository
@@ -22,7 +21,7 @@ class CurrentWorkoutViewModel @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val globalEvents: GlobalEvents,
     private val workoutRepository: WorkoutRepository
-): FitnessProViewModel() {
+): FitnessProStatefulViewModel() {
 
     private val _uiState: MutableStateFlow<CurrentWorkoutUIState> = MutableStateFlow(CurrentWorkoutUIState())
     val uiState get() = _uiState.asStateFlow()
@@ -32,33 +31,23 @@ class CurrentWorkoutViewModel @Inject constructor(
         loadStateWithDatabaseInfos()
     }
 
-    private fun initialLoadUIState() {
+    override fun initialLoadUIState() {
         _uiState.value = _uiState.value.copy(
-            messageDialogState = initializeMessageDialogState()
+            messageDialogState = createMessageDialogState(
+                getCurrentState = { _uiState.value.messageDialogState },
+                updateState = { newState -> _uiState.value = _uiState.value.copy(messageDialogState = newState) }
+            )
         )
     }
 
-    private fun initializeMessageDialogState(): MessageDialogState {
-        return MessageDialogState(
-            onShowDialog = { type, message, onConfirm, onCancel ->
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        dialogType = type,
-                        dialogMessage = message,
-                        showDialog = true,
-                        onConfirm = onConfirm,
-                        onCancel = onCancel
-                    )
-                )
-            },
-            onHideDialog = {
-                _uiState.value = _uiState.value.copy(
-                    messageDialogState = _uiState.value.messageDialogState.copy(
-                        showDialog = false
-                    )
-                )
-            }
-        )
+    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
+
+    override fun onShowErrorDialog(message: String) {
+        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
+    }
+
+    override fun getErrorMessageFrom(throwable: Throwable): String {
+        return context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
     }
 
     private fun loadStateWithDatabaseInfos() {
@@ -93,15 +82,5 @@ class CurrentWorkoutViewModel @Inject constructor(
         val end = toWorkout.dateEnd?.format(EnumDateTimePatterns.DATE)
 
         return context.getString(R.string.current_workout_subtitle, start, end)
-    }
-
-    override fun getGlobalEventsBus(): GlobalEvents = globalEvents
-
-    override fun onShowErrorDialog(message: String) {
-        _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
-    }
-
-    override fun getErrorMessageFrom(throwable: Throwable): String {
-        return context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
     }
 }

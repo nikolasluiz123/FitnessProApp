@@ -30,4 +30,9 @@
     <string name="play_icon_content_description">Reproduzir o vídeo</string>
     <string name="open_video_player_message">Escolha um Player</string>
     <string name="open_pdf_reader_message">Escolha um Leitor de PDF</string>
+
+    <string name="chrono_unit_seconds">Segundos</string>
+    <string name="chrono_unit_minutes">Minutos</string>
+    <string name="chrono_unit_hours">Horas</string>
+    <string name="invalid_label_chrono_unit_message">Valor invalido para recuperar um label de ChronoUnit</string>
 </resources>

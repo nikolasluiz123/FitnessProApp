@@ -2,7 +2,7 @@ package br.com.fitnesspro.ui.viewmodel
 
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
-import br.com.fitnesspro.common.ui.viewmodel.FitnessProViewModel
+import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
