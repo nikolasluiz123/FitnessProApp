@@ -17,7 +17,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -29,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAcademyItemClick
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAddAcademy
@@ -61,7 +61,7 @@ fun RegisterUserScreen(
     onAddAcademyClick: OnAddAcademy,
     onAcademyItemClick: OnAcademyItemClick
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     RegisterUserScreen(
         state = state,

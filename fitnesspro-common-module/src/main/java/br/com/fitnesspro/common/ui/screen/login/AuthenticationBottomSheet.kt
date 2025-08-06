@@ -11,7 +11,6 @@ import androidx.compose.material3.SheetValue.Hidden
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -21,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginClick
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginWithGoogle
@@ -44,7 +44,7 @@ import com.google.firebase.analytics.analytics
 
 @Composable
 fun AuthenticationBottomSheet(viewModel: BottomSheetAuthenticationViewModel) {
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     AuthenticationBottomSheet(
         state = state,

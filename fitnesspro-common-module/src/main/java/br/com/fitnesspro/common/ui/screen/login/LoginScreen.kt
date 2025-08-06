@@ -11,7 +11,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -25,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.BottomSheetRegisterUser
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.OnNavigateToRegisterUser
@@ -60,7 +60,7 @@ fun LoginScreen(
     onNavigateToRegisterUser: OnNavigateToRegisterUser,
     onNavigateToHome: () -> Unit,
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     RequestAllPermissions(context)
