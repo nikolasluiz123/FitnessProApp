@@ -60,7 +60,6 @@ class RegisterEvolutionViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfos()
     }
 
     override fun initialLoadUIState() {
@@ -167,7 +166,7 @@ class RegisterEvolutionViewModel @Inject constructor(
         return globalEvents
     }
 
-    private fun loadUIStateWithDatabaseInfos() {
+    fun loadUIStateWithDatabaseInfos() {
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(RegisterEvolutionScreenArgs::class.java)!!
             val toExerciseExecution = args.exerciseExecutionId?.let { executionRepository.findById(it) }
@@ -176,6 +175,8 @@ class RegisterEvolutionViewModel @Inject constructor(
             loadExecutionInfosEdition(toExerciseExecution)
             loadExerciseInfos(args)
             loadVideos(exerciseExecutionId = args.exerciseExecutionId)
+
+            _uiState.value.executeLoad = false
         }
     }
 

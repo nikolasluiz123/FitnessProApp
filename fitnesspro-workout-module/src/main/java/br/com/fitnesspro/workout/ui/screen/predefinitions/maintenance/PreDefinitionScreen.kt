@@ -21,6 +21,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -83,7 +84,8 @@ fun PreDefinitionScreen(
         onVideoSelectedOnGallery = viewModel::onVideoSelectedOnGallery,
         onVideoClick = viewModel::onVideoClick,
         onSaveClick = viewModel::onSavePreDefinition,
-        onInactivateClick = viewModel::onInactivate
+        onInactivateClick = viewModel::onInactivate,
+        onExecuteLoad = viewModel::loadStateWithDatabaseInfos
     )
 }
 
@@ -98,6 +100,7 @@ fun PreDefinitionScreen(
     onFinishVideoRecording: OnFinishVideoRecording? = null,
     onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null,
     onVideoClick: OnVideoClick? = null,
+    onExecuteLoad: () -> Unit = { },
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -164,6 +167,12 @@ fun PreDefinitionScreen(
             }
         }
     ) { paddingValues ->
+        LaunchedEffect(state.executeLoad) {
+            if (state.executeLoad) {
+                onExecuteLoad()
+            }
+        }
+
         Column(
             Modifier
                 .padding(paddingValues)

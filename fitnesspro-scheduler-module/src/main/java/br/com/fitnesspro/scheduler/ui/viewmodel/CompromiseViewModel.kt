@@ -73,7 +73,6 @@ class CompromiseViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfos()
     }
 
     override fun initialLoadUIState() {
@@ -235,7 +234,7 @@ class CompromiseViewModel @Inject constructor(
         return args.date ?: dateNow(ZoneOffset.UTC)
     }
 
-    private fun loadUIStateWithDatabaseInfos() {
+    fun loadUIStateWithDatabaseInfos() {
         launch {
             val toPerson = personRepository.getAuthenticatedTOPerson()!!
             val userType = toPerson.user?.type!!
@@ -264,6 +263,8 @@ class CompromiseViewModel @Inject constructor(
             )
 
             initializeEditionInfos()
+
+            _uiState.value.executeLoad = false
         }
     }
 

@@ -16,6 +16,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -68,7 +69,8 @@ fun ExerciseScreen(
         onFinishVideoRecording = viewModel::onFinishVideoRecording,
         onVideoSelectedOnGallery = viewModel::onVideoSelectedOnGallery,
         onVideoClick = viewModel::onVideoClick,
-        onInactivateExerciseClick = viewModel::onInactivateExercise
+        onInactivateExerciseClick = viewModel::onInactivateExercise,
+        onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos
     )
 }
 
@@ -82,7 +84,8 @@ fun ExerciseScreen(
     onFinishVideoRecording: OnFinishVideoRecording? = null,
     onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null,
     onVideoClick: (path: String) -> Unit = {},
-    onInactivateExerciseClick: OnInactivateExerciseClick? = null
+    onInactivateExerciseClick: OnInactivateExerciseClick? = null,
+    onExecuteLoad: () -> Unit = {}
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
@@ -129,6 +132,12 @@ fun ExerciseScreen(
             }
         }
     ) { paddings ->
+        LaunchedEffect(state.executeLoad) {
+            if (state.executeLoad) {
+                onExecuteLoad()
+            }
+        }
+
         Column(
             Modifier
                 .padding(paddings)

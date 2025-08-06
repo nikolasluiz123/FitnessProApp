@@ -6,6 +6,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -32,7 +33,8 @@ fun DayWeekWorkoutScreen(
     DayWeekWorkoutScreen(
         state = state,
         onBackClick = onBackClick,
-        onNavigateToExerciseDetails = onNavigateToExerciseDetails
+        onNavigateToExerciseDetails = onNavigateToExerciseDetails,
+        onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos
     )
 }
 
@@ -41,7 +43,8 @@ fun DayWeekWorkoutScreen(
 fun DayWeekWorkoutScreen(
     state: DayWeekWorkoutUIState,
     onBackClick: () -> Unit = {},
-    onNavigateToExerciseDetails: OnNavigateToExerciseDetails? = null
+    onNavigateToExerciseDetails: OnNavigateToExerciseDetails? = null,
+    onExecuteLoad: () -> Unit = { }
 ) {
     Scaffold(
         topBar = {
@@ -57,6 +60,12 @@ fun DayWeekWorkoutScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
+            LaunchedEffect(state.executeLoad) {
+                if (state.executeLoad) {
+                    onExecuteLoad()
+                }
+            }
+
             val (workoutList) = createRefs()
 
             FitnessProMessageDialog(state = state.messageDialogState)

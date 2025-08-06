@@ -40,7 +40,6 @@ class ExerciseDetailsViewModel @Inject constructor(
     init {
         initialLoadUIState()
         loadEvolutionList()
-        loadUIStateWithDatabaseInfos()
     }
 
     override fun initialLoadUIState() {
@@ -84,14 +83,15 @@ class ExerciseDetailsViewModel @Inject constructor(
         return globalEvents
     }
 
-    private fun loadUIStateWithDatabaseInfos() {
+    fun loadUIStateWithDatabaseInfos() {
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseDetailsScreenArgs::class.java)!!
             val toExercise = exerciseRepository.findById(args.exerciseId)
 
             _uiState.value = _uiState.value.copy(
                 subtitle = toExercise.name!!,
-                toExercise = toExercise
+                toExercise = toExercise,
+                executeLoad = false
             )
         }
     }

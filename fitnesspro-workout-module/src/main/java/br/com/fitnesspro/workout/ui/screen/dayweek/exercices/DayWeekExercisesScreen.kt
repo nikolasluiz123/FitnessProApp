@@ -61,7 +61,8 @@ fun DayWeekExercisesScreen(
         onInactivateWorkoutClick = viewModel::onInactivateWorkout,
         onSaveWorkoutGroupClick = viewModel::onSaveWorkoutGroup,
         onInactivateWorkoutGroupClick = viewModel::onInactivateWorkoutGroup,
-        onLoadDataWorkoutGroupEdition = viewModel::onLoadDataWorkoutGroupEdition
+        onLoadDataWorkoutGroupEdition = viewModel::onLoadDataWorkoutGroupEdition,
+        onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos
     )
 }
 
@@ -75,7 +76,8 @@ fun DayWeekExercisesScreen(
     onInactivateWorkoutClick: OnInactivateWorkoutClick? = null,
     onSaveWorkoutGroupClick: OnSaveWorkoutGroupClick? = null,
     onInactivateWorkoutGroupClick: OnInactivateWorkoutGroupClick? = null,
-    onLoadDataWorkoutGroupEdition: () -> Unit = {}
+    onLoadDataWorkoutGroupEdition: () -> Unit = {},
+    onExecuteLoad: () -> Unit = { }
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -119,6 +121,12 @@ fun DayWeekExercisesScreen(
         ) {
             LaunchedEffect(Unit) {
                 onUpdateExercises()
+            }
+
+            LaunchedEffect(state.executeLoad) {
+                if (state.executeLoad) {
+                    onExecuteLoad()
+                }
             }
 
             FitnessProLinearProgressIndicator(state.showLoading)

@@ -65,7 +65,6 @@ class PreDefinitionViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadStateWithDatabaseInfos()
     }
 
     override fun initialLoadUIState() {
@@ -241,13 +240,15 @@ class PreDefinitionViewModel @Inject constructor(
         }
     }
 
-    private fun loadStateWithDatabaseInfos() {
+    fun loadStateWithDatabaseInfos() {
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(PreDefinitionScreenArgs::class.java)!!
 
             loadAuthenticatedPerson()
             loadEditionData(args.exercisePreDefinitionId)
             loadPreDefinitionList()
+
+            _uiState.value.executeLoad = false
         }
     }
 

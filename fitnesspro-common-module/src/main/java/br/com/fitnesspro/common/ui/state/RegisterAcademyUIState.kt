@@ -4,6 +4,7 @@ import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
 import br.com.fitnesspro.core.state.ILoadingUIState
+import br.com.fitnesspro.core.state.ISuspendedLoadUIState
 import br.com.fitnesspro.core.state.IThrowableUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.to.TOPersonAcademyTime
@@ -19,7 +20,8 @@ data class RegisterAcademyUIState(
     val end: TimePickerTextField = TimePickerTextField(),
     var toPersonAcademyTime: TOPersonAcademyTime = TOPersonAcademyTime(),
     var isEnabledInactivationButton: Boolean = false,
+    override var executeLoad: Boolean = true,
     override val messageDialogState: MessageDialogState = MessageDialogState(),
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = { }
-): ILoadingUIState, IThrowableUIState
+): ILoadingUIState, IThrowableUIState, ISuspendedLoadUIState

@@ -16,6 +16,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -68,7 +69,8 @@ fun RegisterUserScreen(
         onAddAcademyClick = onAddAcademyClick,
         onAcademyItemClick = onAcademyItemClick,
         onSaveUserClick = viewModel::saveUser,
-        onUpdateAcademies = viewModel::updateAcademies
+        onUpdateAcademies = viewModel::updateAcademies,
+        onExecuteLoad = viewModel::loadUIStateWithAuthenticatedPerson
     )
 
 }
@@ -81,7 +83,8 @@ fun RegisterUserScreen(
     onAddAcademyClick: OnAddAcademy? = null,
     onAcademyItemClick: OnAcademyItemClick? = null,
     onSaveUserClick: OnSaveUserClick? = null,
-    onUpdateAcademies: () -> Unit = { }
+    onUpdateAcademies: () -> Unit = { },
+    onExecuteLoad: () -> Unit = { }
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -143,6 +146,13 @@ fun RegisterUserScreen(
             )
         },
     ) { padding ->
+
+        LaunchedEffect(state.executeLoad) {
+            if (state.executeLoad) {
+                onExecuteLoad()
+            }
+        }
+
         ConstraintLayout(
             Modifier
                 .padding(padding)

@@ -70,7 +70,8 @@ fun SchedulerScreen(
         onNavigateToChatHistory = onNavigateToChatHistory,
         onNavigateToReports = onNavigateToReports,
         onGenerateReportClick = viewModel::onGenerateReport,
-        onShowReportDialog = viewModel::onShowReportDialog
+        onShowReportDialog = viewModel::onShowReportDialog,
+        onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos
     )
 }
 
@@ -86,7 +87,8 @@ fun SchedulerScreen(
     onNavigateToChatHistory: () -> Unit  = {},
     onNavigateToReports: OnNavigateToReports? = null,
     onGenerateReportClick: OnGenerateSchedulerReportClick? = null,
-    onShowReportDialog: () -> Unit = { }
+    onShowReportDialog: () -> Unit = { },
+    onExecuteLoad: () -> Unit = { }
 ) {
     val context = LocalContext.current
 
@@ -159,6 +161,12 @@ fun SchedulerScreen(
         },
         contentWindowInsets = WindowInsets(0.dp)
     ) { padding ->
+
+        LaunchedEffect(state.executeLoad) {
+            if (state.executeLoad) {
+                onExecuteLoad()
+            }
+        }
 
         LaunchedEffect(Unit) {
             onUpdateSchedules()

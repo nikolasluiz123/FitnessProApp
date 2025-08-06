@@ -34,9 +34,6 @@ class ChatHistoryViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfos()
-
-        addChatListListener()
     }
 
     override fun initialLoadUIState() {
@@ -118,6 +115,13 @@ class ChatHistoryViewModel @Inject constructor(
                 receiverPerson = selectedTOPerson
             )
         }
+    }
+
+    fun onExecuteLoad() {
+        loadUIStateWithDatabaseInfos()
+        addChatListListener()
+
+        _uiState.value.executeLoad = false
     }
 
     private fun loadUIStateWithDatabaseInfos() {

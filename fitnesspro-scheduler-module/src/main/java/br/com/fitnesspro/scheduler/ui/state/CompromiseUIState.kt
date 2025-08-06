@@ -6,6 +6,7 @@ import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextFiel
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
 import br.com.fitnesspro.core.state.ILoadingUIState
+import br.com.fitnesspro.core.state.ISuspendedLoadUIState
 import br.com.fitnesspro.core.state.IThrowableUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumUserType
@@ -36,5 +37,6 @@ data class CompromiseUIState(
     val authenticatedPerson: TOPerson = TOPerson(),
     override val messageDialogState: MessageDialogState = MessageDialogState(),
     override val showLoading: Boolean = false,
-    override val onToggleLoading: () -> Unit = { }
-): ILoadingUIState, IThrowableUIState
+    override val onToggleLoading: () -> Unit = { },
+    override var executeLoad: Boolean = true
+): ILoadingUIState, IThrowableUIState, ISuspendedLoadUIState

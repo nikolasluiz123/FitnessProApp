@@ -1,5 +1,6 @@
 package br.com.fitnesspro.scheduler.ui.state
 
+import br.com.fitnesspro.core.state.ISuspendedLoadUIState
 import br.com.fitnesspro.core.state.IThrowableUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumUserType
@@ -11,5 +12,6 @@ data class SchedulerDetailsUIState(
     val userType: EnumUserType? = null,
     val schedules: List<TOScheduler> = emptyList(),
     val isVisibleFabAdd: Boolean = true,
-    override val messageDialogState: MessageDialogState = MessageDialogState()
-): IThrowableUIState
+    override val messageDialogState: MessageDialogState = MessageDialogState(),
+    override var executeLoad: Boolean = true
+): IThrowableUIState, ISuspendedLoadUIState

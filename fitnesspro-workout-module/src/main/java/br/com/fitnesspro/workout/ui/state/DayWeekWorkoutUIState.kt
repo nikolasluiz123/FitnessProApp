@@ -1,5 +1,6 @@
 package br.com.fitnesspro.workout.ui.state
 
+import br.com.fitnesspro.core.state.ISuspendedLoadUIState
 import br.com.fitnesspro.core.state.IThrowableUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
@@ -10,4 +11,5 @@ data class DayWeekWorkoutUIState(
     val subtitle: String= "",
     val dayWeekWorkoutGroups: List<WorkoutGroupDecorator> = emptyList(),
     override val messageDialogState: MessageDialogState = MessageDialogState(),
-): IThrowableUIState
+    override var executeLoad: Boolean = true,
+): IThrowableUIState, ISuspendedLoadUIState

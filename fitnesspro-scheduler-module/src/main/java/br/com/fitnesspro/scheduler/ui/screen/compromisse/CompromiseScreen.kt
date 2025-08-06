@@ -18,6 +18,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -77,7 +78,8 @@ fun CompromiseScreen(
         onCancelCompromiseClick = viewModel::onCancelCompromiseClick,
         onScheduleConfirmClick = viewModel::onScheduleConfirmClick,
         onPrepareChatNavigation = viewModel::onPrepareChatNavigation,
-        onNavigateToChat = onNavigateToChat
+        onNavigateToChat = onNavigateToChat,
+        onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos
     )
 }
 
@@ -90,12 +92,14 @@ fun CompromiseScreen(
     onCancelCompromiseClick: OnCancelCompromiseClick? = null,
     onScheduleConfirmClick: OnScheduleConfirmClick? = null,
     onPrepareChatNavigation: (onSuccess: (ChatArgs) -> Unit) -> Unit = { },
-    onNavigateToChat: OnNavigateToChat? = null
+    onNavigateToChat: OnNavigateToChat? = null,
+    onExecuteLoad: () -> Unit = { }
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
@@ -198,7 +202,12 @@ fun CompromiseScreen(
             )
         }
     ) { padding ->
-        val scrollState = rememberScrollState()
+
+        LaunchedEffect(state.executeLoad) {
+            if (state.executeLoad) {
+                onExecuteLoad()
+            }
+        }
 
         Column(
             Modifier

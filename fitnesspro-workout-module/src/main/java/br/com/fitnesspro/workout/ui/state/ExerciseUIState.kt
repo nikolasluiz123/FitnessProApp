@@ -7,6 +7,7 @@ import br.com.fitnesspro.compose.components.fields.state.TabState
 import br.com.fitnesspro.compose.components.fields.state.TextField
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
 import br.com.fitnesspro.core.state.ILoadingUIState
+import br.com.fitnesspro.core.state.ISuspendedLoadUIState
 import br.com.fitnesspro.core.state.IThrowableUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.to.TOExercise
@@ -37,4 +38,5 @@ data class ExerciseUIState(
     override val messageDialogState: MessageDialogState = MessageDialogState(),
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = { },
-): ILoadingUIState, IThrowableUIState
+    override var executeLoad: Boolean = true,
+): ILoadingUIState, IThrowableUIState, ISuspendedLoadUIState

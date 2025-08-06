@@ -35,7 +35,6 @@ class PreDefinitionsViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadStateWithDatabaseInfos()
     }
 
     override fun initialLoadUIState() {
@@ -111,13 +110,14 @@ class PreDefinitionsViewModel @Inject constructor(
         return globalEvents
     }
 
-    private fun loadStateWithDatabaseInfos() {
+    fun loadStateWithDatabaseInfos() {
         launch {
             val personId = personRepository.getAuthenticatedTOPerson()?.id!!
 
             _uiState.value = _uiState.value.copy(
                 authenticatedPersonId = personId,
-                predefinitions = exercisePreDefinitionRepository.getListGroupedPredefinitions(personId).flow
+                predefinitions = exercisePreDefinitionRepository.getListGroupedPredefinitions(personId).flow,
+                executeLoad = false
             )
         }
     }

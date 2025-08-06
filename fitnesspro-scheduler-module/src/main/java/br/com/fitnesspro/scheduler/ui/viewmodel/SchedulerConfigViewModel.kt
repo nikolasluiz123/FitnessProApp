@@ -31,7 +31,6 @@ class SchedulerConfigViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfos()
     }
 
     override fun initialLoadUIState() {
@@ -99,7 +98,7 @@ class SchedulerConfigViewModel @Inject constructor(
         }
     }
 
-    private fun loadUIStateWithDatabaseInfos() {
+    fun loadUIStateWithDatabaseInfos() {
         launch {
             val toPerson = personRepository.getAuthenticatedTOPerson()!!
             val toConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(toPerson.id!!)!!
@@ -118,7 +117,8 @@ class SchedulerConfigViewModel @Inject constructor(
                 ),
                 maxEventDensity = _uiState.value.maxEventDensity.copy(
                     value = toConfig.maxScheduleDensity.toString()
-                )
+                ),
+                executeLoad = false
             )
         }
     }

@@ -50,13 +50,9 @@ class RegisterUserViewModel @Inject constructor(
     private val jsonArgs: String? = savedStateHandle[registerUserArguments]
 
     init {
-        jsonArgs?.fromJsonNavParamToArgs(RegisterUserScreenArgs::class.java)?.let { args ->
-            initialLoadUIState()
-            loadUIStateWithAuthenticatedPerson(args)
-            loadUIStateWithPersonAuthService(args)
-
-            showDialogRegisterUserAuthenticatedWithService(args)
-        }
+        initialLoadUIState()
+        loadUIStateWithPersonAuthService()
+        showDialogRegisterUserAuthenticatedWithService()
     }
 
     override fun initialLoadUIState() {
@@ -171,9 +167,11 @@ class RegisterUserViewModel @Inject constructor(
         )
     }
 
-    private fun loadUIStateWithAuthenticatedPerson(args: RegisterUserScreenArgs) {
-        launch {
-            if (args.context == null && args.toPersonAuthService == null) {
+    fun loadUIStateWithAuthenticatedPerson() {
+        val args = jsonArgs?.fromJsonNavParamToArgs(RegisterUserScreenArgs::class.java)!!
+
+        if (args.context == null && args.toPersonAuthService == null) {
+            launch {
                 val authenticatedTOPerson = personRepository.getAuthenticatedTOPerson()
                 authenticatedTOPerson?.user?.password = null
 
@@ -195,14 +193,17 @@ class RegisterUserViewModel @Inject constructor(
                             ) ?: ""
                         ),
                         phone = _uiState.value.phone.copy(value = toPerson.phone ?: ""),
-                        tabState = _uiState.value.tabState.copy(tabs = getTabListAllEnabled())
+                        tabState = _uiState.value.tabState.copy(tabs = getTabListAllEnabled()),
+                        executeLoad = false
                     )
                 }
             }
         }
     }
 
-    private fun loadUIStateWithPersonAuthService(args: RegisterUserScreenArgs) {
+    private fun loadUIStateWithPersonAuthService() {
+        val args = jsonArgs?.fromJsonNavParamToArgs(RegisterUserScreenArgs::class.java)!!
+
         args.toPersonAuthService?.let {  toPerson ->
             _uiState.value = _uiState.value.copy(
                 title = getTitle(authenticationService = true),
@@ -216,7 +217,9 @@ class RegisterUserViewModel @Inject constructor(
         }
     }
 
-    private fun showDialogRegisterUserAuthenticatedWithService(args: RegisterUserScreenArgs) {
+    private fun showDialogRegisterUserAuthenticatedWithService() {
+        val args = jsonArgs?.fromJsonNavParamToArgs(RegisterUserScreenArgs::class.java)!!
+
         if (args.toPersonAuthService != null) {
             _uiState.value.messageDialogState.onShowDialog?.showInformationDialog(
                 message = context.getString(R.string.register_user_screen_message_register_user_authenticated_with_service)

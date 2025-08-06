@@ -38,7 +38,6 @@ class SchedulerDetailsViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfos()
     }
 
     override fun initialLoadUIState() {
@@ -77,10 +76,10 @@ class SchedulerDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun loadUIStateWithDatabaseInfos() {
+    fun loadUIStateWithDatabaseInfos() {
         launch {
             val toPerson = personRepository.getAuthenticatedTOPerson()!!
-            _uiState.value = _uiState.value.copy(userType = toPerson.user?.type)
+            _uiState.value = _uiState.value.copy(userType = toPerson.user?.type, executeLoad = false)
         }
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -57,7 +58,8 @@ fun SchedulerConfigScreen(
     SchedulerConfigScreen(
         state = state,
         onNavigateBack = onNavigateBack,
-        onSaveClick = viewModel::save
+        onSaveClick = viewModel::save,
+        onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos
     )
 }
 
@@ -66,12 +68,14 @@ fun SchedulerConfigScreen(
 fun SchedulerConfigScreen(
     state: SchedulerConfigUIState,
     onNavigateBack: () -> Unit = { },
-    onSaveClick: OnSaveSchedulerConfigClick? = null
+    onSaveClick: OnSaveSchedulerConfigClick? = null,
+    onExecuteLoad: () -> Unit = { }
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
@@ -107,7 +111,12 @@ fun SchedulerConfigScreen(
         },
         contentWindowInsets = WindowInsets.ime
     ) { paddingValues ->
-        val scrollState = rememberScrollState()
+
+        LaunchedEffect(state.executeLoad) {
+            if (state.executeLoad) {
+                onExecuteLoad()
+            }
+        }
 
         Column(
             Modifier

@@ -9,6 +9,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -47,7 +48,8 @@ fun PreDefinitionsScreen(
         onNavigateToPreDefinition = onNavigateToPreDefinition,
         onSaveWorkoutGroupPreDefinitionClick = viewModel::onSaveWorkoutGroupPreDefinition,
         onInactivateWorkoutGroupPreDefinitionClick = viewModel::onInactivateWorkoutGroupPreDefinition,
-        onLoadDataWorkoutGroupPreDefinitionEdition = viewModel::onLoadDataWorkoutGroupPreDefinitionEdition
+        onLoadDataWorkoutGroupPreDefinitionEdition = viewModel::onLoadDataWorkoutGroupPreDefinitionEdition,
+        onExecuteLoad = viewModel::loadStateWithDatabaseInfos
     )
 }
 
@@ -59,7 +61,8 @@ fun PreDefinitionsScreen(
     onNavigateToPreDefinition: OnNavigateToPreDefinition? = null,
     onSaveWorkoutGroupPreDefinitionClick: OnSaveWorkoutGroupPreDefinition? = null,
     onInactivateWorkoutGroupPreDefinitionClick: OnInactivateWorkoutGroupPreDefinition? = null,
-    onLoadDataWorkoutGroupPreDefinitionEdition: () -> Unit = {}
+    onLoadDataWorkoutGroupPreDefinitionEdition: () -> Unit = {},
+    onExecuteLoad: () -> Unit = {}
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -86,6 +89,12 @@ fun PreDefinitionsScreen(
                 .consumeWindowInsets(it)
                 .fillMaxSize()
         ) {
+            LaunchedEffect(state.executeLoad) {
+                if (state.executeLoad) {
+                    onExecuteLoad()
+                }
+            }
+
             FitnessProLinearProgressIndicator(state.showLoading)
             FitnessProMessageDialog(state.messageDialogState)
 

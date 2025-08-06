@@ -20,6 +20,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -80,7 +81,8 @@ fun RegisterAcademyScreen(
         state = state,
         onBackClick = onBackClick,
         onSaveAcademyClick = viewModel::saveAcademy,
-        onInactivateAcademyClick = viewModel::inactivateAcademy
+        onInactivateAcademyClick = viewModel::inactivateAcademy,
+        onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos
     )
 }
 
@@ -90,12 +92,14 @@ fun RegisterAcademyScreen(
     state: RegisterAcademyUIState = RegisterAcademyUIState(),
     onBackClick: () -> Unit = { },
     onSaveAcademyClick: OnSaveAcademyClick? = null,
-    onInactivateAcademyClick: OnInactivateAcademyClick? = null
+    onInactivateAcademyClick: OnInactivateAcademyClick? = null,
+    onExecuteLoad: () -> Unit = { }
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
@@ -152,8 +156,11 @@ fun RegisterAcademyScreen(
             }
         }
     ) { paddingValues ->
-        val scrollState = rememberScrollState()
-        val keyboardController = LocalSoftwareKeyboardController.current
+        LaunchedEffect(state.executeLoad) {
+            if (state.executeLoad) {
+                onExecuteLoad()
+            }
+        }
 
         ConstraintLayout(
             Modifier

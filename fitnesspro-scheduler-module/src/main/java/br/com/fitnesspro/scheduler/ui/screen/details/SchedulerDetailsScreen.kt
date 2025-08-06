@@ -46,7 +46,8 @@ fun SchedulerDetailsScreen(
         state = state,
         onBackClick = onBackClick,
         onUpdateSchedules = viewModel::updateSchedules,
-        onNavigateToCompromise = onNavigateToCompromise
+        onNavigateToCompromise = onNavigateToCompromise,
+        onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos
     )
 }
 
@@ -56,7 +57,8 @@ fun SchedulerDetailsScreen(
     state: SchedulerDetailsUIState,
     onBackClick: () -> Unit = { },
     onUpdateSchedules: () -> Unit = { },
-    onNavigateToCompromise: OnNavigateToCompromise? = null
+    onNavigateToCompromise: OnNavigateToCompromise? = null,
+    onExecuteLoad: () -> Unit = { }
 ) {
     Scaffold(
         topBar = {
@@ -84,6 +86,12 @@ fun SchedulerDetailsScreen(
         },
         contentWindowInsets = WindowInsets(0.dp)
     ) { padding ->
+
+        LaunchedEffect(state.executeLoad) {
+            if (state.executeLoad) {
+                onExecuteLoad()
+            }
+        }
 
         LaunchedEffect(Unit) {
             onUpdateSchedules()

@@ -24,6 +24,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -85,7 +86,8 @@ fun RegisterEvolutionScreen(
         onFinishVideoRecording = viewModel::onFinishVideoRecording,
         onVideoSelectedOnGallery = viewModel::onVideoSelectedOnGallery,
         onVideoClick = viewModel::onVideoClick,
-        onSaveRegisterEvolution = viewModel::onSaveRegisterEvolution
+        onSaveRegisterEvolution = viewModel::onSaveRegisterEvolution,
+        onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos
     )
 }
 
@@ -98,7 +100,8 @@ fun RegisterEvolutionScreen(
     onFinishVideoRecording: OnFinishVideoRecording? = null,
     onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null,
     onVideoClick: OnVideoClick? = null,
-    onSaveRegisterEvolution: OnSaveExerciseExecution? = null
+    onSaveRegisterEvolution: OnSaveExerciseExecution? = null,
+    onExecuteLoad: () -> Unit = { }
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
@@ -163,6 +166,12 @@ fun RegisterEvolutionScreen(
         },
         contentWindowInsets = WindowInsets.ime
     ) {
+
+        LaunchedEffect(state.executeLoad) {
+            if (state.executeLoad) {
+                onExecuteLoad()
+            }
+        }
 
         Column(
             modifier = Modifier

@@ -8,6 +8,7 @@ import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.navigation.RegisterAcademyScreenArgs
+import br.com.fitnesspro.common.ui.navigation.registerAcademyArguments
 import br.com.fitnesspro.common.ui.state.RegisterAcademyUIState
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.common.usecase.academy.EnumValidatedAcademyFields
@@ -45,11 +46,10 @@ class RegisterAcademyViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<RegisterAcademyUIState> = MutableStateFlow(RegisterAcademyUIState())
     val uiState get() = _uiState.asStateFlow()
 
-    private val jsonArgs: String? = savedStateHandle[br.com.fitnesspro.common.ui.navigation.registerAcademyArguments]
+    private val jsonArgs: String? = savedStateHandle[registerAcademyArguments]
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfos()
     }
 
     override fun initialLoadUIState() {
@@ -143,7 +143,7 @@ class RegisterAcademyViewModel @Inject constructor(
         return academyRepository.getAcademies(simpleFilter = filter).flow
     }
 
-    private fun loadUIStateWithDatabaseInfos() {
+    fun loadUIStateWithDatabaseInfos() {
         val args = jsonArgs?.fromJsonNavParamToArgs(RegisterAcademyScreenArgs::class.java)!!
 
         launch {
@@ -167,7 +167,8 @@ class RegisterAcademyViewModel @Inject constructor(
                 start = _uiState.value.start.copy(value = toPersonAcademyTime?.timeStart?.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS) ?: ""),
                 end = _uiState.value.end.copy(value = toPersonAcademyTime?.timeEnd?.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS) ?: ""),
                 toPersonAcademyTime = toPersonAcademyTime ?: TOPersonAcademyTime(personId = args.personId),
-                isEnabledInactivationButton = toPersonAcademyTime?.id != null
+                isEnabledInactivationButton = toPersonAcademyTime?.id != null,
+                executeLoad = false
             )
         }
     }

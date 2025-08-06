@@ -28,7 +28,6 @@ class CurrentWorkoutViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadStateWithDatabaseInfos()
     }
 
     override fun initialLoadUIState() {
@@ -50,23 +49,19 @@ class CurrentWorkoutViewModel @Inject constructor(
         return context.getString(br.com.fitnesspro.common.R.string.unknown_error_message)
     }
 
-    private fun loadStateWithDatabaseInfos() {
-        loadItems()
-        loadWorkout()
-    }
-
-    private fun loadWorkout() {
+    fun loadWorkout() {
         launch {
             val toWorkout = workoutRepository.getCurrentMemberWorkout()
 
             _uiState.value = _uiState.value.copy(
                 toWorkout = toWorkout,
-                subtitle = getSubtitle(toWorkout)
+                subtitle = getSubtitle(toWorkout),
+                executeLoad = false
             )
         }
     }
 
-    private fun loadItems() {
+    fun loadItems() {
         launch {
             val list = workoutRepository.getCurrentMemberWorkoutList()
             _uiState.value = _uiState.value.copy(items = list)

@@ -1,6 +1,7 @@
 package br.com.fitnesspro.scheduler.ui.state
 
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
+import br.com.fitnesspro.core.state.ISuspendedLoadUIState
 import br.com.fitnesspro.core.state.IThrowableUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.firebase.api.firestore.documents.ChatDocument
@@ -15,5 +16,6 @@ data class ChatHistoryUIState(
     val professionalsDialogState: PagedDialogListState<PersonTuple> = PagedDialogListState(),
     val userType: EnumUserType? = null,
     val authenticatedPerson: TOPerson = TOPerson(),
-    override val messageDialogState: MessageDialogState = MessageDialogState()
-): IThrowableUIState
+    override val messageDialogState: MessageDialogState = MessageDialogState(),
+    override var executeLoad: Boolean = true
+): IThrowableUIState, ISuspendedLoadUIState

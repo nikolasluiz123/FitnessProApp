@@ -37,8 +37,6 @@ class SchedulerViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfos()
-        updateSchedules()
     }
 
     override fun getGlobalEventsBus(): GlobalEvents = globalEvents
@@ -155,7 +153,7 @@ class SchedulerViewModel @Inject constructor(
         )
     }
 
-    private fun loadUIStateWithDatabaseInfos() {
+    fun loadUIStateWithDatabaseInfos() {
         launch {
             val toPerson = personRepository.getAuthenticatedTOPerson()!!
             val userType = toPerson.user?.type!!

@@ -54,7 +54,6 @@ class DayWeekExercisesViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfos()
     }
 
     override fun initialLoadUIState() {
@@ -175,32 +174,18 @@ class DayWeekExercisesViewModel @Inject constructor(
         )
     }
 
-    private fun loadUIStateWithDatabaseInfos() {
-        val args = jsonArgs?.fromJsonNavParamToArgs(DayWeekExercisesScreenArgs::class.java)!!
-
-        loadWorkoutData(args)
-        initialLoadGroupsList(args)
-    }
-
-    private fun loadWorkoutData(args: DayWeekExercisesScreenArgs) = launch {
-        val toWorkout = workoutRepository.findWorkoutById(args.workoutId)
-
-        _uiState.value = _uiState.value.copy(
-            title = getTitle(toWorkout),
-            subtitle = getSubtitle(toWorkout),
-            workout = toWorkout,
-            isOverDue = dateNow(ZoneOffset.UTC) > toWorkout?.dateEnd!!,
-            deleteEnabled = toWorkout.active
-        )
-    }
-
-    private fun initialLoadGroupsList(args: DayWeekExercisesScreenArgs) {
+    fun loadUIStateWithDatabaseInfos() {
         launch {
-            val groups = workoutGroupRepository.getListDayWeekExercisesGroupDecorator(workoutId = args.workoutId)
+            val args = jsonArgs?.fromJsonNavParamToArgs(DayWeekExercisesScreenArgs::class.java)!!
+            val toWorkout = workoutRepository.findWorkoutById(args.workoutId)
 
             _uiState.value = _uiState.value.copy(
-                groups = groups,
-                filteredGroups = groups
+                title = getTitle(toWorkout),
+                subtitle = getSubtitle(toWorkout),
+                workout = toWorkout,
+                isOverDue = dateNow(ZoneOffset.UTC) > toWorkout?.dateEnd!!,
+                deleteEnabled = toWorkout.active,
+                executeLoad = false
             )
         }
     }

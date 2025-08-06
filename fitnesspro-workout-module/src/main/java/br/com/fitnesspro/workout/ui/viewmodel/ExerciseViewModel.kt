@@ -70,7 +70,6 @@ class ExerciseViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfos()
     }
 
     override fun initialLoadUIState() {
@@ -270,7 +269,7 @@ class ExerciseViewModel @Inject constructor(
         ).flow
     }
 
-    private fun loadUIStateWithDatabaseInfos() {
+    fun loadUIStateWithDatabaseInfos() {
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
 
@@ -280,6 +279,8 @@ class ExerciseViewModel @Inject constructor(
             loadExercises()
             loadExerciseInfoEdition(args.exerciseId)
             loadExerciseVideos(args.exerciseId)
+
+            _uiState.value.executeLoad = false
         }
     }
 

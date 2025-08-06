@@ -36,9 +36,6 @@ class ChatViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfos()
-
-        addListeners()
     }
 
     override fun initialLoadUIState() {
@@ -63,6 +60,13 @@ class ChatViewModel @Inject constructor(
 
     override fun onShowErrorDialog(message: String) {
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
+    }
+
+    fun onExecuteLoad() {
+        loadUIStateWithDatabaseInfos()
+        addListeners()
+
+        _uiState.value.executeLoad = false
     }
 
     private fun loadUIStateWithDatabaseInfos() {

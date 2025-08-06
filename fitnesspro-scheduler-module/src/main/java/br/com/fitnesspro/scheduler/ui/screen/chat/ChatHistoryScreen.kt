@@ -7,6 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -45,7 +46,8 @@ fun ChatHistoryScreen(
     ChatHistoryScreen(
         state = state,
         onBackClick = onBackClick,
-        onNavigateToChat = onNavigateToChat
+        onNavigateToChat = onNavigateToChat,
+        onExecuteLoad = viewModel::onExecuteLoad
     )
 }
 
@@ -54,7 +56,8 @@ fun ChatHistoryScreen(
 fun ChatHistoryScreen(
     state: ChatHistoryUIState,
     onBackClick: () -> Unit = { },
-    onNavigateToChat: OnNavigateToChat? = null
+    onNavigateToChat: OnNavigateToChat? = null,
+    onExecuteLoad: () -> Unit = { }
 ) {
     val context = LocalContext.current
 
@@ -82,6 +85,13 @@ fun ChatHistoryScreen(
         },
         contentWindowInsets = WindowInsets(0.dp)
     ) { paddingValues ->
+
+        LaunchedEffect(state.executeLoad) {
+            if (state.executeLoad) {
+                onExecuteLoad()
+            }
+        }
+
         ConstraintLayout(
             Modifier
                 .fillMaxSize()

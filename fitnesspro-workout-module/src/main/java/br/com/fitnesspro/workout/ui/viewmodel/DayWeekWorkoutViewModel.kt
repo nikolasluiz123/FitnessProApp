@@ -35,7 +35,6 @@ class DayWeekWorkoutViewModel @Inject constructor(
 
     init {
         initialLoadUIState()
-        loadUIStateWithDatabaseInfos()
     }
 
     override fun initialLoadUIState() {
@@ -57,7 +56,7 @@ class DayWeekWorkoutViewModel @Inject constructor(
         _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(message = message)
     }
 
-    private fun loadUIStateWithDatabaseInfos() {
+    fun loadUIStateWithDatabaseInfos() {
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(DayWeekWorkoutScreenArgs::class.java)!!
             val groups = workoutGroupRepository.getListWorkoutGroupDecorator(
@@ -68,7 +67,8 @@ class DayWeekWorkoutViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(
                 dayWeekWorkoutGroups = groups,
                 title = getTitle(args.dayWeek),
-                subtitle = getSubtitle(groups)
+                subtitle = getSubtitle(groups),
+                executeLoad = false
             )
         }
     }

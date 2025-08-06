@@ -8,6 +8,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -31,7 +32,8 @@ fun ChatScreen(
     ChatScreen(
         state = state,
         onBackClick = onBackClick,
-        onSendMessageClick = viewModel::sendMessage
+        onSendMessageClick = viewModel::sendMessage,
+        onExecuteLoad = viewModel::onExecuteLoad
     )
 }
 
@@ -40,7 +42,8 @@ fun ChatScreen(
 fun ChatScreen(
     state: ChatUIState,
     onBackClick: () -> Unit = { },
-    onSendMessageClick: () -> Unit = { }
+    onSendMessageClick: () -> Unit = { },
+    onExecuteLoad: () -> Unit = { }
 ) {
     Scaffold(
         topBar = {
@@ -63,6 +66,12 @@ fun ChatScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
+            LaunchedEffect(state.executeLoad) {
+                if (state.executeLoad) {
+                    onExecuteLoad()
+                }
+            }
+
             val (messageListRef) = createRefs()
 
             FitnessProMessageDialog(state = state.messageDialogState)
