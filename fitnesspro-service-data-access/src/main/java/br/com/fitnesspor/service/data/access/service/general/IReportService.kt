@@ -3,6 +3,7 @@ package br.com.fitnesspor.service.data.access.service.general
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.REPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.REPORT_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.REPORT_IMPORT
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_REPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_REPORT_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_REPORT_IMPORT
 import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
@@ -18,7 +19,7 @@ import retrofit2.http.Query
 
 interface IReportService {
 
-    @POST("$REPORT$SCHEDULER_REPORT_EXPORT")
+    @POST("$SCHEDULER_REPORT$SCHEDULER_REPORT_EXPORT")
     suspend fun saveSchedulerReportBatch(
         @Header("Authorization") token: String,
         @Body schedulerReportDTOList: List<SchedulerReportDTO>
@@ -37,7 +38,7 @@ interface IReportService {
         @Query("pageInfos") pageInfos: String
     ): Response<ImportationServiceResponse<ReportDTO>>
 
-    @GET("$REPORT$SCHEDULER_REPORT_IMPORT")
+    @GET("$SCHEDULER_REPORT$SCHEDULER_REPORT_IMPORT")
     suspend fun importSchedulerReports(
         @Header("Authorization") token: String,
         @Query("filter") filter: String,

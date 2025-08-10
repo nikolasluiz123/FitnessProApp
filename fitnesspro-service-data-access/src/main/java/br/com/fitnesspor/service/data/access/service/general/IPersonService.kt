@@ -1,7 +1,6 @@
 package br.com.fitnesspor.service.data.access.service.general
 
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON
-import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_ACADEMY_TIME
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_ACADEMY_TIME_EXPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_ACADEMY_TIME_IMPORT
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1.PERSON_EMAIL
@@ -36,12 +35,6 @@ interface IPersonService {
         @Header("Authorization") token: String,
         @Body personDTOList: List<PersonDTO>
     ): Response<ExportationServiceResponse>
-
-    @POST("$PERSON$PERSON_ACADEMY_TIME")
-    suspend fun savePersonAcademyTime(
-        @Header("Authorization") token: String,
-        @Body personAcademyTimeDTO: PersonAcademyTimeDTO
-    ): Response<PersistenceServiceResponse<PersonAcademyTimeDTO>>
 
     @POST("$PERSON$PERSON_ACADEMY_TIME_EXPORT")
     suspend fun savePersonAcademyTimeBatch(

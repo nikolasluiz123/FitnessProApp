@@ -9,7 +9,6 @@ import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.mappers.getExerciseDTO
 import br.com.fitnesspro.mappers.getExerciseExecutionDTO
 import br.com.fitnesspro.mappers.getExercisePreDefinitionDTO
-import br.com.fitnesspro.mappers.getNewVideoExerciseExecutionDTO
 import br.com.fitnesspro.mappers.getVideoDTO
 import br.com.fitnesspro.mappers.getVideoExerciseDTO
 import br.com.fitnesspro.mappers.getVideoExerciseExecutionDTO
@@ -25,7 +24,6 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExercisePreDefinitionDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseExecutionDTO
@@ -34,7 +32,6 @@ import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
 
 class ExerciseWebClient(
@@ -214,21 +211,6 @@ class ExerciseWebClient(
                     token = formatToken(token),
                     videoDTOs = videosListDTO
                 ).getResponseBody()
-            }
-        )
-    }
-
-    suspend fun createExecutionVideo(
-        token: String,
-        videoExecution: VideoExerciseExecution,
-        video: Video
-    ): PersistenceServiceResponse<NewVideoExerciseExecutionDTO> {
-        return persistenceServiceErrorHandlingBlock(
-            codeBlock = {
-                videoService.createExecutionVideo(
-                    token = formatToken(token),
-                    newVideoExecutionDTO = videoExecution.getNewVideoExerciseExecutionDTO(video)
-                ).getResponseBody(NewVideoExerciseExecutionDTO::class.java)
             }
         )
     }
