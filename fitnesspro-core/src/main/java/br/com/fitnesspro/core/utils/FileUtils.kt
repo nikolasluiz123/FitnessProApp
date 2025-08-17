@@ -56,4 +56,11 @@ object FileUtils {
         val file = File(filePath)
         return file.exists()
     }
+
+    fun getFileListFromPaths(paths: List<String>): List<File> {
+        return paths.mapNotNull { path ->
+            val file = File(path)
+            if (file.exists()) file else null
+        }
+    }
 }

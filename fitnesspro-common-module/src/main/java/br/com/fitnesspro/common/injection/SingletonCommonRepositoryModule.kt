@@ -5,6 +5,7 @@ import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
+import br.com.fitnesspor.service.data.access.webclient.storage.StorageWebClient
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.ApplicationRepository
 import br.com.fitnesspro.common.repository.DeviceRepository
@@ -15,6 +16,8 @@ import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.repository.sync.exportation.PersonAcademyTimeExportationRepository
 import br.com.fitnesspro.common.repository.sync.exportation.PersonExportationRepository
 import br.com.fitnesspro.common.repository.sync.exportation.SchedulerConfigExportationRepository
+import br.com.fitnesspro.common.repository.sync.exportation.storage.ReportStorageExportationRepository
+import br.com.fitnesspro.common.repository.sync.exportation.storage.VideoStorageExportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.AcademyImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.PersonAcademyTimeImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.PersonImportationRepository
@@ -32,6 +35,7 @@ import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerReportDAO
 import br.com.fitnesspro.local.data.access.dao.ServiceTokenDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
+import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -250,4 +254,31 @@ class SingletonCommonRepositoryModule {
             personRepository = personRepository
         )
     }
+
+    @Provides
+    fun provideReportStorageExportationRepository(
+        @ApplicationContext context: Context,
+        reportDAO: ReportDAO,
+        storageWebClient: StorageWebClient
+    ): ReportStorageExportationRepository {
+        return ReportStorageExportationRepository(
+            reportDAO = reportDAO,
+            storageWebClient = storageWebClient,
+            context = context
+        )
+    }
+
+    @Provides
+    fun provideVideoStorageExportationRepository(
+        @ApplicationContext context: Context,
+        videoDAO: VideoDAO,
+        storageWebClient: StorageWebClient
+    ): VideoStorageExportationRepository {
+        return VideoStorageExportationRepository(
+            videoDAO = videoDAO,
+            storageWebClient = storageWebClient,
+            context = context
+        )
+    }
+
 }

@@ -17,6 +17,7 @@ import br.com.fitnesspro.shared.communication.responses.ImportationServiceRespon
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
+import br.com.fitnesspro.shared.communication.responses.StorageServiceResponse
 import java.io.InterruptedIOException
 import java.net.ConnectException
 import java.net.HttpURLConnection
@@ -75,6 +76,39 @@ abstract class FitnessProWebClient(private val context: Context) {
                 }
                 is InterruptedIOException -> {
                     ExportationServiceResponse(
+                        executionLogId = "",
+                        executionLogPackageId = "",
+                        success = false,
+                        error = context.getString(R.string.message_connect_exception),
+                        errorType = NETWORK
+                    )
+                }
+                else -> customExceptions(exception)
+            }
+        }
+    }
+
+    protected suspend fun storageServiceErrorHandlingBlock(
+        codeBlock: suspend () -> StorageServiceResponse,
+        customExceptions: (e: Exception) -> StorageServiceResponse = { throw it }
+    ): StorageServiceResponse {
+        return try {
+            val response = codeBlock()
+            executeResponseValidations(response)
+            response
+        } catch (exception: Exception) {
+            when (exception) {
+                is ConnectException -> {
+                    StorageServiceResponse(
+                        executionLogId = "",
+                        executionLogPackageId = "",
+                        success = false,
+                        error = context.getString(R.string.message_connect_exception),
+                        errorType = NETWORK
+                    )
+                }
+                is InterruptedIOException -> {
+                    StorageServiceResponse(
                         executionLogId = "",
                         executionLogPackageId = "",
                         success = false,

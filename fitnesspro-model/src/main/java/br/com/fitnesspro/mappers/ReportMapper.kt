@@ -46,7 +46,9 @@ fun ReportDTO.getReport(): Report {
         filePath = filePath,
         date = date!!,
         kbSize = kbSize,
-        active = active
+        active = active,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
+        storageTransmissionState = EnumTransmissionState.TRANSMITTED
     )
 }
 

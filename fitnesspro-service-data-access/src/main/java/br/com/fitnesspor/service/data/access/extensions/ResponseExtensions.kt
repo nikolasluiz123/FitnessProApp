@@ -11,6 +11,7 @@ import br.com.fitnesspro.shared.communication.responses.ImportationServiceRespon
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
+import br.com.fitnesspro.shared.communication.responses.StorageServiceResponse
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import retrofit2.Response
@@ -40,6 +41,24 @@ fun Response<ExportationServiceResponse>.getResponseBody(): ExportationServiceRe
         type = type,
         convertAuthResponseToSpecificResponse = {
             ExportationServiceResponse(
+                code = it.code,
+                success = it.success,
+                error = it.error,
+                errorType = it.errorType,
+                executionLogId = "",
+                executionLogPackageId = ""
+            )
+        }
+    )
+}
+
+fun Response<StorageServiceResponse>.getResponseBody(): StorageServiceResponse {
+    val type = object : TypeToken<StorageServiceResponse>() {}.type
+
+    return getGenericResponse(
+        type = type,
+        convertAuthResponseToSpecificResponse = {
+            StorageServiceResponse(
                 code = it.code,
                 success = it.success,
                 error = it.error,

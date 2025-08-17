@@ -2,7 +2,6 @@ package br.com.fitnesspro.workout.repository.sync.exportation
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
-import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
@@ -14,15 +13,13 @@ import br.com.fitnesspro.workout.R
 class VideoExportationRepository(
     context: Context,
     private val videoDAO: VideoDAO,
-    private val exerciseWebClient: ExerciseWebClient,
-    private val personRepository: PersonRepository
+    private val exerciseWebClient: ExerciseWebClient
 ): AbstractExportationRepository<Video, VideoDAO>(context) {
 
     override suspend fun getExportationData(
         pageInfos: ExportPageInfos
     ): List<Video> {
-        val personId = personRepository.findPersonByUserId(getAuthenticatedUser()?.id!!).id
-        return videoDAO.getExportationData(pageInfos, personId)
+        return videoDAO.getExportationData(pageInfos)
     }
 
     override fun getOperationDAO(): VideoDAO {

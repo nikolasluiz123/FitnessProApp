@@ -274,8 +274,7 @@ class SingletonWorkoutRepositoryModule {
         return VideoExportationRepository(
             context = context,
             videoDAO = videoDAO,
-            exerciseWebClient = exerciseWebClient,
-            personRepository = personRepository
+            exerciseWebClient = exerciseWebClient
         )
     }
 

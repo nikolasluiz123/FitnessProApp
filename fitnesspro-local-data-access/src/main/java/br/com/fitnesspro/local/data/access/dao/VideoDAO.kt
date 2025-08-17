@@ -17,7 +17,7 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
     @Query(" select exists(select 1 from video where id = :id) ")
     abstract suspend fun hasEntityWithId(id: String): Boolean
 
-    suspend fun getExportationData(pageInfos: ExportPageInfos, personId: String): List<Video> {
+    suspend fun getExportationData(pageInfos: ExportPageInfos): List<Video> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -30,6 +30,34 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
 
         val where = StringJoiner(QR_NL).apply {
             add(" where v.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
+            add(" limit ? offset ? ")
+
+            params.add(pageInfos.pageSize)
+            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        return executeQueryExportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    suspend fun getStorageExportationData(pageInfos: ExportPageInfos): List<Video> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select v.* ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from video v ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where v.storage_transmission_state = '${EnumTransmissionState.PENDING.name}' ")
             add(" limit ? offset ? ")
 
             params.add(pageInfos.pageSize)

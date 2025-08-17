@@ -43,7 +43,8 @@ fun VideoDTO.getVideo(): Video {
         width = width,
         height = height,
         active = active,
-        transmissionState = EnumTransmissionState.TRANSMITTED
+        transmissionState = EnumTransmissionState.TRANSMITTED,
+        storageTransmissionState = EnumTransmissionState.TRANSMITTED
     )
 }
 
