@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.google.credentials)
     implementation(libs.google.credentials.play.services)
     implementation(libs.google.id)
+    implementation(libs.firebase.storage)
 
     implementation(libs.hilt.android)
     implementation(project(":fitnesspro-core"))
