@@ -19,6 +19,8 @@ data class Report(
     override var transmissionState: EnumTransmissionState = EnumTransmissionState.PENDING,
     @ColumnInfo(name = "storage_transmission_state", defaultValue = "PENDING")
     override var storageTransmissionState: EnumTransmissionState = EnumTransmissionState.PENDING,
+    @ColumnInfo(name = "storage_transmission_date")
+    override var storageTransmissionDate: LocalDateTime? = null,
     @ColumnInfo(name = "file_path")
     override var filePath: String? = null,
     @ColumnInfo(name = "kb_size")

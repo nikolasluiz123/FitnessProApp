@@ -8,10 +8,12 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
+import br.com.fitnesspro.local.data.access.dao.common.filters.StorageImportPageInfos
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.to.TOReport
+import java.time.LocalDateTime
 import java.util.StringJoiner
 
 @Dao
@@ -86,6 +88,43 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
 
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Report>
+
+    suspend fun getStorageImportationData(lastUpdateDate: LocalDateTime?, pageInfos: StorageImportPageInfos): List<String> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select report.storage_url as url ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from report ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where report.storage_url is not null ")
+            add(" and report.active = 1 ")
+
+            lastUpdateDate?.let {
+                add(" and report.storage_transmission_date >= ? ")
+                params.add(it)
+            }
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(" limit ? offset ? ")
+
+            params.add(pageInfos.pageSize)
+            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+        }
+
+        return executeStorageImportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery
+    abstract suspend fun executeStorageImportationData(query: SupportSQLiteQuery): List<String>
 
     suspend fun getListGeneratedReports(
         context: EnumReportContext,
