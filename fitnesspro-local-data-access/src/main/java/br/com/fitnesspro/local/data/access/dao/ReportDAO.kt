@@ -6,6 +6,8 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumReportContext
@@ -105,7 +107,7 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
 
             lastUpdateDate?.let {
                 add(" and report.storage_transmission_date >= ? ")
-                params.add(it)
+                params.add(it.format(EnumDateTimePatterns.DATE_TIME_SQLITE))
             }
         }
 
