@@ -20,6 +20,10 @@ class VideoStorageImportationRepository(
         return videoDAO.getStorageImportationData(lastUpdateDate)
     }
 
+    override suspend fun getExistsModelsDownload(lastUpdateDate: LocalDateTime?): Boolean {
+        return videoDAO.getExistsStorageImportationData(lastUpdateDate)
+    }
+
     override suspend fun createFiles(models: List<Video>): List<File> {
         return models.map {
             val fileNameWithExtension = FileUtils.getFileNameWithExtensionFromFilePath(it.filePath!!)

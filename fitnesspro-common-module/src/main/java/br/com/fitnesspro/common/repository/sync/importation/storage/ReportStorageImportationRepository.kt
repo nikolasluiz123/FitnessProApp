@@ -20,6 +20,10 @@ class ReportStorageImportationRepository(
         return reportDAO.getStorageImportationData(lastUpdateDate)
     }
 
+    override suspend fun getExistsModelsDownload(lastUpdateDate: LocalDateTime?): Boolean {
+        return reportDAO.getExistsStorageImportationData(lastUpdateDate)
+    }
+
     override suspend fun createFiles(models: List<Report>): List<File> {
         return models.map {
             val fileNameWithExtension = FileUtils.getFileNameWithExtensionFromFilePath(it.filePath!!)

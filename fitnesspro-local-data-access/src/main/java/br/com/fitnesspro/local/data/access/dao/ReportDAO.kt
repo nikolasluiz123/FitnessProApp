@@ -97,19 +97,9 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
             add(" select report.* ")
         }
 
-        val from = StringJoiner(QR_NL).apply {
-            add(" from report ")
-        }
+        val from = getFromStorageImportationData()
 
-        val where = StringJoiner(QR_NL).apply {
-            add(" where report.storage_url is not null ")
-            add(" and report.active = 1 ")
-
-            lastUpdateDate?.let {
-                add(" and report.storage_transmission_date >= ? ")
-                params.add(it.format(EnumDateTimePatterns.DATE_TIME_SQLITE))
-            }
-        }
+        val where = getWhereStorageImportationData(lastUpdateDate, params)
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
@@ -122,6 +112,48 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
 
     @RawQuery
     abstract suspend fun executeStorageImportationData(query: SupportSQLiteQuery): List<Report>
+
+    suspend fun getExistsStorageImportationData(lastUpdateDate: LocalDateTime?): Boolean {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select 1 ")
+        }
+
+        val from = getFromStorageImportationData()
+        val where = getWhereStorageImportationData(lastUpdateDate, params)
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(" select exists ( ")
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(" ) existe ")
+        }
+
+        return executeExistsStorageImportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    private fun getFromStorageImportationData(): StringJoiner {
+        return StringJoiner(QR_NL).apply {
+            add(" from report ")
+        }
+    }
+
+    private fun getWhereStorageImportationData(lastUpdateDate: LocalDateTime?, params: MutableList<Any>): StringJoiner {
+        return StringJoiner(QR_NL).apply {
+            add(" where report.storage_url is not null ")
+            add(" and report.active = 1 ")
+
+            lastUpdateDate?.let {
+                add(" and report.storage_transmission_date >= ? ")
+                params.add(it.format(EnumDateTimePatterns.DATE_TIME_SQLITE))
+            }
+        }
+    }
+
+    @RawQuery
+    abstract suspend fun executeExistsStorageImportationData(query: SupportSQLiteQuery): Boolean
 
     suspend fun getListGeneratedReports(
         context: EnumReportContext,

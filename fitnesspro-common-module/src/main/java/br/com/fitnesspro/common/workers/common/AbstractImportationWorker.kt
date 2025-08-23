@@ -17,6 +17,8 @@ abstract class AbstractImportationWorker(
 
     protected abstract fun getModule(): EnumImportationModule
 
+    open suspend fun verifyShouldImport(lastUpdateDate: LocalDateTime?): Boolean  = true
+
     private suspend fun insertImportationHistory() {
         val model = ImportationHistory(getModule())
         importationHistoryDAO.insert(model)
@@ -33,8 +35,10 @@ abstract class AbstractImportationWorker(
         insertImportationHistory()
         val lastUpdateDate = importationHistoryDAO.getImportationHistory(getModule())?.date
 
-        onImport(lastUpdateDate)
-        updateImportationDate()
+        if (verifyShouldImport(lastUpdateDate)) {
+            onImport(lastUpdateDate)
+            updateImportationDate()
+        }
     }
 
     abstract suspend fun onImport(lastUpdateDate: LocalDateTime?)

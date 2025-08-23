@@ -25,6 +25,15 @@ class StorageImportationWorker @AssistedInject constructor(
 
     override fun getModule() = EnumImportationModule.STORAGE
 
+    override suspend fun verifyShouldImport(lastUpdateDate: LocalDateTime?): Boolean {
+        val shouldImportList = listOf(
+            entryPoint.getReportStorageImportationRepository().getExistsModelsDownload(lastUpdateDate),
+            entryPoint.getVideoStorageImportationRepository().getExistsModelsDownload(lastUpdateDate)
+        )
+
+        return shouldImportList.any { it }
+    }
+
     override suspend fun onImport(lastUpdateDate: LocalDateTime?) {
         entryPoint.getReportStorageImportationRepository().import(lastUpdateDate)
         entryPoint.getVideoStorageImportationRepository().import(lastUpdateDate)

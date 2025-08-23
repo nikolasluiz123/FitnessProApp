@@ -12,6 +12,8 @@ abstract class AbstractStorageImportationRepository<MODEL>(
 
     abstract suspend fun getModelsDownload(lastUpdateDate: LocalDateTime?): List<MODEL>
 
+    abstract suspend fun getExistsModelsDownload(lastUpdateDate: LocalDateTime?): Boolean
+
     abstract suspend fun createFiles(models: List<MODEL>): List<File>
 
     suspend fun import(lastUpdateDate: LocalDateTime?) {
