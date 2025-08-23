@@ -9,6 +9,7 @@ import br.com.fitnesspro.common.workers.AuthenticationSessionWorker
 import br.com.fitnesspro.common.workers.GeneralModuleExportationWorker
 import br.com.fitnesspro.common.workers.GeneralModuleImportationWorker
 import br.com.fitnesspro.common.workers.StorageExportationWorker
+import br.com.fitnesspro.common.workers.StorageImportationWorker
 import br.com.fitnesspro.core.worker.onetime.OneTimeWorkerRequester
 import br.com.fitnesspro.core.worker.periodic.PeriodicWorkerRequester
 import br.com.fitnesspro.scheduler.workers.SchedulerModuleExportationWorker
@@ -59,6 +60,12 @@ class FitnessProApplication : Application(), Configuration.Provider {
             context = this,
             clazz = WorkoutModuleImportationWorker::class.java,
             builder = OneTimeWorkRequestBuilder<WorkoutModuleImportationWorker>()
+        ).enqueue()
+
+        OneTimeWorkerRequester(
+            context = this,
+            clazz = StorageImportationWorker::class.java,
+            builder = OneTimeWorkRequestBuilder<StorageImportationWorker>()
         ).enqueue()
 
         OneTimeWorkerRequester(

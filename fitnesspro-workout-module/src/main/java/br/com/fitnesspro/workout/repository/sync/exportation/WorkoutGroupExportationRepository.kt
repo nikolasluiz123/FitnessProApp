@@ -6,10 +6,8 @@ import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.workout.R
 
 class WorkoutGroupExportationRepository(
     context: Context,
@@ -36,9 +34,4 @@ class WorkoutGroupExportationRepository(
         return workoutWebClient.saveWorkoutGroupBatch(token, modelList)
     }
 
-    override fun getDescription(): String {
-        return context.getString(R.string.workout_group_exportation_description)
-    }
-
-    override fun getModule() = EnumSyncModule.WORKOUT
 }

@@ -6,13 +6,11 @@ import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.mappers.getVideo
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.workout.R
 import java.time.LocalDateTime
 
 class VideoImportationRepository(
@@ -47,11 +45,4 @@ class VideoImportationRepository(
         return videoDAO
     }
 
-    override fun getDescription(): String {
-        return context.getString(R.string.video_importation_descrition)
-    }
-
-    override fun getModule(): EnumSyncModule {
-        return EnumSyncModule.WORKOUT
-    }
 }

@@ -6,13 +6,11 @@ import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.mappers.getExercise
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.workout.R
 import java.time.LocalDateTime
 
 class ExerciseImportationRepository(
@@ -47,11 +45,4 @@ class ExerciseImportationRepository(
         return exerciseDAO
     }
 
-    override fun getDescription(): String {
-        return context.getString(R.string.exercise_importation_descrition)
-    }
-
-    override fun getModule(): EnumSyncModule {
-        return EnumSyncModule.WORKOUT
-    }
 }

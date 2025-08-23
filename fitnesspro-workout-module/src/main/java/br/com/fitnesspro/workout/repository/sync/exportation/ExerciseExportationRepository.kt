@@ -7,10 +7,8 @@ import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExpor
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.workout.R
 
 class ExerciseExportationRepository(
     context: Context,
@@ -44,9 +42,4 @@ class ExerciseExportationRepository(
         )
     }
 
-    override fun getDescription(): String {
-        return context.getString(R.string.exercise_exportation_description)
-    }
-
-    override fun getModule() = EnumSyncModule.WORKOUT
 }

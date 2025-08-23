@@ -2,11 +2,9 @@ package br.com.fitnesspro.common.repository.sync.importation
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
-import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.mappers.getAcademy
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -18,12 +16,6 @@ class AcademyImportationRepository(
     private val academyDAO: AcademyDAO,
     private val academyWebClient: AcademyWebClient,
 ): AbstractImportationRepository<AcademyDTO, Academy, AcademyDAO, CommonImportFilter>(context) {
-
-    override fun getDescription(): String {
-        return context.getString(R.string.academy_importation_descrition)
-    }
-
-    override fun getModule() = EnumSyncModule.GENERAL
 
     override suspend fun getImportationData(
         token: String,

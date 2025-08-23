@@ -2,11 +2,9 @@ package br.com.fitnesspro.common.repository.sync.importation
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
-import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.mappers.getSchedulerConfig
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -18,12 +16,6 @@ class SchedulerConfigImportationRepository(
     private val schedulerConfigDAO: SchedulerConfigDAO,
     private val webClient: SchedulerWebClient,
 ): AbstractImportationRepository<SchedulerConfigDTO, SchedulerConfig, SchedulerConfigDAO, CommonImportFilter>(context) {
-
-    override fun getDescription(): String {
-        return context.getString(R.string.scheduler_config_importation_descrition)
-    }
-
-    override fun getModule() = EnumSyncModule.SCHEDULER
 
     override suspend fun getImportationData(
         token: String,

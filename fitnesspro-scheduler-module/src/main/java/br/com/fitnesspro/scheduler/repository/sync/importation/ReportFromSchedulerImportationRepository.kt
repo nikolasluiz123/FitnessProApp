@@ -2,12 +2,10 @@ package br.com.fitnesspro.scheduler.repository.sync.importation
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.general.ReportWebClient
-import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.mappers.getReport
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -53,9 +51,4 @@ class ReportFromSchedulerImportationRepository(
         return reportDAO
     }
 
-    override fun getDescription(): String {
-        return context.getString(R.string.reports_from_scheduler_importation_descrition)
-    }
-
-    override fun getModule() = EnumSyncModule.SCHEDULER
 }

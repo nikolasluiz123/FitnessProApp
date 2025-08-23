@@ -14,18 +14,6 @@ abstract class AbstractImportationWorker(
 
     private val importationHistoryDAO = repositoryEntryPoint.getImportationHistoryDAO()
 
-    abstract suspend fun onImport(serviceToken: String, lastUpdateDate: LocalDateTime?)
-
-    override suspend fun onSyncWithTransaction() {
-        getValidUserTokenOrNull()?.let { serviceToken ->
-            insertImportationHistory()
-            val lastUpdateDate = importationHistoryDAO.getImportationHistory(getModule())?.date
-
-            onImport(serviceToken, lastUpdateDate)
-            updateImportationDate()
-        }
-    }
-
     private suspend fun insertImportationHistory() {
         val model = ImportationHistory(getModule())
         importationHistoryDAO.insert(model)
@@ -37,4 +25,14 @@ abstract class AbstractImportationWorker(
             importationHistoryDAO.update(this)
         }
     }
+
+    override suspend fun onSyncWithTransaction() {
+        insertImportationHistory()
+        val lastUpdateDate = importationHistoryDAO.getImportationHistory(getModule())?.date
+
+        onImport(lastUpdateDate)
+        updateImportationDate()
+    }
+
+    abstract suspend fun onImport(lastUpdateDate: LocalDateTime?)
 }

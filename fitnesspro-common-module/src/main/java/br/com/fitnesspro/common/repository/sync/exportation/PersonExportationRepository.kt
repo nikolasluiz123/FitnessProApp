@@ -2,11 +2,9 @@ package br.com.fitnesspro.common.repository.sync.exportation
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
-import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 
@@ -39,9 +37,4 @@ class PersonExportationRepository(
         )
     }
 
-    override fun getDescription(): String {
-        return context.getString(R.string.sync_module_person)
-    }
-
-    override fun getModule() = EnumSyncModule.GENERAL
 }

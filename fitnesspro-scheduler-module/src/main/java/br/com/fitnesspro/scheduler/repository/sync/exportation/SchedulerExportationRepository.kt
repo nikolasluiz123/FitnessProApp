@@ -5,11 +5,9 @@ import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebCli
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.enums.EnumUserType.NUTRITIONIST
 import br.com.fitnesspro.model.enums.EnumUserType.PERSONAL_TRAINER
 import br.com.fitnesspro.model.scheduler.Scheduler
-import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType.SUGGESTION
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType.UNIQUE
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
@@ -40,9 +38,4 @@ class SchedulerExportationRepository(
         return schedulerWebClient.saveSchedulerBatch(token, modelList, schedulerType.name)
     }
 
-    override fun getDescription(): String {
-        return context.getString(R.string.scheduler_exportation_description)
-    }
-
-    override fun getModule() = EnumSyncModule.SCHEDULER
 }

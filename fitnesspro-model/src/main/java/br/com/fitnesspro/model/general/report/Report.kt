@@ -9,7 +9,6 @@ import br.com.fitnesspro.model.base.StorageModel
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import java.time.LocalDateTime
 import java.util.UUID
-import java.util.concurrent.TimeUnit
 
 @Entity(tableName = "report")
 data class Report(
@@ -27,10 +26,6 @@ data class Report(
     override var kbSize: Long? = null,
     @ColumnInfo(name = "storage_url", typeAffinity = ColumnInfo.TEXT)
     override var storageUrl: String? = null,
-    @ColumnInfo(name = "storage_url_expiration")
-    override var storageUrlExpiration: Long? = null,
-    @ColumnInfo(name = "expiration_unit")
-    override var expirationUnit: TimeUnit? = null,
     var name: String? = null,
     var extension: String? = null,
     var date: LocalDateTime = LocalDateTime.now(),

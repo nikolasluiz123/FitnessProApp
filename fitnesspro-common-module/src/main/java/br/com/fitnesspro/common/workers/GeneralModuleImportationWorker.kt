@@ -6,7 +6,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.ICommonWorkersEntryPoint
-import br.com.fitnesspro.common.workers.common.AbstractImportationWorker
+import br.com.fitnesspro.common.workers.common.AbstractAuthenticatedImportationWorker
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -17,7 +17,7 @@ import java.time.LocalDateTime
 class GeneralModuleImportationWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
-) : AbstractImportationWorker(context, workerParams) {
+) : AbstractAuthenticatedImportationWorker(context, workerParams) {
 
     private val entryPoint = EntryPointAccessors.fromApplication(context, ICommonWorkersEntryPoint::class.java)
 

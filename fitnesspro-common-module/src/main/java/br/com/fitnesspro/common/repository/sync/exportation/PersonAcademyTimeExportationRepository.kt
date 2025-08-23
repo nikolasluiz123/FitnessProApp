@@ -2,11 +2,9 @@ package br.com.fitnesspro.common.repository.sync.exportation
 
 import android.content.Context
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
-import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 
@@ -36,9 +34,4 @@ class PersonAcademyTimeExportationRepository(
         )
     }
 
-    override fun getDescription(): String {
-        return context.getString(R.string.sync_module_person_academy_time)
-    }
-
-    override fun getModule() = EnumSyncModule.GENERAL
 }

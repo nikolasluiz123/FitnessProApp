@@ -8,7 +8,6 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
-import br.com.fitnesspro.local.data.access.dao.common.filters.StorageImportPageInfos
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.report.Report
@@ -89,11 +88,11 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Report>
 
-    suspend fun getStorageImportationData(lastUpdateDate: LocalDateTime?, pageInfos: StorageImportPageInfos): List<String> {
+    suspend fun getStorageImportationData(lastUpdateDate: LocalDateTime?): List<Report> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select report.storage_url as url ")
+            add(" select report.* ")
         }
 
         val from = StringJoiner(QR_NL).apply {
@@ -114,17 +113,13 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
             add(select.toString())
             add(from.toString())
             add(where.toString())
-            add(" limit ? offset ? ")
-
-            params.add(pageInfos.pageSize)
-            params.add(pageInfos.pageSize * pageInfos.pageNumber)
         }
 
         return executeStorageImportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
     }
 
     @RawQuery
-    abstract suspend fun executeStorageImportationData(query: SupportSQLiteQuery): List<String>
+    abstract suspend fun executeStorageImportationData(query: SupportSQLiteQuery): List<Report>
 
     suspend fun getListGeneratedReports(
         context: EnumReportContext,

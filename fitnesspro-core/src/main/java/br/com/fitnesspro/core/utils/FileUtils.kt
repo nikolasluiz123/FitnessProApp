@@ -63,4 +63,12 @@ object FileUtils {
             if (file.exists()) file else null
         }
     }
+
+    fun deleteFiles(files: List<File>) {
+        files.forEach { file ->
+            if (file.exists()) {
+                file.delete()
+            }
+        }
+    }
 }

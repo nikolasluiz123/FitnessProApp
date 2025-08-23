@@ -6,10 +6,8 @@ import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseExecutionDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.workout.execution.VideoExerciseExecution
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.workout.R
 
 class VideoExerciseExecutionExportationRepository(
     context: Context,
@@ -36,9 +34,4 @@ class VideoExerciseExecutionExportationRepository(
         return exerciseWebClient.saveExerciseExecutionVideosBatch(token, modelList)
     }
 
-    override fun getDescription(): String {
-        return context.getString(R.string.video_exercise_execution_exportation_description)
-    }
-
-    override fun getModule() = EnumSyncModule.WORKOUT
 }

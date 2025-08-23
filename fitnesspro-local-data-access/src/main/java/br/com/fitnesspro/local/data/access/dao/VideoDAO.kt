@@ -7,7 +7,6 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
-import br.com.fitnesspro.local.data.access.dao.common.filters.StorageImportPageInfos
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Video
 import java.time.LocalDateTime
@@ -78,11 +77,11 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Video>
 
-    suspend fun getStorageImportationData(lastUpdateDate: LocalDateTime?, pageInfos: StorageImportPageInfos): List<String> {
+    suspend fun getStorageImportationData(lastUpdateDate: LocalDateTime?): List<Video> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select video.storage_url as url ")
+            add(" select video.* ")
         }
 
         val from = StringJoiner(QR_NL).apply {
@@ -91,7 +90,7 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
 
         val where = StringJoiner(QR_NL).apply {
             add(" where video.storage_url is not null ")
-            add(" and report.active = 1 ")
+            add(" and video.active = 1 ")
 
             lastUpdateDate?.let {
                 add(" and video.storage_transmission_date >= ? ")
@@ -103,17 +102,13 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
             add(select.toString())
             add(from.toString())
             add(where.toString())
-            add(" limit ? offset ? ")
-
-            params.add(pageInfos.pageSize)
-            params.add(pageInfos.pageSize * pageInfos.pageNumber)
         }
 
         return executeStorageImportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
     }
 
     @RawQuery
-    abstract suspend fun executeStorageImportationData(query: SupportSQLiteQuery): List<String>
+    abstract suspend fun executeStorageImportationData(query: SupportSQLiteQuery): List<Video>
 
     @Query(" delete from video where id in (:ids) ")
     abstract suspend fun deleteVideos(ids: List<String>)

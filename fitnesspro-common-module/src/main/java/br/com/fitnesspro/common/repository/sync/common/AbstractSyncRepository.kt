@@ -5,7 +5,6 @@ import br.com.fitnesspro.common.injection.ISyncRepositoryEntryPoint
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.common.BaseDAO
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import dagger.hilt.android.EntryPointAccessors
 
 abstract class AbstractSyncRepository<DAO: BaseDAO>(context: Context): FitnessProRepository(context) {
@@ -17,10 +16,6 @@ abstract class AbstractSyncRepository<DAO: BaseDAO>(context: Context): FitnessPr
     protected val userDAO: UserDAO = entryPoint.getUserDAO()
 
     abstract fun getOperationDAO(): DAO
-
-    abstract fun getDescription(): String
-
-    abstract fun getModule(): EnumSyncModule
 
     open fun getPageSize(): Int = 1000
 

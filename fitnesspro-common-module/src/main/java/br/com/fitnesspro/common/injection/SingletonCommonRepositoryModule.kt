@@ -23,8 +23,11 @@ import br.com.fitnesspro.common.repository.sync.importation.PersonAcademyTimeImp
 import br.com.fitnesspro.common.repository.sync.importation.PersonImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.SchedulerConfigImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.UserImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.storage.ReportStorageImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.storage.VideoStorageImportationRepository
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
+import br.com.fitnesspro.firebase.api.storage.StorageBucketService
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.ApplicationDAO
 import br.com.fitnesspro.local.data.access.dao.DeviceDAO
@@ -278,6 +281,32 @@ class SingletonCommonRepositoryModule {
             videoDAO = videoDAO,
             storageWebClient = storageWebClient,
             context = context
+        )
+    }
+
+    @Provides
+    fun provideReportStorageImportationRepository(
+        @ApplicationContext context: Context,
+        reportDAO: ReportDAO,
+        storageBucketService: StorageBucketService
+    ): ReportStorageImportationRepository {
+        return ReportStorageImportationRepository(
+            reportDAO = reportDAO,
+            context = context,
+            storageService = storageBucketService
+        )
+    }
+
+    @Provides
+    fun provideVideoStorageImportationRepository(
+        @ApplicationContext context: Context,
+        videoDAO: VideoDAO,
+        storageBucketService: StorageBucketService
+    ): VideoStorageImportationRepository {
+        return VideoStorageImportationRepository(
+            videoDAO = videoDAO,
+            context = context,
+            storageService = storageBucketService
         )
     }
 

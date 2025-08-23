@@ -5,6 +5,7 @@ import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticati
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.firebase.api.firestore.service.FirestoreChatService
+import br.com.fitnesspro.firebase.api.storage.StorageBucketService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,5 +38,12 @@ class SingletonFirebaseModule {
         firestoreChatService: FirestoreChatService
     ): FirestoreChatRepository {
         return FirestoreChatRepository(firestoreChatService)
+    }
+
+    @Provides
+    fun provideStorageBucketService(
+        @ApplicationContext context: Context
+    ): StorageBucketService {
+        return StorageBucketService(context)
     }
 }
