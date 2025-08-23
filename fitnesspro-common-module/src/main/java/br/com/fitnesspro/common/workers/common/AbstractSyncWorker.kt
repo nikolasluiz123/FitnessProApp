@@ -5,7 +5,6 @@ import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.ISyncRepositoryEntryPoint
 import br.com.fitnesspro.core.worker.onetime.FitnessProOneTimeCoroutineWorker
 import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import dagger.hilt.android.EntryPointAccessors
 
 abstract class AbstractSyncWorker(
@@ -15,8 +14,6 @@ abstract class AbstractSyncWorker(
 
     protected val repositoryEntryPoint: ISyncRepositoryEntryPoint = EntryPointAccessors.fromApplication(context, ISyncRepositoryEntryPoint::class.java)
     protected val userRepository = repositoryEntryPoint.getUserRepository()
-
-    protected abstract fun getModule(): EnumSyncModule
 
     protected suspend fun getValidUserTokenOrNull(): String? {
         return userRepository.getValidUserToken()

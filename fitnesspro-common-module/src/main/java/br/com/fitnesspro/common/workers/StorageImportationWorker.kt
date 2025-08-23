@@ -7,7 +7,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.IStorageWorkersEntryPoint
 import br.com.fitnesspro.common.workers.common.AbstractImportationWorker
-import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.enums.EnumImportationModule
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
@@ -23,7 +23,7 @@ class StorageImportationWorker @AssistedInject constructor(
 
     override fun getClazz() = javaClass
 
-    override fun getModule() = EnumSyncModule.GENERAL
+    override fun getModule() = EnumImportationModule.STORAGE
 
     override suspend fun onImport(lastUpdateDate: LocalDateTime?) {
         entryPoint.getReportStorageImportationRepository().import(lastUpdateDate)

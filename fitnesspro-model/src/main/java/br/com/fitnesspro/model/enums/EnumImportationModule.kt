@@ -1,5 +1,5 @@
 package br.com.fitnesspro.model.enums
 
-enum class EnumSyncModule {
+enum class EnumImportationModule {
     GENERAL, SCHEDULER, WORKOUT, NUTRITION, STORAGE
 }

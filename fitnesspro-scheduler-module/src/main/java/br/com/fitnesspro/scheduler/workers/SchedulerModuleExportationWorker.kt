@@ -7,7 +7,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.ICommonWorkersEntryPoint
 import br.com.fitnesspro.common.workers.common.AbstractExportationWorker
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.scheduler.injection.IScheduleWorkersEntryPoint
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -28,8 +27,6 @@ class SchedulerModuleExportationWorker @AssistedInject constructor(
         scheduleEntryPoint.getReportFromSchedulerExportationRepository().export(serviceToken)
         scheduleEntryPoint.getSchedulerReportExportationRepository().export(serviceToken)
     }
-
-    override fun getModule() = EnumSyncModule.SCHEDULER
 
     override fun getClazz() = javaClass
 

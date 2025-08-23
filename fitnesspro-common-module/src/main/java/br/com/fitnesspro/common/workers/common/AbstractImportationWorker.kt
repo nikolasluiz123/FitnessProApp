@@ -3,6 +3,7 @@ package br.com.fitnesspro.common.workers.common
 import android.content.Context
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.model.enums.EnumImportationModule
 import br.com.fitnesspro.model.sync.ImportationHistory
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -13,6 +14,8 @@ abstract class AbstractImportationWorker(
 ) : AbstractSyncWorker(context, workerParams) {
 
     private val importationHistoryDAO = repositoryEntryPoint.getImportationHistoryDAO()
+
+    protected abstract fun getModule(): EnumImportationModule
 
     private suspend fun insertImportationHistory() {
         val model = ImportationHistory(getModule())

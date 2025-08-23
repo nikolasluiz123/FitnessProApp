@@ -6,7 +6,6 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.workers.common.AbstractExportationWorker
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.workout.injection.IWorkoutWorkersEntryPoint
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -34,8 +33,6 @@ class WorkoutModuleExportationWorker @AssistedInject constructor(
         entryPoint.getExercisePreDefinitionExportationRepository().export(serviceToken)
         entryPoint.getVideoExercisePreDefinitionExportationRepository().export(serviceToken)
     }
-
-    override fun getModule() = EnumSyncModule.WORKOUT
 
     override fun getClazz() = javaClass
 
