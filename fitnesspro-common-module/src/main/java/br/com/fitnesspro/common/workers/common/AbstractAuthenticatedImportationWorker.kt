@@ -16,4 +16,10 @@ abstract class AbstractAuthenticatedImportationWorker(
             onImport(serviceToken, lastUpdateDate)
         }
     }
+
+    final override suspend fun onSyncWithTransaction() {
+        if (getValidUserTokenOrNull().isNullOrEmpty().not()) {
+            super.onSyncWithTransaction()
+        }
+    }
 }
