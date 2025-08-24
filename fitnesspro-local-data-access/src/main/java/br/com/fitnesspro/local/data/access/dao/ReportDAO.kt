@@ -72,6 +72,7 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
 
         val where = StringJoiner(QR_NL).apply {
             add(" where report.storage_transmission_state = '${EnumTransmissionState.PENDING.name}' ")
+            add(" and report.transmission_state = '${EnumTransmissionState.TRANSMITTED.name}' ")
             add(" limit ? offset ? ")
 
             params.add(pageInfos.pageSize)

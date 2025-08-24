@@ -1,6 +1,7 @@
 package br.com.fitnesspro.mappers
 
-import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.fitnesspro.model.enums.EnumTransmissionState.PENDING
+import br.com.fitnesspro.model.enums.EnumTransmissionState.TRANSMITTED
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
 import br.com.fitnesspro.model.workout.execution.VideoExerciseExecution
@@ -43,8 +44,10 @@ fun VideoDTO.getVideo(): Video {
         width = width,
         height = height,
         active = active,
-        transmissionState = EnumTransmissionState.TRANSMITTED,
-        storageTransmissionState = EnumTransmissionState.TRANSMITTED
+        transmissionState = TRANSMITTED,
+        storageTransmissionState = if (storageTransmissionDate != null) TRANSMITTED else PENDING,
+        storageUrl = storageUrl,
+        storageTransmissionDate = storageTransmissionDate
     )
 }
 
@@ -64,7 +67,7 @@ fun VideoExerciseDTO.getVideoExercise(): VideoExercise {
     return VideoExercise(
         id = id!!,
         exerciseId = exerciseId,
-        transmissionState = EnumTransmissionState.TRANSMITTED,
+        transmissionState = TRANSMITTED,
         videoId = videoId,
         active = active
     )
@@ -89,7 +92,9 @@ fun Video.getVideoDTO(): VideoDTO {
         seconds = seconds,
         width = width,
         height = height,
-        active = active
+        active = active,
+        storageUrl = storageUrl,
+        storageTransmissionDate = storageTransmissionDate
     )
 }
 
@@ -148,7 +153,7 @@ fun VideoExerciseExecutionDTO.getVideoExerciseExecution(): VideoExerciseExecutio
     return VideoExerciseExecution(
         id = id!!,
         exerciseExecutionId = exerciseExecutionId,
-        transmissionState = EnumTransmissionState.TRANSMITTED,
+        transmissionState = TRANSMITTED,
         videoId = videoId,
         active = active
     )
@@ -158,7 +163,7 @@ fun VideoExercisePreDefinitionDTO.getVideoExercisePreDefinition(): VideoExercise
     return VideoExercisePreDefinition(
         id = id!!,
         exercisePreDefinitionId = exercisePreDefinitionId,
-        transmissionState = EnumTransmissionState.TRANSMITTED,
+        transmissionState = TRANSMITTED,
         videoId = videoId,
         active = active
     )

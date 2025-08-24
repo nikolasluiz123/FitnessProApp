@@ -15,20 +15,20 @@ import java.io.File
 
 class StorageBucketService(private val context: Context) {
 
-    suspend fun downloadAllByUrl(urls: List<String>, files: List<File>) {
+    suspend fun downloadAllByUrl(storageBucket: String, urls: List<String>, files: List<File>) {
         require(urls.size == files.size) { context.getString(R.string.storage_bucket_service_batch_download_invalid_params) }
 
         if (urls.size <= MAX_SEQUENTIAL_DOWNLOADS) {
-            downloadAllSequentially(urls, files)
+            downloadAllSequentially(storageBucket, urls, files)
         } else {
-            downloadAllParallel(urls, files)
+            downloadAllParallel(storageBucket, urls, files)
         }
     }
 
-    private suspend fun downloadAllSequentially(urls: List<String>, files: List<File>) {
+    private suspend fun downloadAllSequentially(storageBucket: String, urls: List<String>, files: List<File>) {
         try {
             urls.zip(files).forEach { (url, file) ->
-                downloadByUrl(url, file)
+                downloadByUrl(storageBucket, url, file)
             }
         } catch (e: Exception) {
             FileUtils.deleteFiles(files)
@@ -36,7 +36,7 @@ class StorageBucketService(private val context: Context) {
         }
     }
 
-    private suspend fun downloadAllParallel(urls: List<String>, files: List<File>) {
+    private suspend fun downloadAllParallel(storageBucket: String, urls: List<String>, files: List<File>) {
         val semaphore = Semaphore(MAX_PARALLEL_DOWNLOADS)
 
         try {
@@ -44,7 +44,7 @@ class StorageBucketService(private val context: Context) {
                 urls.zip(files).map { (url, file) ->
                     async {
                         semaphore.withPermit {
-                            downloadByUrl(url, file)
+                            downloadByUrl(storageBucket, url, file)
                         }
                     }
                 }.awaitAll()
@@ -55,11 +55,17 @@ class StorageBucketService(private val context: Context) {
         }
     }
 
-    suspend fun downloadByUrl(url: String, file: File) {
-        Firebase.storage.getReferenceFromUrl(url).getFile(file).await()
+    suspend fun downloadByUrl(storageBucket: String, url: String, file: File) {
+        val fullBucketName = "$STORAGE_PREFIX$storageBucket"
+
+        Firebase.storage(fullBucketName)
+            .getReference(url.substringAfterLast("/"))
+            .getFile(file)
+            .await()
     }
 
     companion object {
+        private const val STORAGE_PREFIX = "gs://"
         private const val MAX_SEQUENTIAL_DOWNLOADS = 10
         private const val MAX_PARALLEL_DOWNLOADS = 3
     }

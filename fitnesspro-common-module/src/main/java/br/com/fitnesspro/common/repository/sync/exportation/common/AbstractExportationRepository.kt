@@ -1,8 +1,10 @@
 package br.com.fitnesspro.common.repository.sync.exportation.common
 
 import android.content.Context
+import android.util.Log
 import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.base.IntegratedModel
@@ -22,6 +24,8 @@ abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: Integr
     override fun getPageSize(): Int = 100
 
     suspend fun export(serviceToken: String) {
+        Log.i(LogConstants.WORKER_EXPORT, "Exportando ${javaClass.simpleName}")
+
         var response: ExportationServiceResponse? = null
         var clientDateTimeStart: LocalDateTime? = null
         var models: List<MODEL>

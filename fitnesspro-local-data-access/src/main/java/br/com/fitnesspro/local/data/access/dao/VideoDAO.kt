@@ -61,6 +61,7 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
 
         val where = StringJoiner(QR_NL).apply {
             add(" where v.storage_transmission_state = '${EnumTransmissionState.PENDING.name}' ")
+            add(" and v.transmission_state = '${EnumTransmissionState.TRANSMITTED.name}' ")
             add(" limit ? offset ? ")
 
             params.add(pageInfos.pageSize)

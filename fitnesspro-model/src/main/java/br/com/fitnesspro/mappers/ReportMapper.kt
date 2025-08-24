@@ -1,7 +1,8 @@
 package br.com.fitnesspro.mappers
 
 import br.com.fitnesspro.model.enums.EnumReportContext
-import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.fitnesspro.model.enums.EnumTransmissionState.PENDING
+import br.com.fitnesspro.model.enums.EnumTransmissionState.TRANSMITTED
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.model.general.report.SchedulerReport
 import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
@@ -47,15 +48,17 @@ fun ReportDTO.getReport(): Report {
         date = date!!,
         kbSize = kbSize,
         active = active,
-        transmissionState = EnumTransmissionState.TRANSMITTED,
-        storageTransmissionState = EnumTransmissionState.TRANSMITTED
+        transmissionState = TRANSMITTED,
+        storageTransmissionState = if (storageTransmissionDate != null) TRANSMITTED else PENDING,
+        storageUrl = storageUrl,
+        storageTransmissionDate = storageTransmissionDate
     )
 }
 
 fun SchedulerReportDTO.getSchedulerReport(): SchedulerReport {
     return SchedulerReport(
         id = id!!,
-        transmissionState = EnumTransmissionState.TRANSMITTED,
+        transmissionState = TRANSMITTED,
         personId = personId,
         reportId = reportId,
         context = getEnumReportContext(reportContext!!),
@@ -71,7 +74,9 @@ fun Report.getReportDTO(): ReportDTO {
         filePath = filePath,
         date = date,
         kbSize = kbSize,
-        active = active
+        active = active,
+        storageUrl = storageUrl,
+        storageTransmissionDate = storageTransmissionDate
     )
 }
 

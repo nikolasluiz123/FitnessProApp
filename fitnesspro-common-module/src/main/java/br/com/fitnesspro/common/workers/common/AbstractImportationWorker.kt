@@ -1,8 +1,10 @@
 package br.com.fitnesspro.common.workers.common
 
 import android.content.Context
+import android.util.Log
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.model.enums.EnumImportationModule
 import br.com.fitnesspro.model.sync.ImportationHistory
 import java.time.LocalDateTime
@@ -32,6 +34,8 @@ abstract class AbstractImportationWorker(
     }
 
     override suspend fun onSyncWithTransaction() {
+        Log.i(LogConstants.WORKER_IMPORT, "${"-".repeat(50)} Iniciando Importação ${javaClass.simpleName} ${"-".repeat(50)}")
+
         insertImportationHistory()
         val lastUpdateDate = importationHistoryDAO.getImportationHistory(getModule())?.date
 
@@ -39,6 +43,8 @@ abstract class AbstractImportationWorker(
             onImport(lastUpdateDate)
             updateImportationDate()
         }
+
+        Log.i(LogConstants.WORKER_IMPORT, "${"-".repeat(50)} Finalizando Importação ${javaClass.simpleName} ${"-".repeat(50)}")
     }
 
     abstract suspend fun onImport(lastUpdateDate: LocalDateTime?)

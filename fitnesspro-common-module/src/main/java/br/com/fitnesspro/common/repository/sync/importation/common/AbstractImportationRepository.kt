@@ -1,9 +1,11 @@
 package br.com.fitnesspro.common.repository.sync.importation.common
 
 import android.content.Context
+import android.util.Log
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
 import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
@@ -36,6 +38,8 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
     }
 
     suspend fun import(serviceToken: String, lastUpdateDate: LocalDateTime?) {
+        Log.i(LogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName}")
+
         var response: ImportationServiceResponse<DTO>? = null
         var clientStartDateTime: LocalDateTime? = null
 

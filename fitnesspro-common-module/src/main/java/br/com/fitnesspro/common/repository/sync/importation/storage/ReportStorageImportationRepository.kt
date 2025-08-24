@@ -7,6 +7,7 @@ import br.com.fitnesspro.firebase.api.storage.StorageBucketService
 import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.pdf.generator.utils.ReportFileUtils
+import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketNames
 import java.io.File
 import java.time.LocalDateTime
 
@@ -22,6 +23,10 @@ class ReportStorageImportationRepository(
 
     override suspend fun getExistsModelsDownload(lastUpdateDate: LocalDateTime?): Boolean {
         return reportDAO.getExistsStorageImportationData(lastUpdateDate)
+    }
+
+    override fun getBucketName(): EnumGCBucketNames {
+        return EnumGCBucketNames.REPORT
     }
 
     override suspend fun createFiles(models: List<Report>): List<File> {

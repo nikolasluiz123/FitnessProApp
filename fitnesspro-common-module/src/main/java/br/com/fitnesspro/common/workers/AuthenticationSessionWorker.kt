@@ -1,10 +1,12 @@
 package br.com.fitnesspro.common.workers
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.IAuthenticationSessionWorkerEntryPoint
 import br.com.fitnesspro.common.ui.event.GlobalEvent
+import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.core.worker.periodic.FitnessProPeriodicCoroutineWorker
 import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
 import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
@@ -21,6 +23,7 @@ class AuthenticationSessionWorker@AssistedInject constructor(
     private val entryPoint = EntryPointAccessors.fromApplication(context,IAuthenticationSessionWorkerEntryPoint::class.java)
 
     override suspend fun onWorkOneTime() {
+        Log.i(LogConstants.WORKER_AUTHENTICATION, "Verificando Token")
         entryPoint.getUserRepository().getValidToken()
     }
 

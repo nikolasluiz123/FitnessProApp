@@ -1,7 +1,9 @@
 package br.com.fitnesspro.common.workers.common
 
 import android.content.Context
+import android.util.Log
 import androidx.work.WorkerParameters
+import br.com.fitnesspro.core.worker.LogConstants
 import java.time.LocalDateTime
 
 abstract class AbstractAuthenticatedImportationWorker(

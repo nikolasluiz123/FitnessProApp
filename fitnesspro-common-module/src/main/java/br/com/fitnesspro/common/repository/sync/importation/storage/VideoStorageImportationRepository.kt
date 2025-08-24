@@ -7,6 +7,7 @@ import br.com.fitnesspro.core.utils.VideoUtils
 import br.com.fitnesspro.firebase.api.storage.StorageBucketService
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.model.workout.Video
+import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketNames
 import java.io.File
 import java.time.LocalDateTime
 
@@ -22,6 +23,10 @@ class VideoStorageImportationRepository(
 
     override suspend fun getExistsModelsDownload(lastUpdateDate: LocalDateTime?): Boolean {
         return videoDAO.getExistsStorageImportationData(lastUpdateDate)
+    }
+
+    override fun getBucketName(): EnumGCBucketNames {
+        return EnumGCBucketNames.VIDEO
     }
 
     override suspend fun createFiles(models: List<Video>): List<File> {
