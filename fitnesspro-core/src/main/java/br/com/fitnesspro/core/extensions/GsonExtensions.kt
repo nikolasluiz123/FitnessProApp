@@ -11,10 +11,13 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
 
-fun GsonBuilder.defaultGSon(): Gson {
-    return this.registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeTypeAdapter())
+fun GsonBuilder.defaultGSon(registerTypes: GsonBuilder.() -> Unit = {}): Gson {
+    val builder = this.registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeTypeAdapter())
         .registerTypeAdapter(LocalDate::class.java, LocalDateTypeAdapter())
         .registerTypeAdapter(LocalTime::class.java, LocalTimeTypeAdapter())
         .registerTypeAdapter(OffsetDateTime::class.java, OffsetDateTimeTypeAdapter())
-        .create()
+
+    builder.registerTypes()
+
+    return builder.create()
 }

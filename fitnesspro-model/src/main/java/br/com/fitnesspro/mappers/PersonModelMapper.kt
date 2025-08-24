@@ -6,6 +6,7 @@ import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IUserDTO
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
 import br.com.fitnesspro.shared.communication.enums.general.EnumUserType as EnumUserTypeService
@@ -127,7 +128,7 @@ fun TOUser.getUserDTO(): UserDTO {
     )
 }
 
-fun UserDTO.getUser(): User {
+fun IUserDTO.getUser(): User {
     return User(
         id = id!!,
         email = email,
@@ -138,7 +139,7 @@ fun UserDTO.getUser(): User {
     )
 }
 
-fun UserDTO.getTOUser(): TOUser {
+fun IUserDTO.getTOUser(): TOUser {
     return TOUser(
         id = id,
         email = email,

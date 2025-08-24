@@ -8,6 +8,7 @@ import br.com.fitnesspro.mappers.getDevice
 import br.com.fitnesspro.mappers.getDeviceDTO
 import br.com.fitnesspro.mappers.getPersonDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
+import br.com.fitnesspro.shared.communication.dtos.serviceauth.interfaces.IDeviceDTO
 import com.google.firebase.Firebase
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.messaging.messaging
@@ -20,7 +21,7 @@ class DeviceRepository(
     private val personRepository: PersonRepository
 ) : FitnessProRepository(context) {
 
-    suspend fun saveDeviceLocally(deviceDTO: DeviceDTO) {
+    suspend fun saveDeviceLocally(deviceDTO: IDeviceDTO) {
         val device = deviceDTO.getDevice()
 
         if (deviceDAO.findById(deviceDTO.id!!) == null) {

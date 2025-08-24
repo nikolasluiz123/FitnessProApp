@@ -1,6 +1,6 @@
 package br.com.fitnesspor.service.data.access.injection
 
-import br.com.fitnesspro.core.extensions.defaultGSon
+import br.com.fitnesspor.service.data.access.extensions.defaultServiceGSon
 import br.com.fitnesspro.service.data.access.BuildConfig
 import br.com.fitnesspro.shared.communication.constants.Timeouts
 import com.google.gson.GsonBuilder
@@ -22,7 +22,7 @@ class SingletonRetrofitModule {
     @Provides
     @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
-        val gson = GsonBuilder().defaultGSon()
+        val gson = GsonBuilder().defaultServiceGSon()
 
         return Retrofit
             .Builder()

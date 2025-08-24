@@ -6,7 +6,6 @@ import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
 import br.com.fitnesspro.model.workout.execution.VideoExerciseExecution
 import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
-import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseExecutionDTO
@@ -115,15 +114,6 @@ fun VideoExerciseExecution.getVideoExerciseExecutionDTO(): VideoExerciseExecutio
         id = id,
         exerciseExecutionId = exerciseExecutionId,
         videoId = videoId,
-        active = active
-    )
-}
-
-fun VideoExerciseExecution.getNewVideoExerciseExecutionDTO(video: Video): NewVideoExerciseExecutionDTO {
-    return NewVideoExerciseExecutionDTO(
-        id = id,
-        exerciseExecutionId = exerciseExecutionId,
-        videoDTO = video.getVideoDTO(),
         active = active
     )
 }
