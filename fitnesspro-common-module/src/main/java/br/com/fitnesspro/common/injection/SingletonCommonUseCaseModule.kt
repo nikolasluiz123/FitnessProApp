@@ -86,19 +86,23 @@ class SingletonCommonUseCaseModule {
 
     @Provides
     fun provideDeleteReportUseCase(
+        @ApplicationContext context: Context,
         reportRepository: ReportRepository
     ): InactivateReportUseCase {
         return InactivateReportUseCase(
-            reportRepository = reportRepository
+            reportRepository = reportRepository,
+            context = context
         )
     }
 
     @Provides
     fun provideDeleteAllReportsUseCase(
+        @ApplicationContext context: Context,
         reportRepository: ReportRepository
     ): InactivateAllReportsUseCase {
         return InactivateAllReportsUseCase(
-            reportRepository = reportRepository
+            reportRepository = reportRepository,
+            context = context
         )
     }
 

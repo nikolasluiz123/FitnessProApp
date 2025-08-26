@@ -4,9 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import br.com.fitnesspro.core.R
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 
 object VideoUtils {
@@ -92,6 +94,14 @@ object VideoUtils {
             if (width != null && height != null) Pair(width, height) else null
         } finally {
             retriever.release()
+        }
+    }
+
+    fun deleteVideoFile(context: Context, filePath: String) {
+        val successDeleteFile = FileUtils.deleteFile(filePath)
+
+        if (!successDeleteFile) {
+            throw FileNotFoundException(context.getString(R.string.video_file_not_found_message))
         }
     }
 }
