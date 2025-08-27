@@ -33,6 +33,7 @@ import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
+import br.com.fitnesspro.compose.components.gallery.video.callbacks.OnVideoClick
 import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
 import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
@@ -83,7 +84,7 @@ fun ExerciseScreen(
     onOpenCameraVideo: (File) -> Unit = { },
     onFinishVideoRecording: OnFinishVideoRecording? = null,
     onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null,
-    onVideoClick: (path: String) -> Unit = {},
+    onVideoClick: OnVideoClick? = null,
     onInactivateExerciseClick: OnInactivateExerciseClick? = null,
     onExecuteLoad: () -> Unit = {}
 ) {

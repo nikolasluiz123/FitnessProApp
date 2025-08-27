@@ -14,7 +14,6 @@ import br.com.fitnesspro.core.extensions.formatToDecimal
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getChronoUnitLabel
 import br.com.fitnesspro.core.extensions.getStringFromConvertedChronoUnitValue
-import br.com.fitnesspro.core.extensions.openVideoPlayer
 import br.com.fitnesspro.core.extensions.toStringOrEmpty
 import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.core.utils.VideoUtils
@@ -340,9 +339,9 @@ class RegisterEvolutionViewModel @Inject constructor(
         }
     }
 
-    fun onVideoClick(filePath: String) {
+    fun onVideoClick(filePath: String, onOpenVideo: (String) -> Unit) {
         if (FileUtils.getFileExists(filePath)) {
-            context.openVideoPlayer(filePath = filePath)
+            onOpenVideo(filePath)
         } else {
             _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
                 message = context.getString(R.string.exercise_screen_msg_video_not_found)

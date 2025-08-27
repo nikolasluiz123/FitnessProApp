@@ -15,7 +15,6 @@ import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.getChronoUnitLabel
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.extensions.getStringFromConvertedChronoUnitValue
-import br.com.fitnesspro.core.extensions.openVideoPlayer
 import br.com.fitnesspro.core.extensions.toStringOrEmpty
 import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.core.utils.VideoUtils
@@ -596,9 +595,9 @@ class ExerciseViewModel @Inject constructor(
         }
     }
 
-    fun onVideoClick(path: String) {
+    fun onVideoClick(path: String, onOpenVideo: (path: String) -> Unit) {
         if (FileUtils.getFileExists(path)) {
-            context.openVideoPlayer(filePath = path)
+            onOpenVideo(path)
         } else {
             _uiState.value.messageDialogState.onShowDialog?.showErrorDialog(
                 message = context.getString(R.string.exercise_screen_msg_video_not_found)

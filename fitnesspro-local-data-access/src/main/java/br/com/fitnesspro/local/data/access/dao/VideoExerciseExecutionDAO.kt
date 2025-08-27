@@ -56,4 +56,7 @@ abstract class VideoExerciseExecutionDAO: IntegratedMaintenanceDAO<VideoExercise
 
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<VideoExerciseExecution>
+
+    @Query(" select * from video_exercise_execution where exercise_execution_id in (:exerciseIds) and active = 1 ")
+    abstract fun getListVideoExecutionActiveFromExercises(exerciseIds: List<String>): List<VideoExerciseExecution>
 }
