@@ -11,11 +11,10 @@ import java.io.FileNotFoundException
  * Object utilitário para manipulação de arquivos de relatórios.
  */
 object ReportFileUtils {
-    const val REPORTS_FOLDER_NAME = "reports"
     const val DEFAULT_REPORT_EXTENSION = "pdf"
 
     fun createReportFile(context: Context, fileName: String? = null): File {
-        val reportDir = File(context.getExternalFilesDir(REPORTS_FOLDER_NAME), "")
+        val reportDir = File(context.getExternalFilesDir(null), "")
         if (!reportDir.exists()) reportDir.mkdirs()
 
         val nonNullFileName = if (!fileName.isNullOrEmpty()) {
