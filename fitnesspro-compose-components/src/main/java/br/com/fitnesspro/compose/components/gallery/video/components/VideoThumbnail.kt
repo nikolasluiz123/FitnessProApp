@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -25,7 +26,9 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 fun VideoThumbnail(
     modifier: Modifier = Modifier,
     bitmap: Bitmap? = null,
-    onClick: () -> Unit = { }
+    showDeleteButton: Boolean = true,
+    onVideoClick: () -> Unit = { },
+    onDeleteVideoClick: () -> Unit = { }
 ) {
     Box(
         modifier = modifier
@@ -34,8 +37,7 @@ fun VideoThumbnail(
             .height(90.dp)
             .clip(MaterialTheme.shapes.small)
             .background(MaterialTheme.colorScheme.onSurfaceVariant)
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
+            .clickable { onVideoClick() }
     ) {
         bitmap?.let {
             Image(
@@ -45,9 +47,22 @@ fun VideoThumbnail(
                 contentScale = ContentScale.Crop
             )
         }
+
         PlayIconOverlay(
-            hasThumbnail = bitmap != null
+            hasThumbnail = bitmap != null,
+            modifier = Modifier.align(Alignment.Center)
         )
+
+        if (showDeleteButton) {
+            DeleteVideoIcon(
+                hasThumbnail = bitmap != null,
+                onClick = onDeleteVideoClick,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(4.dp)
+                    .size(18.dp)
+            )
+        }
     }
 }
 

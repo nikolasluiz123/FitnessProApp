@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.gallery.video.callbacks.OnVideoClick
+import br.com.fitnesspro.compose.components.gallery.video.callbacks.OnVideoDeleteClick
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
 import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryViewMode
 import br.com.fitnesspro.core.extensions.openVideoPlayer
@@ -27,21 +28,26 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 @Composable
 internal fun ThumbnailsViewer(
     state: VideoGalleryState,
-    onVideoClick: OnVideoClick?
+    onVideoClick: OnVideoClick? = null,
+    onVideoDeleteClick: OnVideoDeleteClick? = null
 ) {
     when (state.viewMode) {
         VideoGalleryViewMode.COLLAPSED -> {
-            VideosCarousel(state, onVideoClick)
+            VideosCarousel(state, onVideoClick, onVideoDeleteClick)
         }
 
         VideoGalleryViewMode.EXPANDED -> {
-            VideosGrid(state, onVideoClick)
+            VideosGrid(state, onVideoClick, onVideoDeleteClick)
         }
     }
 }
 
 @Composable
-private fun VideosCarousel(state: VideoGalleryState, onVideoClick: OnVideoClick?) {
+private fun VideosCarousel(
+    state: VideoGalleryState,
+    onVideoClick: OnVideoClick?,
+    onVideoDeleteClick: OnVideoDeleteClick?
+) {
     val context = LocalContext.current
 
     LazyRow(
@@ -53,11 +59,15 @@ private fun VideosCarousel(state: VideoGalleryState, onVideoClick: OnVideoClick?
         items(state.videoPaths) { videoPath ->
             VideoThumbnail(
                 bitmap = state.thumbCache[videoPath],
-                onClick = {
+                showDeleteButton = state.showDeleteButton,
+                onVideoClick = {
                     onVideoClick?.onExecute(
                         filePath = videoPath,
                         onOpenVideo = context::openVideoPlayer
                     )
+                },
+                onDeleteVideoClick = {
+                    onVideoDeleteClick?.onExecute(videoPath)
                 }
             )
         }
@@ -65,7 +75,11 @@ private fun VideosCarousel(state: VideoGalleryState, onVideoClick: OnVideoClick?
 }
 
 @Composable
-private fun VideosGrid(state: VideoGalleryState, onVideoClick: OnVideoClick?) {
+private fun VideosGrid(
+    state: VideoGalleryState,
+    onVideoClick: OnVideoClick?,
+    onVideoDeleteClick: OnVideoDeleteClick?
+) {
     val context = LocalContext.current
 
     LazyVerticalGrid(
@@ -77,11 +91,14 @@ private fun VideosGrid(state: VideoGalleryState, onVideoClick: OnVideoClick?) {
         items(state.videoPaths) { videoPath ->
             VideoThumbnail(
                 bitmap = state.thumbCache[videoPath],
-                onClick = {
+                onVideoClick = {
                     onVideoClick?.onExecute(
                         filePath = videoPath,
                         onOpenVideo = context::openVideoPlayer
                     )
+                },
+                onDeleteVideoClick = {
+                    onVideoDeleteClick?.onExecute(videoPath)
                 },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -105,7 +122,6 @@ private fun ThumbnailsViewerCollapsedPreviewDark() {
         Surface {
             ThumbnailsViewer(
                 state = videoGalleryCollapsedWithOneValueState,
-                onVideoClick = { _, _ -> }
             )
         }
     }
@@ -118,7 +134,6 @@ private fun ThumbnailsViewerCollapsedPreviewLight() {
         Surface {
             ThumbnailsViewer(
                 state = videoGalleryCollapsedWithOneValueState,
-                onVideoClick = { _, _ -> }
             )
         }
     }
@@ -131,7 +146,6 @@ private fun ThumbnailsViewerExpandedPreviewDark() {
         Surface {
             ThumbnailsViewer(
                 state = videoGalleryExpandedWithOneValueState,
-                onVideoClick = { _, _ -> }
             )
         }
     }
@@ -144,7 +158,6 @@ private fun ThumbnailsViewerExpandedManyValuesPreviewDark() {
         Surface {
             ThumbnailsViewer(
                 state = videoGalleryExpandedWithManyValuesState,
-                onVideoClick = { _, _ -> }
             )
         }
     }
@@ -157,7 +170,6 @@ private fun ThumbnailsViewerExpandedPreviewLight() {
         Surface {
             ThumbnailsViewer(
                 state = videoGalleryExpandedWithOneValueState,
-                onVideoClick = { _, _ -> }
             )
         }
     }
@@ -170,7 +182,6 @@ private fun ThumbnailsViewerExpandedManyValuesPreviewLight() {
         Surface {
             ThumbnailsViewer(
                 state = videoGalleryExpandedWithManyValuesState,
-                onVideoClick = { _, _ -> }
             )
         }
     }

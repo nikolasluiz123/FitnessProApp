@@ -1,6 +1,7 @@
 package br.com.fitnesspro.compose.components.gallery.video.components
 
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -13,37 +14,41 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.GREY_50
 
 @Composable
-fun PlayIconOverlay(hasThumbnail: Boolean, modifier: Modifier = Modifier) {
+fun DeleteVideoIcon(hasThumbnail: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit = { }) {
     val tint = if (hasThumbnail) {
         GREY_50
     } else {
         MaterialTheme.colorScheme.inverseOnSurface
     }
 
-    Icon(
+    IconButton(
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_play_circle_filled_32dp),
-        contentDescription = stringResource(R.string.play_icon_content_description),
-        tint = tint,
-    )
+        onClick = onClick
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_cancel_24dp),
+            contentDescription = stringResource(R.string.delete_icon_content_description),
+            tint = tint,
+        )
+    }
 }
 
 @Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
-private fun PlayIconOverlayPreviewDark() {
+private fun DeleteVideoIconPreviewDark() {
     FitnessProTheme(darkTheme = true) {
         Surface(color = MaterialTheme.colorScheme.inverseSurface) {
-            PlayIconOverlay(false)
+            DeleteVideoIcon(false)
         }
     }
 }
 
 @Preview(device = "id:small_phone", apiLevel = 35)
 @Composable
-private fun PlayIconOverlayPreviewLight() {
+private fun DeleteVideoIconPreviewLight() {
     FitnessProTheme(darkTheme = false) {
         Surface(color = MaterialTheme.colorScheme.inverseSurface) {
-            PlayIconOverlay(false)
+            DeleteVideoIcon(false)
         }
     }
 }

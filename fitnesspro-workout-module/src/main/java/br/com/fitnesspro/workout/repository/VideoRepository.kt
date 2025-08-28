@@ -2,6 +2,7 @@ package br.com.fitnesspro.workout.repository
 
 import android.content.Context
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
+import br.com.fitnesspro.core.utils.VideoUtils
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseExecutionDAO
@@ -55,11 +56,11 @@ class VideoRepository(
     }
 
     suspend fun getVideoExerciseExecution(exerciseExecutionId: String): List<String> = withContext(IO) {
-        videoExerciseDAO.getListVideoFilePathsFromExecution(exerciseExecutionId)
+        videoExerciseExecutionDAO.getListVideoFilePathsFromExecution(exerciseExecutionId)
     }
 
     suspend fun getVideoExercisePreDefinition(exercisePreDefinitionId: String): List<String> = withContext(IO) {
-        videoExerciseDAO.getListVideoFilePathsFromPreDefinition(exercisePreDefinitionId)
+        videoExercisePreDefinitionDAO.getListVideoFilePathsFromPreDefinition(exercisePreDefinitionId)
     }
 
     suspend fun getCountVideosExercise(exerciseId: String): Int {
@@ -74,6 +75,18 @@ class VideoRepository(
         return videoExercisePreDefinitionDAO.getCountVideosPreDefinition(exercisePreDefinitionId)
     }
 
+    suspend fun getListExerciseExecutionIdsFromVideoFilePaths(filePaths: List<String>): List<String> {
+        return videoExerciseExecutionDAO.getListExerciseExecutionIdsFromVideoFilePaths(filePaths)
+    }
+
+    suspend fun getListExerciseIdsFromVideoFilePaths(filePaths: List<String>): List<String> {
+        return videoExerciseDAO.getListExerciseIdsFromVideoFilePaths(filePaths)
+    }
+
+    suspend fun getListExercisePreDefinitionIdsFromVideoFilePaths(filePaths: List<String>): List<String> {
+        return videoExercisePreDefinitionDAO.getListExercisePreDefinitionIdsFromVideoFilePaths(filePaths)
+    }
+
     suspend fun inactivateVideoExercise(exerciseIds: List<String>) {
         val videos = videoDAO.getListVideosActiveFromExercise(exerciseIds).onEach {
             it.active = false
@@ -84,6 +97,10 @@ class VideoRepository(
 
         videoDAO.updateBatch(videos, true)
         videoExerciseDAO.updateBatch(videoExerciseList, true)
+
+        videos.forEach {
+            VideoUtils.deleteVideoFile(context, it.filePath!!)
+        }
     }
 
     suspend fun inactivateVideoExercisePreDefinition(exercisePreDefinitionIds: List<String>) {
@@ -96,6 +113,10 @@ class VideoRepository(
 
         videoDAO.updateBatch(videos, true)
         videoExercisePreDefinitionDAO.updateBatch(videoExercisePreDefinitionList, true)
+
+        videos.forEach {
+            VideoUtils.deleteVideoFile(context, it.filePath!!)
+        }
     }
 
     suspend fun inactivateVideoExerciseExecution(exerciseExecutionIds: List<String>) {
@@ -108,6 +129,10 @@ class VideoRepository(
 
         videoDAO.updateBatch(videos, true)
         videoExerciseExecutionDAO.updateBatch(videoExerciseExecutionList, true)
+
+        videos.forEach {
+            VideoUtils.deleteVideoFile(context, it.filePath!!)
+        }
     }
 
     suspend fun saveVideoExerciseExecutionLocally(toVideoExerciseExecutionList: List<TOVideoExerciseExecution>) {

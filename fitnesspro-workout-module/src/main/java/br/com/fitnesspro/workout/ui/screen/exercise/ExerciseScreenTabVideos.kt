@@ -1,15 +1,16 @@
 package br.com.fitnesspro.workout.ui.screen.exercise
 
+import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,8 @@ import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnFinishVideoRecor
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnOpenCameraVideo
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnVideoSelectedOnGallery
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun ExerciseScreenTabVideos(
@@ -33,10 +36,12 @@ fun ExerciseScreenTabVideos(
     onOpenCameraVideo: OnOpenCameraVideo? = null,
     onFinishVideoRecording: OnFinishVideoRecording? = null,
     onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null,
-    onVideoClick: OnVideoClick? = null
+    onVideoClick: OnVideoClick? = null,
+    onVideoDeleteClick: (String, () -> Unit) -> Unit = { _, _ -> },
+    coroutineScope: CoroutineScope? = null,
+    context: Context? = null,
+    snackbarHostState: SnackbarHostState? = null
 ) {
-    val context = LocalContext.current
-
     val launcherVideo = rememberLauncherForActivityResult(ActivityResultContracts.CaptureVideo()) { success ->
         if (success) {
             state.onToggleLoading()
@@ -62,6 +67,11 @@ fun ExerciseScreenTabVideos(
             modifier = Modifier.padding(top = 12.dp),
             state = state.videoGalleryState,
             onVideoClick = onVideoClick,
+            onVideoDeleteClick = {
+                onVideoDeleteClick(it) {
+                    showMessageDeleteVideoSuccess(coroutineScope, context, snackbarHostState)
+                }
+            },
             emptyMessage = stringResource(R.string.exercise_screen_videos_empty_message),
             actions = {
                 IconButtonGallery(
@@ -74,7 +84,7 @@ fun ExerciseScreenTabVideos(
                 IconButtonCamera(
                     iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     onClick = {
-                        context.openCameraVideo(launcherVideo) { _, file ->
+                        context?.openCameraVideo(launcherVideo) { _, file ->
                             onOpenCameraVideo?.onExecute(file)
                         }
                     }
@@ -84,6 +94,16 @@ fun ExerciseScreenTabVideos(
     }
 }
 
+private fun showMessageDeleteVideoSuccess(
+    coroutineScope: CoroutineScope?,
+    context: Context?,
+    snackbarHostState: SnackbarHostState?
+) {
+    coroutineScope?.launch {
+        val message = context?.getString(R.string.video_delete_success_message)
+        snackbarHostState?.showSnackbar(message = message!!)
+    }
+}
 
 @Preview(device = "id:small_phone", apiLevel = 35)
 @Composable

@@ -56,4 +56,27 @@ abstract class VideoExercisePreDefinitionDAO: IntegratedMaintenanceDAO<VideoExer
 
     @Query(" select * from video_exercise_pre_definition where exercise_pre_definition_id in (:exerciseIds) and active = 1 ")
     abstract suspend fun getListVideoPreDefinitionActiveFromExercises(exerciseIds: List<String>): List<VideoExercisePreDefinition>
+
+    @Query(
+        """
+        select exercise.id as id
+        from exercise_pre_definition exercise
+        inner join video_exercise_pre_definition vep on exercise.id = vep.exercise_pre_definition_id
+        inner join video v on v.id = vep.video_id
+        where v.file_path in (:filePaths)
+    """
+    )
+    abstract suspend fun getListExercisePreDefinitionIdsFromVideoFilePaths(filePaths: List<String>): List<String>
+
+    @Query(
+        """
+        select file_path as path
+        from video 
+        inner join video_exercise_pre_definition on video.id = video_exercise_pre_definition.video_id 
+        where video_exercise_pre_definition.exercise_pre_definition_id = :exercisePreDefinitionId
+        and video_exercise_pre_definition.active = 1
+        and video.active = 1
+    """
+    )
+    abstract suspend fun getListVideoFilePathsFromPreDefinition(exercisePreDefinitionId: String): List<String>
 }

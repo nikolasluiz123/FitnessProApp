@@ -156,4 +156,6 @@
     <string name="workout_group_pred_efinition_edit_dialog_loading_label">Processando...</string>
     <string name="workout_group_pre_definition_edit_dialog_name_label">Nome do Grupo *</string>
     <string name="workout_group_pre_definition_edit_dialog_title">Grupo %s</string>
+    <string name="video_delete_success_message">Vídeo deletado com sucesso</string>
+    <string name="msg_delete_video_confirmation">Tem certeza que deseja deletar permanentemente esse vídeo? Essa ação não poderá ser desfeita.</string>
 </resources>

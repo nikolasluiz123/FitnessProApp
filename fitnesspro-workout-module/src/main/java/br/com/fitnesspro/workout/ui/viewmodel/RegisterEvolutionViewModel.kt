@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.compose.components.fields.menu.getChronoUnitMenuItems
+import br.com.fitnesspro.core.callback.showConfirmationDialog
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.bestChronoUnit
@@ -29,6 +30,7 @@ import br.com.fitnesspro.workout.ui.state.RegisterEvolutionUIState
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseExecutionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseExecutionFields
 import br.com.fitnesspro.workout.usecase.exercise.exception.VideoException
+import br.com.fitnesspro.workout.usecase.exercise.video.InactivateVideoExecutionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.SaveVideoExecutionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.gallery.SaveVideoExecutionFromGalleryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,6 +51,7 @@ class RegisterEvolutionViewModel @Inject constructor(
     private val saveVideoExecutionUseCase: SaveVideoExecutionUseCase,
     private val saveVideoExecutionFromGalleryUseCase: SaveVideoExecutionFromGalleryUseCase,
     private val saveExerciseExecutionUseCase: SaveExerciseExecutionUseCase,
+    private val inactivateVideoExecutionUseCase: InactivateVideoExecutionUseCase,
     savedStateHandle: SavedStateHandle
 ): FitnessProStatefulViewModel() {
 
@@ -393,5 +396,21 @@ class RegisterEvolutionViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onDeleteVideo(filePath: String, onSuccess: () -> Unit) {
+        _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
+            message = context.getString(R.string.msg_delete_video_confirmation),
+            onConfirm = {
+                _uiState.value.onToggleLoading()
+
+                launch {
+                    inactivateVideoExecutionUseCase(listOf(filePath))
+                    loadVideos(_uiState.value.toExerciseExecution.id)
+                    onSuccess()
+                    _uiState.value.onToggleLoading()
+                }
+            }
+        )
     }
 }

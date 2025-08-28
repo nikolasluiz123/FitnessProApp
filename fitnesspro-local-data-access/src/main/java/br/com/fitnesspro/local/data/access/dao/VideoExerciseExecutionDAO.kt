@@ -59,4 +59,25 @@ abstract class VideoExerciseExecutionDAO: IntegratedMaintenanceDAO<VideoExercise
 
     @Query(" select * from video_exercise_execution where exercise_execution_id in (:exerciseIds) and active = 1 ")
     abstract fun getListVideoExecutionActiveFromExercises(exerciseIds: List<String>): List<VideoExerciseExecution>
+
+    @Query(
+        """
+        select exercise.id as id
+        from exercise_execution exercise
+        inner join video_exercise_execution vee on exercise.id = vee.exercise_execution_id
+        inner join video v on v.id = vee.video_id
+        where v.file_path in (:filePaths)
+    """
+    )
+    abstract suspend fun getListExerciseExecutionIdsFromVideoFilePaths(filePaths: List<String>): List<String>
+
+    @Query("""
+        select file_path as path
+        from video 
+        inner join video_exercise_execution on video.id = video_exercise_execution.video_id 
+        where video_exercise_execution.exercise_execution_id = :exerciseExecutionId
+        and video_exercise_execution.active = 1
+        and video.active = 1
+    """)
+    abstract suspend fun getListVideoFilePathsFromExecution(exerciseExecutionId: String): List<String>
 }

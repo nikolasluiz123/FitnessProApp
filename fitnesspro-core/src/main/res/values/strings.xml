@@ -36,4 +36,5 @@
     <string name="chrono_unit_hours">Horas</string>
     <string name="invalid_label_chrono_unit_message">Valor invalido para recuperar um label de ChronoUnit</string>
     <string name="video_file_not_found_message">Não foi possível encontrar o arquivo de vídeo em seu dispositivo, por conta disso, não será possível excluí-lo. É possível que o arquivo ainda esteja sendo baixado, tente novamente mais tarde.</string>
+    <string name="delete_icon_content_description">Deletar o Vídeo</string>
 </resources>

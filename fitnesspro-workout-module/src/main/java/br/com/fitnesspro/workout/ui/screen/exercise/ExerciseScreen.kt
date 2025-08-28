@@ -70,6 +70,7 @@ fun ExerciseScreen(
         onFinishVideoRecording = viewModel::onFinishVideoRecording,
         onVideoSelectedOnGallery = viewModel::onVideoSelectedOnGallery,
         onVideoClick = viewModel::onVideoClick,
+        onVideoDeleteClick = viewModel::onDeleteVideo,
         onInactivateExerciseClick = viewModel::onInactivateExercise,
         onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos
     )
@@ -85,6 +86,7 @@ fun ExerciseScreen(
     onFinishVideoRecording: OnFinishVideoRecording? = null,
     onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null,
     onVideoClick: OnVideoClick? = null,
+    onVideoDeleteClick: (String, () -> Unit) -> Unit = { _, _ -> },
     onInactivateExerciseClick: OnInactivateExerciseClick? = null,
     onExecuteLoad: () -> Unit = {}
 ) {
@@ -196,7 +198,11 @@ fun ExerciseScreen(
                                 onOpenCameraVideo = onOpenCameraVideo,
                                 onFinishVideoRecording = onFinishVideoRecording,
                                 onVideoSelectedOnGallery = onVideoSelectedOnGallery,
-                                onVideoClick = onVideoClick
+                                onVideoClick = onVideoClick,
+                                onVideoDeleteClick = onVideoDeleteClick,
+                                coroutineScope = coroutineScope,
+                                context = context,
+                                snackbarHostState = snackbarHostState
                             )
                         }
                     }

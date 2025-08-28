@@ -9,4 +9,5 @@ data class VideoGalleryState(
     val isScrollEnabled: Boolean = true,
     val viewMode: VideoGalleryViewMode = VideoGalleryViewMode.COLLAPSED,
     val onViewModeChange: (VideoGalleryViewMode) -> Unit = { },
+    val showDeleteButton: Boolean = true,
 )

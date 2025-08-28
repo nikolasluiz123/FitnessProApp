@@ -83,6 +83,7 @@ fun PreDefinitionScreen(
         onFinishVideoRecording = viewModel::onFinishVideoRecording,
         onVideoSelectedOnGallery = viewModel::onVideoSelectedOnGallery,
         onVideoClick = viewModel::onVideoClick,
+        onVideoDeleteClick = viewModel::onDeleteVideo,
         onSaveClick = viewModel::onSavePreDefinition,
         onInactivateClick = viewModel::onInactivate,
         onExecuteLoad = viewModel::loadStateWithDatabaseInfos
@@ -100,6 +101,7 @@ fun PreDefinitionScreen(
     onFinishVideoRecording: OnFinishVideoRecording? = null,
     onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null,
     onVideoClick: OnVideoClick? = null,
+    onVideoDeleteClick: (String, () -> Unit) -> Unit = { _, _ -> },
     onExecuteLoad: () -> Unit = { },
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -358,6 +360,11 @@ fun PreDefinitionScreen(
                     },
                     state = state.videoGalleryState,
                     onVideoClick = onVideoClick,
+                    onVideoDeleteClick = {
+                        onVideoDeleteClick(it) {
+                            showMessageDeleteVideoSuccess(coroutineScope, context, snackbarHostState)
+                        }
+                    },
                     emptyMessage = stringResource(R.string.register_evolution_screen_videos_empty_message),
                     actions = {
                         IconButtonGallery(
@@ -379,6 +386,17 @@ fun PreDefinitionScreen(
                 )
             }
         }
+    }
+}
+
+private fun showMessageDeleteVideoSuccess(
+    coroutineScope: CoroutineScope,
+    context: Context,
+    snackbarHostState: SnackbarHostState
+) {
+    coroutineScope.launch {
+        val message = context.getString(R.string.video_delete_success_message)
+        snackbarHostState.showSnackbar(message = message)
     }
 }
 

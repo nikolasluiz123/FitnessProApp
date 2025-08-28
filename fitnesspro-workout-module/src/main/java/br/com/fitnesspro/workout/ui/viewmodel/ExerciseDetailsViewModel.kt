@@ -56,6 +56,7 @@ class ExerciseDetailsViewModel @Inject constructor(
             videoGalleryState = createVideoGalleryState(
                 title = context.getString(R.string.exercise_screen_video_gallery_title),
                 isScrollEnabled = false,
+                showDeleteButton = false,
                 getCurrentState = { _uiState.value.videoGalleryState },
                 updateState = { newState -> _uiState.value = _uiState.value.copy(videoGalleryState = newState) }
             ),

@@ -34,6 +34,7 @@ import br.com.fitnesspro.workout.ui.state.ExerciseUIState
 import br.com.fitnesspro.workout.usecase.exercise.InactivateExerciseUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseUseCase
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFields
+import br.com.fitnesspro.workout.usecase.exercise.video.InactivateVideoExerciseUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.SaveExerciseVideoUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.gallery.SaveExerciseVideoFromGalleryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,6 +60,7 @@ class ExerciseViewModel @Inject constructor(
     private val saveExerciseVideoUseCase: SaveExerciseVideoUseCase,
     private val saveExerciseVideoFromGalleryUseCase: SaveExerciseVideoFromGalleryUseCase,
     private val inactivateExerciseUseCase: InactivateExerciseUseCase,
+    private val inactivateVideoExerciseUseCase: InactivateVideoExerciseUseCase,
     savedStateHandle: SavedStateHandle
 ): FitnessProStatefulViewModel() {
 
@@ -619,5 +621,21 @@ class ExerciseViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    fun onDeleteVideo(filePath: String, onSuccess: () -> Unit) {
+        _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
+            message = context.getString(R.string.msg_delete_video_confirmation),
+            onConfirm = {
+                _uiState.value.onToggleLoading()
+
+                launch {
+                    inactivateVideoExerciseUseCase(listOf(filePath))
+                    loadExerciseVideos(_uiState.value.toExercise.id)
+                    onSuccess()
+                    _uiState.value.onToggleLoading()
+                }
+            }
+        )
     }
 }

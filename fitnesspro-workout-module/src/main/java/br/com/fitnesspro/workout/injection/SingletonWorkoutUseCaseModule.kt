@@ -16,6 +16,9 @@ import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseExecutionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExercisePreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveGroupPreDefinitionUseCase
+import br.com.fitnesspro.workout.usecase.exercise.video.InactivateVideoExecutionUseCase
+import br.com.fitnesspro.workout.usecase.exercise.video.InactivateVideoExerciseUseCase
+import br.com.fitnesspro.workout.usecase.exercise.video.InactivateVideoPreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.SaveExerciseVideoUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.SaveVideoExecutionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.SaveVideoPreDefinitionUseCase
@@ -225,6 +228,33 @@ class SingletonWorkoutUseCaseModule {
     ): InactivateWorkoutGroupPreDefinitionUseCase {
         return InactivateWorkoutGroupPreDefinitionUseCase(
             exercisePreDefinitionRepository = exercisePreDefinitionRepository,
+        )
+    }
+
+    @Provides
+    fun provideInactivateVideoExerciseUseCase(
+        videoRepository: VideoRepository,
+    ): InactivateVideoExerciseUseCase {
+        return InactivateVideoExerciseUseCase(
+            videoRepository = videoRepository,
+        )
+    }
+
+    @Provides
+    fun provideInactivateVideoExecutionUseCase(
+        videoRepository: VideoRepository,
+    ): InactivateVideoExecutionUseCase {
+        return InactivateVideoExecutionUseCase(
+            videoRepository = videoRepository,
+        )
+    }
+
+    @Provides
+    fun provideInactivateVideoPreDefinitionUseCase(
+        videoRepository: VideoRepository,
+    ): InactivateVideoPreDefinitionUseCase {
+        return InactivateVideoPreDefinitionUseCase(
+            videoRepository = videoRepository,
         )
     }
 

@@ -30,6 +30,7 @@ import br.com.fitnesspro.workout.usecase.exercise.InactivateExercisePreDefinitio
 import br.com.fitnesspro.workout.usecase.exercise.SaveExercisePreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveGroupPreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExercisePreDefinitionFields
+import br.com.fitnesspro.workout.usecase.exercise.video.InactivateVideoPreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.SaveVideoPreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.gallery.SaveVideoExercisePreDefinitionFromGalleryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,6 +55,7 @@ class PreDefinitionViewModel @Inject constructor(
     private val saveVideoExercisePreDefinitionFromGalleryUseCase: SaveVideoExercisePreDefinitionFromGalleryUseCase,
     private val saveVideoPreDefinitionUseCase: SaveVideoPreDefinitionUseCase,
     private val inactivateExercisePreDefinitionUseCase: InactivateExercisePreDefinitionUseCase,
+    private val inactivateVideoExercisePreDefinitionUseCase: InactivateVideoPreDefinitionUseCase,
     savedStateHandle: SavedStateHandle
 ): FitnessProStatefulViewModel() {
 
@@ -533,5 +535,22 @@ class PreDefinitionViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+
+    fun onDeleteVideo(filePath: String, onSuccess: () -> Unit) {
+        _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
+            message = context.getString(R.string.msg_delete_video_confirmation),
+            onConfirm = {
+                _uiState.value.onToggleLoading()
+
+                launch {
+                    inactivateVideoExercisePreDefinitionUseCase(listOf(filePath))
+                    loadVideos(_uiState.value.toExercisePredefinition.id)
+                    onSuccess()
+                    _uiState.value.onToggleLoading()
+                }
+            }
+        )
     }
 }

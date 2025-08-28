@@ -87,7 +87,8 @@ fun RegisterEvolutionScreen(
         onVideoSelectedOnGallery = viewModel::onVideoSelectedOnGallery,
         onVideoClick = viewModel::onVideoClick,
         onSaveRegisterEvolution = viewModel::onSaveRegisterEvolution,
-        onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos
+        onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos,
+        onVideoDeleteClick = viewModel::onDeleteVideo
     )
 }
 
@@ -101,7 +102,8 @@ fun RegisterEvolutionScreen(
     onVideoSelectedOnGallery: OnVideoSelectedOnGallery? = null,
     onVideoClick: OnVideoClick? = null,
     onSaveRegisterEvolution: OnSaveExerciseExecution? = null,
-    onExecuteLoad: () -> Unit = { }
+    onExecuteLoad: () -> Unit = { },
+    onVideoDeleteClick: (String, () -> Unit) -> Unit = { _, _ -> }
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
@@ -296,6 +298,11 @@ fun RegisterEvolutionScreen(
                     },
                     state = state.videoGalleryState,
                     onVideoClick = onVideoClick,
+                    onVideoDeleteClick = { filePath ->
+                        onVideoDeleteClick(filePath) {
+                            showMessageDeleteVideoSuccess(coroutineScope, context, snackbarHostState)
+                        }
+                    },
                     emptyMessage = stringResource(R.string.register_evolution_screen_videos_empty_message),
                     actions = {
                         IconButtonGallery(
@@ -317,6 +324,17 @@ fun RegisterEvolutionScreen(
                 )
             }
         }
+    }
+}
+
+private fun showMessageDeleteVideoSuccess(
+    coroutineScope: CoroutineScope,
+    context: Context,
+    snackbarHostState: SnackbarHostState
+) {
+    coroutineScope.launch {
+        val message = context.getString(R.string.video_delete_success_message)
+        snackbarHostState.showSnackbar(message = message)
     }
 }
 

@@ -148,11 +148,13 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
         title: String,
         getCurrentState: () -> VideoGalleryState,
         updateState: (newState: VideoGalleryState) -> Unit,
-        isScrollEnabled: Boolean = true
+        isScrollEnabled: Boolean = true,
+        showDeleteButton: Boolean = true
     ): VideoGalleryState {
         return VideoGalleryState(
             title = title,
             isScrollEnabled = isScrollEnabled,
+            showDeleteButton = showDeleteButton,
             onViewModeChange = {
                 val newState = getCurrentState().copy(viewMode = it)
                 updateState(newState)
