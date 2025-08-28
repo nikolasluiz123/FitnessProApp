@@ -12,6 +12,7 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 
 object VideoUtils {
+    const val VIDEOS_FOLDER_NAME = "videos"
     const val DEFAULT_VIDEO_EXTENSION = "mp4"
 
     fun getDefaultVideoName(): String {
@@ -19,7 +20,7 @@ object VideoUtils {
     }
 
     fun createVideoFile(context: Context, fileName: String? = null): File {
-        val videoDir = File(context.getExternalFilesDir(null), "")
+        val videoDir = File(context.getExternalFilesDir(VIDEOS_FOLDER_NAME), "")
         if (!videoDir.exists()) videoDir.mkdirs()
 
         return File(videoDir, fileName ?: getDefaultVideoName())
