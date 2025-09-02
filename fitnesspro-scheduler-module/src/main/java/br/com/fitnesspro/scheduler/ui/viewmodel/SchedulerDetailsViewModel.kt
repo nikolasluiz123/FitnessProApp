@@ -1,7 +1,6 @@
 package br.com.fitnesspro.scheduler.ui.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
@@ -74,8 +73,6 @@ class SchedulerDetailsViewModel @Inject constructor(
             val schedules = schedulerRepository.getSchedulerList(
                 scheduledDate = args.scheduledDate
             )
-
-            Log.i("Teste", "updateSchedules: ${schedules.map { it.professionalName }}")
 
             _uiState.value = _uiState.value.copy(
                 schedules = schedules,

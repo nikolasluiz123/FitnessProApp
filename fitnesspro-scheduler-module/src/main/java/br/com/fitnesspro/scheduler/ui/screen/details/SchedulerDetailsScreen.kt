@@ -1,6 +1,5 @@
 package br.com.fitnesspro.scheduler.ui.screen.details
 
-import android.util.Log
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -111,8 +110,6 @@ fun SchedulerDetailsScreen(
                 items = state.schedules,
                 emptyMessageResId = getEmptyMessage(state),
             ) { toScheduler ->
-                Log.i("Teste", "toScheduler.professionalName = ${toScheduler.professionalName} ")
-
                 SchedulerDetailItem(
                     to = toScheduler,
                     state = state,

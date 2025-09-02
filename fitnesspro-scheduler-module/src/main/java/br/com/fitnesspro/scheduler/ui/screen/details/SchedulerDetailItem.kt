@@ -1,6 +1,5 @@
 package br.com.fitnesspro.scheduler.ui.screen.details
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -60,8 +59,6 @@ internal fun SchedulerDetailItem(
              dividerRef) = createRefs()
 
         createHorizontalChain(nameRef, hourRef)
-
-        Log.i("Teste", "SchedulerDetailItem: to.professionalName = ${to.professionalName} state.userType = ${state.userType}")
 
         LabeledText(
             modifier = Modifier
