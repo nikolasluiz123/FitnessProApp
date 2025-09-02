@@ -1,5 +1,6 @@
 package br.com.fitnesspro.scheduler.ui.screen.details
 
+import android.util.Log
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -47,7 +48,6 @@ fun SchedulerDetailsScreen(
         onBackClick = onBackClick,
         onUpdateSchedules = viewModel::updateSchedules,
         onNavigateToCompromise = onNavigateToCompromise,
-        onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos
     )
 }
 
@@ -58,7 +58,6 @@ fun SchedulerDetailsScreen(
     onBackClick: () -> Unit = { },
     onUpdateSchedules: () -> Unit = { },
     onNavigateToCompromise: OnNavigateToCompromise? = null,
-    onExecuteLoad: () -> Unit = { }
 ) {
     Scaffold(
         topBar = {
@@ -87,12 +86,6 @@ fun SchedulerDetailsScreen(
         contentWindowInsets = WindowInsets(0.dp)
     ) { padding ->
 
-        LaunchedEffect(state.executeLoad) {
-            if (state.executeLoad) {
-                onExecuteLoad()
-            }
-        }
-
         LaunchedEffect(Unit) {
             onUpdateSchedules()
         }
@@ -118,6 +111,8 @@ fun SchedulerDetailsScreen(
                 items = state.schedules,
                 emptyMessageResId = getEmptyMessage(state),
             ) { toScheduler ->
+                Log.i("Teste", "toScheduler.professionalName = ${toScheduler.professionalName} ")
+
                 SchedulerDetailItem(
                     to = toScheduler,
                     state = state,

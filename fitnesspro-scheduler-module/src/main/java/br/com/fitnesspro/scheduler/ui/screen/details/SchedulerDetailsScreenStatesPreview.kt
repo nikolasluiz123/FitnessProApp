@@ -10,6 +10,7 @@ import java.time.OffsetDateTime
 internal val toSchedulerAcademyMember = TOScheduler(
     academyMemberName = "Josnei Cardoso Neto",
     professionalName = "Gabriela da Silva",
+    professionalType = EnumUserType.NUTRITIONIST,
     dateTimeStart = OffsetDateTime.now(),
     dateTimeEnd = OffsetDateTime.now().plusHours(1),
     situation = EnumSchedulerSituation.SCHEDULED,

@@ -1,5 +1,6 @@
 package br.com.fitnesspro.scheduler.ui.screen.details
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,11 +26,6 @@ import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs
 import br.com.fitnesspro.scheduler.ui.screen.details.callbacks.OnNavigateToCompromise
 import br.com.fitnesspro.scheduler.ui.screen.details.enums.EnumSchedulerDetailsTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST
-import br.com.fitnesspro.scheduler.ui.screen.details.enums.EnumSchedulerDetailsTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST_COMPROMISE_TYPE
-import br.com.fitnesspro.scheduler.ui.screen.details.enums.EnumSchedulerDetailsTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_HOUR
-import br.com.fitnesspro.scheduler.ui.screen.details.enums.EnumSchedulerDetailsTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_NAME
-import br.com.fitnesspro.scheduler.ui.screen.details.enums.EnumSchedulerDetailsTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_PROFESSIONAL
-import br.com.fitnesspro.scheduler.ui.screen.details.enums.EnumSchedulerDetailsTags.SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_SITUATION
 import br.com.fitnesspro.scheduler.ui.state.SchedulerDetailsUIState
 import br.com.fitnesspro.to.TOScheduler
 import com.google.firebase.Firebase
@@ -65,10 +61,11 @@ internal fun SchedulerDetailItem(
 
         createHorizontalChain(nameRef, hourRef)
 
+        Log.i("Teste", "SchedulerDetailItem: to.professionalName = ${to.professionalName} state.userType = ${state.userType}")
+
         LabeledText(
             modifier = Modifier
                 .padding(start = 8.dp, end = 8.dp)
-                .testTag(SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_NAME.name)
                 .constrainAs(nameRef) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -77,12 +74,11 @@ internal fun SchedulerDetailItem(
                     horizontalChainWeight = 0.5f
                 },
             label = stringResource(R.string.scheduler_details_name_label),
-            value = if (state.userType == EnumUserType.ACADEMY_MEMBER) to.professionalName!! else to.academyMemberName!!
+            value = if (state.userType == EnumUserType.ACADEMY_MEMBER) to.professionalName.orEmpty() else to.academyMemberName.orEmpty()
         )
 
         LabeledText(
             modifier = Modifier
-                .testTag(SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_HOUR.name)
                 .padding(end = 8.dp)
                 .constrainAs(hourRef) {
                     top.linkTo(parent.top)
@@ -103,7 +99,6 @@ internal fun SchedulerDetailItem(
 
         LabeledText(
             modifier = Modifier
-                .testTag(SCHEDULER_DETAILS_SCREEN_ITEM_LIST_COMPROMISE_TYPE.name)
                 .padding(start = 8.dp, end = 8.dp)
                 .constrainAs(compromiseTypeRef) {
                     top.linkTo(nameRef.bottom, margin = 12.dp)
@@ -118,7 +113,6 @@ internal fun SchedulerDetailItem(
 
         LabeledText(
             modifier = Modifier
-                .testTag(SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_SITUATION.name)
                 .padding(end = 8.dp)
                 .constrainAs(situationRef) {
                     top.linkTo(hourRef.bottom, margin = 12.dp)
@@ -134,7 +128,6 @@ internal fun SchedulerDetailItem(
         if (state.userType == EnumUserType.ACADEMY_MEMBER) {
             LabeledText(
                 modifier = Modifier
-                    .testTag(SCHEDULER_DETAILS_SCREEN_ITEM_LIST_LABELED_TEXT_PROFESSIONAL.name)
                     .padding(horizontal = 8.dp)
                     .constrainAs(professionalRef) {
                         top.linkTo(compromiseTypeRef.bottom, margin = 12.dp)
@@ -142,9 +135,9 @@ internal fun SchedulerDetailItem(
                         end.linkTo(parent.end)
 
                         width = Dimension.fillToConstraints
-                },
+                    },
                 label = stringResource(R.string.scheduler_details_professional_label),
-                value = to.professionalName!!
+                value = to.professionalType?.getLabel(context).orEmpty()
             )
         }
 

@@ -113,6 +113,7 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
             add("        personMember.name as academyMemberName, ")
             add("        schedule.professional_person_id as professionalPersonId, ")
             add("        personProfessional.name as professionalName, ")
+            add("        userProfessional.type as professionalType, ")
             add("        schedule.date_time_start as dateTimeStart, ")
             add("        schedule.date_time_end as dateTimeEnd, ")
             add("        schedule.canceled_date as canceledDate, ")
@@ -126,6 +127,7 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
             add(" from scheduler schedule ")
             add(" inner join person personMember on schedule.academy_member_person_id = personMember.id ")
             add(" inner join person personProfessional on schedule.professional_person_id = personProfessional.id ")
+            add(" inner join user userProfessional on personProfessional.user_id = userProfessional.id ")
         }
 
         val where = StringJoiner(QR_NL).apply {

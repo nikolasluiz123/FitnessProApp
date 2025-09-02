@@ -1,6 +1,7 @@
 package br.com.fitnesspro.scheduler.ui.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
@@ -68,18 +69,18 @@ class SchedulerDetailsViewModel @Inject constructor(
         val args = jsonArgs?.fromJsonNavParamToArgs(SchedulerDetailsScreenArgs::class.java)!!
 
         launch {
-            _uiState.value = _uiState.value.copy(
-                schedules = schedulerRepository.getSchedulerList(
-                    scheduledDate = args.scheduledDate
-                )
-            )
-        }
-    }
-
-    fun loadUIStateWithDatabaseInfos() {
-        launch {
             val toPerson = personRepository.getAuthenticatedTOPerson()!!
-            _uiState.value = _uiState.value.copy(userType = toPerson.user?.type, executeLoad = false)
+
+            val schedules = schedulerRepository.getSchedulerList(
+                scheduledDate = args.scheduledDate
+            )
+
+            Log.i("Teste", "updateSchedules: ${schedules.map { it.professionalName }}")
+
+            _uiState.value = _uiState.value.copy(
+                schedules = schedules,
+                userType = toPerson.user?.type,
+            )
         }
     }
 }
