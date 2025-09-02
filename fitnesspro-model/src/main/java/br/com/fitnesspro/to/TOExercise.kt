@@ -1,5 +1,6 @@
 package br.com.fitnesspro.to
 
+import br.com.fitnesspro.core.extensions.bestChronoUnit
 import br.com.fitnesspro.core.menu.ITupleListItem
 import java.time.DayOfWeek
 import java.time.temporal.ChronoUnit
@@ -23,6 +24,16 @@ data class TOExercise(
     var groupOrder: Int? = null,
     var exerciseOrder: Int? = null,
 ): BaseTO, ITupleListItem {
+
+    init {
+        if (unitDuration == null) {
+            unitDuration = duration?.bestChronoUnit()
+        }
+
+        if (unitRest == null) {
+            unitRest = rest?.bestChronoUnit()
+        }
+    }
 
     override fun getLabel(): String {
         return name!!
