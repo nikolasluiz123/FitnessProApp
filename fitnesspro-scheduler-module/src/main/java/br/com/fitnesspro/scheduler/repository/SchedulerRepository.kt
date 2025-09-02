@@ -167,6 +167,6 @@ class SchedulerRepository(
     }
 
     suspend fun hasSchedulerWithId(id: String?): Boolean = withContext(IO) {
-        schedulerDAO.hasSchedulerWithId(id)
+        schedulerDAO.hasEntityWithId(id)
     }
 }

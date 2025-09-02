@@ -5,7 +5,6 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
-import br.com.fitnesspro.common.injection.ICommonWorkersEntryPoint
 import br.com.fitnesspro.common.workers.common.AbstractExportationWorker
 import br.com.fitnesspro.scheduler.injection.IScheduleWorkersEntryPoint
 import dagger.assisted.Assisted
@@ -19,13 +18,9 @@ class SchedulerModuleExportationWorker @AssistedInject constructor(
 ) : AbstractExportationWorker(context, workerParams) {
 
     private val scheduleEntryPoint = EntryPointAccessors.fromApplication(context, IScheduleWorkersEntryPoint::class.java)
-    private val commonEntryPoint = EntryPointAccessors.fromApplication(context, ICommonWorkersEntryPoint::class.java)
 
     override suspend fun onExport(serviceToken: String) {
-        scheduleEntryPoint.getSchedulerExportationRepository().export(serviceToken)
-        commonEntryPoint.getSchedulerConfigExportationRepository().export(serviceToken)
-        scheduleEntryPoint.getReportFromSchedulerExportationRepository().export(serviceToken)
-        scheduleEntryPoint.getSchedulerReportExportationRepository().export(serviceToken)
+        scheduleEntryPoint.getSchedulerModuleExportationRepository().export(serviceToken)
     }
 
     override fun getClazz() = javaClass

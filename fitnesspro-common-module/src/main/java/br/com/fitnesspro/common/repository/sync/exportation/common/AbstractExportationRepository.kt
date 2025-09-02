@@ -2,6 +2,7 @@ package br.com.fitnesspro.common.repository.sync.exportation.common
 
 import android.content.Context
 import android.util.Log
+import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
 import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.core.worker.LogConstants
@@ -9,26 +10,34 @@ import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.sync.interfaces.ISyncDTO
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import kotlin.reflect.KClass
 
-abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: IntegratedMaintenanceDAO<MODEL>>(context: Context)
-    : AbstractCommonExportationRepository<MODEL, DAO>(context) {
+abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): AbstractSyncRepository(context) {
 
-    abstract suspend fun getExportationData(pageInfos: ExportPageInfos): List<MODEL>
+    abstract suspend fun getExportationData(pageInfos: ExportPageInfos): Map<KClass<out IntegratedModel>, List<IntegratedModel>>
 
-    abstract suspend fun callExportationService(modelList: List<MODEL>, token: String): ExportationServiceResponse
+    abstract suspend fun getExportationDTO(models: Map<KClass<out IntegratedModel>, List<IntegratedModel>>): DTO
 
-    override fun getPageSize(): Int = 100
+    abstract suspend fun callExportationService(dto: DTO, token: String): ExportationServiceResponse
+
+    abstract fun getIntegratedMaintenanceDAO(modelClass: KClass<out IntegratedModel>): IntegratedMaintenanceDAO<out IntegratedModel>
 
     suspend fun export(serviceToken: String) {
         Log.i(LogConstants.WORKER_EXPORT, "Exportando ${javaClass.simpleName}")
 
         var response: ExportationServiceResponse? = null
         var clientDateTimeStart: LocalDateTime? = null
-        var models: List<MODEL>
+        var models: Map<KClass<out IntegratedModel>, List<IntegratedModel>>
+        var syncDTO: DTO? = null
+        var hasAnyListPopulated: Boolean
 
         try {
             val pageInfos = ExportPageInfos(pageSize = getPageSize())
@@ -37,12 +46,14 @@ abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: Integr
                 clientDateTimeStart = dateTimeNow(ZoneOffset.UTC)
 
                 models = getExportationData(pageInfos)
+                hasAnyListPopulated = models.any { it.value.isNotEmpty() }
 
-                if (models.isNotEmpty()) {
+                if (hasAnyListPopulated) {
+                    syncDTO = getExportationDTO(models)
                     updateTransmissionState(models, EnumTransmissionState.RUNNING)
 
                     val serviceCallExportationStart = dateTimeNow(ZoneOffset.UTC)
-                    response = callExportationService(models, serviceToken)
+                    response = callExportationService(syncDTO, serviceToken)
                     val serviceCallExportationEnd = dateTimeNow(ZoneOffset.UTC)
 
                     val callExportationTime = Duration.between(serviceCallExportationStart, serviceCallExportationEnd)
@@ -60,7 +71,7 @@ abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: Integr
 
                         updateExecutionLogPackageWithSuccessIterationInfos(
                             logPackageId = response.executionLogPackageId,
-                            models = models,
+                            dto = syncDTO,
                             serviceToken = serviceToken,
                             clientExecutionEnd = dateTimeNow(ZoneOffset.UTC).minus(callExportationTime)
                         )
@@ -70,9 +81,9 @@ abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: Integr
                         throw ServiceException(response.error!!)
                     }
                 }
-            } while (models.size == pageInfos.pageSize)
+            } while (syncDTO?.getMaxListSize() == pageInfos.pageSize)
 
-            if (models.isNotEmpty()) {
+            if (hasAnyListPopulated) {
                 updateLogWithFinalizationInfos(serviceToken, response?.executionLogId!!)
             }
 
@@ -91,8 +102,90 @@ abstract class AbstractExportationRepository<MODEL: IntegratedModel, DAO: Integr
         }
     }
 
-    private suspend fun updateTransmissionState(models: List<MODEL>, transmissionState: EnumTransmissionState) {
-        models.forEach { it.transmissionState = transmissionState }
-        getOperationDAO().updateBatch(models, writeTransmissionState = false)
+    private suspend fun updateTransmissionState(models: Map<KClass<out IntegratedModel>, List<IntegratedModel>>, transmissionState: EnumTransmissionState) {
+        models.forEach { modelMap ->
+            modelMap.value.forEach {
+                it.transmissionState = transmissionState
+            }
+
+            val dao = getIntegratedMaintenanceDAO(modelMap.key) as IntegratedMaintenanceDAO<IntegratedModel>
+            dao.updateBatch(modelMap.value, writeTransmissionState = false)
+        }
+    }
+
+    private suspend fun updateLogWithStartRunningInfos(
+        serviceToken: String,
+        logId: String,
+        logPackageId: String,
+        pageInfos: ExportPageInfos,
+        clientStartDateTime: LocalDateTime
+    ) {
+        executionLogWebClient.updateLogInformation(
+            token = serviceToken,
+            logId = logId,
+            dto = UpdatableExecutionLogInfosDTO(
+                pageSize = pageInfos.pageSize
+            )
+        )
+
+        executionLogWebClient.updateLogPackageInformation(
+            token = serviceToken,
+            logPackageId = logPackageId,
+            dto = UpdatableExecutionLogPackageInfosDTO(
+                clientExecutionStart = clientStartDateTime
+            )
+        )
+    }
+
+    private suspend fun updateExecutionLogPackageWithSuccessIterationInfos(
+        serviceToken: String,
+        logPackageId: String,
+        dto: DTO,
+        clientExecutionEnd: LocalDateTime
+    ) {
+        executionLogWebClient.updateLogPackageInformation(
+            token = serviceToken,
+            logPackageId = logPackageId,
+            dto = UpdatableExecutionLogPackageInfosDTO(
+                allItemsCount = dto.getItemsCount(),
+                clientExecutionEnd = clientExecutionEnd
+            )
+        )
+    }
+
+    private suspend fun updateLogWithFinalizationInfos(serviceToken: String, logId: String) {
+        executionLogWebClient.updateLogInformation(
+            token = serviceToken,
+            logId = logId,
+            dto = UpdatableExecutionLogInfosDTO(
+                state = EnumExecutionState.FINISHED
+            )
+        )
+    }
+
+    private suspend fun updateLogPackageWithErrorInfos(
+        serviceToken: String,
+        logId: String,
+        logPackageId: String,
+        exception: Exception,
+        clientStartDateTime: LocalDateTime
+    ) {
+        executionLogWebClient.updateLogInformation(
+            token = serviceToken,
+            logId = logId,
+            dto = UpdatableExecutionLogInfosDTO(
+                state = EnumExecutionState.ERROR
+            )
+        )
+
+        executionLogWebClient.updateLogPackageInformation(
+            token = serviceToken,
+            logPackageId = logPackageId,
+            dto = UpdatableExecutionLogPackageInfosDTO(
+                clientExecutionStart = clientStartDateTime,
+                clientExecutionEnd = dateTimeNow(ZoneOffset.UTC),
+                error = exception.stackTraceToString(),
+            )
+        )
     }
 }

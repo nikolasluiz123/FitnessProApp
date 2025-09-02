@@ -21,7 +21,7 @@ abstract class SchedulerConfigDAO: IntegratedMaintenanceDAO<SchedulerConfig>() {
     abstract suspend fun findSchedulerConfigByPersonId(personId: String): SchedulerConfig?
 
     @Query("select exists (select 1 from scheduler_config where id = :id)")
-    abstract suspend fun hasSchedulerConfigWithId(id: String): Boolean
+    abstract suspend fun hasEntityWithId(id: String): Boolean
 
     suspend fun getExportationData(pageInfos: ExportPageInfos): List<SchedulerConfig> {
         val params = mutableListOf<Any>()

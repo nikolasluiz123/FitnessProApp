@@ -1,7 +1,6 @@
 package br.com.fitnesspor.service.data.access.extensions
 
 import br.com.fitnesspro.core.exceptions.ServiceException
-import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
@@ -146,7 +145,7 @@ private fun <R : IFitnessProServiceResponse> Response<R>.getGenericResponse(
     type: Type,
     convertAuthResponseToSpecificResponse: ((AuthenticationServiceResponse) -> R)? = null
 ): R {
-    val defaultGSon = GsonBuilder().defaultGSon()
+    val defaultGSon = GsonBuilder().defaultServiceGSon()
 
     return when {
         this.body() != null -> {

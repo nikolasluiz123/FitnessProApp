@@ -22,9 +22,7 @@ class SchedulerModuleImportationWorker @AssistedInject constructor(
     private val scheduleEntryPoint = EntryPointAccessors.fromApplication(context, IScheduleWorkersEntryPoint::class.java)
 
     override suspend fun onImport(serviceToken: String, lastUpdateDate: LocalDateTime?) {
-        scheduleEntryPoint.getSchedulerImportationRepository().import(serviceToken, lastUpdateDate)
-        scheduleEntryPoint.getReportsFromSchedulerImportationRepository().import(serviceToken, lastUpdateDate)
-        scheduleEntryPoint.getSchedulerReportImportationRepository().import(serviceToken, lastUpdateDate)
+        scheduleEntryPoint.getSchedulerModuleImportationRepository().import(serviceToken, lastUpdateDate)
     }
 
     override fun getModule() = EnumImportationModule.SCHEDULER

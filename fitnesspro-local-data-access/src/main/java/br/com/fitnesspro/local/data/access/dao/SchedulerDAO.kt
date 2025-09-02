@@ -178,7 +178,7 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
     abstract suspend fun executeQuerySchedulerList(query: SupportSQLiteQuery): List<TOScheduler>
 
     @Query("select exists ( select 1 from scheduler where id = :id )")
-    abstract suspend fun hasSchedulerWithId(id: String?): Boolean
+    abstract suspend fun hasEntityWithId(id: String?): Boolean
 
     suspend fun getExportationData(pageInfos: ExportPageInfos): List<Scheduler> {
         val params = mutableListOf<Any>()

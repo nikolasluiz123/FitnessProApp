@@ -8,6 +8,8 @@ import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.shared.communication.dtos.scheduler.interfaces.ISchedulerConfigDTO
+import br.com.fitnesspro.shared.communication.dtos.scheduler.interfaces.ISchedulerDTO
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
 import br.com.fitnesspro.to.TOScheduler
 import br.com.fitnesspro.to.TOSchedulerConfig
@@ -39,7 +41,7 @@ fun TOSchedulerConfig.getSchedulerConfig(): SchedulerConfig {
     return model
 }
 
-fun SchedulerConfigDTO.getSchedulerConfig(): SchedulerConfig {
+fun ISchedulerConfigDTO.getSchedulerConfig(): SchedulerConfig {
     val model = SchedulerConfig(
         notification = notification,
         notificationAntecedenceTime = notificationAntecedenceTime,
@@ -109,7 +111,7 @@ fun TOScheduler.getScheduler(): Scheduler {
     return model
 }
 
-fun SchedulerDTO.getScheduler(): Scheduler {
+fun ISchedulerDTO.getScheduler(): Scheduler {
     return Scheduler(
         id = id!!,
         academyMemberPersonId = academyMemberPersonId,

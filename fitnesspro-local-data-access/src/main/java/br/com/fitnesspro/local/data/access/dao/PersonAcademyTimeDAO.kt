@@ -86,7 +86,7 @@ abstract class PersonAcademyTimeDAO: IntegratedMaintenanceDAO<PersonAcademyTime>
     abstract suspend fun findPersonAcademyTimeById(id: String): PersonAcademyTime
 
     @Query("select exists(select 1 from person_academy_time where id = :personAcademyTimeId)")
-    abstract suspend fun hasPersonAcademyTimeWithId(personAcademyTimeId: String): Boolean
+    abstract suspend fun hasEntityWithId(personAcademyTimeId: String): Boolean
 
     suspend fun getExportationData(pageInfos: ExportPageInfos): List<PersonAcademyTime> {
         val params = mutableListOf<Any>()

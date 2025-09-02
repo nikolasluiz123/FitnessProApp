@@ -7,6 +7,9 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupPreDefinitionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IWorkoutDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IWorkoutGroupDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IWorkoutGroupPreDefinitionDTO
 import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.to.TOWorkoutGroupPreDefinition
@@ -85,7 +88,7 @@ fun TOWorkoutGroup.getWorkoutGroup(): WorkoutGroup {
     return model
 }
 
-fun WorkoutDTO.getWorkout(): Workout {
+fun IWorkoutDTO.getWorkout(): Workout {
     return Workout(
         id = id!!,
         active = active,
@@ -97,7 +100,7 @@ fun WorkoutDTO.getWorkout(): Workout {
     )
 }
 
-fun WorkoutGroupDTO.getWorkoutGroup(): WorkoutGroup {
+fun IWorkoutGroupDTO.getWorkoutGroup(): WorkoutGroup {
     return WorkoutGroup(
         id = id!!,
         name = name,
@@ -130,7 +133,7 @@ fun WorkoutGroupPreDefinition.getWorkoutGroupPreDefinitionDTO(): WorkoutGroupPre
     )
 }
 
-fun WorkoutGroupPreDefinitionDTO.getWorkoutGroupPreDefinition(): WorkoutGroupPreDefinition {
+fun IWorkoutGroupPreDefinitionDTO.getWorkoutGroupPreDefinition(): WorkoutGroupPreDefinition {
     return WorkoutGroupPreDefinition(
         id = id!!,
         name = name,

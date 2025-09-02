@@ -20,18 +20,7 @@ class WorkoutModuleExportationWorker @AssistedInject constructor(
     private val entryPoint = EntryPointAccessors.fromApplication(context, IWorkoutWorkersEntryPoint::class.java)
 
     override suspend fun onExport(serviceToken: String) {
-        entryPoint.getWorkoutExportationRepository().export(serviceToken)
-        entryPoint.getWorkoutGroupExportationRepository().export(serviceToken)
-        entryPoint.getExerciseExportationRepository().export(serviceToken)
-        entryPoint.getVideoExportationRepository().export(serviceToken)
-        entryPoint.getVideoExerciseExportationRepository().export(serviceToken)
-
-        entryPoint.getExerciseExecutionExportationRepository().export(serviceToken)
-        entryPoint.getVideoExerciseExecutionExportationRepository().export(serviceToken)
-
-        entryPoint.getWorkoutGroupPreDefinitionExportationRepository().export(serviceToken)
-        entryPoint.getExercisePreDefinitionExportationRepository().export(serviceToken)
-        entryPoint.getVideoExercisePreDefinitionExportationRepository().export(serviceToken)
+        entryPoint.getWorkoutModuleExportationRepository().export(serviceToken)
     }
 
     override fun getClazz() = javaClass

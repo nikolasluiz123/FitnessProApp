@@ -11,16 +11,17 @@ import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.sync.interfaces.ISyncDTO
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import kotlin.reflect.KClass
 
-abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO: MaintenanceDAO<MODEL>, FILTER: CommonImportFilter>(context: Context)
-    : AbstractSyncRepository<DAO>(context) {
+abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImportFilter>(context: Context)
+    : AbstractSyncRepository(context) {
 
     abstract suspend fun getImportationData(
         token: String,
@@ -28,9 +29,11 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
         pageInfos: ImportPageInfos
     ): ImportationServiceResponse<DTO>
 
-    abstract suspend fun hasEntityWithId(id: String): Boolean
+    abstract suspend fun executeSegregation(dto: DTO): List<ImportSegregationResult>
 
-    abstract suspend fun convertDTOToEntity(dto: DTO): MODEL
+    abstract fun convertDTOToEntity(dto: BaseDTO): BaseModel
+
+    abstract fun getMaintenanceDAO(modelClass: KClass<out BaseModel>): MaintenanceDAO<out BaseModel>
 
     @Suppress("UNCHECKED_CAST")
     open suspend fun getImportFilter(lastUpdateDate: LocalDateTime?): FILTER {
@@ -62,24 +65,24 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
                 )
 
                 when {
-                    response.success && response.values.isEmpty() -> {
+                    response.success && response.value!!.isEmpty() -> {
                         updateExecutionLogPackageWithSuccessIterationInfos(
                             logPackageId = response.executionLogPackageId,
-                            insertionList = emptyList(),
-                            updateList = emptyList(),
+                            insertionListCount = 0,
+                            updateListCount = 0,
                             serviceToken = serviceToken
                         )
                     }
 
                     response.success -> {
-                        val (insertionList, updateList) = executeSegregation(response)
+                        val segregationResult = executeSegregation(response.value!!)
 
-                        saveDataLocally(insertionList, updateList)
+                        saveDataLocally(segregationResult)
 
                         updateExecutionLogPackageWithSuccessIterationInfos(
                             logPackageId = response.executionLogPackageId,
-                            insertionList = insertionList,
-                            updateList = updateList,
+                            insertionListCount = segregationResult.sumOf { it.insertionList.size },
+                            updateListCount = segregationResult.sumOf { it.updateList.size },
                             serviceToken = serviceToken
                         )
 
@@ -90,7 +93,7 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
                         throw ServiceException(response.error!!)
                     }
                 }
-            } while (response.values.size == pageInfos.pageSize)
+            } while (response.value?.getMaxListSize() == pageInfos.pageSize)
 
             updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
         } catch (ex: Exception) {
@@ -105,6 +108,40 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
             }
 
             throw ex
+        }
+    }
+
+    protected suspend fun segregate(dtoList: List<BaseDTO>, hasEntityWithId: suspend (String) -> Boolean): ImportSegregationResult? {
+        return if (dtoList.isNotEmpty()) {
+            val insertionList = dtoList
+                .filter { !hasEntityWithId(it.id!!) }
+                .map { convertDTOToEntity(it) }
+
+            val updateList = dtoList
+                .filter { hasEntityWithId(it.id!!) }
+                .map { convertDTOToEntity(it) }
+
+            ImportSegregationResult(insertionList, updateList)
+        } else {
+            null
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    protected suspend fun saveDataLocally(segregationResult: List<ImportSegregationResult>) {
+        segregationResult.forEach { result ->
+            if (result.insertionList.isNotEmpty() || result.updateList.isNotEmpty()) {
+                val clazz = (result.insertionList.firstOrNull() ?: result.updateList.firstOrNull())!!::class
+                val maintenanceDAO = getMaintenanceDAO(clazz) as MaintenanceDAO<BaseModel>
+
+                if (result.insertionList.isNotEmpty()) {
+                    maintenanceDAO.insertBatch(result.insertionList)
+                }
+
+                if (result.updateList.isNotEmpty()) {
+                    maintenanceDAO.updateBatch(result.updateList)
+                }
+            }
         }
     }
 
@@ -163,15 +200,15 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
     private suspend fun updateExecutionLogPackageWithSuccessIterationInfos(
         serviceToken: String,
         logPackageId: String,
-        insertionList: List<MODEL>,
-        updateList: List<MODEL>,
+        insertionListCount: Int,
+        updateListCount: Int,
     ) {
         executionLogWebClient.updateLogPackageInformation(
             token = serviceToken,
             logPackageId = logPackageId,
             dto = UpdatableExecutionLogPackageInfosDTO(
-                insertedItemsCount = insertionList.size,
-                updatedItemsCount = updateList.size,
+                insertedItemsCount = insertionListCount,
+                updatedItemsCount = updateListCount,
                 clientExecutionEnd = dateTimeNow(ZoneOffset.UTC)
             )
         )
@@ -188,27 +225,5 @@ abstract class AbstractImportationRepository<DTO: BaseDTO, MODEL: BaseModel, DAO
                 state = EnumExecutionState.FINISHED
             )
         )
-    }
-
-    private suspend fun executeSegregation(response: ReadServiceResponse<DTO>): Pair<List<MODEL>, List<MODEL>> {
-        val insertionList = response.values
-            .filter { !hasEntityWithId(it.id!!) }
-            .map { convertDTOToEntity(it) }
-
-        val updateList = response.values
-            .filter { hasEntityWithId(it.id!!) }
-            .map { convertDTOToEntity(it) }
-
-        return Pair(insertionList, updateList)
-    }
-
-    private suspend fun saveDataLocally(insertionList: List<MODEL>, updateList: List<MODEL>) {
-        if (insertionList.isNotEmpty()) {
-            getOperationDAO().insertBatch(insertionList)
-        }
-
-        if (updateList.isNotEmpty()) {
-            getOperationDAO().updateBatch(updateList)
-        }
     }
 }

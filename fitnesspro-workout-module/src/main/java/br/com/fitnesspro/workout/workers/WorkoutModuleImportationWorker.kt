@@ -22,18 +22,7 @@ class WorkoutModuleImportationWorker @AssistedInject constructor(
     private val entryPoint = EntryPointAccessors.fromApplication(context, IWorkoutWorkersEntryPoint::class.java)
 
     override suspend fun onImport(serviceToken: String, lastUpdateDate: LocalDateTime?) {
-        entryPoint.getWorkoutImportationRepository().import(serviceToken, lastUpdateDate)
-        entryPoint.getWorkoutGroupImportationRepository().import(serviceToken, lastUpdateDate)
-        entryPoint.getExerciseImportationRepository().import(serviceToken, lastUpdateDate)
-        entryPoint.getVideoImportationRepository().import(serviceToken, lastUpdateDate)
-        entryPoint.getVideoExerciseImportationRepository().import(serviceToken, lastUpdateDate)
-
-        entryPoint.getExerciseExecutionImportationRepository().import(serviceToken, lastUpdateDate)
-        entryPoint.getVideoExerciseExecutionImportationRepository().import(serviceToken, lastUpdateDate)
-
-        entryPoint.getWorkoutGroupPreDefinitionImportationRepository().import(serviceToken, lastUpdateDate)
-        entryPoint.getExercisePreDefinitionImportationRepository().import(serviceToken, lastUpdateDate)
-        entryPoint.getVideoExercisePreDefinitionImportationRepository().import(serviceToken, lastUpdateDate)
+        entryPoint.getWorkoutModuleImportationRepository().import(serviceToken, lastUpdateDate)
     }
 
     override fun getModule() = EnumImportationModule.WORKOUT

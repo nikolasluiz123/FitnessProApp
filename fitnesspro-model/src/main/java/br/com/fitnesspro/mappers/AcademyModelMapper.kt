@@ -3,8 +3,9 @@ package br.com.fitnesspro.mappers
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.PersonAcademyTime
-import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IAcademyDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IPersonAcademyTimeDTO
 import br.com.fitnesspro.to.TOAcademy
 import br.com.fitnesspro.to.TOPersonAcademyTime
 
@@ -18,7 +19,7 @@ fun Academy.getTOAcademy(): TOAcademy {
     )
 }
 
-fun AcademyDTO.getAcademy(): Academy {
+fun IAcademyDTO.getAcademy(): Academy {
     return Academy(
         id = id!!,
         name = name,
@@ -56,7 +57,7 @@ fun TOPersonAcademyTime.getPersonAcademyTime(): PersonAcademyTime {
     return model
 }
 
-fun PersonAcademyTimeDTO.getPersonAcademyTime(): PersonAcademyTime {
+fun IPersonAcademyTimeDTO.getPersonAcademyTime(): PersonAcademyTime {
     return PersonAcademyTime(
         id = id!!,
         personId = personId,

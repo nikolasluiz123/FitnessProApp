@@ -1,10 +1,8 @@
 package br.com.fitnesspro.common.injection
 
 import android.content.Context
-import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
-import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspor.service.data.access.webclient.storage.StorageWebClient
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.ApplicationRepository
@@ -13,16 +11,10 @@ import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.ReportRepository
 import br.com.fitnesspro.common.repository.ServiceTokenRepository
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.common.repository.sync.exportation.PersonAcademyTimeExportationRepository
-import br.com.fitnesspro.common.repository.sync.exportation.PersonExportationRepository
-import br.com.fitnesspro.common.repository.sync.exportation.SchedulerConfigExportationRepository
+import br.com.fitnesspro.common.repository.sync.exportation.GeneralModuleExportationRepository
 import br.com.fitnesspro.common.repository.sync.exportation.storage.ReportStorageExportationRepository
 import br.com.fitnesspro.common.repository.sync.exportation.storage.VideoStorageExportationRepository
-import br.com.fitnesspro.common.repository.sync.importation.AcademyImportationRepository
-import br.com.fitnesspro.common.repository.sync.importation.PersonAcademyTimeImportationRepository
-import br.com.fitnesspro.common.repository.sync.importation.PersonImportationRepository
-import br.com.fitnesspro.common.repository.sync.importation.SchedulerConfigImportationRepository
-import br.com.fitnesspro.common.repository.sync.importation.UserImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.GeneralModuleImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.storage.ReportStorageImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.storage.VideoStorageImportationRepository
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
@@ -34,7 +26,6 @@ import br.com.fitnesspro.local.data.access.dao.DeviceDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.ReportDAO
-import br.com.fitnesspro.local.data.access.dao.SchedulerConfigDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerReportDAO
 import br.com.fitnesspro.local.data.access.dao.ServiceTokenDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
@@ -99,108 +90,6 @@ class SingletonCommonRepositoryModule {
             context = context,
             academyDAO = academyDAO,
             personAcademyTimeDAO = personAcademyTimeDAO,
-        )
-    }
-
-    @Provides
-    fun provideUserImportationRepository(
-        @ApplicationContext context: Context,
-        personWebClient: PersonWebClient,
-    ): UserImportationRepository {
-        return UserImportationRepository(
-            webClient = personWebClient,
-            context = context,
-        )
-    }
-
-    @Provides
-    fun provideAcademyImportationRepository(
-        @ApplicationContext context: Context,
-        academyDAO: AcademyDAO,
-        academyWebClient: AcademyWebClient,
-    ): AcademyImportationRepository {
-        return AcademyImportationRepository(
-            academyDAO = academyDAO,
-            academyWebClient = academyWebClient,
-            context = context,
-        )
-    }
-
-    @Provides
-    fun providePersonImportationRepository(
-        @ApplicationContext context: Context,
-        personDAO: PersonDAO,
-        personWebClient: PersonWebClient,
-    ): PersonImportationRepository {
-        return PersonImportationRepository(
-            personDAO = personDAO,
-            webClient = personWebClient,
-            context = context,
-        )
-    }
-
-    @Provides
-    fun providePersonAcademyTimeImportationRepository(
-        @ApplicationContext context: Context,
-        personAcademyTimeDAO: PersonAcademyTimeDAO,
-        personWebClient: PersonWebClient,
-    ): PersonAcademyTimeImportationRepository {
-        return PersonAcademyTimeImportationRepository(
-            personAcademyTimeDAO = personAcademyTimeDAO,
-            webClient = personWebClient,
-            context = context,
-        )
-    }
-
-    @Provides
-    fun provideSchedulerConfigImportationRepository(
-        @ApplicationContext context: Context,
-        schedulerConfigDAO: SchedulerConfigDAO,
-        schedulerWebClient: SchedulerWebClient,
-    ): SchedulerConfigImportationRepository {
-        return SchedulerConfigImportationRepository(
-            schedulerConfigDAO = schedulerConfigDAO,
-            webClient = schedulerWebClient,
-            context = context,
-        )
-    }
-
-    @Provides
-    fun providePersonExportationRepository(
-        @ApplicationContext context: Context,
-        personDAO: PersonDAO,
-        personWebClient: PersonWebClient
-    ): PersonExportationRepository {
-        return PersonExportationRepository(
-            personWebClient = personWebClient,
-            personDAO = personDAO,
-            context = context
-        )
-    }
-
-    @Provides
-    fun providePersonAcademyTimeExportationRepository(
-        @ApplicationContext context: Context,
-        personAcademyTimeDAO: PersonAcademyTimeDAO,
-        personWebClient: PersonWebClient
-    ): PersonAcademyTimeExportationRepository {
-        return PersonAcademyTimeExportationRepository(
-            personAcademyTimeDAO = personAcademyTimeDAO,
-            personWebClient = personWebClient,
-            context = context
-        )
-    }
-
-    @Provides
-    fun provideSchedulerConfigExportationRepository(
-        @ApplicationContext context: Context,
-        schedulerWebClient: SchedulerWebClient,
-        schedulerConfigDAO: SchedulerConfigDAO
-    ): SchedulerConfigExportationRepository {
-        return SchedulerConfigExportationRepository(
-            schedulerWebClient = schedulerWebClient,
-            schedulerConfigDAO = schedulerConfigDAO,
-            context = context
         )
     }
 
@@ -310,4 +199,17 @@ class SingletonCommonRepositoryModule {
         )
     }
 
+    @Provides
+    fun provideGeneralModuleImportationRepository(
+        @ApplicationContext context: Context,
+    ): GeneralModuleImportationRepository {
+        return GeneralModuleImportationRepository(context)
+    }
+
+    @Provides
+    fun provideGeneralModuleExportationRepository(
+        @ApplicationContext context: Context,
+    ): GeneralModuleExportationRepository {
+        return GeneralModuleExportationRepository(context)
+    }
 }

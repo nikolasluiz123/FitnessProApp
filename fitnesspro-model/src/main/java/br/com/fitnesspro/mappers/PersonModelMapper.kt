@@ -6,6 +6,7 @@ import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IPersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IUserDTO
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser
@@ -22,7 +23,7 @@ fun Person.getTOPerson(user: User): TOPerson {
     )
 }
 
-fun PersonDTO.getTOPerson(): TOPerson {
+fun IPersonDTO.getTOPerson(): TOPerson {
     return TOPerson(
         id = id,
         name = name,
@@ -58,7 +59,7 @@ fun TOPerson.getPersonDTO(): PersonDTO {
     )
 }
 
-fun PersonDTO.getPerson(): Person {
+fun IPersonDTO.getPerson(): Person {
     return Person(
         id = id!!,
         name = name,

@@ -1,10 +1,10 @@
 package br.com.fitnesspor.service.data.access.webclient.storage
 
 import android.content.Context
+import br.com.fitnesspor.service.data.access.extensions.defaultServiceGSon
 import br.com.fitnesspor.service.data.access.extensions.getResponseBody
 import br.com.fitnesspor.service.data.access.service.storage.IStorageService
 import br.com.fitnesspor.service.data.access.webclient.common.FitnessProWebClient
-import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketContentTypes
 import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketContentTypes.MP4
 import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketContentTypes.PDF
@@ -52,7 +52,7 @@ class StorageWebClient(
     }
 
     private fun convertIdsToRequestBody(ids: List<String>): RequestBody {
-        val idsJson = GsonBuilder().defaultGSon().toJson(ids)
+        val idsJson = GsonBuilder().defaultServiceGSon().toJson(ids)
         return idsJson.toRequestBody("application/json".toMediaTypeOrNull())
     }
 }

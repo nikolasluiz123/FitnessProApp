@@ -10,6 +10,10 @@ import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExercisePreDefinitionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExercisePreDefinitionDTO
 import br.com.fitnesspro.to.TOVideo
 import br.com.fitnesspro.to.TOVideoExercise
 import br.com.fitnesspro.to.TOVideoExerciseExecution
@@ -32,7 +36,7 @@ fun TOVideo.getVideo(): Video {
     return model
 }
 
-fun VideoDTO.getVideo(): Video {
+fun IVideoDTO.getVideo(): Video {
     return Video(
         id = id!!,
         extension = extension,
@@ -62,7 +66,7 @@ fun TOVideoExercise.getVideoExercise(): VideoExercise {
     return model
 }
 
-fun VideoExerciseDTO.getVideoExercise(): VideoExercise {
+fun IVideoExerciseDTO.getVideoExercise(): VideoExercise {
     return VideoExercise(
         id = id!!,
         exerciseId = exerciseId,
@@ -139,7 +143,7 @@ fun VideoExercisePreDefinition.getVideoExercisePreDefinitionDTO(): VideoExercise
     )
 }
 
-fun VideoExerciseExecutionDTO.getVideoExerciseExecution(): VideoExerciseExecution {
+fun IVideoExerciseExecutionDTO.getVideoExerciseExecution(): VideoExerciseExecution {
     return VideoExerciseExecution(
         id = id!!,
         exerciseExecutionId = exerciseExecutionId,
@@ -149,7 +153,7 @@ fun VideoExerciseExecutionDTO.getVideoExerciseExecution(): VideoExerciseExecutio
     )
 }
 
-fun VideoExercisePreDefinitionDTO.getVideoExercisePreDefinition(): VideoExercisePreDefinition {
+fun IVideoExercisePreDefinitionDTO.getVideoExercisePreDefinition(): VideoExercisePreDefinition {
     return VideoExercisePreDefinition(
         id = id!!,
         exercisePreDefinitionId = exercisePreDefinitionId,

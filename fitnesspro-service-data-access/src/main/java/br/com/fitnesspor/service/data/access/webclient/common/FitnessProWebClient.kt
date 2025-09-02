@@ -199,7 +199,6 @@ abstract class FitnessProWebClient(private val context: Context) {
                     ImportationServiceResponse(
                         executionLogId = "",
                         executionLogPackageId = "",
-                        values = emptyList(),
                         success = false,
                         error = context.getString(R.string.message_connect_exception),
                         code = HttpURLConnection.HTTP_BAD_REQUEST,
@@ -210,7 +209,6 @@ abstract class FitnessProWebClient(private val context: Context) {
                     ImportationServiceResponse(
                         executionLogId = "",
                         executionLogPackageId = "",
-                        values = emptyList(),
                         success = false,
                         error = context.getString(R.string.message_connect_exception),
                         code = HttpURLConnection.HTTP_UNAVAILABLE,

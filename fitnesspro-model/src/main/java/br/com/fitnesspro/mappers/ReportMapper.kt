@@ -7,6 +7,8 @@ import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.model.general.report.SchedulerReport
 import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.SchedulerReportDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IReportDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.ISchedulerReportDTO
 import br.com.fitnesspro.to.TOReport
 import br.com.fitnesspro.to.TOSchedulerReport
 import br.com.fitnesspro.shared.communication.enums.report.EnumReportContext as EnumReportContextService
@@ -39,7 +41,7 @@ fun TOSchedulerReport.getSchedulerReport(): SchedulerReport {
     return model
 }
 
-fun ReportDTO.getReport(): Report {
+fun IReportDTO.getReport(): Report {
     return Report(
         id = id!!,
         name = name,
@@ -55,7 +57,7 @@ fun ReportDTO.getReport(): Report {
     )
 }
 
-fun SchedulerReportDTO.getSchedulerReport(): SchedulerReport {
+fun ISchedulerReportDTO.getSchedulerReport(): SchedulerReport {
     return SchedulerReport(
         id = id!!,
         transmissionState = TRANSMITTED,

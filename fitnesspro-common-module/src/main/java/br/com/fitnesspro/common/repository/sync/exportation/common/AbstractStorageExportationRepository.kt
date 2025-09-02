@@ -2,6 +2,7 @@ package br.com.fitnesspro.common.repository.sync.exportation.common
 
 import android.content.Context
 import android.util.Log
+import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
 import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.core.utils.FileUtils
@@ -12,19 +13,23 @@ import br.com.fitnesspro.model.base.FileModel
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.base.StorageModel
 import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.responses.StorageServiceResponse
 import java.io.File
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMaintenanceDAO<MODEL>>(context: Context)
-    : AbstractCommonExportationRepository<MODEL, DAO>(context)
+abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMaintenanceDAO<MODEL>>(context: Context) : AbstractSyncRepository(context)
     where MODEL: IntegratedModel, MODEL: StorageModel, MODEL: FileModel {
 
     abstract suspend fun getExportationModels(pageInfos: ExportPageInfos): List<MODEL>
 
     abstract suspend fun callExportationService(modelIds: List<String>, files: List<File>, token: String): StorageServiceResponse
+
+    abstract fun getOperationDAO(): DAO
 
     open fun getExportationFiles(paths: List<String>): List<File> {
         return FileUtils.getFileListFromPaths(paths)
@@ -114,5 +119,81 @@ abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMainte
         }
 
         getOperationDAO().updateBatch(models, writeTransmissionState = false)
+    }
+
+    protected suspend fun updateLogWithStartRunningInfos(
+        serviceToken: String,
+        logId: String,
+        logPackageId: String,
+        pageInfos: ExportPageInfos,
+        clientStartDateTime: LocalDateTime
+    ) {
+        executionLogWebClient.updateLogInformation(
+            token = serviceToken,
+            logId = logId,
+            dto = UpdatableExecutionLogInfosDTO(
+                pageSize = pageInfos.pageSize
+            )
+        )
+
+        executionLogWebClient.updateLogPackageInformation(
+            token = serviceToken,
+            logPackageId = logPackageId,
+            dto = UpdatableExecutionLogPackageInfosDTO(
+                clientExecutionStart = clientStartDateTime
+            )
+        )
+    }
+
+    protected suspend fun updateExecutionLogPackageWithSuccessIterationInfos(
+        serviceToken: String,
+        logPackageId: String,
+        models: List<MODEL>,
+        clientExecutionEnd: LocalDateTime
+    ) {
+        executionLogWebClient.updateLogPackageInformation(
+            token = serviceToken,
+            logPackageId = logPackageId,
+            dto = UpdatableExecutionLogPackageInfosDTO(
+                allItemsCount = models.size,
+                clientExecutionEnd = clientExecutionEnd
+            )
+        )
+    }
+
+    protected suspend fun updateLogWithFinalizationInfos(serviceToken: String, logId: String) {
+        executionLogWebClient.updateLogInformation(
+            token = serviceToken,
+            logId = logId,
+            dto = UpdatableExecutionLogInfosDTO(
+                state = EnumExecutionState.FINISHED
+            )
+        )
+    }
+
+    protected suspend fun updateLogPackageWithErrorInfos(
+        serviceToken: String,
+        logId: String,
+        logPackageId: String,
+        exception: Exception,
+        clientStartDateTime: LocalDateTime
+    ) {
+        executionLogWebClient.updateLogInformation(
+            token = serviceToken,
+            logId = logId,
+            dto = UpdatableExecutionLogInfosDTO(
+                state = EnumExecutionState.ERROR
+            )
+        )
+
+        executionLogWebClient.updateLogPackageInformation(
+            token = serviceToken,
+            logPackageId = logPackageId,
+            dto = UpdatableExecutionLogPackageInfosDTO(
+                clientExecutionStart = clientStartDateTime,
+                clientExecutionEnd = dateTimeNow(ZoneOffset.UTC),
+                error = exception.stackTraceToString(),
+            )
+        )
     }
 }

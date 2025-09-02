@@ -1,25 +1,22 @@
 package br.com.fitnesspor.service.data.access.injection
 
 import android.content.Context
-import br.com.fitnesspor.service.data.access.service.general.IAcademyService
 import br.com.fitnesspor.service.data.access.service.general.IAuthenticationService
 import br.com.fitnesspor.service.data.access.service.general.IPersonService
-import br.com.fitnesspor.service.data.access.service.general.IReportService
 import br.com.fitnesspor.service.data.access.service.log.IExecutionLogService
 import br.com.fitnesspor.service.data.access.service.scheduler.ISchedulerService
 import br.com.fitnesspor.service.data.access.service.storage.IStorageService
-import br.com.fitnesspor.service.data.access.service.workout.IExerciseService
-import br.com.fitnesspor.service.data.access.service.workout.IVideoService
-import br.com.fitnesspor.service.data.access.service.workout.IWorkoutService
-import br.com.fitnesspor.service.data.access.webclient.general.AcademyWebClient
+import br.com.fitnesspor.service.data.access.service.sync.GeneralModuleSyncService
+import br.com.fitnesspor.service.data.access.service.sync.SchedulerModuleSyncService
+import br.com.fitnesspor.service.data.access.service.sync.WorkoutModuleSyncService
 import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
-import br.com.fitnesspor.service.data.access.webclient.general.ReportWebClient
 import br.com.fitnesspor.service.data.access.webclient.log.ExecutionLogWebClient
 import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspor.service.data.access.webclient.storage.StorageWebClient
-import br.com.fitnesspor.service.data.access.webclient.workout.ExerciseWebClient
-import br.com.fitnesspor.service.data.access.webclient.workout.WorkoutWebClient
+import br.com.fitnesspor.service.data.access.webclient.sync.GeneralModuleSyncWebClient
+import br.com.fitnesspor.service.data.access.webclient.sync.SchedulerModuleSyncWebClient
+import br.com.fitnesspor.service.data.access.webclient.sync.WorkoutModuleSyncWebClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,17 +26,6 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 class SingletonWebClientModule {
-
-    @Provides
-    fun provideAcademyWebClient(
-        @ApplicationContext context: Context,
-        academyService: IAcademyService
-    ): AcademyWebClient {
-        return AcademyWebClient(
-            context = context,
-            academyService = academyService
-        )
-    }
 
     @Provides
     fun provideAuthenticationWebClient(
@@ -86,41 +72,6 @@ class SingletonWebClientModule {
     }
 
     @Provides
-    fun provideExerciseWebClient(
-        @ApplicationContext context: Context,
-        exerciseService: IExerciseService,
-        videoService: IVideoService
-    ): ExerciseWebClient {
-        return ExerciseWebClient(
-            context = context,
-            exerciseService = exerciseService,
-            videoService = videoService
-        )
-    }
-
-    @Provides
-    fun provideWorkoutWebClient(
-        @ApplicationContext context: Context,
-        workoutService: IWorkoutService
-    ): WorkoutWebClient {
-        return WorkoutWebClient(
-            context = context,
-            workoutService = workoutService
-        )
-    }
-
-    @Provides
-    fun provideReportWebClient(
-        @ApplicationContext context: Context,
-        reportService: IReportService
-    ): ReportWebClient {
-        return ReportWebClient(
-            context = context,
-            reportService = reportService
-        )
-    }
-
-    @Provides
     fun provideStorageWebClient(
         @ApplicationContext context: Context,
         storageService: IStorageService
@@ -131,4 +82,36 @@ class SingletonWebClientModule {
         )
     }
 
+    @Provides
+    fun provideGeneralModuleSyncWebClient(
+        @ApplicationContext context: Context,
+        service: GeneralModuleSyncService
+    ): GeneralModuleSyncWebClient {
+        return GeneralModuleSyncWebClient(
+            context = context,
+            service = service
+        )
+    }
+
+    @Provides
+    fun provideSchedulerModuleSyncWebClient(
+        @ApplicationContext context: Context,
+        service: SchedulerModuleSyncService
+    ): SchedulerModuleSyncWebClient {
+        return SchedulerModuleSyncWebClient(
+            context = context,
+            service = service
+        )
+    }
+
+    @Provides
+    fun provideWorkoutModuleSyncWebClient(
+        @ApplicationContext context: Context,
+        service: WorkoutModuleSyncService
+    ): WorkoutModuleSyncWebClient {
+        return WorkoutModuleSyncWebClient(
+            context = context,
+            service = service
+        )
+    }
 }

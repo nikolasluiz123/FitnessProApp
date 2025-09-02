@@ -109,7 +109,7 @@ abstract class PersonDAO: IntegratedMaintenanceDAO<Person>() {
     abstract fun executeQueryPersonsWithUserType(query: SupportSQLiteQuery): PagingSource<Int, PersonTuple>
 
     @Query("select exists (select 1 from person where id = :id)")
-    abstract suspend fun hasPersonWithId(id: String): Boolean
+    abstract suspend fun hasEntityWithId(id: String): Boolean
 
     suspend fun getExportationData(pageInfos: ExportPageInfos): List<Person> {
         val params = mutableListOf<Any>()

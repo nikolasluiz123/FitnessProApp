@@ -66,7 +66,7 @@ abstract class UserDAO: IntegratedMaintenanceDAO<User>() {
     abstract suspend fun findByPersonId(personId: String): User
 
     @Query("select exists (select 1 from user where id = :id)")
-    abstract suspend fun hasUserWithId(id: String): Boolean
+    abstract suspend fun hasEntityWithId(id: String): Boolean
 
     @Query("select exists (select 1 from user where email = :email and password = :password)")
     abstract suspend fun hasUserWithEmailAndPassword(email: String, password: String): Boolean

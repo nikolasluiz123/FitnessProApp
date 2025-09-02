@@ -9,6 +9,10 @@ import br.com.fitnesspro.model.workout.predefinition.ExercisePreDefinition
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExercisePreDefinitionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExercisePreDefinitionDTO
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOExerciseExecution
 import br.com.fitnesspro.to.TOExercisePreDefinition
@@ -70,6 +74,10 @@ fun TOExercise.getExercise(): Exercise {
 }
 
 fun Exercise.getExerciseDTO(workoutGroup: WorkoutGroup?): ExerciseDTO {
+    return getExerciseDTO(workoutGroup?.getWorkoutGroupDTO())
+}
+
+fun Exercise.getExerciseDTO(workoutGroup: WorkoutGroupDTO?): ExerciseDTO {
     return ExerciseDTO(
         id = id,
         name = name,
@@ -78,13 +86,13 @@ fun Exercise.getExerciseDTO(workoutGroup: WorkoutGroup?): ExerciseDTO {
         sets = sets,
         rest = rest,
         observation = observation,
-        workoutGroupDTO = workoutGroup?.getWorkoutGroupDTO(),
+        workoutGroupDTO = workoutGroup,
         active = active,
         exerciseOrder = exerciseOrder
     )
 }
 
-fun ExerciseDTO.getExercise(): Exercise {
+fun IExerciseDTO.getExercise(): Exercise {
     return Exercise(
         id = id!!,
         name = name,
@@ -178,7 +186,7 @@ fun ExercisePreDefinition.getExercisePreDefinitionDTO(): ExercisePreDefinitionDT
     )
 }
 
-fun ExerciseExecutionDTO.getExerciseExecution(): ExerciseExecution {
+fun IExerciseExecutionDTO.getExerciseExecution(): ExerciseExecution {
     return ExerciseExecution(
         id = id!!,
         exerciseId = exerciseId,
@@ -193,7 +201,7 @@ fun ExerciseExecutionDTO.getExerciseExecution(): ExerciseExecution {
     )
 }
 
-fun ExercisePreDefinitionDTO.getExercisePreDefinition(): ExercisePreDefinition {
+fun IExercisePreDefinitionDTO.getExercisePreDefinition(): ExercisePreDefinition {
     return ExercisePreDefinition(
         id = id!!,
         name = name,
