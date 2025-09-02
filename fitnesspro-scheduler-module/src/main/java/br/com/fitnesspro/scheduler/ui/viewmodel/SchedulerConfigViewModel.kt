@@ -48,6 +48,7 @@ class SchedulerConfigViewModel @Inject constructor(
                 getCurrentState = { _uiState.value.notificationAntecedenceTime },
                 onValueChange = { state, value ->
                     _uiState.value = _uiState.value.copy(
+                        notificationAntecedenceTime = state,
                         toConfig = _uiState.value.toConfig.copy(notificationAntecedenceTime = value)
                     )
                 }
@@ -56,6 +57,7 @@ class SchedulerConfigViewModel @Inject constructor(
                 getCurrentState = { _uiState.value.minEventDensity },
                 onValueChange = { state, value ->
                     _uiState.value = _uiState.value.copy(
+                        minEventDensity = state,
                         toConfig = _uiState.value.toConfig.copy(minScheduleDensity = value)
                     )
                 }
@@ -64,6 +66,7 @@ class SchedulerConfigViewModel @Inject constructor(
                 getCurrentState = { _uiState.value.maxEventDensity },
                 onValueChange = { state, value ->
                     _uiState.value = _uiState.value.copy(
+                        maxEventDensity = state,
                         toConfig = _uiState.value.toConfig.copy(maxScheduleDensity = value)
                     )
                 }
