@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.ExerciseExecutionDAO
 import br.com.fitnesspro.mappers.getExerciseExecution
 import br.com.fitnesspro.mappers.getTOExerciseExecution
+import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.to.TOExerciseExecution
 import br.com.fitnesspro.to.TOVideoExerciseExecution
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
@@ -69,11 +72,28 @@ class ExerciseExecutionRepository(
     }
 
     suspend fun inactivateExerciseExecution(exerciseExecutionId: String) {
-        val exercise = exerciseExecutionDAO.findById(exerciseExecutionId)!!.apply {
+        val exerciseExecution = exerciseExecutionDAO.findById(exerciseExecutionId)!!.apply {
             active = false
         }
 
-        exerciseExecutionDAO.update(exercise, true)
+        exerciseExecutionDAO.update(exerciseExecution, true)
         videoRepository.inactivateVideoExerciseExecution(listOf(exerciseExecutionId))
+
+        reorderExecutions(exerciseExecution)
+    }
+
+    private suspend fun reorderExecutions(exerciseExecution: ExerciseExecution) {
+        val exercisesReorder = exerciseExecutionDAO.getListActiveExerciseExecution(
+            exerciseId = exerciseExecution.exerciseId!!,
+            date = exerciseExecution.date.format(EnumDateTimePatterns.DATE_SQLITE)
+        )
+
+        if (exercisesReorder.isNotEmpty()) {
+            exercisesReorder.forEachIndexed { index, exerciseExecution ->
+                exerciseExecution.actualSet = index + 1
+            }
+
+            exerciseExecutionDAO.updateBatch(exercisesReorder, true)
+        }
     }
 }

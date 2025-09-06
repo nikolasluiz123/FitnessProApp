@@ -19,7 +19,7 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
     @Query("select * from exercise_execution where id = :id")
     abstract suspend fun findById(id: String): ExerciseExecution?
 
-    @Query("select count(id) + 1 from exercise_execution where exercise_id = :exerciseId")
+    @Query("select count(id) + 1 from exercise_execution where exercise_id = :exerciseId and active = 1")
     abstract suspend fun getActualExecutionSet(exerciseId: String): Int
 
     fun getListExerciseExecutionGrouped(exerciseId: String): PagingSource<Int, ExerciseExecutionGroupedTuple> {
@@ -145,4 +145,15 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
 
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<ExerciseExecution>
+
+    @Query(
+"""
+            select * 
+            from exercise_execution
+            where exercise_id = :exerciseId
+            and date(date) = :date
+            and active = 1
+        """
+    )
+    abstract suspend fun getListActiveExerciseExecution(exerciseId: String, date: String): List<ExerciseExecution>
 }
