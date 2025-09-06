@@ -27,6 +27,7 @@ import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.ui.navigation.RegisterEvolutionScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.registerEvolutionScreenArguments
 import br.com.fitnesspro.workout.ui.state.RegisterEvolutionUIState
+import br.com.fitnesspro.workout.usecase.exercise.InactivateExerciseExecutionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.SaveExerciseExecutionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseExecutionFields
 import br.com.fitnesspro.workout.usecase.exercise.exception.VideoException
@@ -52,6 +53,7 @@ class RegisterEvolutionViewModel @Inject constructor(
     private val saveVideoExecutionFromGalleryUseCase: SaveVideoExecutionFromGalleryUseCase,
     private val saveExerciseExecutionUseCase: SaveExerciseExecutionUseCase,
     private val inactivateVideoExecutionUseCase: InactivateVideoExecutionUseCase,
+    private val inactivateExerciseExecutionUseCase: InactivateExerciseExecutionUseCase,
     savedStateHandle: SavedStateHandle
 ): FitnessProStatefulViewModel() {
 
@@ -412,5 +414,21 @@ class RegisterEvolutionViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    fun onInactivateExecution(onSuccess: () -> Unit) {
+        _uiState.value.toExerciseExecution.id?.let {
+            _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
+                message = context.getString(R.string.register_evolution_screen_msg_confirm_inactivate),
+                onConfirm = {
+                    _uiState.value.onToggleLoading()
+
+                    launch {
+                        inactivateExerciseExecutionUseCase(it)
+                        onSuccess()
+                    }
+                }
+            )
+        }
     }
 }

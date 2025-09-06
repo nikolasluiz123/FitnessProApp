@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -44,8 +45,10 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCamera
+import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonGallery
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
@@ -60,6 +63,7 @@ import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.ui.screen.evolution.callbacks.OnInactivateExecutionClick
 import br.com.fitnesspro.workout.ui.screen.evolution.callbacks.OnSaveExerciseExecution
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnFinishVideoRecording
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnOpenCameraVideo
@@ -88,7 +92,8 @@ fun RegisterEvolutionScreen(
         onVideoClick = viewModel::onVideoClick,
         onSaveRegisterEvolution = viewModel::onSaveRegisterEvolution,
         onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos,
-        onVideoDeleteClick = viewModel::onDeleteVideo
+        onVideoDeleteClick = viewModel::onDeleteVideo,
+        onInactivateExecutionClick = viewModel::onInactivateExecution,
     )
 }
 
@@ -103,7 +108,8 @@ fun RegisterEvolutionScreen(
     onVideoClick: OnVideoClick? = null,
     onSaveRegisterEvolution: OnSaveExerciseExecution? = null,
     onExecuteLoad: () -> Unit = { },
-    onVideoDeleteClick: (String, () -> Unit) -> Unit = { _, _ -> }
+    onVideoDeleteClick: (String, () -> Unit) -> Unit = { _, _ -> },
+    onInactivateExecutionClick: OnInactivateExecutionClick? = null,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
@@ -146,15 +152,32 @@ fun RegisterEvolutionScreen(
                 onBackClick = onBackClick
             )
         },
-        floatingActionButton = {
+        bottomBar = {
             AnimatedVisibility(
                 visible = state.fabVisible,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                FloatingActionButtonSave(
-                    onClick = {
-                        onSave(keyboardController, state, onSaveRegisterEvolution, coroutineScope, snackbarHostState, context)
+                FitnessProBottomAppBar(
+                    modifier = Modifier.imePadding(),
+                    actions = {
+                        IconButtonDelete(
+                            onClick = {
+                                onInactivateExecutionClick?.onExecute {
+                                    state.onToggleLoading()
+                                    onBackClick()
+                                }
+                            }
+                        )
+                    },
+                    floatingActionButton = {
+                        FloatingActionButtonSave(
+                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            onClick = {
+                                onSave(keyboardController, state, onSaveRegisterEvolution, coroutineScope, snackbarHostState, context)
+                            }
+                        )
                     }
                 )
             }

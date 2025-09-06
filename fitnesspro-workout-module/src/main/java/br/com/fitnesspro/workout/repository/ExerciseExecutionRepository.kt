@@ -67,4 +67,13 @@ class ExerciseExecutionRepository(
             }
         )
     }
+
+    suspend fun inactivateExerciseExecution(exerciseExecutionId: String) {
+        val exercise = exerciseExecutionDAO.findById(exerciseExecutionId)!!.apply {
+            active = false
+        }
+
+        exerciseExecutionDAO.update(exercise, true)
+        videoRepository.inactivateVideoExerciseExecution(listOf(exerciseExecutionId))
+    }
 }

@@ -9,6 +9,7 @@ import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
 import br.com.fitnesspro.workout.usecase.exercise.EditWorkoutGroupPreDefinitionUseCase
+import br.com.fitnesspro.workout.usecase.exercise.InactivateExerciseExecutionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.InactivateExercisePreDefinitionUseCase
 import br.com.fitnesspro.workout.usecase.exercise.InactivateExerciseUseCase
 import br.com.fitnesspro.workout.usecase.exercise.InactivateWorkoutGroupPreDefinitionUseCase
@@ -255,6 +256,15 @@ class SingletonWorkoutUseCaseModule {
     ): InactivateVideoPreDefinitionUseCase {
         return InactivateVideoPreDefinitionUseCase(
             videoRepository = videoRepository,
+        )
+    }
+
+    @Provides
+    fun provideInactivateExerciseExecutionUseCase(
+        exerciseExecutionRepository: ExerciseExecutionRepository,
+    ): InactivateExerciseExecutionUseCase {
+        return InactivateExerciseExecutionUseCase(
+            exerciseExecutionRepository = exerciseExecutionRepository,
         )
     }
 

@@ -158,4 +158,5 @@
     <string name="workout_group_pre_definition_edit_dialog_title">Grupo %s</string>
     <string name="video_delete_success_message">Vídeo deletado com sucesso</string>
     <string name="msg_delete_video_confirmation">Tem certeza que deseja deletar permanentemente esse vídeo? Essa ação não poderá ser desfeita.</string>
+    <string name="register_evolution_screen_msg_confirm_inactivate">Você tem certeza de que deseja excluir esse registro de evolução? Essa ação não poderá ser desfeita.</string>
 </resources>
