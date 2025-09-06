@@ -247,7 +247,8 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
         updateState: (newState: DialogListTextField<T>) -> Unit,
         dialogTitle: String,
         onDataListItemClick: (item: T) -> Unit,
-        getDataList: suspend (String) -> List<T>
+        getDataList: suspend (String) -> List<T>,
+        onChange: (String) -> Unit
     ): DialogListTextField<T> {
         return DialogListTextField(
             dialogListState = createDialogListState(
@@ -267,6 +268,7 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
             ),
             onChange = { newText ->
                 val newState = getCurrentState().copy(value = newText, errorMessage = "")
+                onChange(newText)
                 updateState(newState)
             }
         )

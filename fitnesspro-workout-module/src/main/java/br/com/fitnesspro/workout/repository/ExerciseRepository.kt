@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.repository
 
 import android.content.Context
+import android.util.Log
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.mappers.getExercise
@@ -62,6 +63,7 @@ class ExerciseRepository(
         }
 
         toExercise.id = exercise.id
+        Log.i("Teste", "saveExerciseLocally: toExercise.id = ${toExercise.id}")
     }
 
     suspend fun inactivateExercisesFromWorkoutGroupLocally(listWorkoutGroupId: List<String>) {

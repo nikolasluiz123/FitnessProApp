@@ -2,6 +2,7 @@ package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
 import br.com.fitnesspro.common.repository.PersonRepository
@@ -82,6 +83,11 @@ class ExerciseViewModel @Inject constructor(
                 updateState = { _uiState.value = _uiState.value.copy(group = it) },
                 dialogTitle = context.getString(R.string.exercise_screen_group_dialog_list_title),
                 getDataList = { getListWorkoutGroups(it) },
+                onChange = {
+                    _uiState.value = _uiState.value.copy(
+                        toExercise = _uiState.value.toExercise.copy(workoutGroupName = it)
+                    )
+                },
                 onDataListItemClick = {
                     _uiState.value = _uiState.value.copy(
                         toExercise = _uiState.value.toExercise.copy(
@@ -107,7 +113,16 @@ class ExerciseViewModel @Inject constructor(
                 getDataListFlow = ::getListExercisesAndPreDefinitions,
                 onDataListItemClick = {
                     _uiState.value = _uiState.value.copy(
-                        toExercise = it
+                        toExercise = _uiState.value.toExercise.copy(
+                            name = it.name,
+                            preDefinition = it.preDefinition,
+                            sets = it.sets,
+                            repetitions = it.repetitions,
+                            rest = it.rest,
+                            unitRest = it.unitRest,
+                            duration = it.duration,
+                            unitDuration = it.unitDuration,
+                        )
                     )
 
                     if (it.preDefinition) {
@@ -319,6 +334,7 @@ class ExerciseViewModel @Inject constructor(
     }
 
     private suspend fun loadExerciseInfoEdition(exerciseId: String?) {
+        Log.i("Teste", "loadExerciseInfoEdition: exerciseId = ${exerciseId}")
         exerciseId?.let { id ->
             val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
             val toExercise = exerciseRepository.findById(id)
