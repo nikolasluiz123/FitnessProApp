@@ -24,7 +24,7 @@ data class RegisterEvolutionUIState(
     val videoGalleryState: VideoGalleryState = VideoGalleryState(),
     var notSavedVideoFiles: MutableList<File> = mutableListOf(),
     val onFabVisibilityChange: (Boolean) -> Unit = {},
-    val fabVisible: Boolean = true,
+    val bottomBarVisible: Boolean = true,
     override val messageDialogState: MessageDialogState = MessageDialogState(),
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = { },

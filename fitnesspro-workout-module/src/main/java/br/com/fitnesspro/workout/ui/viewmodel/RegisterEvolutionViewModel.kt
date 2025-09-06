@@ -141,7 +141,7 @@ class RegisterEvolutionViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(showLoading = _uiState.value.showLoading.not())
             },
             onFabVisibilityChange = {
-                _uiState.value = _uiState.value.copy(fabVisible = it)
+                _uiState.value = _uiState.value.copy(bottomBarVisible = it)
             }
         )
     }

@@ -4,8 +4,11 @@ import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -29,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -154,9 +158,15 @@ fun RegisterEvolutionScreen(
         },
         bottomBar = {
             AnimatedVisibility(
-                visible = state.fabVisible,
-                enter = fadeIn(),
-                exit = fadeOut()
+                visible = state.bottomBarVisible,
+                enter = expandVertically(
+                    expandFrom = Alignment.Bottom,
+                    animationSpec = tween(durationMillis = 500)
+                ) + fadeIn(),
+                exit = shrinkVertically(
+                    shrinkTowards = Alignment.Bottom,
+                    animationSpec = tween(durationMillis = 500)
+                ) + fadeOut()
             ) {
                 FitnessProBottomAppBar(
                     modifier = Modifier.imePadding(),
@@ -210,7 +220,7 @@ fun RegisterEvolutionScreen(
             ConstraintLayout(
                 Modifier
                     .fillMaxSize()
-                    .padding(8.dp)
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp)
                     .nestedScroll(nestedScrollConnection)
                     .verticalScroll(scrollState)
             ) {
