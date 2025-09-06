@@ -161,7 +161,8 @@ class SchedulerViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(
                 userType = userType,
                 toSchedulerConfig = schedulerConfigRepository.getTOSchedulerConfigByPersonId(toPerson.id!!),
-                isVisibleFabRecurrentScheduler = userType == EnumUserType.PERSONAL_TRAINER
+                isVisibleFabRecurrentScheduler = userType == EnumUserType.PERSONAL_TRAINER,
+                executeLoad = false,
             )
         }
     }

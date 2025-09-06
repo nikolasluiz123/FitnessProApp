@@ -166,9 +166,7 @@ fun SchedulerScreen(
             if (state.executeLoad) {
                 onExecuteLoad()
             }
-        }
 
-        LaunchedEffect(Unit) {
             onUpdateSchedules()
         }
 
