@@ -90,7 +90,7 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by groupDate desc, sortOrder asc, id desc ")
+            add(" order by groupDate desc, sortOrder asc, actual_set asc, id desc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
