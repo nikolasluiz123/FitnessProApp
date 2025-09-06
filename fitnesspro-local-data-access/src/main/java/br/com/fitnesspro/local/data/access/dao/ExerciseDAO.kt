@@ -65,6 +65,9 @@ abstract class ExerciseDAO: IntegratedMaintenanceDAO<Exercise>() {
     @Query("select * from exercise where workout_group_id in (:listWorkoutGroupId)")
     abstract suspend fun findExercisesFromWorkoutGroup(listWorkoutGroupId: List<String>): List<Exercise>
 
+    @Query("select count(id) from exercise where workout_group_id = :workoutGroupId and active = 1")
+    abstract suspend fun getCountExercisesFromWorkoutGroup(workoutGroupId: String): Int
+
     @Query("select exists(select 1 from exercise where id = :id)")
     abstract suspend fun hasEntityWithId(id: String): Boolean
 

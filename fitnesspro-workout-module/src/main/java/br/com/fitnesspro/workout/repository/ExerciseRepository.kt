@@ -84,4 +84,8 @@ class ExerciseRepository(
         videoRepository.inactivateVideoExercise(listOf(exerciseId))
     }
 
+    suspend fun getCountExercisesFromWorkoutGroup(workoutGroupId: String): Int = withContext(IO) {
+        exerciseDAO.getCountExercisesFromWorkoutGroup(workoutGroupId)
+    }
+
 }

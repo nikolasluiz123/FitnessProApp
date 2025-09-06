@@ -306,8 +306,20 @@ class ExerciseViewModel @Inject constructor(
             loadExercises()
             loadExerciseInfoEdition(args.exerciseId)
             loadExerciseVideos(args.exerciseId)
+            loadExerciseOrder(args.workoutGroupId)
 
             _uiState.value.executeLoad = false
+        }
+    }
+
+    private suspend fun loadExerciseOrder(workoutGroupId: String?) {
+        if (!workoutGroupId.isNullOrEmpty() && _uiState.value.toExercise.exerciseOrder == null) {
+            val exerciseOrder = exerciseRepository.getCountExercisesFromWorkoutGroup(workoutGroupId) + 1
+
+            _uiState.value = _uiState.value.copy(
+                exerciseOrder = _uiState.value.exerciseOrder.copy(value = exerciseOrder.toStringOrEmpty()),
+                toExercise = _uiState.value.toExercise.copy(exerciseOrder = exerciseOrder)
+            )
         }
     }
 
