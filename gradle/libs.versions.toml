@@ -40,7 +40,7 @@ perfPluginVersion = "2.0.0"
 googlePlayAuthVersion = "21.4.0"
 workVersion = "2.10.2"
 media3Version = "1.7.1"
-sharedCommunicationVersion = "2.0.0-SNAPSHOT"
+sharedCommunicationVersion = "2.0.2-SNAPSHOT"
 
 [libraries]
 splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
