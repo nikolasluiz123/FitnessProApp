@@ -20,6 +20,7 @@ import br.com.fitnesspro.shared.communication.responses.SingleValueServiceRespon
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.tuple.PersonTuple
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
@@ -149,6 +150,13 @@ class PersonRepository(
             token = getValidToken(withoutAuthentication = true),
             email = email,
             password = password
+        )
+    }
+
+    suspend fun getPersonMembersFromPersonalTrainer(simpleFilter: String = ""): Flow<List<PersonTuple>> = withContext(IO) {
+        personDAO.getPersonMembersFromPersonalTrainer(
+            simpleFilter = simpleFilter,
+            authenticatedPersonId = getAuthenticatedTOPerson()?.id!!
         )
     }
 }

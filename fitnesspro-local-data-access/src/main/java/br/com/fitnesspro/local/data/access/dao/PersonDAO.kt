@@ -12,6 +12,7 @@ import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.tuple.PersonTuple
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import java.util.StringJoiner
 
@@ -141,4 +142,51 @@ abstract class PersonDAO: IntegratedMaintenanceDAO<Person>() {
 
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Person>
+
+    fun getPersonMembersFromPersonalTrainer(simpleFilter: String, authenticatedPersonId: String): Flow<List<PersonTuple>> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select person.id as id, ")
+            add("        person.name as name ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from person ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where person.active = 1 ")
+            add(" and exists ( ")
+            add("               select 1 ")
+            add("               from workout ")
+            add("               where workout.personal_trainer_person_id = ? ")
+            add("               and workout.academy_member_person_id = person.id ")
+            add("               and workout.active = 1 ")
+            add("            ) ")
+
+            params.add(authenticatedPersonId)
+
+            if (simpleFilter.isNotEmpty()) {
+                add(" and person.name like ? ")
+                params.add("%$simpleFilter%")
+            }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by person.name ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(orderBy.toString())
+        }
+
+        return executePersonMembersFromPersonalTrainer(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery(observedEntities = [Person::class])
+    abstract fun executePersonMembersFromPersonalTrainer(query: SupportSQLiteQuery): Flow<List<PersonTuple>>
 }

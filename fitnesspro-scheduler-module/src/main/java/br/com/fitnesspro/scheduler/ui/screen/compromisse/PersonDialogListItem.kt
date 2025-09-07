@@ -48,7 +48,7 @@ internal fun PersonDialogListItem(
             stringResource(
                 R.string.compromise_screen_label_professional_name_and_type,
                 person.name,
-                person.userType.getLabel(LocalContext.current)!!
+                person.userType?.getLabel(LocalContext.current)!!
             )
         }
 

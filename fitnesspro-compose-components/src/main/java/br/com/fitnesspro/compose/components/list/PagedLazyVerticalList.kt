@@ -1,9 +1,7 @@
 package br.com.fitnesspro.compose.components.list
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,7 +9,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -23,7 +20,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import br.com.fitnesspro.compose.components.R
-import br.com.fitnesspro.core.theme.LabelTextStyle
+import br.com.fitnesspro.compose.components.gallery.video.components.EmptyState
 
 @Composable
 fun <T: Any> PagedLazyVerticalList(
@@ -109,19 +106,10 @@ fun <T: Any> PagedLazyVerticalList(
         }
     } else {
         emptyMessageResId?.let { emptyMessage ->
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = emptyMessage),
-                    style = LabelTextStyle,
-                    textAlign = TextAlign.Center,
-                    color = emptyStateTextColor
-                )
-            }
+            EmptyState(
+                emptyMessage = stringResource(id = emptyMessage),
+                color = emptyStateTextColor
+            )
         }
     }
 }

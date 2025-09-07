@@ -159,4 +159,8 @@
     <string name="video_delete_success_message">Vídeo deletado com sucesso</string>
     <string name="msg_delete_video_confirmation">Tem certeza que deseja deletar permanentemente esse vídeo? Essa ação não poderá ser desfeita.</string>
     <string name="register_evolution_screen_msg_confirm_inactivate">Você tem certeza de que deseja excluir esse registro de evolução? Essa ação não poderá ser desfeita.</string>
+    <string name="members_evolution_screen_title">Membros</string>
+    <string name="members_evolution_empty_message">Não existem membros realizando treinamento com seu acompanhamento</string>
+    <string name="member_item_label_name">Nome</string>
+    <string name="members_evolution_screen_simple_filter_placeholder">Buscar por Nome</string>
 </resources>

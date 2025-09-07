@@ -8,12 +8,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.core.theme.LabelTextStyle
 
 @Composable
-internal fun EmptyState(emptyMessage: String) {
+internal fun EmptyState(
+    emptyMessage: String,
+    color: Color = MaterialTheme.colorScheme.onBackground
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -24,7 +28,7 @@ internal fun EmptyState(emptyMessage: String) {
             text = emptyMessage,
             style = LabelTextStyle,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground
+            color = color
         )
     }
 }

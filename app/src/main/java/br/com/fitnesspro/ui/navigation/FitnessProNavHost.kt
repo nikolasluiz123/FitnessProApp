@@ -32,12 +32,14 @@ import br.com.fitnesspro.workout.ui.navigation.dayWeekExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.dayWeekWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.exerciseDetailsScreen
 import br.com.fitnesspro.workout.ui.navigation.exercisesScreen
+import br.com.fitnesspro.workout.ui.navigation.membersEvolutionScreen
 import br.com.fitnesspro.workout.ui.navigation.membersWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToCurrentWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToExerciseDetailsScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToExercisesScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToMembersEvolutionScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToMembersWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToPreDefinitionScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToPreDefinitionsScreen
@@ -91,6 +93,7 @@ fun FitnessProNavHost(
             onNavigateToMembersWorkoutScreen = navController::navigateToMembersWorkoutScreen,
             onNavigateToCurrentWorkoutScreen = navController::navigateToCurrentWorkoutScreen,
             onNavigateToPreDefinitionsScreen = navController::navigateToPreDefinitionsScreen,
+            onNavigateToMemberEvolutionScreen = navController::navigateToMembersEvolutionScreen,
             onNavigateToLogin = {
                 navController.navigateToLoginScreen(
                     navOptions = navOptions {
@@ -176,6 +179,10 @@ fun FitnessProNavHost(
 
         generatedReportsScreen(
             onNavigateBackClick = navController::popBackStack
+        )
+
+        membersEvolutionScreen(
+            onBackClick = navController::popBackStack
         )
     }
 }
