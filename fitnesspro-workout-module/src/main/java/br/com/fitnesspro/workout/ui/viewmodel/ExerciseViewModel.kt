@@ -111,6 +111,11 @@ class ExerciseViewModel @Inject constructor(
                 updateState = { _uiState.value = _uiState.value.copy(exercise = it) },
                 dialogTitle = context.getString(R.string.exercise_screen_exercise_dialog_list_title),
                 getDataListFlow = ::getListExercisesAndPreDefinitions,
+                onChange = {
+                    _uiState.value = _uiState.value.copy(
+                        toExercise = _uiState.value.toExercise.copy(name = it)
+                    )
+                },
                 onDataListItemClick = {
                     _uiState.value = _uiState.value.copy(
                         toExercise = _uiState.value.toExercise.copy(
@@ -122,19 +127,14 @@ class ExerciseViewModel @Inject constructor(
                             unitRest = it.unitRest,
                             duration = it.duration,
                             unitDuration = it.unitDuration,
-                        )
+                        ),
+                        sets = _uiState.value.sets.copy(value = it.sets.toStringOrEmpty()),
+                        reps = _uiState.value.reps.copy(value = it.repetitions.toStringOrEmpty()),
+                        rest = _uiState.value.rest.copy(value = it.unitRest.getStringFromConvertedChronoUnitValue(it.rest)),
+                        unitRest = _uiState.value.unitRest.copy(value = it.rest.getChronoUnitLabel(context)),
+                        duration = _uiState.value.duration.copy(value = it.unitDuration.getStringFromConvertedChronoUnitValue(it.duration)),
+                        unitDuration = _uiState.value.unitDuration.copy(value = it.duration.getChronoUnitLabel(context)),
                     )
-
-                    if (it.preDefinition) {
-                        _uiState.value = _uiState.value.copy(
-                            sets = _uiState.value.sets.copy(value = it.sets.toStringOrEmpty()),
-                            reps = _uiState.value.reps.copy(value = it.repetitions.toStringOrEmpty()),
-                            rest = _uiState.value.rest.copy(value = it.unitRest.getStringFromConvertedChronoUnitValue(it.rest)),
-                            unitRest = _uiState.value.unitRest.copy(value = it.rest.getChronoUnitLabel(context)),
-                            duration = _uiState.value.duration.copy(value = it.unitDuration.getStringFromConvertedChronoUnitValue(it.duration)),
-                            unitDuration = _uiState.value.unitDuration.copy(value = it.duration.getChronoUnitLabel(context)),
-                        )
-                    }
                 }
             ),
             exerciseOrder = createIntValueTextFieldState(

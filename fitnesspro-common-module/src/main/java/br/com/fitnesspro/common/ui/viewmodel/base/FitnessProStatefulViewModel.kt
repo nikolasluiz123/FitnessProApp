@@ -186,6 +186,7 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
         dialogTitle: String,
         onDataListItemClick: (item: T) -> Unit,
         getDataListFlow: (String) -> Flow<PagingData<T>>,
+        onChange: (String) -> Unit = {},
         showTrailingIcon: Boolean = true
     ): PagedDialogListTextField<T> {
         return PagedDialogListTextField(
@@ -207,6 +208,7 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
             ),
             onChange = { newText ->
                 val newState = getCurrentState().copy(value = newText, errorMessage = "")
+                onChange(newText)
                 updateState(newState)
             }
         )
