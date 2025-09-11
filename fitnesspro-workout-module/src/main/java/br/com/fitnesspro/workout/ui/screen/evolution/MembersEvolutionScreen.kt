@@ -20,22 +20,25 @@ import br.com.fitnesspro.compose.components.filter.SimpleFilter
 import br.com.fitnesspro.compose.components.list.LazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.tuple.PersonTuple
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.ui.navigation.ExecutionEvolutionHistoryScreenArgs
+import br.com.fitnesspro.workout.ui.screen.evolution.callbacks.OnNavigateToExecutionEvolutionHistory
 import br.com.fitnesspro.workout.ui.state.MembersEvolutionUIState
 import br.com.fitnesspro.workout.ui.viewmodel.MembersEvolutionViewModel
 
 @Composable
 fun MembersEvolutionScreen(
     viewModel: MembersEvolutionViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateToExecutionEvolutionHistory: OnNavigateToExecutionEvolutionHistory
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     MembersEvolutionScreen(
         state = state,
         onBackClick = onBackClick,
-        onExecuteLoad = viewModel::loadStateWithDatabaseInfos
+        onExecuteLoad = viewModel::loadStateWithDatabaseInfos,
+        onNavigateToExecutionEvolutionHistory = onNavigateToExecutionEvolutionHistory
     )
 }
 
@@ -44,7 +47,8 @@ fun MembersEvolutionScreen(
 fun MembersEvolutionScreen(
     state: MembersEvolutionUIState = MembersEvolutionUIState(),
     onBackClick: () -> Unit = {},
-    onExecuteLoad: () -> Unit = {}
+    onExecuteLoad: () -> Unit = {},
+    onNavigateToExecutionEvolutionHistory: OnNavigateToExecutionEvolutionHistory? = null
 ) {
     Scaffold(
         topBar = {
@@ -75,11 +79,13 @@ fun MembersEvolutionScreen(
             ) {
                 MembersList(
                     state = state,
+                    onNavigateToExecutionEvolutionHistory = onNavigateToExecutionEvolutionHistory
                 )
             }
 
             MembersList(
                 state = state,
+                onNavigateToExecutionEvolutionHistory = onNavigateToExecutionEvolutionHistory
             )
         }
     }
@@ -88,7 +94,7 @@ fun MembersEvolutionScreen(
 @Composable
 private fun MembersList(
     state: MembersEvolutionUIState,
-    onMemberClick: (PersonTuple) -> Unit = {}
+    onNavigateToExecutionEvolutionHistory: OnNavigateToExecutionEvolutionHistory?
 ) {
     LazyVerticalList(
         modifier = Modifier.fillMaxSize(),
@@ -97,7 +103,13 @@ private fun MembersList(
     ) { tuple ->
         MemberItem(
             personTuple = tuple,
-            onClick = onMemberClick
+            onClick = {
+                onNavigateToExecutionEvolutionHistory?.onNavigate(
+                    ExecutionEvolutionHistoryScreenArgs(
+                        personMemberId = it.id
+                    )
+                )
+            }
         )
     }
 }

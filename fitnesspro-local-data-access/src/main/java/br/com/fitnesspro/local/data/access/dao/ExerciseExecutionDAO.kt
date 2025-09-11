@@ -9,7 +9,9 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
+import br.com.fitnesspro.tuple.ExecutionEvolutionHistoryGroupedTuple
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
 import java.util.StringJoiner
 
@@ -156,4 +158,114 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
         """
     )
     abstract suspend fun getListActiveExerciseExecution(exerciseId: String, date: String): List<ExerciseExecution>
+
+    fun getListExecutionHistoryGrouped(personMemberId: String, authenticatedPersonId: String, simpleFilter: String): PagingSource<Int, ExecutionEvolutionHistoryGroupedTuple> {
+        val queryParams = mutableListOf<Any>()
+
+        val selectDates = StringJoiner(QR_NL).apply {
+            add(" select ")
+            add("  null as exerciseId, ")
+            add("  0 as sortOrder, ")
+            add("  date(execution.date) as executionDate, ")
+            add("  null as exerciseName, ")
+            add("  null as exerciseOrder ")
+        }
+
+        val fromDates = StringJoiner(QR_NL).apply {
+            add(" from exercise_execution execution ")
+            add(" inner join exercise on exercise.id = execution.exercise_id ")
+            add(" inner join workout_group wg on wg.id = exercise.workout_group_id ")
+            add(" inner join workout w on w.id = wg.workout_id ")
+        }
+
+        val whereDates = StringJoiner(QR_NL).apply {
+            add(" where w.personal_trainer_person_id = ? ")
+            add(" and w.academy_member_person_id = ? ")
+            add(" and execution.active = 1 ")
+            add(" and exercise.active = 1 ")
+            add(" and wg.active = 1 ")
+            add(" and w.active = 1 ")
+
+            queryParams.add(authenticatedPersonId)
+            queryParams.add(personMemberId)
+
+            if (simpleFilter.isNotEmpty()) {
+                add(" and lower(exercise.name) like ? or execution.date like ? ")
+                queryParams.add("%${simpleFilter.lowercase()}%")
+                queryParams.add("%${simpleFilter}%")
+            }
+        }
+
+        val groupByDates = StringJoiner(QR_NL).apply {
+            add(" group by date(execution.date)")
+        }
+
+        val sqlDates = StringJoiner(QR_NL).apply {
+            add(selectDates.toString())
+            add(fromDates.toString())
+            add(whereDates.toString())
+            add(groupByDates.toString())
+        }
+
+        val selectExecutions = StringJoiner(QR_NL).apply {
+            add(" select ")
+            add("  exercise.id as exerciseId, ")
+            add("  1 as sortOrder, ")
+            add("  date(execution.date) as executionDate, ")
+            add("  exercise.name as exerciseName, ")
+            add("  exercise.exercise_order as exerciseOrder ")
+        }
+
+        val fromExecutions = StringJoiner(QR_NL).apply {
+            add(" from exercise_execution execution ")
+            add(" inner join exercise on exercise.id = execution.exercise_id ")
+            add(" inner join workout_group wg on wg.id = exercise.workout_group_id ")
+            add(" inner join workout w on w.id = wg.workout_id ")
+        }
+
+        val whereExecutions = StringJoiner(QR_NL).apply {
+            add(" where w.personal_trainer_person_id = ? ")
+            add(" and w.academy_member_person_id = ? ")
+            add(" and execution.active = 1 ")
+            add(" and exercise.active = 1 ")
+            add(" and wg.active = 1 ")
+            add(" and w.active = 1 ")
+
+            queryParams.add(authenticatedPersonId)
+            queryParams.add(personMemberId)
+
+            if (simpleFilter.isNotEmpty()) {
+                add(" and lower(exercise.name) like ? or execution.date like ? ")
+                queryParams.add("%${simpleFilter.lowercase()}%")
+                queryParams.add("%${simpleFilter}%")
+            }
+        }
+
+        val groupByExecutions = StringJoiner(QR_NL).apply {
+            add(" group by date(execution.date), exercise.id ")
+        }
+
+        val sqlExecutions = StringJoiner(QR_NL).apply {
+            add(selectExecutions.toString())
+            add(fromExecutions.toString())
+            add(whereExecutions.toString())
+            add(groupByExecutions.toString())
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by executionDate desc, sortOrder asc, exerciseOrder asc, exerciseId desc ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(sqlDates.toString())
+            add(" union all ")
+            add(sqlExecutions.toString())
+            add(orderBy.toString())
+        }
+
+        return executeExecutionHistoryGrouped(SimpleSQLiteQuery(sql.toString(), queryParams.toTypedArray()))
+    }
+
+    @RawQuery(observedEntities = [ExerciseExecution::class, Exercise::class])
+    abstract fun executeExecutionHistoryGrouped(query: SupportSQLiteQuery): PagingSource<Int, ExecutionEvolutionHistoryGroupedTuple>
 }

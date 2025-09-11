@@ -112,11 +112,13 @@ class SingletonWorkoutRepositoryModule {
         @ApplicationContext context: Context,
         exerciseExecutionDAO: ExerciseExecutionDAO,
         videoRepository: VideoRepository,
+        personRepository: PersonRepository
     ): ExerciseExecutionRepository {
         return ExerciseExecutionRepository(
             context = context,
             exerciseExecutionDAO = exerciseExecutionDAO,
             videoRepository = videoRepository,
+            personRepository = personRepository
         )
     }
 

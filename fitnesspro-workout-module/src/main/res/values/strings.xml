@@ -163,4 +163,7 @@
     <string name="members_evolution_empty_message">Não existem membros realizando treinamento com seu acompanhamento</string>
     <string name="member_item_label_name">Nome</string>
     <string name="members_evolution_screen_simple_filter_placeholder">Buscar por Nome</string>
+    <string name="execution_evolution_history_screen_title">Exercícios Executados</string>
+    <string name="execution_evolution_history_screen_simple_filter_placeholder">Buscar por Nome ou Data</string>
+    <string name="execution_evolution_history_item_label_name">Nome</string>
 </resources>

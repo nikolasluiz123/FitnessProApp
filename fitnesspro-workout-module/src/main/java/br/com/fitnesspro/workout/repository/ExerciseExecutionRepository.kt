@@ -3,6 +3,7 @@ package br.com.fitnesspro.workout.repository
 import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
@@ -12,6 +13,7 @@ import br.com.fitnesspro.mappers.getTOExerciseExecution
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.to.TOExerciseExecution
 import br.com.fitnesspro.to.TOVideoExerciseExecution
+import br.com.fitnesspro.tuple.ExecutionEvolutionHistoryGroupedTuple
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
@@ -20,6 +22,7 @@ class ExerciseExecutionRepository(
     context: Context,
     private val exerciseExecutionDAO: ExerciseExecutionDAO,
     private val videoRepository: VideoRepository,
+    private val personRepository: PersonRepository
 ) : FitnessProRepository(context) {
 
     suspend fun findById(id: String): TOExerciseExecution? = withContext(IO) {
@@ -66,6 +69,24 @@ class ExerciseExecutionRepository(
             pagingSourceFactory = {
                 exerciseExecutionDAO.getListExerciseExecutionGrouped(
                     exerciseId = exerciseId
+                )
+            }
+        )
+    }
+
+    suspend fun getListExecutionHistoryGrouped(personMemberId: String, simpleFilter: String = ""): Pager<Int, ExecutionEvolutionHistoryGroupedTuple> {
+        val personId = personRepository.getAuthenticatedTOPerson()?.id!!
+
+        return Pager(
+            config = PagingConfig(
+                pageSize = 50,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                exerciseExecutionDAO.getListExecutionHistoryGrouped(
+                    authenticatedPersonId = personId,
+                    simpleFilter = simpleFilter,
+                    personMemberId = personMemberId
                 )
             }
         )
