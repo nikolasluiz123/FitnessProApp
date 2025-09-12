@@ -166,7 +166,8 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
             add(" select ")
             add("  null as exerciseId, ")
             add("  0 as sortOrder, ")
-            add("  date(execution.date) as executionDate, ")
+            add("  w.date_start as dateStart, ")
+            add("  w.date_end as dateEnd, ")
             add("  null as exerciseName, ")
             add("  null as exerciseOrder ")
         }
@@ -197,7 +198,7 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
         }
 
         val groupByDates = StringJoiner(QR_NL).apply {
-            add(" group by date(execution.date)")
+            add(" group by w.date_start")
         }
 
         val sqlDates = StringJoiner(QR_NL).apply {
@@ -211,7 +212,8 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
             add(" select ")
             add("  exercise.id as exerciseId, ")
             add("  1 as sortOrder, ")
-            add("  date(execution.date) as executionDate, ")
+            add("  w.date_start as dateStart, ")
+            add("  w.date_end as dateEnd, ")
             add("  exercise.name as exerciseName, ")
             add("  exercise.exercise_order as exerciseOrder ")
         }
@@ -242,7 +244,7 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
         }
 
         val groupByExecutions = StringJoiner(QR_NL).apply {
-            add(" group by date(execution.date), exercise.id ")
+            add(" group by w.date_start, exercise.id ")
         }
 
         val sqlExecutions = StringJoiner(QR_NL).apply {
@@ -253,7 +255,7 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by executionDate desc, sortOrder asc, exerciseOrder asc, exerciseId desc ")
+            add(" order by dateStart desc, sortOrder asc, exerciseOrder asc, exerciseId desc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

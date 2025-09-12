@@ -4,7 +4,8 @@ import java.time.LocalDate
 
 data class ExecutionEvolutionHistoryGroupedTuple(
     val exerciseId: String? = null,
-    val executionDate: LocalDate? = null,
+    val dateStart: LocalDate? = null,
+    val dateEnd: LocalDate? = null,
     val exerciseName: String? = null,
     val sortOrder: Int = 0
 ) {

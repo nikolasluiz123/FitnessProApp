@@ -38,9 +38,12 @@ private fun ExecutionEvolutionItemGroup(tuple: ExecutionEvolutionHistoryGroupedT
             .background(color = MaterialTheme.colorScheme.surfaceVariant)
             .padding(8.dp)
     ) {
+        val start = tuple.dateStart?.format(EnumDateTimePatterns.DATE).orEmpty()
+        val end = tuple.dateEnd?.format(EnumDateTimePatterns.DATE).orEmpty()
+
         Text(
             modifier = Modifier.align(alignment = Alignment.Center),
-            text = tuple.executionDate?.format(EnumDateTimePatterns.DATE).orEmpty(),
+            text = "$start - $end",
             style = LabelGroupTextStyle,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
