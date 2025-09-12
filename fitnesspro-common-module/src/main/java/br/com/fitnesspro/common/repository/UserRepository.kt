@@ -2,7 +2,7 @@ package br.com.fitnesspro.common.repository
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
-import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
+import br.com.fitnesspro.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspro.common.BuildConfig
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.core.exceptions.ServiceException

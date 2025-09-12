@@ -3,7 +3,7 @@ package br.com.fitnesspro.common.repository
 import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
+import br.com.fitnesspro.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.PersonDAO

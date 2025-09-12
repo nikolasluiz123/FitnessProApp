@@ -1,6 +1,6 @@
 package br.com.fitnesspro.scheduler.injection
 
-import br.com.fitnesspor.service.data.access.webclient.sync.SchedulerModuleSyncWebClient
+import br.com.fitnesspro.service.data.access.webclient.sync.SchedulerModuleSyncWebClient
 import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerReportDAO

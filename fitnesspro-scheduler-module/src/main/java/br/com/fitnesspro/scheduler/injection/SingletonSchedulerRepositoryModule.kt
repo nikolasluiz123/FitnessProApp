@@ -1,7 +1,7 @@
 package br.com.fitnesspro.scheduler.injection
 
 import android.content.Context
-import br.com.fitnesspor.service.data.access.webclient.scheduler.SchedulerWebClient
+import br.com.fitnesspro.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.SchedulerConfigRepository
 import br.com.fitnesspro.common.repository.UserRepository

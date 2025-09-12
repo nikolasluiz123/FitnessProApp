@@ -1,9 +1,9 @@
 package br.com.fitnesspro.common.injection
 
 import android.content.Context
-import br.com.fitnesspor.service.data.access.webclient.general.AuthenticationWebClient
-import br.com.fitnesspor.service.data.access.webclient.general.PersonWebClient
-import br.com.fitnesspor.service.data.access.webclient.storage.StorageWebClient
+import br.com.fitnesspro.service.data.access.webclient.general.AuthenticationWebClient
+import br.com.fitnesspro.service.data.access.webclient.general.PersonWebClient
+import br.com.fitnesspro.service.data.access.webclient.storage.StorageWebClient
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.ApplicationRepository
 import br.com.fitnesspro.common.repository.DeviceRepository

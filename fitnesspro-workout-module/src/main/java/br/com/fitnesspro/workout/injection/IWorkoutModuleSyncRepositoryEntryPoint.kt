@@ -1,6 +1,6 @@
 package br.com.fitnesspro.workout.injection
 
-import br.com.fitnesspor.service.data.access.webclient.sync.WorkoutModuleSyncWebClient
+import br.com.fitnesspro.service.data.access.webclient.sync.WorkoutModuleSyncWebClient
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.ExerciseExecutionDAO
 import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO

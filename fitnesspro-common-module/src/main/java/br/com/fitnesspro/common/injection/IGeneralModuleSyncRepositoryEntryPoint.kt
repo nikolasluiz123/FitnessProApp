@@ -1,6 +1,6 @@
 package br.com.fitnesspro.common.injection
 
-import br.com.fitnesspor.service.data.access.webclient.sync.GeneralModuleSyncWebClient
+import br.com.fitnesspro.service.data.access.webclient.sync.GeneralModuleSyncWebClient
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.PersonAcademyTimeDAO
 import br.com.fitnesspro.local.data.access.dao.PersonDAO

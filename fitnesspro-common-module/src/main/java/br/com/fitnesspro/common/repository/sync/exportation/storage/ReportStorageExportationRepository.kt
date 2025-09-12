@@ -1,7 +1,7 @@
 package br.com.fitnesspro.common.repository.sync.exportation.storage
 
 import android.content.Context
-import br.com.fitnesspor.service.data.access.webclient.storage.StorageWebClient
+import br.com.fitnesspro.service.data.access.webclient.storage.StorageWebClient
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractStorageExportationRepository
 import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
