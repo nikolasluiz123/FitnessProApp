@@ -22,10 +22,16 @@ fun ExecutionBarChartScreen() {
             SimpleBarEntry("Janeiro Muito Grande Mesmo", 30f),
             SimpleBarEntry("Fevereiro", 55f),
             SimpleBarEntry("Março", 80f),
+            SimpleBarEntry("Abril", 20f),
+            SimpleBarEntry("Abril", 20f),
+            SimpleBarEntry("Abril", 20f),
+            SimpleBarEntry("Abril", 20f),
+            SimpleBarEntry("Abril", 20f),
             SimpleBarEntry("Abril", 20f)
         ),
         backgroundStyle = ChartBackgroundStyle(
             xAxisLabelStyle = ChartTextStyle(longLabelStrategy = LongLabelStrategy.Abbreviate),
+            enableHorizontalScroll = true,
         ),
         defaultBarStyle = BarStyle(
             fillColor = MaterialTheme.colorScheme.primary,

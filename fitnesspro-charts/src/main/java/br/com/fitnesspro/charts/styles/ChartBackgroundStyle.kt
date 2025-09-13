@@ -15,5 +15,8 @@ data class ChartBackgroundStyle(
     val yAxisLabelStyle: ChartTextStyle = ChartTextStyle(),
 
     val gridLineColor: Color = Color.LightGray,
-    val gridLineWidth: Dp = 1.dp
+    val gridLineWidth: Dp = 1.dp,
+
+    val enableHorizontalScroll: Boolean = false,
+    val scrollableBarWidth: Dp = 96.dp
 )
