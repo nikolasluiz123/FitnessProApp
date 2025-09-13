@@ -1,4 +1,4 @@
-package br.com.fitnesspro.charts.composables.bar
+package br.com.fitnesspro.charts.composables.bar.simple
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -17,13 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import br.com.fitnesspro.charts.entries.bar.BarChartEntry
+import br.com.fitnesspro.charts.entries.bar.SimpleBarEntry
 import br.com.fitnesspro.charts.styles.bar.BarStyle
 import kotlinx.coroutines.delay
 
 @Composable
-fun ChartBar(
-    entry: BarChartEntry,
+fun SimpleBar(
+    entry: SimpleBarEntry,
     style: BarStyle,
     maxValue: Float,
     chartHeight: Dp,

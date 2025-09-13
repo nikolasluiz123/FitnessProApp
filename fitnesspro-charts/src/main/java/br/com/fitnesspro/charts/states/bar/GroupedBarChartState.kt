@@ -1,12 +1,11 @@
 package br.com.fitnesspro.charts.states.bar
 
-import br.com.fitnesspro.charts.entries.bar.SimpleBarEntry
+import br.com.fitnesspro.charts.entries.bar.GroupedBarEntry
 import br.com.fitnesspro.charts.styles.ChartBackgroundStyle
 import br.com.fitnesspro.charts.styles.bar.BarStyle
 
-data class BarChartState(
-    override val entries: List<SimpleBarEntry>,
+data class GroupedBarChartState(
+    override val entries: List<GroupedBarEntry>,
     override val backgroundStyle: ChartBackgroundStyle = ChartBackgroundStyle(),
-    val defaultBarStyle: BarStyle?,
-    val barStyles: List<BarStyle> = emptyList()
+    val defaultBarStyles: List<BarStyle>
 ) : IBarChartState
