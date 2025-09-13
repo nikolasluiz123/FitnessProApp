@@ -38,6 +38,7 @@ fun BarChart(
                     style = style,
                     maxValue = maxValue,
                     chartHeight = chartHeight,
+                    index = index, // <- passamos o índice
                     modifier = Modifier
                         .weight(1f, fill = true)
                         .padding(horizontal = 24.dp)

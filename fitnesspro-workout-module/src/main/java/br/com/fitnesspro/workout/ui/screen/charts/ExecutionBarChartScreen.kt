@@ -22,8 +22,7 @@ fun ExecutionBarChartScreen() {
             SimpleBarEntry("Apr", 20f)
         ),
         defaultBarStyle = BarStyle(
-            fillColor = MaterialTheme.colorScheme.primaryContainer,
-            borderColor = MaterialTheme.colorScheme.primary,
+            fillColor = MaterialTheme.colorScheme.primary,
         )
     )
 
