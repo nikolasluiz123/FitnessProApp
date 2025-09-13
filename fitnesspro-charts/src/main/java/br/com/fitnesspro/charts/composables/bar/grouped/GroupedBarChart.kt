@@ -27,7 +27,7 @@ fun GroupedBarChart(
         modifier = modifier,
         state = state,
         maxValue = maxValue
-    ) { chartHeight, chartWidth ->
+    ) { chartHeight, totalChartWidth, actualSlotWidth ->
         val barWidthFraction = 0.9f
         val style = state.backgroundStyle
 
@@ -45,7 +45,7 @@ fun GroupedBarChart(
             state.entries.forEachIndexed { groupIndex, entry ->
 
                 val slotModifier = if (style.enableHorizontalScroll) {
-                    Modifier.width(style.scrollableBarWidth)
+                    Modifier.width(actualSlotWidth)
                 } else {
                     Modifier.weight(1f, fill = true)
                 }

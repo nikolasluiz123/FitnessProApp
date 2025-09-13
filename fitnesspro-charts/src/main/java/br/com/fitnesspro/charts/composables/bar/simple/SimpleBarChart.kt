@@ -25,7 +25,7 @@ fun SimpleBarChart(
         modifier = modifier,
         state = state,
         maxValue = maxValue
-    ) { chartHeight, chartWidth ->
+    ) { chartHeight, totalChartWidth, actualSlotWidth ->
         val barWidthFraction = 0.5f
         val style = state.backgroundStyle
 
@@ -43,7 +43,7 @@ fun SimpleBarChart(
             state.entries.forEachIndexed { index, entry ->
                 val barStyle = getValidStyle(state, index)
                 val slotModifier = if (style.enableHorizontalScroll) {
-                    Modifier.width(style.scrollableBarWidth)
+                    Modifier.width(actualSlotWidth)
                 } else {
                     Modifier.weight(1f, fill = true)
                 }

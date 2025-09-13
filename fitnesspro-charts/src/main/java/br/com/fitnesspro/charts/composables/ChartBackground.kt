@@ -25,7 +25,7 @@ fun ChartBackground(
     modifier: Modifier = Modifier,
     state: IBarChartState,
     maxValue: Float,
-    content: @Composable (chartHeight: Dp, chartWidth: Dp) -> Unit
+    content: @Composable (chartHeight: Dp, totalChartWidth: Dp, actualSlotWidth: Dp) -> Unit
 ) {
     BoxWithConstraints(modifier = modifier) {
         val chartHeight = this.maxHeight
@@ -33,13 +33,23 @@ fun ChartBackground(
         val style = state.backgroundStyle
         val scrollState = rememberScrollState()
 
-        val totalChartWidthDp: Dp = if (style.enableHorizontalScroll && state.entries.isNotEmpty()) {
-            (state.entries.size * style.scrollableBarWidth).coerceAtLeast(viewportWidth)
+        val (totalChartWidthDp: Dp, actualSlotWidthDp: Dp) = if (style.enableHorizontalScroll && state.entries.isNotEmpty()) {
+            val baseSlotWidth = style.scrollableBarWidth
+            val minTotalCalculatedWidth = state.entries.size * baseSlotWidth
+            val isScrollActuallyNeeded = minTotalCalculatedWidth > viewportWidth
+
+            if (isScrollActuallyNeeded) {
+                Pair(minTotalCalculatedWidth, baseSlotWidth)
+            } else {
+                val stretchedSlotWidth = viewportWidth / state.entries.size
+                Pair(viewportWidth, stretchedSlotWidth)
+            }
         } else {
-            viewportWidth
+            val canvasSlotWidthForCalc = if (state.entries.isNotEmpty()) (viewportWidth / state.entries.size) else viewportWidth
+            Pair(viewportWidth, canvasSlotWidthForCalc)
         }
 
-        val scrollModifier = if (style.enableHorizontalScroll) {
+        val scrollModifier = if (style.enableHorizontalScroll && (totalChartWidthDp > viewportWidth)) {
             Modifier.horizontalScroll(scrollState)
         } else {
             Modifier
@@ -62,7 +72,7 @@ fun ChartBackground(
                         val xAxisLabelPaint = style.xAxisLabelStyle.getTextPaint(drawContext.density)
 
                         val (barSlotWidthPx, availableTextWidthPx) = if (style.enableHorizontalScroll) {
-                            val widthPx = style.scrollableBarWidth.toPx()
+                            val widthPx = actualSlotWidthDp.toPx()
                             Pair(widthPx, widthPx)
                         } else {
                             val barWidthOriginal = if (state.entries.isNotEmpty()) canvasWidth / (state.entries.size * 2) else 0f
@@ -93,7 +103,7 @@ fun ChartBackground(
                     }
                 }
 
-                content(chartHeight, totalChartWidthDp)
+                content(chartHeight, totalChartWidthDp, actualSlotWidthDp)
             }
         }
     }
