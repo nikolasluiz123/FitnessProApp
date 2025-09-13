@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import br.com.fitnesspro.charts.composables.ChartBackground
+import br.com.fitnesspro.charts.composables.container.BarChartContainer
 import br.com.fitnesspro.charts.states.bar.BarChartState
 import br.com.fitnesspro.charts.styles.bar.BarStyle
 
@@ -21,7 +21,7 @@ fun SimpleBarChart(
 ) {
     val maxValue = (state.entries.maxOfOrNull { it.value } ?: 0f).coerceAtLeast(1f)
 
-    ChartBackground(
+    BarChartContainer(
         modifier = modifier,
         state = state,
         maxValue = maxValue

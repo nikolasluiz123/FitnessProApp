@@ -14,9 +14,8 @@ class CanvasTextDrawer(
     private val textPaint: TextPaint,
     private val drawContext: DrawContext
 ) {
-    
-    fun draw(text: String, xCenter: Float, topY: Float, availableWidth: Float) {
-        when (strategy) {
+    fun draw(text: String, xCenter: Float, topY: Float, availableWidth: Float): Float {
+        return when (strategy) {
             LongLabelStrategy.MultiLine -> {
                 val lines = getLinesFromText(availableWidth, text)
                 val lineHeight = textPaint.fontSpacing
@@ -29,6 +28,8 @@ class CanvasTextDrawer(
 
                     drawContext.canvas.nativeCanvas.drawText(line, x, y, textPaint)
                 }
+
+                lines.size * lineHeight
             }
 
             LongLabelStrategy.Diagonal -> {
@@ -40,6 +41,8 @@ class CanvasTextDrawer(
                     rotate(45f, xCenter, drawContext.size.height)
                     drawText(text, xCenter + offset, firstBaseline, textPaint)
                 }
+
+                (textWidth * sin(Math.toRadians(45.0))).toFloat() + textPaint.fontSpacing
             }
 
             LongLabelStrategy.Abbreviate -> {
@@ -64,8 +67,9 @@ class CanvasTextDrawer(
                 }
 
                 val firstBaseline = topY - textPaint.fontMetrics.ascent
-
                 drawContext.canvas.nativeCanvas.drawText(abbreviated, xCenter, firstBaseline, textPaint)
+
+                textPaint.fontSpacing
             }
         }
     }
