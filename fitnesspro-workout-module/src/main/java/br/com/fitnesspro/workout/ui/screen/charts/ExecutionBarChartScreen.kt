@@ -30,6 +30,7 @@ fun ExecutionBarChartScreen() {
         backgroundStyle = ChartBackgroundStyle(
             xAxisLabelStyle = ChartTextStyle(longLabelStrategy = LongLabelStrategy.Abbreviate),
             enableHorizontalScroll = true,
+            scrollableBarWidth = 128.dp
         ),
         defaultBarStyles = listOf(
             BarStyle(fillColor = BLUE_400),
