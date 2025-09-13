@@ -10,16 +10,22 @@ import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.charts.composables.bar.BarChart
 import br.com.fitnesspro.charts.entries.bar.SimpleBarEntry
 import br.com.fitnesspro.charts.states.bar.BarChartState
+import br.com.fitnesspro.charts.styles.ChartBackgroundStyle
 import br.com.fitnesspro.charts.styles.bar.BarStyle
+import br.com.fitnesspro.charts.styles.text.ChartTextStyle
+import br.com.fitnesspro.charts.styles.text.LongLabelStrategy
 
 @Composable
 fun ExecutionBarChartScreen() {
     val state = BarChartState(
         entries = listOf(
-            SimpleBarEntry("Jan", 30f),
-            SimpleBarEntry("Feb", 55f),
-            SimpleBarEntry("Mar", 80f),
-            SimpleBarEntry("Apr", 20f)
+            SimpleBarEntry("Janeiro Muito Grande Mesmo", 30f),
+            SimpleBarEntry("Fevereiro", 55f),
+            SimpleBarEntry("Março", 80f),
+            SimpleBarEntry("Abril", 20f)
+        ),
+        backgroundStyle = ChartBackgroundStyle(
+            xAxisLabelStyle = ChartTextStyle(longLabelStrategy = LongLabelStrategy.Diagonal)
         ),
         defaultBarStyle = BarStyle(
             fillColor = MaterialTheme.colorScheme.primary,
