@@ -13,7 +13,7 @@ import br.com.fitnesspro.charts.states.bar.BarChartState
 import br.com.fitnesspro.charts.styles.ChartBackgroundStyle
 import br.com.fitnesspro.charts.styles.bar.BarStyle
 import br.com.fitnesspro.charts.styles.text.ChartTextStyle
-import br.com.fitnesspro.charts.styles.text.LongLabelStrategy
+import br.com.fitnesspro.charts.styles.text.enums.LongLabelStrategy
 
 @Composable
 fun ExecutionBarChartScreen() {
@@ -25,7 +25,7 @@ fun ExecutionBarChartScreen() {
             SimpleBarEntry("Abril", 20f)
         ),
         backgroundStyle = ChartBackgroundStyle(
-            xAxisLabelStyle = ChartTextStyle(longLabelStrategy = LongLabelStrategy.Diagonal)
+            xAxisLabelStyle = ChartTextStyle(longLabelStrategy = LongLabelStrategy.Abbreviate),
         ),
         defaultBarStyle = BarStyle(
             fillColor = MaterialTheme.colorScheme.primary,

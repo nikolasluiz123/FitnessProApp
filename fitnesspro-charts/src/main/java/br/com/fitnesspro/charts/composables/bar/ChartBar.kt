@@ -28,14 +28,13 @@ fun ChartBar(
     maxValue: Float,
     chartHeight: Dp,
     modifier: Modifier = Modifier,
-    index: Int = 0 // <- novo parâmetro para delay
+    index: Int = 0
 ) {
     val targetFraction = (entry.value / maxValue).coerceIn(0f, 1f)
     var startAnimation by remember { mutableStateOf(false) }
 
-    // Dispara animação com delay baseado no índice
     LaunchedEffect(Unit) {
-        delay(index * 150L) // 150ms entre cada barra
+        delay(index * 150L)
         startAnimation = true
     }
 
@@ -56,7 +55,7 @@ fun ChartBar(
                 shape = style.shape
             )
             .then(
-                if (style.borderWidth > 0.dp && style.borderColor != Color.Transparent) {
+                if (isDrawBorder(style)) {
                     Modifier.border(
                         width = style.borderWidth,
                         color = style.borderColor,
@@ -65,4 +64,8 @@ fun ChartBar(
                 } else Modifier
             )
     )
+}
+
+private fun isDrawBorder(style: BarStyle): Boolean {
+    return style.borderWidth > 0.dp && style.borderColor != Color.Transparent
 }

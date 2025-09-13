@@ -1,4 +1,4 @@
-package br.com.fitnesspro.charts.styles.text
+package br.com.fitnesspro.charts.styles.text.enums
 
 enum class LongLabelStrategy {
     MultiLine,

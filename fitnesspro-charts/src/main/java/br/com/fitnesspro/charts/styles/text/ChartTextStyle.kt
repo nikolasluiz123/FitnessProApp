@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.fitnesspro.charts.styles.text.enums.LongLabelStrategy
 
 data class ChartTextStyle(
     val color: Color = Color.Black,

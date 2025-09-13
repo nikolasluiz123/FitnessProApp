@@ -10,6 +10,7 @@ data class ChartBackgroundStyle(
     val xAxisLabelStyle: ChartTextStyle = ChartTextStyle(),
 
     val showYAxisLabels: Boolean = true,
+    val showYAxisLines: Boolean = true,
     val yAxisSteps: Int = 5,
     val yAxisLabelStyle: ChartTextStyle = ChartTextStyle(),
 
