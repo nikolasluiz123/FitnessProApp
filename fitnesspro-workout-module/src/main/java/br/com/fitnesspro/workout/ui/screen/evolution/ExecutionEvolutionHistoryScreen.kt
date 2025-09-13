@@ -26,14 +26,16 @@ import br.com.fitnesspro.workout.ui.viewmodel.ExecutionEvolutionHistoryViewModel
 @Composable
 fun ExecutionEvolutionHistoryScreen(
     viewModel: ExecutionEvolutionHistoryViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onHistoryClick: (ExecutionEvolutionHistoryGroupedTuple) -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     ExecutionEvolutionHistoryScreen(
         state = state,
         onBackClick = onBackClick,
-        onExecuteLoad = viewModel::loadHistory
+        onExecuteLoad = viewModel::loadHistory,
+        onHistoryClick = onHistoryClick
     )
 }
 
@@ -42,7 +44,8 @@ fun ExecutionEvolutionHistoryScreen(
 fun ExecutionEvolutionHistoryScreen(
     state: ExecutionEvolutionHistoryUIState = ExecutionEvolutionHistoryUIState(),
     onBackClick: () -> Unit = {},
-    onExecuteLoad: () -> Unit = {}
+    onExecuteLoad: () -> Unit = {},
+    onHistoryClick: (ExecutionEvolutionHistoryGroupedTuple) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
@@ -73,11 +76,13 @@ fun ExecutionEvolutionHistoryScreen(
             ) {
                 HistoryList(
                     state = state,
+                    onClick = onHistoryClick
                 )
             }
 
             HistoryList(
                 state = state,
+                onClick = onHistoryClick
             )
         }
     }

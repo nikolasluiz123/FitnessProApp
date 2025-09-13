@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import br.com.fitnesspro.core.extensions.defaultGSon
+import br.com.fitnesspro.tuple.ExecutionEvolutionHistoryGroupedTuple
 import br.com.fitnesspro.workout.ui.screen.evolution.ExecutionEvolutionHistoryScreen
 import br.com.fitnesspro.workout.ui.viewmodel.ExecutionEvolutionHistoryViewModel
 import com.google.gson.GsonBuilder
@@ -16,6 +17,7 @@ internal const val executionEvolutionHistoryScreenRouteArguments = "executionEvo
 
 fun NavGraphBuilder.executionEvolutionHistoryScreen(
     onBackClick: () -> Unit,
+    onHistoryClick: (ExecutionEvolutionHistoryGroupedTuple) -> Unit
 ) {
     composable(route = "$executionEvolutionHistoryScreenRoute?$executionEvolutionHistoryScreenRouteArguments={$executionEvolutionHistoryScreenRouteArguments}") {
         val viewModel = hiltViewModel<ExecutionEvolutionHistoryViewModel>()
@@ -23,6 +25,7 @@ fun NavGraphBuilder.executionEvolutionHistoryScreen(
         ExecutionEvolutionHistoryScreen(
             viewModel = viewModel,
             onBackClick = onBackClick,
+            onHistoryClick = onHistoryClick
         )
     }
 }
