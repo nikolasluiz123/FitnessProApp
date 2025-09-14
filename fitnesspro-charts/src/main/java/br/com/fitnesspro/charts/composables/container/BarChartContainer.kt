@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import br.com.fitnesspro.charts.states.bar.IBarChartState
 import br.com.fitnesspro.charts.states.legend.ChartLegendState
-import br.com.fitnesspro.charts.styles.ChartBackgroundStyle
+import br.com.fitnesspro.charts.styles.ChartContainerStyle
 import br.com.fitnesspro.charts.styles.legend.ChartLegendStyle
 import br.com.fitnesspro.charts.styles.text.CanvasTextDrawer
 import br.com.fitnesspro.charts.styles.text.enums.LongLabelStrategy
@@ -37,7 +37,7 @@ import kotlin.math.sin
 fun BarChartContainer(
     modifier: Modifier = Modifier,
     state: IBarChartState,
-    backgroundStyle: ChartBackgroundStyle,
+    backgroundStyle: ChartContainerStyle,
     legendStyle: ChartLegendStyle,
     maxValue: Float,
     content: @Composable (chartHeight: Dp, totalChartWidth: Dp, actualSlotWidth: Dp) -> Unit
@@ -180,7 +180,7 @@ fun BarChartContainer(
 
 private fun preCalculateYAxisGutterPx(
     density: Density,
-    style: ChartBackgroundStyle,
+    style: ChartContainerStyle,
     maxValue: Float
 ): Float {
     if (!style.showYAxisLabels) return 0f
@@ -197,7 +197,7 @@ private fun preCalculateYAxisGutterPx(
 }
 
 @Composable
-private fun calculateHorizontalMetrics(style: ChartBackgroundStyle, entryCount: Int, viewportWidth: Dp): Triple<Dp, Dp, Float> {
+private fun calculateHorizontalMetrics(style: ChartContainerStyle, entryCount: Int, viewportWidth: Dp): Triple<Dp, Dp, Float> {
     val (totalChartWidthDp: Dp, actualSlotWidthDp: Dp) = if (style.enableHorizontalScroll && entryCount > 0) {
         val baseSlotWidth = style.scrollableBarWidth
         val minTotalCalculatedWidth = entryCount * baseSlotWidth
@@ -228,7 +228,7 @@ private fun calculateHorizontalMetrics(style: ChartBackgroundStyle, entryCount: 
 private fun preCalculateFooterSizes(
     density: Density,
     state: IBarChartState,
-    style: ChartBackgroundStyle,
+    style: ChartContainerStyle,
     legendState: ChartLegendState?,
     legendStyle: ChartLegendStyle,
     availableTextWidthPx: Float,
@@ -404,7 +404,7 @@ private fun DrawScope.drawLegend(
 
 
 private fun DrawScope.drawYAxisGridLines(
-    style: ChartBackgroundStyle,
+    style: ChartContainerStyle,
     maxValue: Float,
     zeroY: Float,
     chartHeight: Dp
@@ -421,7 +421,7 @@ private fun DrawScope.drawYAxisGridLines(
 }
 
 private fun DrawScope.drawYAxisLabels(
-    style: ChartBackgroundStyle,
+    style: ChartContainerStyle,
     maxValue: Float,
     zeroY: Float,
     chartHeight: Dp,
@@ -453,7 +453,7 @@ private fun DrawScope.drawYAxisLabels(
 }
 
 private fun DrawScope.drawBaseLine(
-    style: ChartBackgroundStyle,
+    style: ChartContainerStyle,
     zeroY: Float
 ) {
     drawLine(
@@ -465,7 +465,7 @@ private fun DrawScope.drawBaseLine(
 }
 
 private fun DrawScope.drawYAxisLabel(
-    style: ChartBackgroundStyle,
+    style: ChartContainerStyle,
     i: Int,
     step: Float,
     y: Float,
@@ -484,7 +484,7 @@ private fun DrawScope.drawYAxisLabel(
 }
 
 private fun DrawScope.drawYAxisLine(
-    style: ChartBackgroundStyle,
+    style: ChartContainerStyle,
     y: Float
 ) {
     if (style.showYAxisLines) {

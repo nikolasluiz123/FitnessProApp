@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.fitnesspro.charts.composables.bar.grouped.GroupedBarChart
-import br.com.fitnesspro.charts.styles.ChartBackgroundStyle
+import br.com.fitnesspro.charts.styles.ChartContainerStyle
 import br.com.fitnesspro.charts.styles.bar.BarStyle
 import br.com.fitnesspro.charts.styles.bar.GroupedBarChartStyle
 import br.com.fitnesspro.charts.styles.legend.ChartLegendStyle
@@ -76,7 +76,7 @@ fun ExecutionGroupedBarChartScreen(
                     BarStyle(fillColor = RED_500),
                     BarStyle(fillColor = ORANGE_500),
                 ),
-                backgroundStyle = ChartBackgroundStyle(
+                backgroundStyle = ChartContainerStyle(
                     gridLineColor = MaterialTheme.colorScheme.outline,
                     xAxisLabelStyle = ChartTextStyle(color = MaterialTheme.colorScheme.onBackground),
                     yAxisLabelStyle = ChartTextStyle(color = MaterialTheme.colorScheme.onBackground),

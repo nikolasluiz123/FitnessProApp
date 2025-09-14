@@ -5,7 +5,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.charts.styles.text.ChartTextStyle
 
-data class ChartBackgroundStyle(
+data class ChartContainerStyle(
     val showXAxisLabels: Boolean = true,
     val xAxisLabelStyle: ChartTextStyle = ChartTextStyle(),
 
