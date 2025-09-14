@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
@@ -43,10 +44,15 @@ fun BarChartContainer(
         val scrollState = rememberScrollState()
         val density = LocalDensity.current
 
+        val yAxisGutterWidthPx = preCalculateYAxisGutterPx(density, style, maxValue)
+        val yAxisGutterWidthDp = with(density) { yAxisGutterWidthPx.toDp() }
+
+        val chartViewportWidthDp = (viewportWidth - yAxisGutterWidthDp).coerceAtLeast(0.dp)
+
         val (totalChartWidthDp: Dp, actualSlotWidthDp: Dp, availableTextWidthPx: Float) = calculateHorizontalMetrics(
             style = style,
             entryCount = state.entries.size,
-            viewportWidth = viewportWidth
+            viewportWidth = chartViewportWidthDp
         )
 
         val (footerTotalHeightPx, maxLabelHeightPx) = preCalculateFooterSizes(
@@ -55,12 +61,12 @@ fun BarChartContainer(
             style = style,
             legend = state.legend,
             availableTextWidthPx = availableTextWidthPx,
-            canvasWidth = with(density) { totalChartWidthDp.toPx() }
+            canvasWidth = with(density) { chartViewportWidthDp.toPx() }
         )
 
         val footerTotalHeightDp = with(density) { footerTotalHeightPx.toDp() }
         val actualBarAreaHeightDp = (this.maxHeight - footerTotalHeightDp).coerceAtLeast(0.dp)
-        val isScrollNeeded = style.enableHorizontalScroll && (totalChartWidthDp > viewportWidth)
+        val isScrollNeeded = style.enableHorizontalScroll && (totalChartWidthDp > chartViewportWidthDp)
 
         val scrollModifier = if (isScrollNeeded) {
             Modifier.horizontalScroll(scrollState)
@@ -68,7 +74,12 @@ fun BarChartContainer(
             Modifier
         }
 
-        Box(modifier = scrollModifier) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = yAxisGutterWidthDp)
+                .then(scrollModifier)
+        ) {
             Box(
                 modifier = Modifier
                     .width(totalChartWidthDp)
@@ -77,29 +88,17 @@ fun BarChartContainer(
                 Canvas(modifier = Modifier.matchParentSize()) {
                     val canvasWidth = size.width
                     val newZeroY = size.height - footerTotalHeightPx
-                    val viewportWidthPx = with(density) { viewportWidth.toPx() }
-                    val scrollOffsetPx = if (isScrollNeeded) scrollState.value.toFloat() else 0f
-                    val effectiveViewportWidth = if (isScrollNeeded) viewportWidthPx else canvasWidth
 
-                    drawBaseLine(
-                        style = style,
-                        zeroY = newZeroY,
-                        scrollOffset = scrollOffsetPx,
-                        width = effectiveViewportWidth
-                    )
-
+                    drawBaseLine(style, newZeroY)
                     drawYAxisGridLines(
                         style = style,
                         maxValue = maxValue,
                         zeroY = newZeroY,
-                        chartHeight = actualBarAreaHeightDp,
-                        scrollOffset = scrollOffsetPx,
-                        width = effectiveViewportWidth
+                        chartHeight = actualBarAreaHeightDp
                     )
 
                     if (style.showXAxisLabels) {
                         val xAxisLabelPaint = style.xAxisLabelStyle.getTextPaint(drawContext.density)
-
                         val barSlotWidthPx = if (style.enableHorizontalScroll) {
                             actualSlotWidthDp.toPx()
                         } else {
@@ -128,10 +127,14 @@ fun BarChartContainer(
                         }
                     }
 
+                    val chartViewportWidthPx = with(density) { chartViewportWidthDp.toPx() }
+                    val scrollOffsetPx = if (isScrollNeeded) scrollState.value.toFloat() else 0f
+                    val effectiveWidth = if (isScrollNeeded) chartViewportWidthPx else canvasWidth
+
                     state.legend?.let { legend ->
                         drawLegend(
                             legend = legend,
-                            canvasWidth = effectiveViewportWidth,
+                            canvasWidth = effectiveWidth,
                             baseLineY = newZeroY,
                             topPadding = style.xAxisLabelStyle.padding,
                             xAxisMaxHeight = maxLabelHeightPx,
@@ -148,23 +151,44 @@ fun BarChartContainer(
                 ) {
                     content(actualBarAreaHeightDp, totalChartWidthDp, actualSlotWidthDp)
                 }
-
-                Canvas(modifier = Modifier.matchParentSize()) {
-                    val newZeroY = size.height - footerTotalHeightPx
-                    val viewportWidthPx = with(density) { viewportWidth.toPx() }
-                    val scrollOffsetPx = if (isScrollNeeded) scrollState.value.toFloat() else 0f
-
-                    drawYAxisLabels(
-                        style = style,
-                        maxValue = maxValue,
-                        zeroY = newZeroY,
-                        chartHeight = actualBarAreaHeightDp,
-                        scrollOffset = scrollOffsetPx
-                    )
-                }
             }
         }
+
+        Canvas(modifier = Modifier
+            .width(yAxisGutterWidthDp)
+            .fillMaxHeight()
+            .align(Alignment.TopStart)
+        ) {
+            val newZeroY = size.height - footerTotalHeightPx
+
+            drawYAxisLabels(
+                style = style,
+                maxValue = maxValue,
+                zeroY = newZeroY,
+                chartHeight = actualBarAreaHeightDp,
+                scrollOffset = 0f,
+                gutterWidthPx = yAxisGutterWidthPx
+            )
+        }
     }
+}
+
+private fun preCalculateYAxisGutterPx(
+    density: Density,
+    style: ChartBackgroundStyle,
+    maxValue: Float
+): Float {
+    if (!style.showYAxisLabels) return 0f
+
+    val yAxisLabelPaint = style.yAxisLabelStyle.getTextPaint(density).apply {
+        textAlign = Paint.Align.RIGHT
+    }
+
+    val widestLabel = maxValue.toInt().toString()
+    val labelWidthPx = yAxisLabelPaint.measureText(widestLabel)
+    val labelPaddingPx = with(density) { style.yAxisLabelStyle.padding.toPx() }
+
+    return labelWidthPx + (labelPaddingPx * 2)
 }
 
 @Composable
@@ -376,9 +400,7 @@ private fun DrawScope.drawYAxisGridLines(
     style: ChartBackgroundStyle,
     maxValue: Float,
     zeroY: Float,
-    chartHeight: Dp,
-    scrollOffset: Float,
-    width: Float
+    chartHeight: Dp
 ) {
     if (style.showYAxisLines) {
         val step = maxValue / style.yAxisSteps
@@ -386,7 +408,7 @@ private fun DrawScope.drawYAxisGridLines(
 
         for (i in 0..style.yAxisSteps) {
             val y = zeroY - (i * step / maxValue) * chartHeightPx
-            drawYAxisLine(style, y, scrollOffset, width)
+            drawYAxisLine(style, y)
         }
     }
 }
@@ -396,30 +418,41 @@ private fun DrawScope.drawYAxisLabels(
     maxValue: Float,
     zeroY: Float,
     chartHeight: Dp,
-    scrollOffset: Float
+    scrollOffset: Float,
+    gutterWidthPx: Float
 ) {
     if (style.showYAxisLabels) {
         val step = maxValue / style.yAxisSteps
-        val yAxisLabelPaint = style.yAxisLabelStyle.getTextPaint(drawContext.density)
+        val yAxisLabelPaint = style.yAxisLabelStyle.getTextPaint(drawContext.density).apply {
+            textAlign = Paint.Align.RIGHT
+        }
         val chartHeightPx = chartHeight.toPx()
+        val labelPaddingPx = style.yAxisLabelStyle.padding.toPx()
+        val labelXPos = gutterWidthPx - labelPaddingPx
 
         for (i in 0..style.yAxisSteps) {
             val y = zeroY - (i * step / maxValue) * chartHeightPx
-            drawYAxisLabel(style, i, step, y, yAxisLabelPaint, scrollOffset)
+            drawYAxisLabel(
+                style = style,
+                i = i,
+                step = step,
+                y = y,
+                yAxisLabelPaint = yAxisLabelPaint,
+                scrollOffset = scrollOffset,
+                labelXPos = labelXPos
+            )
         }
     }
 }
 
 private fun DrawScope.drawBaseLine(
     style: ChartBackgroundStyle,
-    zeroY: Float,
-    scrollOffset: Float,
-    width: Float
+    zeroY: Float
 ) {
     drawLine(
         color = style.gridLineColor,
-        start = Offset(scrollOffset, zeroY),
-        end = Offset(scrollOffset + width, zeroY),
+        start = Offset(0f, zeroY),
+        end = Offset(size.width, zeroY),
         strokeWidth = style.gridLineWidth.toPx()
     )
 }
@@ -430,12 +463,13 @@ private fun DrawScope.drawYAxisLabel(
     step: Float,
     y: Float,
     yAxisLabelPaint: TextPaint,
-    scrollOffset: Float
+    scrollOffset: Float,
+    labelXPos: Float
 ) {
     if (style.showYAxisLabels) {
         drawContext.canvas.nativeCanvas.drawText(
             (i * step).toInt().toString(),
-            scrollOffset + style.yAxisLabelStyle.padding.toPx(),
+            scrollOffset + labelXPos,
             y - style.yAxisLabelStyle.padding.toPx(),
             yAxisLabelPaint
         )
@@ -444,15 +478,13 @@ private fun DrawScope.drawYAxisLabel(
 
 private fun DrawScope.drawYAxisLine(
     style: ChartBackgroundStyle,
-    y: Float,
-    scrollOffset: Float,
-    width: Float
+    y: Float
 ) {
     if (style.showYAxisLines) {
         drawLine(
             color = style.gridLineColor,
-            start = Offset(scrollOffset, y),
-            end = Offset(scrollOffset + width, y),
+            start = Offset(0f, y),
+            end = Offset(size.width, y),
             strokeWidth = style.gridLineWidth.toPx()
         )
     }
