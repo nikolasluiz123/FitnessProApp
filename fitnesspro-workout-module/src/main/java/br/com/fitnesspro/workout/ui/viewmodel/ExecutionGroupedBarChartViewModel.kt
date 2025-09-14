@@ -128,7 +128,7 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
                 mapEntry.value.maxOf { it.reps?.toFloat() ?: 0f },
                 mapEntry.value.maxOf { it.rest ?: 0L }.millisTo(ChronoUnit.SECONDS).toFloat(),
                 mapEntry.value.maxOf { it.duration ?: 0L }.millisTo(ChronoUnit.SECONDS).toFloat()
-            )
+            ).filter { it > 0 }
 
 
             GroupedBarEntry(label = formatedDate, values = values)
@@ -141,7 +141,6 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
                 LegendEntry(label = context.getString(br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_legend_label_weight)),
                 LegendEntry(label = context.getString(br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_legend_label_reps)),
                 LegendEntry(label = context.getString(br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_legend_label_rest)),
-                LegendEntry(label = context.getString(br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_legend_label_duration))
             )
         )
     }
