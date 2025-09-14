@@ -103,7 +103,7 @@
     <string name="exercise_details_screen_title">Detalhes do Exercício</string>
     <string name="register_evolution_weight_label">Peso</string>
     <string name="register_evolution_reps_label">Repetições</string>
-    <string name="register_evolution_rest_label">Descanço</string>
+    <string name="register_evolution_rest_label">Descanso</string>
     <string name="register_evolution_rest_unit_label">Unidade</string>
     <string name="register_evolution_duration_label">Duração</string>
     <string name="register_evolution_duration_unit_label">Unidade</string>
@@ -145,7 +145,7 @@
     <string name="pre_definition_screen_workout_place_holder">Buscar por Nome</string>
     <string name="pre_definition_screen_workout_group_empty_message">Não existem grupos musculares predefinidos</string>
     <string name="exercise_pre_definition_screen_exercise">Exercício</string>
-    <string name="exercise_pre_definition_screen_rest">Descanço</string>
+    <string name="exercise_pre_definition_screen_rest">Descanso</string>
     <string name="exercise_pre_definition_screen_no_rest">Sem Descanso</string>
     <string name="exercise_pre_definition_screen_duration">Duração</string>
     <string name="exercise_pre_definition_no_workout_group">Sem Grupo</string>
@@ -168,7 +168,7 @@
     <string name="execution_evolution_history_item_label_name">Nome</string>
     <string name="execution_grouped_bar_chart_legend_label_weight">Peso</string>
     <string name="execution_grouped_bar_chart_legend_label_reps">Repetições</string>
-    <string name="execution_grouped_bar_chart_legend_label_rest">Descanço (Segundos)</string>
+    <string name="execution_grouped_bar_chart_legend_label_rest">Descanso (Segundos)</string>
     <string name="execution_grouped_bar_chart_legend_label_duration">Duração (Segundos)</string>
     <string name="execution_grouped_bar_chart_title_member">Minha Evolução</string>
     <string name="execution_grouped_bar_chart_title_professional">Evolução de %s</string>
