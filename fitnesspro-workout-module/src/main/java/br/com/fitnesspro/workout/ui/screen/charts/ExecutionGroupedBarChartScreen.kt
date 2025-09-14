@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.fitnesspro.charts.composables.bar.grouped.GroupedBarChart
@@ -19,6 +22,7 @@ import br.com.fitnesspro.charts.styles.bar.BarStyle
 import br.com.fitnesspro.charts.styles.bar.GroupedBarChartStyle
 import br.com.fitnesspro.charts.styles.legend.ChartLegendStyle
 import br.com.fitnesspro.charts.styles.text.ChartTextStyle
+import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.BLUE_500
 import br.com.fitnesspro.core.theme.GREEN_500
@@ -53,7 +57,19 @@ fun ExecutionGroupedBarChartScreen(
             SimpleFitnessProTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                actions = {
+                    IconButton(
+                        onClick = {
+                            state.filterDialogState.onShowDialogChange(true)
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(br.com.fitnesspro.core.R.drawable.ic_predefinitions_24dp),
+                            contentDescription = null
+                        )
+                    }
+                }
             )
         }
     ) {
@@ -62,6 +78,9 @@ fun ExecutionGroupedBarChartScreen(
                 onExecuteLoad()
             }
         }
+
+        FitnessProMessageDialog(state.messageDialogState)
+        ExecutionGroupedBarChartFiltersDialog(state.filterDialogState)
 
         Column(
             Modifier

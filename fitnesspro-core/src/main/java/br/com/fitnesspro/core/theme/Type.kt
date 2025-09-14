@@ -89,6 +89,10 @@ val LabelTextStyle = TextStyle(
     letterSpacing = 0.2.sp
 )
 
+val LabelMediumTextStyle = LabelTextStyle.copy(
+    fontWeight = FontWeight.Medium
+)
+
 val ValueTextStyle = TextStyle(
     fontFamily = FontFamily.SansSerif,
     fontWeight = FontWeight.Light,

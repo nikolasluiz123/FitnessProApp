@@ -173,4 +173,16 @@
     <string name="execution_grouped_bar_chart_title_member">Minha Evolução</string>
     <string name="execution_grouped_bar_chart_title_professional">Evolução de %s</string>
     <string name="execution_grouped_bar_chart_title_workout_date_range">%s até %s</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_weight">Peso</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_reps">Repetições</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_rest">Descanso</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_duration">Duração</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_focus_value">Valor de Foco</string>
+    <string name="execution_grouped_bar_chart_filters_dialog_title">Filtros do Gráfico</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_metric_value">Métrica</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_max">Maior</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_min">Menor</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_avg">Média</string>
+    <string name="excution_grouped_bar_chart_filters_screen_restore_button">Restaurar</string>
+    <string name="excution_grouped_bar_chart_filters_screen_apply_button">Aplicar</string>
 </resources>

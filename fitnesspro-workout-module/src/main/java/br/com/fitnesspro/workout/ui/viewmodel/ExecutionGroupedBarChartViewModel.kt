@@ -9,6 +9,8 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
+import br.com.fitnesspro.compose.components.fields.state.radiobutton.MultipleRadioButtonsState
+import br.com.fitnesspro.compose.components.fields.state.radiobutton.RadioButtonState
 import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
@@ -16,11 +18,15 @@ import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.millisTo
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.tuple.charts.ExerciseExecutionGroupedBarChartTuple
+import br.com.fitnesspro.workout.R.string
 import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
 import br.com.fitnesspro.workout.ui.navigation.ExecutionGroupedBarChartScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.executionGroupedBarChartScreenArguments
+import br.com.fitnesspro.workout.ui.screen.charts.enums.EnumFocusValue
+import br.com.fitnesspro.workout.ui.screen.charts.enums.EnumMetricsValue
+import br.com.fitnesspro.workout.ui.state.ExecutionGroupedBarChartFiltersDialogUIState
 import br.com.fitnesspro.workout.ui.state.ExecutionGroupedBarChartUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -57,8 +63,149 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
             ),
             onToggleLoading = {
                 _uiState.value = _uiState.value.copy(showLoading = _uiState.value.showLoading.not())
-            }
+            },
+            filterDialogState = ExecutionGroupedBarChartFiltersDialogUIState(
+                focusValueRadioButtons = MultipleRadioButtonsState(
+                    radioButtons = getDefaultListFocusValueRadioButtons(),
+                    onRadioButtonClick = ::onFocusValueRadioButtonClick
+                ),
+                metricValueRadioButtons = MultipleRadioButtonsState(
+                    radioButtons = getDefaultListMetricValueRadioButtons(),
+                    onRadioButtonClick = ::onMetricValueRadioButtonClick
+                ),
+                onRestoreClick = {
+                    _uiState.value = _uiState.value.copy(
+                        filterDialogState = _uiState.value.filterDialogState.copy(
+                            focusValueRadioButtons = _uiState.value.filterDialogState.focusValueRadioButtons.copy(
+                                radioButtons = getDefaultListFocusValueRadioButtons()
+                            ),
+                            metricValueRadioButtons = _uiState.value.filterDialogState.metricValueRadioButtons.copy(
+                                radioButtons = getDefaultListMetricValueRadioButtons()
+                            )
+                        )
+                    )
+
+                    _uiState.value = _uiState.value.copy(
+                        chartState = _uiState.value.chartState.copy(
+                            entries = getChartEntries(_uiState.value.chartData),
+                        )
+                    )
+                },
+                onApplyClick = {
+                    _uiState.value = _uiState.value.copy(
+                        chartState = _uiState.value.chartState.copy(
+                            entries = getChartEntries(_uiState.value.chartData),
+                        )
+                    )
+                },
+                onShowDialogChange = {
+                    _uiState.value = _uiState.value.copy(
+                        filterDialogState = _uiState.value.filterDialogState.copy(showDialog = it)
+                    )
+                }
+            )
         )
+    }
+
+    private fun getDefaultListFocusValueRadioButtons(): List<RadioButtonState> {
+        return listOf(
+            RadioButtonState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_weight),
+                identifier = EnumFocusValue.WEIGHT,
+                selected = true
+            ),
+            RadioButtonState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_reps),
+                identifier = EnumFocusValue.REPS
+            ),
+            RadioButtonState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_rest),
+                identifier = EnumFocusValue.REST
+            ),
+            RadioButtonState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_duration),
+                identifier = EnumFocusValue.DURATION
+            )
+        )
+    }
+
+    private fun getDefaultListMetricValueRadioButtons(): List<RadioButtonState> {
+        return listOf(
+            RadioButtonState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_min),
+                identifier = EnumMetricsValue.MIN
+            ),
+            RadioButtonState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_max),
+                identifier = EnumMetricsValue.MAX,
+                selected = true
+            ),
+            RadioButtonState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_avg),
+                identifier = EnumMetricsValue.AVG
+            )
+        )
+    }
+
+    private fun onFocusValueRadioButtonClick(identifier: Enum<*>) {
+        val newButtonsList = getFocusValueRadioButtonsListWithSelection(identifier)
+
+        _uiState.value = _uiState.value.copy(
+            filterDialogState = _uiState.value.filterDialogState.copy(
+                focusValueRadioButtons = _uiState.value.filterDialogState.focusValueRadioButtons.copy(
+                    radioButtons = newButtonsList
+                )
+            )
+        )
+    }
+
+    private fun getFocusValueRadioButtonsListWithSelection(identifier: Enum<*>): List<RadioButtonState> {
+        val currentButtons = _uiState.value.filterDialogState.focusValueRadioButtons.radioButtons
+
+        return currentButtons.map { radioButtonState ->
+            radioButtonState.copy(selected = radioButtonState.identifier == identifier)
+        }
+    }
+
+    private fun onMetricValueRadioButtonClick(identifier: Enum<*>) {
+        val newMetricButtonsList = getMetricValueRadioButtonsListWithSelection(identifier)
+
+        val newFocusValueButtonsList = getUpdatedFocusValueRadioButtonListWithMetric(identifier)
+
+        _uiState.value = _uiState.value.copy(
+            filterDialogState = _uiState.value.filterDialogState.copy(
+                metricValueRadioButtons = _uiState.value.filterDialogState.metricValueRadioButtons.copy(
+                    radioButtons = newMetricButtonsList
+                ),
+                focusValueRadioButtons = _uiState.value.filterDialogState.focusValueRadioButtons.copy(
+                    radioButtons = newFocusValueButtonsList
+                )
+            )
+        )
+    }
+
+    private fun getUpdatedFocusValueRadioButtonListWithMetric(identifier: Enum<*>): List<RadioButtonState> {
+        val currentFocusValueButtons = _uiState.value.filterDialogState.focusValueRadioButtons.radioButtons
+
+        val focusableMetrics = listOf(EnumMetricsValue.MIN, EnumMetricsValue.MAX)
+
+        return if (identifier in focusableMetrics) {
+            currentFocusValueButtons.map { radioButtonState ->
+                radioButtonState.copy(enabled = true, selected = radioButtonState.identifier == EnumFocusValue.WEIGHT)
+            }
+        } else {
+            currentFocusValueButtons.map { radioButtonState ->
+                radioButtonState.copy(enabled = false, selected = false)
+            }
+        }
+    }
+
+    private fun getMetricValueRadioButtonsListWithSelection(identifier: Enum<*>): List<RadioButtonState> {
+        val currentMetricButtons = _uiState.value.filterDialogState.metricValueRadioButtons.radioButtons
+
+        return currentMetricButtons.map { radioButtonState ->
+            radioButtonState.copy(selected = radioButtonState.identifier == identifier)
+        }
     }
 
     fun loadStateWithDatabaseInfos() {
@@ -84,10 +231,10 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
         val userType = person?.user?.type!!
 
         return if (userType == EnumUserType.ACADEMY_MEMBER) {
-            context.getString(br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_title_member)
+            context.getString(string.execution_grouped_bar_chart_title_member)
         } else {
             context.getString(
-                br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_title_professional,
+                string.execution_grouped_bar_chart_title_professional,
                 person.name!!
             )
         }
@@ -98,7 +245,7 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
         val workout = workoutRepository.findWorkoutByExerciseId(args.exerciseId)
 
         val dateRange = context.getString(
-            br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_title_workout_date_range,
+            string.execution_grouped_bar_chart_title_workout_date_range,
             workout?.dateStart!!.format(EnumDateTimePatterns.DAY_MONTH_DATE),
             workout.dateEnd!!.format(EnumDateTimePatterns.DAY_MONTH_DATE)
         )
@@ -123,24 +270,99 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
 
         return groupedData.map { mapEntry ->
             val formatedDate = mapEntry.key.format(EnumDateTimePatterns.DAY_MONTH_DATE)
-            val values = listOf(
-                mapEntry.value.maxOf { it.weight?.toFloat() ?: 0f },
-                mapEntry.value.maxOf { it.reps?.toFloat() ?: 0f },
-                mapEntry.value.maxOf { it.rest ?: 0L }.millisTo(ChronoUnit.SECONDS).toFloat(),
-                mapEntry.value.maxOf { it.duration ?: 0L }.millisTo(ChronoUnit.SECONDS).toFloat()
-            ).filter { it > 0 }
 
+            val metricSelected = getMetricSelected()
+
+            val values = when (metricSelected) {
+                EnumMetricsValue.MIN -> {
+                    val focusSelected = getFocusSelected()
+
+                    when (focusSelected) {
+                        EnumFocusValue.WEIGHT -> {
+                            val objectWithMinWeight = mapEntry.value.minBy { it.weight ?: 0.0 }
+                            getListValuesNotNull(objectWithMinWeight)
+                        }
+
+                        EnumFocusValue.REPS -> {
+                            val objectWithMinReps = mapEntry.value.minBy { it.reps ?: 0 }
+                            getListValuesNotNull(objectWithMinReps)
+                        }
+
+                        EnumFocusValue.REST -> {
+                            val objectWithMinRest = mapEntry.value.minBy { it.rest ?: 0L }
+                            getListValuesNotNull(objectWithMinRest)
+                        }
+
+                        EnumFocusValue.DURATION -> {
+                            val objectWithMinDuration = mapEntry.value.minBy { it.duration ?: 0L }
+                            getListValuesNotNull(objectWithMinDuration)
+                        }
+                    }
+                }
+
+                EnumMetricsValue.MAX -> {
+                    val focusSelected = getFocusSelected()
+
+                    when (focusSelected) {
+                        EnumFocusValue.WEIGHT -> {
+                            val objectWithMinWeight = mapEntry.value.maxBy { it.weight ?: 0.0 }
+                            getListValuesNotNull(objectWithMinWeight)
+                        }
+
+                        EnumFocusValue.REPS -> {
+                            val objectWithMinReps = mapEntry.value.maxBy { it.reps ?: 0 }
+                            getListValuesNotNull(objectWithMinReps)
+                        }
+
+                        EnumFocusValue.REST -> {
+                            val objectWithMinRest = mapEntry.value.maxBy { it.rest ?: 0L }
+                            getListValuesNotNull(objectWithMinRest)
+                        }
+
+                        EnumFocusValue.DURATION -> {
+                            val objectWithMinDuration = mapEntry.value.maxBy { it.duration ?: 0L }
+                            getListValuesNotNull(objectWithMinDuration)
+                        }
+                    }
+                }
+
+                EnumMetricsValue.AVG -> {
+                    val weightAverage = mapEntry.value.map { it.weight ?: 0.0 }.average().toFloat()
+                    val repsAverage = mapEntry.value.map { it.reps ?: 0 }.average().toFloat()
+                    val restAverage = mapEntry.value.map { it.rest?.millisTo(ChronoUnit.SECONDS) ?: 0L }.average().toFloat()
+                    val durationAverage = mapEntry.value.map { it.duration?.millisTo(ChronoUnit.SECONDS) ?: 0L }.average().toFloat()
+
+                    listOf(weightAverage, repsAverage, restAverage, durationAverage).filter { it > 0 }
+                }
+            }
 
             GroupedBarEntry(label = formatedDate, values = values)
         }
     }
 
+    private fun getListValuesNotNull(objectWithMinWeight: ExerciseExecutionGroupedBarChartTuple): List<Float> {
+        return listOfNotNull(
+            objectWithMinWeight.weight?.toFloat(),
+            objectWithMinWeight.reps?.toFloat(),
+            objectWithMinWeight.rest?.millisTo(ChronoUnit.SECONDS)?.toFloat(),
+            objectWithMinWeight.duration?.millisTo(ChronoUnit.SECONDS)?.toFloat()
+        )
+    }
+
+    private fun getFocusSelected(): EnumFocusValue {
+        return _uiState.value.filterDialogState.focusValueRadioButtons.radioButtons.first { it.selected }.identifier as EnumFocusValue
+    }
+
+    private fun getMetricSelected(): EnumMetricsValue {
+        return _uiState.value.filterDialogState.metricValueRadioButtons.radioButtons.first { it.selected }.identifier as EnumMetricsValue
+    }
+
     private fun getLegendState(): ChartLegendState {
         return ChartLegendState(
             entries = listOf(
-                LegendEntry(label = context.getString(br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_legend_label_weight)),
-                LegendEntry(label = context.getString(br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_legend_label_reps)),
-                LegendEntry(label = context.getString(br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_legend_label_rest)),
+                LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_weight)),
+                LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_reps)),
+                LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_rest)),
             )
         )
     }

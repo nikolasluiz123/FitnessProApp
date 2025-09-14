@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.core.theme.ButtonTextStyle
@@ -101,6 +102,26 @@ fun FitnessProTextButton(
         colors = colors
     ) {
         Text(text = label, style = TextButtonTextStyle)
+    }
+}
+
+@Composable
+fun DefaultDialogTextButton(
+    labelResId: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TextButton(
+        modifier = modifier,
+        colors = ButtonDefaults.textButtonColors(
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+        ),
+        onClick = {
+            onClick()
+        }
+    ) {
+        Text(text = stringResource(id = labelResId))
     }
 }
 

@@ -12,6 +12,7 @@ data class ExecutionGroupedBarChartUIState(
     val subtitle: String = "",
     val chartState: GroupedBarChartState = GroupedBarChartState(),
     val chartData: List<ExerciseExecutionGroupedBarChartTuple> = emptyList(),
+    val filterDialogState: ExecutionGroupedBarChartFiltersDialogUIState = ExecutionGroupedBarChartFiltersDialogUIState(),
     override val messageDialogState: MessageDialogState = MessageDialogState(),
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = {},
