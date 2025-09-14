@@ -17,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
@@ -27,6 +29,7 @@ import androidx.compose.ui.unit.times
 import br.com.fitnesspro.charts.states.bar.IBarChartState
 import br.com.fitnesspro.charts.states.legend.ChartLegendState
 import br.com.fitnesspro.charts.styles.ChartContainerStyle
+import br.com.fitnesspro.charts.styles.enums.GridLineStyle
 import br.com.fitnesspro.charts.styles.legend.ChartLegendStyle
 import br.com.fitnesspro.charts.styles.text.CanvasTextDrawer
 import br.com.fitnesspro.charts.styles.text.enums.LongLabelStrategy
@@ -93,7 +96,6 @@ fun BarChartContainer(
                     val canvasWidth = size.width
                     val newZeroY = size.height - footerTotalHeightPx
 
-                    drawBaseLine(backgroundStyle, newZeroY)
                     drawYAxisGridLines(
                         style = backgroundStyle,
                         maxValue = maxValue,
@@ -452,18 +454,6 @@ private fun DrawScope.drawYAxisLabels(
     }
 }
 
-private fun DrawScope.drawBaseLine(
-    style: ChartContainerStyle,
-    zeroY: Float
-) {
-    drawLine(
-        color = style.gridLineColor,
-        start = Offset(0f, zeroY),
-        end = Offset(size.width, zeroY),
-        strokeWidth = style.gridLineWidth.toPx()
-    )
-}
-
 private fun DrawScope.drawYAxisLabel(
     style: ChartContainerStyle,
     i: Int,
@@ -488,11 +478,27 @@ private fun DrawScope.drawYAxisLine(
     y: Float
 ) {
     if (style.showYAxisLines) {
+        val strokeWidthPx = style.gridLineWidth.toPx()
+
+        val (pathEffect, strokeCap) = when (style.gridLineStyle) {
+            GridLineStyle.SOLID -> Pair(null, StrokeCap.Butt)
+            GridLineStyle.DASHED -> {
+                val dashInterval = floatArrayOf(20f, 10f)
+                Pair(PathEffect.dashPathEffect(dashInterval, 0f), StrokeCap.Butt)
+            }
+            GridLineStyle.DOTTED -> {
+                val dotInterval = floatArrayOf(strokeWidthPx, strokeWidthPx * 3)
+                Pair(PathEffect.dashPathEffect(dotInterval, 0f), StrokeCap.Round)
+            }
+        }
+
         drawLine(
             color = style.gridLineColor,
             start = Offset(0f, y),
             end = Offset(size.width, y),
-            strokeWidth = style.gridLineWidth.toPx()
+            strokeWidth = strokeWidthPx,
+            pathEffect = pathEffect,
+            cap = strokeCap
         )
     }
 }

@@ -3,6 +3,7 @@ package br.com.fitnesspro.charts.styles
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import br.com.fitnesspro.charts.styles.enums.GridLineStyle
 import br.com.fitnesspro.charts.styles.text.ChartTextStyle
 
 data class ChartContainerStyle(
@@ -16,6 +17,7 @@ data class ChartContainerStyle(
 
     val gridLineColor: Color = Color.LightGray,
     val gridLineWidth: Dp = 1.dp,
+    val gridLineStyle: GridLineStyle = GridLineStyle.DOTTED,
 
     val enableHorizontalScroll: Boolean = false,
     val scrollableBarWidth: Dp = 96.dp
