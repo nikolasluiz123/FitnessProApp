@@ -66,6 +66,7 @@ fun ExecutionGroupedBarChartScreen(
         Column(
             Modifier
                 .padding(it)
+                .padding(top = 16.dp)
                 .consumeWindowInsets(it)
                 .fillMaxSize()
         ) {
