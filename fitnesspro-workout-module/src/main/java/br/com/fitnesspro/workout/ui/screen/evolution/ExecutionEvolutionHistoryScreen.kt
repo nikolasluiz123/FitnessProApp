@@ -18,8 +18,9 @@ import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.filter.SimpleFilter
 import br.com.fitnesspro.compose.components.list.PagedLazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.tuple.ExecutionEvolutionHistoryGroupedTuple
 import br.com.fitnesspro.workout.R
+import br.com.fitnesspro.workout.ui.navigation.ExecutionGroupedBarChartScreenArgs
+import br.com.fitnesspro.workout.ui.screen.evolution.callbacks.OnNavigateToExecutionGroupedBarChart
 import br.com.fitnesspro.workout.ui.state.ExecutionEvolutionHistoryUIState
 import br.com.fitnesspro.workout.ui.viewmodel.ExecutionEvolutionHistoryViewModel
 
@@ -27,7 +28,7 @@ import br.com.fitnesspro.workout.ui.viewmodel.ExecutionEvolutionHistoryViewModel
 fun ExecutionEvolutionHistoryScreen(
     viewModel: ExecutionEvolutionHistoryViewModel,
     onBackClick: () -> Unit,
-    onHistoryClick: (ExecutionEvolutionHistoryGroupedTuple) -> Unit = {}
+    onHistoryClick: OnNavigateToExecutionGroupedBarChart
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -45,7 +46,7 @@ fun ExecutionEvolutionHistoryScreen(
     state: ExecutionEvolutionHistoryUIState = ExecutionEvolutionHistoryUIState(),
     onBackClick: () -> Unit = {},
     onExecuteLoad: () -> Unit = {},
-    onHistoryClick: (ExecutionEvolutionHistoryGroupedTuple) -> Unit = {}
+    onHistoryClick: OnNavigateToExecutionGroupedBarChart? = null
 ) {
     Scaffold(
         topBar = {
@@ -91,7 +92,7 @@ fun ExecutionEvolutionHistoryScreen(
 @Composable
 private fun HistoryList(
     state: ExecutionEvolutionHistoryUIState,
-    onClick: (ExecutionEvolutionHistoryGroupedTuple) -> Unit = {}
+    onClick: OnNavigateToExecutionGroupedBarChart?
 ) {
     PagedLazyVerticalList(
         modifier = Modifier.fillMaxSize(),
@@ -100,7 +101,13 @@ private fun HistoryList(
     ) { tuple ->
         ExecutionEvolutionListItem(
             tuple = tuple,
-            onClick = onClick
+            onClick = {
+                onClick?.onNavigate(
+                    ExecutionGroupedBarChartScreenArgs(
+                        exerciseId = tuple.exerciseId!!
+                    )
+                )
+            }
         )
     }
 }

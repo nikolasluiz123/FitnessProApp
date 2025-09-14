@@ -166,4 +166,8 @@
     <string name="execution_evolution_history_screen_title">Exercícios Executados</string>
     <string name="execution_evolution_history_screen_simple_filter_placeholder">Buscar por Nome ou Data</string>
     <string name="execution_evolution_history_item_label_name">Nome</string>
+    <string name="execution_grouped_bar_chart_legend_label_weight">Peso</string>
+    <string name="execution_grouped_bar_chart_legend_label_reps">Repetições</string>
+    <string name="execution_grouped_bar_chart_legend_label_rest">Descanço (Segundos)</string>
+    <string name="execution_grouped_bar_chart_legend_label_duration">Duração (Segundos)</string>
 </resources>

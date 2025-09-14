@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
@@ -24,8 +25,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import br.com.fitnesspro.charts.states.bar.IBarChartState
+import br.com.fitnesspro.charts.states.legend.ChartLegendState
 import br.com.fitnesspro.charts.styles.ChartBackgroundStyle
-import br.com.fitnesspro.charts.styles.legend.ChartLegend
+import br.com.fitnesspro.charts.styles.legend.ChartLegendStyle
 import br.com.fitnesspro.charts.styles.text.CanvasTextDrawer
 import br.com.fitnesspro.charts.styles.text.enums.LongLabelStrategy
 import br.com.fitnesspro.charts.styles.text.extensions.getTextPaint
@@ -35,22 +37,23 @@ import kotlin.math.sin
 fun BarChartContainer(
     modifier: Modifier = Modifier,
     state: IBarChartState,
+    backgroundStyle: ChartBackgroundStyle,
+    legendStyle: ChartLegendStyle,
     maxValue: Float,
     content: @Composable (chartHeight: Dp, totalChartWidth: Dp, actualSlotWidth: Dp) -> Unit
 ) {
     BoxWithConstraints(modifier = modifier) {
         val viewportWidth = this.maxWidth
-        val style = state.backgroundStyle
         val scrollState = rememberScrollState()
         val density = LocalDensity.current
 
-        val yAxisGutterWidthPx = preCalculateYAxisGutterPx(density, style, maxValue)
+        val yAxisGutterWidthPx = preCalculateYAxisGutterPx(density, backgroundStyle, maxValue)
         val yAxisGutterWidthDp = with(density) { yAxisGutterWidthPx.toDp() }
 
         val chartViewportWidthDp = (viewportWidth - yAxisGutterWidthDp).coerceAtLeast(0.dp)
 
         val (totalChartWidthDp: Dp, actualSlotWidthDp: Dp, availableTextWidthPx: Float) = calculateHorizontalMetrics(
-            style = style,
+            style = backgroundStyle,
             entryCount = state.entries.size,
             viewportWidth = chartViewportWidthDp
         )
@@ -58,15 +61,16 @@ fun BarChartContainer(
         val (footerTotalHeightPx, maxLabelHeightPx) = preCalculateFooterSizes(
             density = density,
             state = state,
-            style = style,
-            legend = state.legend,
+            style = backgroundStyle,
+            legendState = state.legendState,
+            legendStyle = legendStyle,
             availableTextWidthPx = availableTextWidthPx,
             canvasWidth = with(density) { chartViewportWidthDp.toPx() }
         )
 
         val footerTotalHeightDp = with(density) { footerTotalHeightPx.toDp() }
         val actualBarAreaHeightDp = (this.maxHeight - footerTotalHeightDp).coerceAtLeast(0.dp)
-        val isScrollNeeded = style.enableHorizontalScroll && (totalChartWidthDp > chartViewportWidthDp)
+        val isScrollNeeded = backgroundStyle.enableHorizontalScroll && (totalChartWidthDp > chartViewportWidthDp)
 
         val scrollModifier = if (isScrollNeeded) {
             Modifier.horizontalScroll(scrollState)
@@ -89,17 +93,17 @@ fun BarChartContainer(
                     val canvasWidth = size.width
                     val newZeroY = size.height - footerTotalHeightPx
 
-                    drawBaseLine(style, newZeroY)
+                    drawBaseLine(backgroundStyle, newZeroY)
                     drawYAxisGridLines(
-                        style = style,
+                        style = backgroundStyle,
                         maxValue = maxValue,
                         zeroY = newZeroY,
                         chartHeight = actualBarAreaHeightDp
                     )
 
-                    if (style.showXAxisLabels) {
-                        val xAxisLabelPaint = style.xAxisLabelStyle.getTextPaint(drawContext.density)
-                        val barSlotWidthPx = if (style.enableHorizontalScroll) {
+                    if (backgroundStyle.showXAxisLabels) {
+                        val xAxisLabelPaint = backgroundStyle.xAxisLabelStyle.getTextPaint(drawContext.density)
+                        val barSlotWidthPx = if (backgroundStyle.enableHorizontalScroll) {
                             actualSlotWidthDp.toPx()
                         } else {
                             if (state.entries.isNotEmpty()) canvasWidth / (state.entries.size * 2) else 0f
@@ -107,12 +111,12 @@ fun BarChartContainer(
 
                         state.entries.forEachIndexed { index, entry ->
                             val textDrawer = CanvasTextDrawer(
-                                strategy = style.xAxisLabelStyle.longLabelStrategy,
+                                strategy = backgroundStyle.xAxisLabelStyle.longLabelStrategy,
                                 textPaint = xAxisLabelPaint,
                                 drawContext = drawContext
                             )
 
-                            val xCenter = if (style.enableHorizontalScroll) {
+                            val xCenter = if (backgroundStyle.enableHorizontalScroll) {
                                 (index + 0.5f) * barSlotWidthPx
                             } else {
                                 (index * 2 + 1) * barSlotWidthPx
@@ -121,7 +125,7 @@ fun BarChartContainer(
                             textDrawer.draw(
                                 text = entry.label,
                                 xCenter = xCenter,
-                                topY = newZeroY + style.xAxisLabelStyle.padding.toPx(),
+                                topY = newZeroY + backgroundStyle.xAxisLabelStyle.padding.toPx(),
                                 availableWidth = availableTextWidthPx
                             )
                         }
@@ -131,12 +135,13 @@ fun BarChartContainer(
                     val scrollOffsetPx = if (isScrollNeeded) scrollState.value.toFloat() else 0f
                     val effectiveWidth = if (isScrollNeeded) chartViewportWidthPx else canvasWidth
 
-                    state.legend?.let { legend ->
+                    state.legendState?.let { legendState ->
                         drawLegend(
-                            legend = legend,
+                            legendState = legendState,
+                            legendStyle = legendStyle,
                             canvasWidth = effectiveWidth,
                             baseLineY = newZeroY,
-                            topPadding = style.xAxisLabelStyle.padding,
+                            topPadding = backgroundStyle.xAxisLabelStyle.padding,
                             xAxisMaxHeight = maxLabelHeightPx,
                             scrollOffset = scrollOffsetPx
                         )
@@ -162,7 +167,7 @@ fun BarChartContainer(
             val newZeroY = size.height - footerTotalHeightPx
 
             drawYAxisLabels(
-                style = style,
+                style = backgroundStyle,
                 maxValue = maxValue,
                 zeroY = newZeroY,
                 chartHeight = actualBarAreaHeightDp,
@@ -201,7 +206,7 @@ private fun calculateHorizontalMetrics(style: ChartBackgroundStyle, entryCount: 
         if (isScrollActuallyNeeded) {
             Pair(minTotalCalculatedWidth, baseSlotWidth)
         } else {
-            val stretchedSlotWidth = viewportWidth / entryCount
+            val stretchedSlotWidth = if (entryCount > 0) viewportWidth / entryCount else viewportWidth
             Pair(viewportWidth, stretchedSlotWidth)
         }
     } else {
@@ -224,7 +229,8 @@ private fun preCalculateFooterSizes(
     density: Density,
     state: IBarChartState,
     style: ChartBackgroundStyle,
-    legend: ChartLegend?,
+    legendState: ChartLegendState?,
+    legendStyle: ChartLegendStyle,
     availableTextWidthPx: Float,
     canvasWidth: Float
 ): Pair<Float, Float> {
@@ -244,10 +250,10 @@ private fun preCalculateFooterSizes(
     }
 
     val legendPaddingTopPx = with(density) { 8.dp.toPx() }
-    val legendHeightPx = if (legend != null && legend.isEnabled && legend.entries.isNotEmpty()) {
-        val legendTextPaint = legend.textStyle.getTextPaint(density)
+    val legendHeightPx = if (legendState != null && legendState.isEnabled && legendState.entries.isNotEmpty()) {
+        val legendTextPaint = legendStyle.textStyle.getTextPaint(density)
         measureLegendHeight(
-            legend = legend,
+            legendState = legendState,
             legendTextPaint = legendTextPaint,
             canvasWidth = canvasWidth,
             density = density
@@ -310,7 +316,7 @@ private fun getLinesForMeasurement(availableWidth: Float, text: String, textPain
 }
 
 private fun measureLegendHeight(
-    legend: ChartLegend,
+    legendState: ChartLegendState,
     legendTextPaint: TextPaint,
     canvasWidth: Float,
     density: Density
@@ -324,7 +330,7 @@ private fun measureLegendHeight(
     var currentX = 0f + circleRadius
     var lineCount = 1
 
-    legend.entries.forEach { entry ->
+    legendState.entries.forEach { entry ->
         val textWidth = legendTextPaint.measureText(entry.label)
         val itemWidth = (circleRadius * 2) + circleTextPadding + textWidth + itemHorizontalSpacing
 
@@ -341,16 +347,17 @@ private fun measureLegendHeight(
 
 
 private fun DrawScope.drawLegend(
-    legend: ChartLegend,
+    legendState: ChartLegendState,
+    legendStyle: ChartLegendStyle,
     canvasWidth: Float,
     baseLineY: Float,
     topPadding: Dp,
     xAxisMaxHeight: Float,
     scrollOffset: Float
 ) {
-    if (!legend.isEnabled || legend.entries.isEmpty()) return
+    if (!legendState.isEnabled || legendState.entries.isEmpty()) return
 
-    val legendTextPaint = legend.textStyle.getTextPaint(drawContext.density).apply {
+    val legendTextPaint = legendStyle.textStyle.getTextPaint(drawContext.density).apply {
         textAlign = Paint.Align.LEFT
     }
     val legendPaddingTop = 8.dp.toPx()
@@ -367,7 +374,7 @@ private fun DrawScope.drawLegend(
     var currentX = scrollOffset + circleRadius
     var currentY = firstLineBaseY
 
-    legend.entries.forEach { entry ->
+    legendState.entries.forEachIndexed { index, entry ->
         val textWidth = legendTextPaint.measureText(entry.label)
         val itemWidth = (circleRadius * 2) + circleTextPadding + textWidth + itemHorizontalSpacing
 
@@ -378,7 +385,7 @@ private fun DrawScope.drawLegend(
 
         val circleCenterY = currentY + (legendTextPaint.fontMetrics.ascent / 2f) + (legendTextPaint.fontMetrics.descent / 2f)
         drawCircle(
-            color = entry.color,
+            color = legendStyle.colors.getOrElse(index) { Color.Black },
             radius = circleRadius,
             center = Offset(currentX, circleCenterY)
         )

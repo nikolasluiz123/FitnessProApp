@@ -13,10 +13,12 @@ import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.charts.composables.container.BarChartContainer
 import br.com.fitnesspro.charts.states.bar.BarChartState
 import br.com.fitnesspro.charts.styles.bar.BarStyle
+import br.com.fitnesspro.charts.styles.bar.SimpleBarChartStyle
 
 @Composable
 fun SimpleBarChart(
     state: BarChartState,
+    style: SimpleBarChartStyle,
     modifier: Modifier = Modifier
 ) {
     val maxValue = (state.entries.maxOfOrNull { it.value } ?: 0f).coerceAtLeast(1f)
@@ -24,12 +26,14 @@ fun SimpleBarChart(
     BarChartContainer(
         modifier = modifier,
         state = state,
+        backgroundStyle = style.backgroundStyle,
+        legendStyle = style.legendStyle,
         maxValue = maxValue
     ) { chartHeight, totalChartWidth, actualSlotWidth ->
         val barWidthFraction = 0.5f
-        val style = state.backgroundStyle
+        val bgStyle = style.backgroundStyle
 
-        val rowArrangement = if (style.enableHorizontalScroll) {
+        val rowArrangement = if (bgStyle.enableHorizontalScroll) {
             Arrangement.Start
         } else {
             Arrangement.SpaceEvenly
@@ -41,8 +45,8 @@ fun SimpleBarChart(
             verticalAlignment = Alignment.Bottom
         ) {
             state.entries.forEachIndexed { index, entry ->
-                val barStyle = getValidStyle(state, index)
-                val slotModifier = if (style.enableHorizontalScroll) {
+                val barStyle = getValidStyle(style, index)
+                val slotModifier = if (bgStyle.enableHorizontalScroll) {
                     Modifier.width(actualSlotWidth)
                 } else {
                     Modifier.weight(1f, fill = true)
@@ -63,12 +67,12 @@ fun SimpleBarChart(
     }
 }
 
-private fun getValidStyle(state: BarChartState, index: Int): BarStyle {
-    val styleFromList = state.barStyles.getOrNull(index)
+private fun getValidStyle(style: SimpleBarChartStyle, index: Int): BarStyle {
+    val styleFromList = style.barStyles.getOrNull(index)
 
     return if (styleFromList == null) {
-        requireNotNull(state.defaultBarStyle)
-        state.defaultBarStyle
+        requireNotNull(style.defaultBarStyle)
+        style.defaultBarStyle
     } else {
         styleFromList
     }

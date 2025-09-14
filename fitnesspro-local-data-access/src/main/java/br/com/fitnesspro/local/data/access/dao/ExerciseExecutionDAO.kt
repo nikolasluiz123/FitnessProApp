@@ -13,6 +13,7 @@ import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.tuple.ExecutionEvolutionHistoryGroupedTuple
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
+import br.com.fitnesspro.tuple.charts.ExerciseExecutionGroupedBarChartTuple
 import java.util.StringJoiner
 
 @Dao
@@ -270,4 +271,20 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
 
     @RawQuery(observedEntities = [ExerciseExecution::class, Exercise::class])
     abstract fun executeExecutionHistoryGrouped(query: SupportSQLiteQuery): PagingSource<Int, ExecutionEvolutionHistoryGroupedTuple>
+
+    @Query(
+        """
+        select date(execution.date) as date,
+               execution.weight as weight,
+               execution.repetitions as reps,
+               execution.rest as rest,
+               execution.duration as duration
+        from exercise_execution execution
+        where execution.exercise_id = :exerciseId
+        and execution.active = 1
+        order by execution.date
+        """
+    )
+    abstract suspend fun getListExerciseExecutionGroupedBarChartTuple(exerciseId: String): List<ExerciseExecutionGroupedBarChartTuple>
+
 }

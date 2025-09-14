@@ -11,13 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.charts.composables.container.BarChartContainer
 import br.com.fitnesspro.charts.states.bar.GroupedBarChartState
+import br.com.fitnesspro.charts.styles.bar.GroupedBarChartStyle
 
 @Composable
 fun GroupedBarChart(
     state: GroupedBarChartState,
+    style: GroupedBarChartStyle,
     modifier: Modifier = Modifier
 ) {
-    require(state.defaultBarStyles.isNotEmpty()) { "GroupedBarChartState requer pelo menos um BarStyle em defaultBarStyles." }
+    require(style.defaultBarStyles.isNotEmpty()) { "GroupedBarChartStyle requer pelo menos um BarStyle em defaultBarStyles." }
 
     val maxValue = (state.entries.maxOfOrNull {
         it.values.maxOrNull() ?: 0f
@@ -26,12 +28,14 @@ fun GroupedBarChart(
     BarChartContainer(
         modifier = modifier,
         state = state,
+        backgroundStyle = style.backgroundStyle,
+        legendStyle = style.legendStyle,
         maxValue = maxValue
     ) { chartHeight, totalChartWidth, actualSlotWidth ->
         val barWidthFraction = 0.9f
-        val style = state.backgroundStyle
+        val bgStyle = style.backgroundStyle
 
-        val rowArrangement = if (style.enableHorizontalScroll) {
+        val rowArrangement = if (bgStyle.enableHorizontalScroll) {
             Arrangement.Start
         } else {
             Arrangement.SpaceEvenly
@@ -44,7 +48,7 @@ fun GroupedBarChart(
         ) {
             state.entries.forEachIndexed { groupIndex, entry ->
 
-                val slotModifier = if (style.enableHorizontalScroll) {
+                val slotModifier = if (bgStyle.enableHorizontalScroll) {
                     Modifier.width(actualSlotWidth)
                 } else {
                     Modifier.weight(1f, fill = true)
@@ -52,7 +56,7 @@ fun GroupedBarChart(
 
                 GroupedBars(
                     entry = entry,
-                    styles = state.defaultBarStyles,
+                    styles = style.defaultBarStyles,
                     maxValue = maxValue,
                     chartHeight = chartHeight,
                     groupIndex = groupIndex,
