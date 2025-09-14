@@ -6,6 +6,7 @@ import br.com.fitnesspro.charts.entries.bar.GroupedBarEntry
 import br.com.fitnesspro.charts.entries.legend.LegendEntry
 import br.com.fitnesspro.charts.states.legend.ChartLegendState
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.core.callback.showErrorDialog
@@ -13,8 +14,11 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.millisTo
+import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.tuple.charts.ExerciseExecutionGroupedBarChartTuple
 import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
+import br.com.fitnesspro.workout.repository.ExerciseRepository
+import br.com.fitnesspro.workout.repository.WorkoutRepository
 import br.com.fitnesspro.workout.ui.navigation.ExecutionGroupedBarChartScreenArgs
 import br.com.fitnesspro.workout.ui.navigation.executionGroupedBarChartScreenArguments
 import br.com.fitnesspro.workout.ui.state.ExecutionGroupedBarChartUIState
@@ -30,6 +34,9 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val globalEvents: GlobalEvents,
     private val exerciseExecutionRepository: ExerciseExecutionRepository,
+    private val personRepository: PersonRepository,
+    private val exerciseRepository: ExerciseRepository,
+    private val workoutRepository: WorkoutRepository,
     savedStateHandle: SavedStateHandle
 ): FitnessProStatefulViewModel() {
 
@@ -58,17 +65,57 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
         val args = jsonArgs?.fromJsonNavParamToArgs(ExecutionGroupedBarChartScreenArgs::class.java)!!
 
         launch {
-            val chartData = exerciseExecutionRepository.getListExerciseExecutionGroupedBarChartTuple(args.exerciseId)
+            loadTopAppBarData(args)
+            loadChartData(args)
 
-            _uiState.value = _uiState.value.copy(
-                chartData = chartData,
-                chartState = _uiState.value.chartState.copy(
-                    entries = getChartEntries(chartData),
-                    legendState = getLegendState()
-                ),
-                executeLoad = false,
+            _uiState.value = _uiState.value.copy(executeLoad = false)
+        }
+    }
+
+    private suspend fun loadTopAppBarData(args: ExecutionGroupedBarChartScreenArgs) {
+        _uiState.value = _uiState.value.copy(
+            title = getTitle(),
+            subtitle = getSubtitle(args)
+        )
+    }
+
+    private suspend fun getTitle(): String {
+        val person = personRepository.getAuthenticatedTOPerson()
+        val userType = person?.user?.type!!
+
+        return if (userType == EnumUserType.ACADEMY_MEMBER) {
+            context.getString(br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_title_member)
+        } else {
+            context.getString(
+                br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_title_professional,
+                person.name!!
             )
         }
+    }
+
+    private suspend fun getSubtitle(args: ExecutionGroupedBarChartScreenArgs): String {
+        val exerciseName = exerciseRepository.findById(args.exerciseId).name!!
+        val workout = workoutRepository.findWorkoutByExerciseId(args.exerciseId)
+
+        val dateRange = context.getString(
+            br.com.fitnesspro.workout.R.string.execution_grouped_bar_chart_title_workout_date_range,
+            workout?.dateStart!!.format(EnumDateTimePatterns.DAY_MONTH_DATE),
+            workout.dateEnd!!.format(EnumDateTimePatterns.DAY_MONTH_DATE)
+        )
+
+        return "$exerciseName - $dateRange"
+    }
+
+    private suspend fun loadChartData(args: ExecutionGroupedBarChartScreenArgs) {
+        val chartData = exerciseExecutionRepository.getListExerciseExecutionGroupedBarChartTuple(args.exerciseId)
+
+        _uiState.value = _uiState.value.copy(
+            chartData = chartData,
+            chartState = _uiState.value.chartState.copy(
+                entries = getChartEntries(chartData),
+                legendState = getLegendState()
+            )
+        )
     }
 
     private fun getChartEntries(chartData: List<ExerciseExecutionGroupedBarChartTuple>): List<GroupedBarEntry> {

@@ -170,4 +170,7 @@
     <string name="execution_grouped_bar_chart_legend_label_reps">Repetições</string>
     <string name="execution_grouped_bar_chart_legend_label_rest">Descanço (Segundos)</string>
     <string name="execution_grouped_bar_chart_legend_label_duration">Duração (Segundos)</string>
+    <string name="execution_grouped_bar_chart_title_member">Minha Evolução</string>
+    <string name="execution_grouped_bar_chart_title_professional">Evolução de %s</string>
+    <string name="execution_grouped_bar_chart_title_workout_date_range">%s até %s</string>
 </resources>

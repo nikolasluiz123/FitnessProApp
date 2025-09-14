@@ -97,4 +97,8 @@ class WorkoutRepository(
         getTOWorkoutFrom(workout)
     }
 
+    suspend fun findWorkoutByExerciseId(exerciseId: String): TOWorkout? {
+        val workout = workoutDAO.findWorkoutByExerciseId(exerciseId)
+        return getTOWorkoutFrom(workout)
+    }
 }

@@ -70,6 +70,15 @@ abstract class WorkoutDAO: IntegratedMaintenanceDAO<Workout>() {
     @Query("select * from workout where id = :id")
     abstract suspend fun findWorkoutById(id: String): Workout?
 
+    @Query("""
+        select workout.*
+        from workout
+        inner join workout_group on workout.id = workout_group.workout_id
+        inner join exercise on workout_group.id = exercise.workout_group_id
+        where exercise.id = :exerciseId
+    """)
+    abstract suspend fun findWorkoutByExerciseId(exerciseId: String): Workout?
+
     @Query("select exists(select 1 from workout where id = :id)")
     abstract suspend fun hasEntityWithId(id: String): Boolean
 
