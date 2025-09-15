@@ -107,14 +107,14 @@ class ExecutionChartViewModel @Inject constructor(
                             _uiState.value = _uiState.value.copy(
                                 lineChartState = _uiState.value.lineChartState.copy(
                                     entries = getLineChartEntries(_uiState.value.chartData),
-                                    legendState = getLegendState()
+                                    legendState = getLegendState(_uiState.value.chartData)
                                 )
                             )
                         } else {
                             _uiState.value = _uiState.value.copy(
                                 barChartState = _uiState.value.barChartState.copy(
                                     entries = getGroupedBarChartEntries(_uiState.value.chartData),
-                                    legendState = getLegendState()
+                                    legendState = getLegendState(_uiState.value.chartData)
                                 )
                             )
                         }
@@ -328,14 +328,14 @@ class ExecutionChartViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(
                 barChartState = _uiState.value.barChartState.copy(
                     entries = getGroupedBarChartEntries(chartData),
-                    legendState = getLegendState()
+                    legendState = getLegendState(chartData)
                 )
             )
         } else {
             _uiState.value = _uiState.value.copy(
                 lineChartState = _uiState.value.lineChartState.copy(
                     entries = getLineChartEntries(chartData),
-                    legendState = getLegendState()
+                    legendState = getLegendState(chartData)
                 )
             )
         }
@@ -451,15 +451,26 @@ class ExecutionChartViewModel @Inject constructor(
         return _uiState.value.filterDialogState.metricValueRadioButtons.radioButtons.first { it.selected }.identifier as EnumMetricsValue
     }
 
-    private fun getLegendState(): ChartLegendState {
-        return ChartLegendState(
-            entries = listOf(
-                LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_weight)),
-                LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_reps)),
-                LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_rest)),
-                LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_duration))
-            )
-        )
+    private fun getLegendState(chartData: List<ExerciseExecutionChartTuple>): ChartLegendState {
+        val entries = mutableListOf<LegendEntry>()
+
+        if (chartData.any { it.weight != null }) {
+            entries.add(LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_weight)))
+        }
+
+        if (chartData.any { it.reps != null }) {
+            entries.add(LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_reps)))
+        }
+
+        if (chartData.any { it.rest != null }) {
+            entries.add(LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_rest)))
+        }
+
+        if (chartData.any { it.duration != null }) {
+            entries.add(LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_duration)))
+        }
+
+        return ChartLegendState(entries = entries, isEnabled = entries.isNotEmpty())
     }
 
     override fun getErrorMessageFrom(throwable: Throwable): String {
