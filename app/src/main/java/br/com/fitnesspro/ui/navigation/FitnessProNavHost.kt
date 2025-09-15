@@ -30,8 +30,8 @@ import br.com.fitnesspro.scheduler.ui.navigation.schedulerScreen
 import br.com.fitnesspro.workout.ui.navigation.currentWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.dayWeekExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.dayWeekWorkoutScreen
-import br.com.fitnesspro.workout.ui.navigation.executionEvolutionHistoryScreen
 import br.com.fitnesspro.workout.ui.navigation.executionChartScreen
+import br.com.fitnesspro.workout.ui.navigation.executionEvolutionHistoryScreen
 import br.com.fitnesspro.workout.ui.navigation.exerciseDetailsScreen
 import br.com.fitnesspro.workout.ui.navigation.exercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.membersEvolutionScreen
@@ -39,8 +39,8 @@ import br.com.fitnesspro.workout.ui.navigation.membersWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToCurrentWorkoutScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToDayWeekWorkoutScreen
-import br.com.fitnesspro.workout.ui.navigation.navigateToExecutionEvolutionHistoryScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToExecutionChartScreen
+import br.com.fitnesspro.workout.ui.navigation.navigateToExecutionEvolutionHistoryScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToExerciseDetailsScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToExercisesScreen
 import br.com.fitnesspro.workout.ui.navigation.navigateToMembersEvolutionScreen
@@ -98,6 +98,7 @@ fun FitnessProNavHost(
             onNavigateToCurrentWorkoutScreen = navController::navigateToCurrentWorkoutScreen,
             onNavigateToPreDefinitionsScreen = navController::navigateToPreDefinitionsScreen,
             onNavigateToMemberEvolutionScreen = navController::navigateToMembersEvolutionScreen,
+            onNavigateToExecutionEvolutionHistory = navController::navigateToExecutionEvolutionHistoryScreen,
             onNavigateToLogin = {
                 navController.navigateToLoginScreen(
                     navOptions = navOptions {

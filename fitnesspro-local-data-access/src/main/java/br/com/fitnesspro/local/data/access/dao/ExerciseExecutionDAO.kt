@@ -173,30 +173,14 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
             add("  null as exerciseOrder ")
         }
 
-        val fromDates = StringJoiner(QR_NL).apply {
-            add(" from exercise_execution execution ")
-            add(" inner join exercise on exercise.id = execution.exercise_id ")
-            add(" inner join workout_group wg on wg.id = exercise.workout_group_id ")
-            add(" inner join workout w on w.id = wg.workout_id ")
-        }
+        val fromDates = getFromExecutionHistoryGrouped()
 
-        val whereDates = StringJoiner(QR_NL).apply {
-            add(" where w.personal_trainer_person_id = ? ")
-            add(" and w.academy_member_person_id = ? ")
-            add(" and execution.active = 1 ")
-            add(" and exercise.active = 1 ")
-            add(" and wg.active = 1 ")
-            add(" and w.active = 1 ")
-
-            queryParams.add(authenticatedPersonId)
-            queryParams.add(personMemberId)
-
-            if (simpleFilter.isNotEmpty()) {
-                add(" and lower(exercise.name) like ? or execution.date like ? ")
-                queryParams.add("%${simpleFilter.lowercase()}%")
-                queryParams.add("%${simpleFilter}%")
-            }
-        }
+        val whereDates = getWhereExecutionHistoryGrouped(
+            queryParams = queryParams,
+            authenticatedPersonId = authenticatedPersonId,
+            personMemberId = personMemberId,
+            simpleFilter = simpleFilter
+        )
 
         val groupByDates = StringJoiner(QR_NL).apply {
             add(" group by w.date_start")
@@ -219,30 +203,14 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
             add("  exercise.exercise_order as exerciseOrder ")
         }
 
-        val fromExecutions = StringJoiner(QR_NL).apply {
-            add(" from exercise_execution execution ")
-            add(" inner join exercise on exercise.id = execution.exercise_id ")
-            add(" inner join workout_group wg on wg.id = exercise.workout_group_id ")
-            add(" inner join workout w on w.id = wg.workout_id ")
-        }
+        val fromExecutions = getFromExecutionHistoryGrouped()
 
-        val whereExecutions = StringJoiner(QR_NL).apply {
-            add(" where w.personal_trainer_person_id = ? ")
-            add(" and w.academy_member_person_id = ? ")
-            add(" and execution.active = 1 ")
-            add(" and exercise.active = 1 ")
-            add(" and wg.active = 1 ")
-            add(" and w.active = 1 ")
-
-            queryParams.add(authenticatedPersonId)
-            queryParams.add(personMemberId)
-
-            if (simpleFilter.isNotEmpty()) {
-                add(" and lower(exercise.name) like ? or execution.date like ? ")
-                queryParams.add("%${simpleFilter.lowercase()}%")
-                queryParams.add("%${simpleFilter}%")
-            }
-        }
+        val whereExecutions = getWhereExecutionHistoryGrouped(
+            queryParams = queryParams,
+            authenticatedPersonId = authenticatedPersonId,
+            personMemberId = personMemberId,
+            simpleFilter = simpleFilter
+        )
 
         val groupByExecutions = StringJoiner(QR_NL).apply {
             add(" group by w.date_start, exercise.id ")
@@ -267,6 +235,37 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
         }
 
         return executeExecutionHistoryGrouped(SimpleSQLiteQuery(sql.toString(), queryParams.toTypedArray()))
+    }
+
+    private fun getFromExecutionHistoryGrouped(): StringJoiner = StringJoiner(QR_NL).apply {
+        add(" from exercise_execution execution ")
+        add(" inner join exercise on exercise.id = execution.exercise_id ")
+        add(" inner join workout_group wg on wg.id = exercise.workout_group_id ")
+        add(" inner join workout w on w.id = wg.workout_id ")
+    }
+
+    private fun getWhereExecutionHistoryGrouped(
+        queryParams: MutableList<Any>,
+        authenticatedPersonId: String,
+        personMemberId: String,
+        simpleFilter: String
+    ): StringJoiner = StringJoiner(QR_NL).apply {
+        add(" where (w.personal_trainer_person_id = ? or w.academy_member_person_id = ?) ")
+        add(" and w.academy_member_person_id = ? ")
+        add(" and execution.active = 1 ")
+        add(" and exercise.active = 1 ")
+        add(" and wg.active = 1 ")
+        add(" and w.active = 1 ")
+
+        queryParams.add(authenticatedPersonId)
+        queryParams.add(authenticatedPersonId)
+        queryParams.add(personMemberId)
+
+        if (simpleFilter.isNotEmpty()) {
+            add(" and lower(exercise.name) like ? or execution.date like ? ")
+            queryParams.add("%${simpleFilter.lowercase()}%")
+            queryParams.add("%${simpleFilter}%")
+        }
     }
 
     @RawQuery(observedEntities = [ExerciseExecution::class, Exercise::class])

@@ -46,6 +46,7 @@ import br.com.fitnesspro.ui.screen.home.callbacks.OnNavigateToAccountInformation
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_ACCOUNT_BUTTON
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_FOLLOW_UP_EVOLUTION
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_MONEY
+import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_MY_EVOLUTION
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_MY_WORKOUT
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_NUTRITION
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUTTON_SCHEDULER
@@ -54,6 +55,8 @@ import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_BUT
 import br.com.fitnesspro.ui.screen.home.enums.EnumHomeScreenTags.HOME_SCREEN_LOGOUT_BUTTON
 import br.com.fitnesspro.ui.state.HomeUIState
 import br.com.fitnesspro.ui.viewmodel.HomeViewModel
+import br.com.fitnesspro.workout.ui.navigation.ExecutionEvolutionHistoryScreenArgs
+import br.com.fitnesspro.workout.ui.screen.evolution.callbacks.OnNavigateToExecutionEvolutionHistory
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.analytics
 
@@ -66,7 +69,8 @@ fun HomeScreen(
     onNavigateToMembersWorkoutScreen: () -> Unit,
     onNavigateToCurrentWorkoutScreen: () -> Unit,
     onNavigateToPreDefinitionsScreen: () -> Unit,
-    onNavigateToMemberEvolutionScreen: () -> Unit
+    onNavigateToMemberEvolutionScreen: () -> Unit,
+    onNavigateToExecutionEvolutionHistory: OnNavigateToExecutionEvolutionHistory
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -83,6 +87,7 @@ fun HomeScreen(
         onNavigateToCurrentWorkoutScreen = onNavigateToCurrentWorkoutScreen,
         onNavigateToPreDefinitionsScreen = onNavigateToPreDefinitionsScreen,
         onNavigateToMemberEvolutionScreen = onNavigateToMemberEvolutionScreen,
+        onNavigateToExecutionEvolutionHistory = onNavigateToExecutionEvolutionHistory,
         onExecuteBackup = viewModel::onExecuteBackup
     )
 }
@@ -99,6 +104,7 @@ fun HomeScreen(
     onNavigateToCurrentWorkoutScreen: () -> Unit = { },
     onNavigateToPreDefinitionsScreen: () -> Unit = { },
     onNavigateToMemberEvolutionScreen: () -> Unit = { },
+    onNavigateToExecutionEvolutionHistory: OnNavigateToExecutionEvolutionHistory? = null,
     onExecuteBackup: OnExecuteBackup? = null
 ) {
     Scaffold(
@@ -246,7 +252,13 @@ fun HomeScreen(
 
                             when (it) {
                                 EnumOptionsBottomSheetWorkout.MY_EVOLUTION -> {
+                                    Firebase.analytics.logButtonClick(HOME_SCREEN_BUTTON_MY_EVOLUTION)
 
+                                    state.toPerson.id?.let { personMemberId ->
+                                        onNavigateToExecutionEvolutionHistory?.onNavigate(
+                                            args = ExecutionEvolutionHistoryScreenArgs(personMemberId)
+                                        )
+                                    }
                                 }
                                 EnumOptionsBottomSheetWorkout.MY_WORKOUT -> {
                                     Firebase.analytics.logButtonClick(HOME_SCREEN_BUTTON_MY_WORKOUT)

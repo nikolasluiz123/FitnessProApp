@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import br.com.fitnesspro.ui.screen.home.HomeScreen
 import br.com.fitnesspro.ui.screen.home.callbacks.OnNavigateToAccountInformation
 import br.com.fitnesspro.ui.viewmodel.HomeViewModel
+import br.com.fitnesspro.workout.ui.screen.evolution.callbacks.OnNavigateToExecutionEvolutionHistory
 
 const val homeScreenRoute = "home"
 
@@ -18,7 +19,8 @@ fun NavGraphBuilder.homeScreen(
     onNavigateToMembersWorkoutScreen: () -> Unit,
     onNavigateToCurrentWorkoutScreen: () -> Unit,
     onNavigateToPreDefinitionsScreen: () -> Unit,
-    onNavigateToMemberEvolutionScreen: () -> Unit
+    onNavigateToMemberEvolutionScreen: () -> Unit,
+    onNavigateToExecutionEvolutionHistory: OnNavigateToExecutionEvolutionHistory
 ) {
     composable(route = homeScreenRoute) {
         val loginViewModel = hiltViewModel<HomeViewModel>()
@@ -31,7 +33,8 @@ fun NavGraphBuilder.homeScreen(
             onNavigateToMembersWorkoutScreen = onNavigateToMembersWorkoutScreen,
             onNavigateToCurrentWorkoutScreen = onNavigateToCurrentWorkoutScreen,
             onNavigateToPreDefinitionsScreen = onNavigateToPreDefinitionsScreen,
-            onNavigateToMemberEvolutionScreen = onNavigateToMemberEvolutionScreen
+            onNavigateToMemberEvolutionScreen = onNavigateToMemberEvolutionScreen,
+            onNavigateToExecutionEvolutionHistory = onNavigateToExecutionEvolutionHistory
         )
     }
 }
