@@ -107,12 +107,14 @@ class ExecutionChartViewModel @Inject constructor(
                             _uiState.value = _uiState.value.copy(
                                 lineChartState = _uiState.value.lineChartState.copy(
                                     entries = getLineChartEntries(_uiState.value.chartData),
+                                    legendState = getLegendState()
                                 )
                             )
                         } else {
                             _uiState.value = _uiState.value.copy(
                                 barChartState = _uiState.value.barChartState.copy(
                                     entries = getGroupedBarChartEntries(_uiState.value.chartData),
+                                    legendState = getLegendState()
                                 )
                             )
                         }
