@@ -69,12 +69,25 @@ internal fun Line(
         pathEffect = PathEffect.dashPathEffect(floatArrayOf(pathLength, pathLength), phase)
     )
 
+    val dataPointRadiusPx = with(density) { style.dataPointRadius.toPx() }
+    val animatedDataPointRadius = dataPointRadiusPx * animatedProgress
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         drawPath(
             path = path,
             color = style.color,
             style = lineStroke
         )
+
+        if (style.showDataPoints && animatedProgress > 0f) {
+            points.forEach { point ->
+                drawCircle(
+                    color = style.color,
+                    radius = animatedDataPointRadius,
+                    center = point
+                )
+            }
+        }
     }
 }
 
@@ -101,7 +114,6 @@ private fun createCurvedPath(points: List<Offset>): Path {
         val p2 = points[i + 1]
         val p3 = points.getOrElse(i + 2) { p2 }
 
-        // Pontos de controle para a curva de Bezier Cúbica
         val cp1x = p1.x + (p2.x - p0.x) * CURVE_SMOOTHNESS
         val cp1y = p1.y + (p2.y - p0.y) * CURVE_SMOOTHNESS
         val cp2x = p2.x - (p3.x - p1.x) * CURVE_SMOOTHNESS

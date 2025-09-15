@@ -10,6 +10,8 @@ data class LineStyle(
     val color: Color,
     val width: Dp = 3.dp,
     val lineType: LineType = LineType.CURVED,
+    val showDataPoints: Boolean = true,
+    val dataPointRadius: Dp = 4.dp,
     override val animationDuration: Int = 1000,
     override val animationDelay: Long = 200L
 ): IAnimatedStyle
