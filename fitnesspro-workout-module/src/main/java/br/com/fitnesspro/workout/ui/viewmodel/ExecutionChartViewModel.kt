@@ -20,6 +20,7 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.millisTo
 import br.com.fitnesspro.model.enums.EnumUserType
+import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.tuple.charts.ExerciseExecutionChartTuple
 import br.com.fitnesspro.workout.R.string
 import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
@@ -332,29 +333,30 @@ class ExecutionChartViewModel @Inject constructor(
     }
 
     private suspend fun loadTopAppBarData(args: ExecutionChartScreenArgs) {
+        val workout = workoutRepository.findWorkoutByExerciseId(args.exerciseId)
+
         _uiState.value = _uiState.value.copy(
-            title = getTitle(),
-            subtitle = getSubtitle(args)
+            title = getTitle(workout),
+            subtitle = getSubtitle(args, workout)
         )
     }
 
-    private suspend fun getTitle(): String {
-        val person = personRepository.getAuthenticatedTOPerson()
-        val userType = person?.user?.type!!
+    private suspend fun getTitle(workout: TOWorkout?): String {
+        val member = personRepository.getTOPersonById(workout?.academyMemberPersonId!!)
+        val authenticatedUserType = personRepository.getAuthenticatedTOPerson()?.user?.type!!
 
-        return if (userType == EnumUserType.ACADEMY_MEMBER) {
+        return if (authenticatedUserType == EnumUserType.ACADEMY_MEMBER) {
             context.getString(string.execution_grouped_bar_chart_title_member)
         } else {
             context.getString(
                 string.execution_grouped_bar_chart_title_professional,
-                person.name!!
+                member.name!!
             )
         }
     }
 
-    private suspend fun getSubtitle(args: ExecutionChartScreenArgs): String {
+    private suspend fun getSubtitle(args: ExecutionChartScreenArgs, workout: TOWorkout?): String {
         val exerciseName = exerciseRepository.findById(args.exerciseId).name!!
-        val workout = workoutRepository.findWorkoutByExerciseId(args.exerciseId)
 
         val dateRange = context.getString(
             string.execution_grouped_bar_chart_title_workout_date_range,
