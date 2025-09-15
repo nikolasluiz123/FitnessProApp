@@ -29,7 +29,8 @@ private const val CURVE_SMOOTHNESS = 0.2f
 internal fun Line(
     points: List<Offset>,
     style: LineStyle,
-    index: Int
+    index: Int,
+    onAnimationEnd: () -> Unit
 ) {
     if (points.isEmpty()) return
 
@@ -53,7 +54,10 @@ internal fun Line(
             durationMillis = style.animationDuration,
             easing = FastOutSlowInEasing
         ),
-        label = "LineDrawAnimation"
+        label = "LineDrawAnimation",
+        finishedListener = {
+            if (it == 1f) onAnimationEnd()
+        }
     )
 
     LaunchedEffect(Unit) {

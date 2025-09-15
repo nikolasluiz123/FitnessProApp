@@ -13,8 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.fitnesspro.charts.composables.bar.grouped.GroupedBarChart
 import br.com.fitnesspro.charts.composables.line.LineChart
@@ -25,6 +27,7 @@ import br.com.fitnesspro.charts.styles.legend.ChartLegendStyle
 import br.com.fitnesspro.charts.styles.line.LineChartStyle
 import br.com.fitnesspro.charts.styles.line.LineStyle
 import br.com.fitnesspro.charts.styles.text.ChartTextStyle
+import br.com.fitnesspro.charts.styles.tooltip.ChartTooltipStyle
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.BLUE_500
@@ -93,27 +96,42 @@ fun ExecutionGroupedBarChartScreen(
                 .consumeWindowInsets(paddingValues)
                 .fillMaxSize()
         ) {
+            val tooltipStyle = ChartTooltipStyle(
+                textStyle = ChartTextStyle(
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 10.sp,
+                    padding = 0.dp
+                ),
+                backgroundColor = Color.Transparent,
+                shadowElevation = 0.dp
+            )
+
+            val backgroundStyle = ChartContainerStyle(
+                xAxisLabelStyle = ChartTextStyle(color = MaterialTheme.colorScheme.onBackground),
+                showYAxisLines = true,
+                showYAxisLabels = true,
+                enableHorizontalScroll = true,
+                scrollableBarWidth = 128.dp
+            )
+
+            val colors = listOf(BLUE_500, GREEN_500, RED_500, ORANGE_500)
+
+            val legendStyle = ChartLegendStyle(
+                textStyle = ChartTextStyle(color = MaterialTheme.colorScheme.onBackground),
+                colors = colors
+            )
+
             when (state.chartType) {
                 EnumChartType.GROUPED_BAR -> {
                     val chartStyle = GroupedBarChartStyle(
                         defaultBarStyles = listOf(
-                            BarStyle(fillColor = BLUE_500),
-                            BarStyle(fillColor = GREEN_500),
-                            BarStyle(fillColor = RED_500),
-                            BarStyle(fillColor = ORANGE_500),
+                            BarStyle(fillColor = colors[0], tooltipStyle = tooltipStyle),
+                            BarStyle(fillColor = colors[1], tooltipStyle = tooltipStyle),
+                            BarStyle(fillColor = colors[2], tooltipStyle = tooltipStyle),
+                            BarStyle(fillColor = colors[3], tooltipStyle = tooltipStyle),
                         ),
-                        backgroundStyle = ChartContainerStyle(
-                            gridLineColor = MaterialTheme.colorScheme.outline,
-                            xAxisLabelStyle = ChartTextStyle(color = MaterialTheme.colorScheme.onBackground),
-                            yAxisLabelStyle = ChartTextStyle(color = MaterialTheme.colorScheme.onBackground),
-                            enableHorizontalScroll = true,
-                            yAxisSteps = 8,
-                            scrollableBarWidth = 128.dp
-                        ),
-                        legendStyle = ChartLegendStyle(
-                            textStyle = ChartTextStyle(color = MaterialTheme.colorScheme.onBackground),
-                            colors = listOf(BLUE_500, GREEN_500, RED_500, ORANGE_500)
-                        )
+                        backgroundStyle = backgroundStyle,
+                        legendStyle = legendStyle
                     )
 
                     GroupedBarChart(
@@ -128,23 +146,13 @@ fun ExecutionGroupedBarChartScreen(
                 EnumChartType.LINES -> {
                     val chartStyle = LineChartStyle(
                         lineStyles = listOf(
-                            LineStyle(color = BLUE_500),
-                            LineStyle(color = GREEN_500),
-                            LineStyle(color = RED_500),
-                            LineStyle(color = ORANGE_500),
+                            LineStyle(color = colors[0], tooltipStyle = tooltipStyle),
+                            LineStyle(color = colors[1], tooltipStyle = tooltipStyle),
+                            LineStyle(color = colors[2], tooltipStyle = tooltipStyle),
+                            LineStyle(color = colors[3], tooltipStyle = tooltipStyle),
                         ),
-                        backgroundStyle = ChartContainerStyle(
-                            gridLineColor = MaterialTheme.colorScheme.outline,
-                            xAxisLabelStyle = ChartTextStyle(color = MaterialTheme.colorScheme.onBackground),
-                            yAxisLabelStyle = ChartTextStyle(color = MaterialTheme.colorScheme.onBackground),
-                            enableHorizontalScroll = true,
-                            yAxisSteps = 8,
-                            scrollableBarWidth = 128.dp
-                        ),
-                        legendStyle = ChartLegendStyle(
-                            textStyle = ChartTextStyle(color = MaterialTheme.colorScheme.onBackground),
-                            colors = listOf(BLUE_500, GREEN_500, RED_500, ORANGE_500)
-                        )
+                        backgroundStyle = backgroundStyle,
+                        legendStyle = legendStyle
                     )
 
                     LineChart(

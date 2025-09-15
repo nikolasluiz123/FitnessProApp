@@ -6,12 +6,14 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.charts.styles.IAnimatedStyle
+import br.com.fitnesspro.charts.styles.tooltip.ChartTooltipStyle
 
 data class BarStyle(
     val fillColor: Color,
     val borderColor: Color = Color.Transparent,
     val borderWidth: Dp = 1.dp,
     val shape: Shape = RoundedCornerShape(4.dp, 4.dp, 0.dp, 0.dp),
+    val tooltipStyle: ChartTooltipStyle? = null,
     override val animationDuration: Int = 1000,
     override val animationDelay: Long = 200L
 ): IAnimatedStyle

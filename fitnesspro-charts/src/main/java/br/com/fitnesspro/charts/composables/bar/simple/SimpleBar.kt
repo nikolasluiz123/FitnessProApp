@@ -5,7 +5,12 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,10 +18,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import br.com.fitnesspro.charts.composables.tooltip.ChartTooltip
 import br.com.fitnesspro.charts.entries.bar.SimpleBarEntry
 import br.com.fitnesspro.charts.styles.bar.BarStyle
 import kotlinx.coroutines.delay
@@ -47,23 +54,43 @@ fun SimpleBar(
         label = "Bar Growth"
     )
 
-    Box(
-        modifier = modifier
-            .height(chartHeight * animatedFraction)
-            .background(
-                color = style.fillColor,
-                shape = style.shape
+    val showTooltip = (animatedFraction == targetFraction) &&
+            (style.tooltipStyle != null) &&
+            targetFraction > 0f
+
+    Column(
+        modifier = modifier.fillMaxHeight(),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        if (showTooltip) {
+            ChartTooltip(
+                value = entry.value,
+                style = style.tooltipStyle
             )
-            .then(
-                if (isDrawBorder(style)) {
-                    Modifier.border(
-                        width = style.borderWidth,
-                        color = style.borderColor,
-                        shape = style.shape
-                    )
-                } else Modifier
-            )
-    )
+            Spacer(Modifier.height(4.dp))
+        }
+
+        Box(
+            modifier = Modifier
+                .height(chartHeight * animatedFraction)
+                .fillMaxWidth()
+                .background(
+                    color = style.fillColor,
+                    shape = style.shape
+                )
+                .then(
+                    if (isDrawBorder(style)) {
+                        Modifier.border(
+                            width = style.borderWidth,
+                            color = style.borderColor,
+                            shape = style.shape
+                        )
+                    } else Modifier
+                )
+        )
+    }
 }
 
 private fun isDrawBorder(style: BarStyle): Boolean {
