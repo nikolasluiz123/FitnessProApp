@@ -89,7 +89,8 @@ class ExecutionChartViewModel @Inject constructor(
                             metricValueRadioButtons = _uiState.value.filterDialogState.metricValueRadioButtons.copy(
                                 radioButtons = getDefaultListMetricValueRadioButtons()
                             )
-                        )
+                        ),
+                        chartType = EnumChartType.GROUPED_BAR
                     )
 
                     _uiState.value = _uiState.value.copy(
@@ -99,11 +100,27 @@ class ExecutionChartViewModel @Inject constructor(
                     )
                 },
                 onApplyClick = {
-                    _uiState.value = _uiState.value.copy(
-                        barChartState = _uiState.value.barChartState.copy(
-                            entries = getGroupedBarChartEntries(_uiState.value.chartData),
+                    launch {
+                        val chartTypeOption = getChartTypeOption()
+
+                        if (chartTypeOption.identifier == EnumChartType.LINES) {
+                            _uiState.value = _uiState.value.copy(
+                                lineChartState = _uiState.value.lineChartState.copy(
+                                    entries = getLineChartEntries(_uiState.value.chartData),
+                                )
+                            )
+                        } else {
+                            _uiState.value = _uiState.value.copy(
+                                barChartState = _uiState.value.barChartState.copy(
+                                    entries = getGroupedBarChartEntries(_uiState.value.chartData),
+                                )
+                            )
+                        }
+
+                        _uiState.value = _uiState.value.copy(
+                            chartType = chartTypeOption.identifier as EnumChartType
                         )
-                    )
+                    }
                 },
                 onShowDialogChange = {
                     _uiState.value = _uiState.value.copy(
@@ -112,6 +129,10 @@ class ExecutionChartViewModel @Inject constructor(
                 }
             )
         )
+    }
+
+    private fun getChartTypeOption(): RadioButtonState {
+        return _uiState.value.filterDialogState.chartTypeRadioButtons.radioButtons.first { it.selected }
     }
 
     private fun getDefaultListFocusValueRadioButtons(): List<RadioButtonState> {
@@ -158,12 +179,12 @@ class ExecutionChartViewModel @Inject constructor(
         return listOf(
             RadioButtonState(
                 label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_grouped_bar),
-                identifier = EnumChartType.GROUPED_BAR
+                identifier = EnumChartType.GROUPED_BAR,
+                selected = true
             ),
             RadioButtonState(
                 label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_lines),
                 identifier = EnumChartType.LINES,
-                selected = true
             )
         )
     }
@@ -299,15 +320,23 @@ class ExecutionChartViewModel @Inject constructor(
 
         _uiState.value = _uiState.value.copy(
             chartData = chartData,
-            barChartState = _uiState.value.barChartState.copy(
-                entries = getGroupedBarChartEntries(chartData),
-                legendState = getLegendState()
-            ),
-            lineChartState = _uiState.value.lineChartState.copy(
-                entries = getLineChartEntries(chartData),
-                legendState = getLegendState()
-            )
         )
+
+        if (getChartTypeOption().identifier == EnumChartType.GROUPED_BAR) {
+            _uiState.value = _uiState.value.copy(
+                barChartState = _uiState.value.barChartState.copy(
+                    entries = getGroupedBarChartEntries(chartData),
+                    legendState = getLegendState()
+                )
+            )
+        } else {
+            _uiState.value = _uiState.value.copy(
+                lineChartState = _uiState.value.lineChartState.copy(
+                    entries = getLineChartEntries(chartData),
+                    legendState = getLegendState()
+                )
+            )
+        }
     }
 
     private fun getGroupedBarChartEntries(chartData: List<ExerciseExecutionChartTuple>): List<GroupedBarEntry> {

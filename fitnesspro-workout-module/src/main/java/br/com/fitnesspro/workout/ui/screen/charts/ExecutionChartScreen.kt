@@ -93,9 +93,7 @@ fun ExecutionGroupedBarChartScreen(
                 .consumeWindowInsets(paddingValues)
                 .fillMaxSize()
         ) {
-            val chartTypeOption = state.filterDialogState.chartTypeRadioButtons.radioButtons.first { it.selected }
-
-            when (chartTypeOption.identifier) {
+            when (state.chartType) {
                 EnumChartType.GROUPED_BAR -> {
                     val chartStyle = GroupedBarChartStyle(
                         defaultBarStyles = listOf(

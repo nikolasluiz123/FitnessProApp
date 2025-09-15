@@ -7,6 +7,7 @@ import br.com.fitnesspro.core.state.ISuspendedLoadUIState
 import br.com.fitnesspro.core.state.IThrowableUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.tuple.charts.ExerciseExecutionChartTuple
+import br.com.fitnesspro.workout.ui.screen.charts.enums.EnumChartType
 
 data class ExecutionChartUIState(
     val title: String = "",
@@ -15,6 +16,7 @@ data class ExecutionChartUIState(
     val lineChartState: LineChartState = LineChartState(),
     val chartData: List<ExerciseExecutionChartTuple> = emptyList(),
     val filterDialogState: ExecutionChartFiltersDialogUIState = ExecutionChartFiltersDialogUIState(),
+    val chartType: EnumChartType = EnumChartType.GROUPED_BAR,
     override val messageDialogState: MessageDialogState = MessageDialogState(),
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = {},
