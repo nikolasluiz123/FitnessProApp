@@ -88,6 +88,9 @@ class ExecutionChartViewModel @Inject constructor(
                             ),
                             metricValueRadioButtons = _uiState.value.filterDialogState.metricValueRadioButtons.copy(
                                 radioButtons = getDefaultListMetricValueRadioButtons()
+                            ),
+                            chartTypeRadioButtons = _uiState.value.filterDialogState.chartTypeRadioButtons.copy(
+                                radioButtons = getDefaultListChartTypeRadioButtons()
                             )
                         ),
                         chartType = EnumChartType.GROUPED_BAR
