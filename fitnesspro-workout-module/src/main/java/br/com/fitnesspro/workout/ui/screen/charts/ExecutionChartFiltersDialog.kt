@@ -23,6 +23,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.buttons.DefaultDialogTextButton
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonClose
+import br.com.fitnesspro.compose.components.fields.MultipleCheckBoxesField
 import br.com.fitnesspro.compose.components.fields.MultipleRadioButtonsField
 import br.com.fitnesspro.core.theme.DialogTitleTextStyle
 import br.com.fitnesspro.core.theme.LabelMediumTextStyle
@@ -113,6 +114,17 @@ fun ExecutionGroupedBarChartFiltersDialog(state: ExecutionChartFiltersDialogUISt
                         )
 
                         Text(
+                            text = stringResource(R.string.excution_grouped_bar_chart_filters_screen_label_visible_values),
+                            style = LabelMediumTextStyle,
+                            modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+                        )
+
+                        MultipleCheckBoxesField(
+                            state = state.showValuesCheckboxes,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Text(
                             text = stringResource(R.string.excution_grouped_bar_chart_filters_screen_label_metric_value),
                             style = LabelMediumTextStyle,
                             modifier = Modifier.padding(start = 16.dp, top = 8.dp)
@@ -153,7 +165,6 @@ fun ExecutionGroupedBarChartFiltersDialog(state: ExecutionChartFiltersDialogUISt
                                 state.onRestoreClick()
                             }
                         )
-
 
                         DefaultDialogTextButton(
                             modifier = Modifier.align(Alignment.CenterEnd),

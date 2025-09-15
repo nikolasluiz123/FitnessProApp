@@ -188,4 +188,5 @@
     <string name="excution_grouped_bar_chart_filters_screen_label_chart_type">Tipo de Gráfico</string>
     <string name="excution_grouped_bar_chart_filters_screen_label_grouped_bar">Barras Agrupadas</string>
     <string name="excution_grouped_bar_chart_filters_screen_label_lines">Linhas</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_visible_values">Valores Visíveis</string>
 </resources>

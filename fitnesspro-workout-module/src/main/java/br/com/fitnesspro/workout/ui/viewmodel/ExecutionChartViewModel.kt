@@ -10,6 +10,8 @@ import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
+import br.com.fitnesspro.compose.components.fields.state.checkbox.CheckBoxState
+import br.com.fitnesspro.compose.components.fields.state.checkbox.MultipleCheckBoxesState
 import br.com.fitnesspro.compose.components.fields.state.radiobutton.MultipleRadioButtonsState
 import br.com.fitnesspro.compose.components.fields.state.radiobutton.RadioButtonState
 import br.com.fitnesspro.core.callback.showErrorDialog
@@ -28,6 +30,7 @@ import br.com.fitnesspro.workout.ui.navigation.executionChartScreenArguments
 import br.com.fitnesspro.workout.ui.screen.charts.enums.EnumChartType
 import br.com.fitnesspro.workout.ui.screen.charts.enums.EnumFocusValue
 import br.com.fitnesspro.workout.ui.screen.charts.enums.EnumMetricsValue
+import br.com.fitnesspro.workout.ui.screen.charts.enums.EnumVisibleValues
 import br.com.fitnesspro.workout.ui.state.ExecutionChartFiltersDialogUIState
 import br.com.fitnesspro.workout.ui.state.ExecutionChartUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -80,6 +83,17 @@ class ExecutionChartViewModel @Inject constructor(
                     radioButtons = getDefaultListChartTypeRadioButtons(),
                     onRadioButtonClick = ::onChartTypeRadioButtonClick
                 ),
+                showValuesCheckboxes = MultipleCheckBoxesState(
+                    onCheckBoxClick = {
+                        _uiState.value = _uiState.value.copy(
+                            filterDialogState = _uiState.value.filterDialogState.copy(
+                                showValuesCheckboxes = _uiState.value.filterDialogState.showValuesCheckboxes.copy(
+                                    checkBoxes = updateCheckBoxesListOnClick(it)
+                                )
+                            )
+                        )
+                    }
+                ),
                 onRestoreClick = {
                     _uiState.value = _uiState.value.copy(
                         filterDialogState = _uiState.value.filterDialogState.copy(
@@ -104,26 +118,10 @@ class ExecutionChartViewModel @Inject constructor(
                 },
                 onApplyClick = {
                     launch {
-                        val chartTypeOption = getChartTypeOption()
-
-                        if (chartTypeOption.identifier == EnumChartType.LINES) {
-                            _uiState.value = _uiState.value.copy(
-                                lineChartState = _uiState.value.lineChartState.copy(
-                                    entries = getLineChartEntries(_uiState.value.chartData),
-                                    legendState = getLegendState(_uiState.value.chartData)
-                                )
-                            )
-                        } else {
-                            _uiState.value = _uiState.value.copy(
-                                barChartState = _uiState.value.barChartState.copy(
-                                    entries = getGroupedBarChartEntries(_uiState.value.chartData),
-                                    legendState = getLegendState(_uiState.value.chartData)
-                                )
-                            )
-                        }
+                        loadChartStates(_uiState.value.chartData)
 
                         _uiState.value = _uiState.value.copy(
-                            chartType = chartTypeOption.identifier as EnumChartType
+                            chartType = getChartTypeOption().identifier as EnumChartType
                         )
                     }
                 },
@@ -132,6 +130,53 @@ class ExecutionChartViewModel @Inject constructor(
                         filterDialogState = _uiState.value.filterDialogState.copy(showDialog = it)
                     )
                 }
+            )
+        )
+    }
+
+    private fun updateCheckBoxesListOnClick(clickedCheckbox: Enum<*>): List<CheckBoxState> {
+        clickedCheckbox as EnumVisibleValues
+
+        return _uiState.value.filterDialogState.showValuesCheckboxes.checkBoxes.map { checkBoxState ->
+            if (checkBoxState.identifier == clickedCheckbox) {
+                val toggledValue = if (checkBoxState.enabled) !checkBoxState.checked else checkBoxState.checked
+                checkBoxState.copy(checked = toggledValue)
+            } else {
+                checkBoxState
+            }
+        }
+    }
+
+    private fun getDefaultListCheckboxesShowValues(chartData: List<ExerciseExecutionChartTuple>): List<CheckBoxState> {
+        val hasWeightData = chartData.any { it.weight != null }
+        val hasRepsData = chartData.any { it.reps != null }
+        val hasRestData = chartData.any { it.rest != null }
+        val hasDurationData = chartData.any { it.duration != null }
+
+        return listOf(
+            CheckBoxState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_weight),
+                identifier = EnumVisibleValues.WEIGHT,
+                enabled = hasWeightData,
+                checked = hasWeightData
+            ),
+            CheckBoxState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_reps),
+                identifier = EnumVisibleValues.REPS,
+                enabled = hasRepsData,
+                checked = hasRepsData
+            ),
+            CheckBoxState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_rest),
+                identifier = EnumVisibleValues.REST,
+                enabled = hasRestData,
+                checked = hasRestData
+            ),
+            CheckBoxState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_duration),
+                identifier = EnumVisibleValues.DURATION,
+                enabled = hasDurationData,
+                checked = hasDurationData
             )
         )
     }
@@ -325,8 +370,17 @@ class ExecutionChartViewModel @Inject constructor(
 
         _uiState.value = _uiState.value.copy(
             chartData = chartData,
+            filterDialogState = _uiState.value.filterDialogState.copy(
+                showValuesCheckboxes = _uiState.value.filterDialogState.showValuesCheckboxes.copy(
+                    checkBoxes = getDefaultListCheckboxesShowValues(chartData),
+                )
+            )
         )
 
+        loadChartStates(chartData)
+    }
+
+    private fun loadChartStates(chartData: List<ExerciseExecutionChartTuple>) {
         if (getChartTypeOption().identifier == EnumChartType.GROUPED_BAR) {
             _uiState.value = _uiState.value.copy(
                 barChartState = _uiState.value.barChartState.copy(
@@ -423,27 +477,56 @@ class ExecutionChartViewModel @Inject constructor(
             }
 
             EnumMetricsValue.AVG -> {
-                val weightAverage = mapEntry.value.map { it.weight ?: 0.0 }.average().toFloat()
-                val repsAverage = mapEntry.value.map { it.reps ?: 0 }.average().toFloat()
-                val restAverage =
-                    mapEntry.value.map { it.rest?.millisTo(ChronoUnit.SECONDS) ?: 0L }.average()
-                        .toFloat()
-                val durationAverage =
-                    mapEntry.value.map { it.duration?.millisTo(ChronoUnit.SECONDS) ?: 0L }.average()
-                        .toFloat()
+                val result = mutableListOf<Float>()
+                val visibleValues = getVisibleValues()
 
-                listOf(weightAverage, repsAverage, restAverage, durationAverage).filter { it > 0 }
+                visibleValues.forEach { visibleValue ->
+                    when (visibleValue) {
+                        EnumVisibleValues.WEIGHT -> {
+                            val weightAverage = mapEntry.value.map { it.weight ?: 0.0 }.average().toFloat()
+                            if (weightAverage > 0) result.add(weightAverage)
+                        }
+                        EnumVisibleValues.REPS -> {
+                            val repsAverage = mapEntry.value.map { it.reps ?: 0 }.average().toFloat()
+                            if (repsAverage > 0) result.add(repsAverage)
+                        }
+                        EnumVisibleValues.REST -> {
+                            val restAverage = mapEntry.value.map { it.rest?.millisTo(ChronoUnit.SECONDS) ?: 0L }.average().toFloat()
+                            if (restAverage > 0) result.add(restAverage)
+                        }
+                        EnumVisibleValues.DURATION -> {
+                            val durationAverage = mapEntry.value.map { it.duration?.millisTo(ChronoUnit.SECONDS) ?: 0L }.average().toFloat()
+                            if (durationAverage > 0) result.add(durationAverage)
+                        }
+                    }
+                }
+
+                result
             }
         }
     }
 
     private fun getListValuesNotNull(objectWithMinWeight: ExerciseExecutionChartTuple): List<Float> {
-        return listOfNotNull(
-            objectWithMinWeight.weight?.toFloat(),
-            objectWithMinWeight.reps?.toFloat(),
-            objectWithMinWeight.rest?.millisTo(ChronoUnit.SECONDS)?.toFloat(),
-            objectWithMinWeight.duration?.millisTo(ChronoUnit.SECONDS)?.toFloat()
-        )
+        val result = mutableListOf<Float?>()
+
+        val visibleValues = getVisibleValues()
+
+        visibleValues.forEach {
+            when (it) {
+                EnumVisibleValues.WEIGHT -> result.add(objectWithMinWeight.weight?.toFloat())
+                EnumVisibleValues.REPS -> result.add(objectWithMinWeight.reps?.toFloat())
+                EnumVisibleValues.REST -> result.add(objectWithMinWeight.rest?.millisTo(ChronoUnit.SECONDS)?.toFloat())
+                EnumVisibleValues.DURATION -> result.add(objectWithMinWeight.duration?.millisTo(ChronoUnit.SECONDS)?.toFloat())
+            }
+        }
+
+        return result.filterNotNull()
+    }
+
+    private fun getVisibleValues(): List<EnumVisibleValues> {
+        return _uiState.value.filterDialogState.showValuesCheckboxes.checkBoxes
+            .filter { it.checked }
+            .map { it.identifier as EnumVisibleValues }
     }
 
     private fun getFocusSelected(): EnumFocusValue {
@@ -456,20 +539,21 @@ class ExecutionChartViewModel @Inject constructor(
 
     private fun getLegendState(chartData: List<ExerciseExecutionChartTuple>): ChartLegendState {
         val entries = mutableListOf<LegendEntry>()
+        val visibleValues = getVisibleValues()
 
-        if (chartData.any { it.weight != null }) {
+        if (chartData.any { it.weight != null } && EnumVisibleValues.WEIGHT in visibleValues) {
             entries.add(LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_weight)))
         }
 
-        if (chartData.any { it.reps != null }) {
+        if (chartData.any { it.reps != null } && EnumVisibleValues.REPS in visibleValues) {
             entries.add(LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_reps)))
         }
 
-        if (chartData.any { it.rest != null }) {
+        if (chartData.any { it.rest != null } && EnumVisibleValues.REST in visibleValues) {
             entries.add(LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_rest)))
         }
 
-        if (chartData.any { it.duration != null }) {
+        if (chartData.any { it.duration != null } && EnumVisibleValues.DURATION in visibleValues) {
             entries.add(LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_duration)))
         }
 
