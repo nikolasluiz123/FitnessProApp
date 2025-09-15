@@ -29,7 +29,6 @@ internal fun GroupLines(
     val slotWidthPx = with(density) { slotWidth.toPx() }
 
     val lineCount = style.lineStyles.size
-    val animationStaggerMs = 200L
 
     Box(modifier = Modifier.fillMaxSize()) {
         (0 until lineCount).forEach { lineIndex ->
@@ -37,7 +36,7 @@ internal fun GroupLines(
 
             val points = entries.mapIndexedNotNull { entryIndex, pointEntry ->
                 val yValue = pointEntry.values.getOrNull(lineIndex)
-                if (yValue == null) return@mapIndexedNotNull null // Pular se esta linha não tiver dados neste ponto
+                if (yValue == null) return@mapIndexedNotNull null
 
                 val x = if (isScrollable) {
                     (entryIndex + 0.5f) * slotWidthPx
@@ -55,7 +54,7 @@ internal fun GroupLines(
             Line(
                 points = points,
                 style = lineStyle,
-                animationDelay = lineIndex * animationStaggerMs
+                index = lineIndex
             )
         }
     }

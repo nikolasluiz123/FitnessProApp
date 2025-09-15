@@ -34,14 +34,14 @@ fun SimpleBar(
     var startAnimation by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        delay(index * 150L)
+        delay(index * style.animationDelay)
         startAnimation = true
     }
 
     val animatedFraction by animateFloatAsState(
         targetValue = if (startAnimation) targetFraction else 0f,
         animationSpec = tween(
-            durationMillis = 800,
+            durationMillis = style.animationDuration,
             easing = FastOutSlowInEasing
         ),
         label = "Bar Growth"

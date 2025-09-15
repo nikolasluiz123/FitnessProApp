@@ -29,7 +29,7 @@ private const val CURVE_SMOOTHNESS = 0.2f
 internal fun Line(
     points: List<Offset>,
     style: LineStyle,
-    animationDelay: Long
+    index: Int
 ) {
     if (points.isEmpty()) return
 
@@ -50,14 +50,14 @@ internal fun Line(
     val animatedProgress by animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(
-            durationMillis = 1000,
+            durationMillis = style.animationDuration,
             easing = FastOutSlowInEasing
         ),
         label = "LineDrawAnimation"
     )
 
     LaunchedEffect(Unit) {
-        delay(animationDelay)
+        delay(index * style.animationDelay)
         startAnimation = true
     }
 
