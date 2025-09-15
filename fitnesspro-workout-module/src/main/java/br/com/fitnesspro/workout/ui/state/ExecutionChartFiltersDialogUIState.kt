@@ -2,9 +2,10 @@ package br.com.fitnesspro.workout.ui.state
 
 import br.com.fitnesspro.compose.components.fields.state.radiobutton.MultipleRadioButtonsState
 
-data class ExecutionGroupedBarChartFiltersDialogUIState(
+data class ExecutionChartFiltersDialogUIState(
     val focusValueRadioButtons: MultipleRadioButtonsState = MultipleRadioButtonsState(),
     val metricValueRadioButtons: MultipleRadioButtonsState = MultipleRadioButtonsState(),
+    val chartTypeRadioButtons: MultipleRadioButtonsState = MultipleRadioButtonsState(),
     val showDialog: Boolean = false,
     val onShowDialogChange: (Boolean) -> Unit = { },
     val onRestoreClick: () -> Unit = { },

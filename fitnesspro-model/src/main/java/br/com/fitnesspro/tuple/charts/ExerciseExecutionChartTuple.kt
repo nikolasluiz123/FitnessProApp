@@ -2,7 +2,7 @@ package br.com.fitnesspro.tuple.charts
 
 import java.time.LocalDate
 
-data class ExerciseExecutionGroupedBarChartTuple(
+data class ExerciseExecutionChartTuple(
     val date: LocalDate,
     val weight: Double?,
     val reps: Int?,

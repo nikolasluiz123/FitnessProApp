@@ -19,7 +19,7 @@ import br.com.fitnesspro.compose.components.filter.SimpleFilter
 import br.com.fitnesspro.compose.components.list.PagedLazyVerticalList
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.workout.R
-import br.com.fitnesspro.workout.ui.navigation.ExecutionGroupedBarChartScreenArgs
+import br.com.fitnesspro.workout.ui.navigation.ExecutionChartScreenArgs
 import br.com.fitnesspro.workout.ui.screen.evolution.callbacks.OnNavigateToExecutionGroupedBarChart
 import br.com.fitnesspro.workout.ui.state.ExecutionEvolutionHistoryUIState
 import br.com.fitnesspro.workout.ui.viewmodel.ExecutionEvolutionHistoryViewModel
@@ -103,7 +103,7 @@ private fun HistoryList(
             tuple = tuple,
             onClick = {
                 onClick?.onNavigate(
-                    ExecutionGroupedBarChartScreenArgs(
+                    ExecutionChartScreenArgs(
                         exerciseId = tuple.exerciseId!!
                     )
                 )

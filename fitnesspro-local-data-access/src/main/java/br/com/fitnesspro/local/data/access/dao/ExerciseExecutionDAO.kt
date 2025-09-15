@@ -13,7 +13,7 @@ import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.tuple.ExecutionEvolutionHistoryGroupedTuple
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
-import br.com.fitnesspro.tuple.charts.ExerciseExecutionGroupedBarChartTuple
+import br.com.fitnesspro.tuple.charts.ExerciseExecutionChartTuple
 import java.util.StringJoiner
 
 @Dao
@@ -285,6 +285,6 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
         order by execution.date
         """
     )
-    abstract suspend fun getListExerciseExecutionGroupedBarChartTuple(exerciseId: String): List<ExerciseExecutionGroupedBarChartTuple>
+    abstract suspend fun getListExerciseExecutionGroupedBarChartTuple(exerciseId: String): List<ExerciseExecutionChartTuple>
 
 }

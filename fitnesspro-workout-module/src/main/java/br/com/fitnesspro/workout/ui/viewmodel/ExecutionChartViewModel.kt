@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import br.com.fitnesspro.charts.entries.bar.GroupedBarEntry
 import br.com.fitnesspro.charts.entries.legend.LegendEntry
+import br.com.fitnesspro.charts.entries.line.LineChartPointEntry
 import br.com.fitnesspro.charts.states.legend.ChartLegendState
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
@@ -17,26 +18,28 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.core.extensions.millisTo
 import br.com.fitnesspro.model.enums.EnumUserType
-import br.com.fitnesspro.tuple.charts.ExerciseExecutionGroupedBarChartTuple
+import br.com.fitnesspro.tuple.charts.ExerciseExecutionChartTuple
 import br.com.fitnesspro.workout.R.string
 import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
-import br.com.fitnesspro.workout.ui.navigation.ExecutionGroupedBarChartScreenArgs
-import br.com.fitnesspro.workout.ui.navigation.executionGroupedBarChartScreenArguments
+import br.com.fitnesspro.workout.ui.navigation.ExecutionChartScreenArgs
+import br.com.fitnesspro.workout.ui.navigation.executionChartScreenArguments
+import br.com.fitnesspro.workout.ui.screen.charts.enums.EnumChartType
 import br.com.fitnesspro.workout.ui.screen.charts.enums.EnumFocusValue
 import br.com.fitnesspro.workout.ui.screen.charts.enums.EnumMetricsValue
-import br.com.fitnesspro.workout.ui.state.ExecutionGroupedBarChartFiltersDialogUIState
-import br.com.fitnesspro.workout.ui.state.ExecutionGroupedBarChartUIState
+import br.com.fitnesspro.workout.ui.state.ExecutionChartFiltersDialogUIState
+import br.com.fitnesspro.workout.ui.state.ExecutionChartUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 @HiltViewModel
-class ExecutionGroupedBarChartViewModel @Inject constructor(
+class ExecutionChartViewModel @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val globalEvents: GlobalEvents,
     private val exerciseExecutionRepository: ExerciseExecutionRepository,
@@ -46,10 +49,10 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): FitnessProStatefulViewModel() {
 
-    private val _uiState: MutableStateFlow<ExecutionGroupedBarChartUIState> = MutableStateFlow(ExecutionGroupedBarChartUIState())
+    private val _uiState: MutableStateFlow<ExecutionChartUIState> = MutableStateFlow(ExecutionChartUIState())
     val uiState get() = _uiState.asStateFlow()
 
-    val jsonArgs: String? = savedStateHandle[executionGroupedBarChartScreenArguments]
+    val jsonArgs: String? = savedStateHandle[executionChartScreenArguments]
 
     init {
         initialLoadUIState()
@@ -64,7 +67,7 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
             onToggleLoading = {
                 _uiState.value = _uiState.value.copy(showLoading = _uiState.value.showLoading.not())
             },
-            filterDialogState = ExecutionGroupedBarChartFiltersDialogUIState(
+            filterDialogState = ExecutionChartFiltersDialogUIState(
                 focusValueRadioButtons = MultipleRadioButtonsState(
                     radioButtons = getDefaultListFocusValueRadioButtons(),
                     onRadioButtonClick = ::onFocusValueRadioButtonClick
@@ -72,6 +75,10 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
                 metricValueRadioButtons = MultipleRadioButtonsState(
                     radioButtons = getDefaultListMetricValueRadioButtons(),
                     onRadioButtonClick = ::onMetricValueRadioButtonClick
+                ),
+                chartTypeRadioButtons = MultipleRadioButtonsState(
+                    radioButtons = getDefaultListChartTypeRadioButtons(),
+                    onRadioButtonClick = ::onChartTypeRadioButtonClick
                 ),
                 onRestoreClick = {
                     _uiState.value = _uiState.value.copy(
@@ -86,15 +93,15 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
                     )
 
                     _uiState.value = _uiState.value.copy(
-                        chartState = _uiState.value.chartState.copy(
-                            entries = getChartEntries(_uiState.value.chartData),
+                        barChartState = _uiState.value.barChartState.copy(
+                            entries = getGroupedBarChartEntries(_uiState.value.chartData),
                         )
                     )
                 },
                 onApplyClick = {
                     _uiState.value = _uiState.value.copy(
-                        chartState = _uiState.value.chartState.copy(
-                            entries = getChartEntries(_uiState.value.chartData),
+                        barChartState = _uiState.value.barChartState.copy(
+                            entries = getGroupedBarChartEntries(_uiState.value.chartData),
                         )
                     )
                 },
@@ -145,6 +152,40 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
                 identifier = EnumMetricsValue.AVG
             )
         )
+    }
+
+    private fun getDefaultListChartTypeRadioButtons(): List<RadioButtonState> {
+        return listOf(
+            RadioButtonState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_grouped_bar),
+                identifier = EnumChartType.GROUPED_BAR
+            ),
+            RadioButtonState(
+                label = context.getString(string.excution_grouped_bar_chart_filters_screen_label_lines),
+                identifier = EnumChartType.LINES,
+                selected = true
+            )
+        )
+    }
+
+    private fun onChartTypeRadioButtonClick(identifier: Enum<*>) {
+        val newButtonsList = getChartTypeRadioButtonsListWithSelection(identifier)
+
+        _uiState.value = _uiState.value.copy(
+            filterDialogState = _uiState.value.filterDialogState.copy(
+                chartTypeRadioButtons = _uiState.value.filterDialogState.chartTypeRadioButtons.copy(
+                    radioButtons = newButtonsList
+                )
+            )
+        )
+    }
+
+    private fun getChartTypeRadioButtonsListWithSelection(identifier: Enum<*>): List<RadioButtonState> {
+        val currentButtons = _uiState.value.filterDialogState.chartTypeRadioButtons.radioButtons
+
+        return currentButtons.map { radioButtonState ->
+            radioButtonState.copy(selected = radioButtonState.identifier == identifier)
+        }
     }
 
     private fun onFocusValueRadioButtonClick(identifier: Enum<*>) {
@@ -209,7 +250,7 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
     }
 
     fun loadStateWithDatabaseInfos() {
-        val args = jsonArgs?.fromJsonNavParamToArgs(ExecutionGroupedBarChartScreenArgs::class.java)!!
+        val args = jsonArgs?.fromJsonNavParamToArgs(ExecutionChartScreenArgs::class.java)!!
 
         launch {
             loadTopAppBarData(args)
@@ -219,7 +260,7 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadTopAppBarData(args: ExecutionGroupedBarChartScreenArgs) {
+    private suspend fun loadTopAppBarData(args: ExecutionChartScreenArgs) {
         _uiState.value = _uiState.value.copy(
             title = getTitle(),
             subtitle = getSubtitle(args)
@@ -240,7 +281,7 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getSubtitle(args: ExecutionGroupedBarChartScreenArgs): String {
+    private suspend fun getSubtitle(args: ExecutionChartScreenArgs): String {
         val exerciseName = exerciseRepository.findById(args.exerciseId).name!!
         val workout = workoutRepository.findWorkoutByExerciseId(args.exerciseId)
 
@@ -253,94 +294,116 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
         return "$exerciseName - $dateRange"
     }
 
-    private suspend fun loadChartData(args: ExecutionGroupedBarChartScreenArgs) {
+    private suspend fun loadChartData(args: ExecutionChartScreenArgs) {
         val chartData = exerciseExecutionRepository.getListExerciseExecutionGroupedBarChartTuple(args.exerciseId)
 
         _uiState.value = _uiState.value.copy(
             chartData = chartData,
-            chartState = _uiState.value.chartState.copy(
-                entries = getChartEntries(chartData),
+            barChartState = _uiState.value.barChartState.copy(
+                entries = getGroupedBarChartEntries(chartData),
+                legendState = getLegendState()
+            ),
+            lineChartState = _uiState.value.lineChartState.copy(
+                entries = getLineChartEntries(chartData),
                 legendState = getLegendState()
             )
         )
     }
 
-    private fun getChartEntries(chartData: List<ExerciseExecutionGroupedBarChartTuple>): List<GroupedBarEntry> {
+    private fun getGroupedBarChartEntries(chartData: List<ExerciseExecutionChartTuple>): List<GroupedBarEntry> {
         val groupedData = chartData.groupBy { it.date }
 
         return groupedData.map { mapEntry ->
             val formatedDate = mapEntry.key.format(EnumDateTimePatterns.DAY_MONTH_DATE)
-
-            val metricSelected = getMetricSelected()
-
-            val values = when (metricSelected) {
-                EnumMetricsValue.MIN -> {
-                    val focusSelected = getFocusSelected()
-
-                    when (focusSelected) {
-                        EnumFocusValue.WEIGHT -> {
-                            val objectWithMinWeight = mapEntry.value.minBy { it.weight ?: 0.0 }
-                            getListValuesNotNull(objectWithMinWeight)
-                        }
-
-                        EnumFocusValue.REPS -> {
-                            val objectWithMinReps = mapEntry.value.minBy { it.reps ?: 0 }
-                            getListValuesNotNull(objectWithMinReps)
-                        }
-
-                        EnumFocusValue.REST -> {
-                            val objectWithMinRest = mapEntry.value.minBy { it.rest ?: 0L }
-                            getListValuesNotNull(objectWithMinRest)
-                        }
-
-                        EnumFocusValue.DURATION -> {
-                            val objectWithMinDuration = mapEntry.value.minBy { it.duration ?: 0L }
-                            getListValuesNotNull(objectWithMinDuration)
-                        }
-                    }
-                }
-
-                EnumMetricsValue.MAX -> {
-                    val focusSelected = getFocusSelected()
-
-                    when (focusSelected) {
-                        EnumFocusValue.WEIGHT -> {
-                            val objectWithMinWeight = mapEntry.value.maxBy { it.weight ?: 0.0 }
-                            getListValuesNotNull(objectWithMinWeight)
-                        }
-
-                        EnumFocusValue.REPS -> {
-                            val objectWithMinReps = mapEntry.value.maxBy { it.reps ?: 0 }
-                            getListValuesNotNull(objectWithMinReps)
-                        }
-
-                        EnumFocusValue.REST -> {
-                            val objectWithMinRest = mapEntry.value.maxBy { it.rest ?: 0L }
-                            getListValuesNotNull(objectWithMinRest)
-                        }
-
-                        EnumFocusValue.DURATION -> {
-                            val objectWithMinDuration = mapEntry.value.maxBy { it.duration ?: 0L }
-                            getListValuesNotNull(objectWithMinDuration)
-                        }
-                    }
-                }
-
-                EnumMetricsValue.AVG -> {
-                    val weightAverage = mapEntry.value.map { it.weight ?: 0.0 }.average().toFloat()
-                    val repsAverage = mapEntry.value.map { it.reps ?: 0 }.average().toFloat()
-                    val restAverage = mapEntry.value.map { it.rest?.millisTo(ChronoUnit.SECONDS) ?: 0L }.average().toFloat()
-                    val durationAverage = mapEntry.value.map { it.duration?.millisTo(ChronoUnit.SECONDS) ?: 0L }.average().toFloat()
-
-                    listOf(weightAverage, repsAverage, restAverage, durationAverage).filter { it > 0 }
-                }
-            }
+            val values = getFilteredValues(mapEntry)
 
             GroupedBarEntry(label = formatedDate, values = values)
         }
     }
 
-    private fun getListValuesNotNull(objectWithMinWeight: ExerciseExecutionGroupedBarChartTuple): List<Float> {
+    private fun getLineChartEntries(chartData: List<ExerciseExecutionChartTuple>): List<LineChartPointEntry> {
+        val groupedData = chartData.groupBy { it.date }
+
+        return groupedData.map { mapEntry ->
+            val formatedDate = mapEntry.key.format(EnumDateTimePatterns.DAY_MONTH_DATE)
+            val values = getFilteredValues(mapEntry)
+
+            LineChartPointEntry(label = formatedDate, values = values)
+        }
+    }
+
+    private fun getFilteredValues(mapEntry: Map.Entry<LocalDate, List<ExerciseExecutionChartTuple>>): List<Float> {
+        val metricSelected = getMetricSelected()
+
+        return when (metricSelected) {
+            EnumMetricsValue.MIN -> {
+                val focusSelected = getFocusSelected()
+
+                when (focusSelected) {
+                    EnumFocusValue.WEIGHT -> {
+                        val objectWithMinWeight = mapEntry.value.minBy { it.weight ?: 0.0 }
+                        getListValuesNotNull(objectWithMinWeight)
+                    }
+
+                    EnumFocusValue.REPS -> {
+                        val objectWithMinReps = mapEntry.value.minBy { it.reps ?: 0 }
+                        getListValuesNotNull(objectWithMinReps)
+                    }
+
+                    EnumFocusValue.REST -> {
+                        val objectWithMinRest = mapEntry.value.minBy { it.rest ?: 0L }
+                        getListValuesNotNull(objectWithMinRest)
+                    }
+
+                    EnumFocusValue.DURATION -> {
+                        val objectWithMinDuration = mapEntry.value.minBy { it.duration ?: 0L }
+                        getListValuesNotNull(objectWithMinDuration)
+                    }
+                }
+            }
+
+            EnumMetricsValue.MAX -> {
+                val focusSelected = getFocusSelected()
+
+                when (focusSelected) {
+                    EnumFocusValue.WEIGHT -> {
+                        val objectWithMinWeight = mapEntry.value.maxBy { it.weight ?: 0.0 }
+                        getListValuesNotNull(objectWithMinWeight)
+                    }
+
+                    EnumFocusValue.REPS -> {
+                        val objectWithMinReps = mapEntry.value.maxBy { it.reps ?: 0 }
+                        getListValuesNotNull(objectWithMinReps)
+                    }
+
+                    EnumFocusValue.REST -> {
+                        val objectWithMinRest = mapEntry.value.maxBy { it.rest ?: 0L }
+                        getListValuesNotNull(objectWithMinRest)
+                    }
+
+                    EnumFocusValue.DURATION -> {
+                        val objectWithMinDuration = mapEntry.value.maxBy { it.duration ?: 0L }
+                        getListValuesNotNull(objectWithMinDuration)
+                    }
+                }
+            }
+
+            EnumMetricsValue.AVG -> {
+                val weightAverage = mapEntry.value.map { it.weight ?: 0.0 }.average().toFloat()
+                val repsAverage = mapEntry.value.map { it.reps ?: 0 }.average().toFloat()
+                val restAverage =
+                    mapEntry.value.map { it.rest?.millisTo(ChronoUnit.SECONDS) ?: 0L }.average()
+                        .toFloat()
+                val durationAverage =
+                    mapEntry.value.map { it.duration?.millisTo(ChronoUnit.SECONDS) ?: 0L }.average()
+                        .toFloat()
+
+                listOf(weightAverage, repsAverage, restAverage, durationAverage).filter { it > 0 }
+            }
+        }
+    }
+
+    private fun getListValuesNotNull(objectWithMinWeight: ExerciseExecutionChartTuple): List<Float> {
         return listOfNotNull(
             objectWithMinWeight.weight?.toFloat(),
             objectWithMinWeight.reps?.toFloat(),
@@ -363,6 +426,7 @@ class ExecutionGroupedBarChartViewModel @Inject constructor(
                 LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_weight)),
                 LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_reps)),
                 LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_rest)),
+                LegendEntry(label = context.getString(string.execution_grouped_bar_chart_legend_label_duration))
             )
         )
     }

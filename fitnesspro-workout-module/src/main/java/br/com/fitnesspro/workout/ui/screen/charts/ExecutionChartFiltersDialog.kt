@@ -2,8 +2,11 @@ package br.com.fitnesspro.workout.ui.screen.charts
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,10 +27,10 @@ import br.com.fitnesspro.compose.components.fields.MultipleRadioButtonsField
 import br.com.fitnesspro.core.theme.DialogTitleTextStyle
 import br.com.fitnesspro.core.theme.LabelMediumTextStyle
 import br.com.fitnesspro.workout.R
-import br.com.fitnesspro.workout.ui.state.ExecutionGroupedBarChartFiltersDialogUIState
+import br.com.fitnesspro.workout.ui.state.ExecutionChartFiltersDialogUIState
 
 @Composable
-fun ExecutionGroupedBarChartFiltersDialog(state: ExecutionGroupedBarChartFiltersDialogUIState) {
+fun ExecutionGroupedBarChartFiltersDialog(state: ExecutionChartFiltersDialogUIState) {
     if (state.showDialog) {
         Dialog(
             onDismissRequest = { state.onShowDialogChange(false) },
@@ -39,10 +42,9 @@ fun ExecutionGroupedBarChartFiltersDialog(state: ExecutionGroupedBarChartFilters
                 modifier = Modifier.padding(16.dp)
             ) {
                 ConstraintLayout(
-                    Modifier
-                        .fillMaxWidth()
+                    Modifier.fillMaxSize()
                 ) {
-                    val (headerRef, focusValueRef, metricValueRef, buttonsContainerRef) = createRefs()
+                    val (headerRef, containerRef, buttonsContainerRef) = createRefs()
 
                     ConstraintLayout(
                         modifier = Modifier
@@ -84,39 +86,47 @@ fun ExecutionGroupedBarChartFiltersDialog(state: ExecutionGroupedBarChartFilters
                         )
                     }
 
+                    val scrollState = rememberScrollState()
+
                     Column(
-                        modifier = Modifier.constrainAs(metricValueRef) {
-                            top.linkTo(headerRef.bottom, margin = 8.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(scrollState)
+                            .constrainAs(containerRef) {
+                                top.linkTo(headerRef.bottom)
+                                bottom.linkTo(buttonsContainerRef.top)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+
+                                height = Dimension.fillToConstraints
+                            }
                     ) {
+                        Text(
+                            text = stringResource(R.string.excution_grouped_bar_chart_filters_screen_label_chart_type),
+                            style = LabelMediumTextStyle,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+
+                        MultipleRadioButtonsField(
+                            state = state.chartTypeRadioButtons,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
                         Text(
                             text = stringResource(R.string.excution_grouped_bar_chart_filters_screen_label_metric_value),
                             style = LabelMediumTextStyle,
-                            modifier = Modifier.padding(start = 16.dp)
+                            modifier = Modifier.padding(start = 16.dp, top = 8.dp)
                         )
 
                         MultipleRadioButtonsField(
                             state = state.metricValueRadioButtons,
                             modifier = Modifier.fillMaxWidth()
                         )
-                    }
 
-                    Column(
-                        modifier = Modifier.constrainAs(focusValueRef) {
-                            top.linkTo(metricValueRef.bottom, margin = 8.dp)
-                            bottom.linkTo(buttonsContainerRef.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-
-                            verticalBias = 0f
-                        }
-                    ) {
                         Text(
                             text = stringResource(R.string.excution_grouped_bar_chart_filters_screen_label_focus_value),
                             style = LabelMediumTextStyle,
-                            modifier = Modifier.padding(start = 16.dp)
+                            modifier = Modifier.padding(start = 16.dp, top = 8.dp)
                         )
 
                         MultipleRadioButtonsField(

@@ -185,4 +185,7 @@
     <string name="excution_grouped_bar_chart_filters_screen_label_avg">Média</string>
     <string name="excution_grouped_bar_chart_filters_screen_restore_button">Restaurar</string>
     <string name="excution_grouped_bar_chart_filters_screen_apply_button">Aplicar</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_chart_type">Tipo de Gráfico</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_grouped_bar">Barras Agrupadas</string>
+    <string name="excution_grouped_bar_chart_filters_screen_label_lines">Linhas</string>
 </resources>

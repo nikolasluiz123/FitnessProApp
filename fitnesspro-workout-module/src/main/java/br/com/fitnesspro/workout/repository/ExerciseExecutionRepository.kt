@@ -15,7 +15,7 @@ import br.com.fitnesspro.to.TOExerciseExecution
 import br.com.fitnesspro.to.TOVideoExerciseExecution
 import br.com.fitnesspro.tuple.ExecutionEvolutionHistoryGroupedTuple
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
-import br.com.fitnesspro.tuple.charts.ExerciseExecutionGroupedBarChartTuple
+import br.com.fitnesspro.tuple.charts.ExerciseExecutionChartTuple
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
@@ -119,7 +119,7 @@ class ExerciseExecutionRepository(
         }
     }
 
-    suspend fun getListExerciseExecutionGroupedBarChartTuple(exerciseId: String): List<ExerciseExecutionGroupedBarChartTuple> {
+    suspend fun getListExerciseExecutionGroupedBarChartTuple(exerciseId: String): List<ExerciseExecutionChartTuple> {
         return exerciseExecutionDAO.getListExerciseExecutionGroupedBarChartTuple(exerciseId)
     }
 }
