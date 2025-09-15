@@ -9,7 +9,7 @@ import br.com.fitnesspro.charts.styles.line.enums.LineType
 data class LineStyle(
     val color: Color,
     val width: Dp = 3.dp,
-    val lineType: LineType = LineType.STRAIGHT,
+    val lineType: LineType = LineType.CURVED,
     override val animationDuration: Int = 1000,
     override val animationDelay: Long = 200L
 ): IAnimatedStyle
