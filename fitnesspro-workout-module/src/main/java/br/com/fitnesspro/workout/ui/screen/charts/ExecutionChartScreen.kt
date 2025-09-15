@@ -109,7 +109,7 @@ fun ExecutionGroupedBarChartScreen(
             val backgroundStyle = ChartContainerStyle(
                 xAxisLabelStyle = ChartTextStyle(color = MaterialTheme.colorScheme.onBackground),
                 showYAxisLines = true,
-                showYAxisLabels = true,
+                showYAxisLabels = false,
                 enableHorizontalScroll = true,
                 scrollableBarWidth = 128.dp
             )

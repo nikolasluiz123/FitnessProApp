@@ -5,13 +5,13 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -58,23 +58,15 @@ fun SimpleBar(
             (style.tooltipStyle != null) &&
             targetFraction > 0f
 
-    Column(
+    BoxWithConstraints(
         modifier = modifier.fillMaxHeight(),
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.BottomCenter
     ) {
-
-        if (showTooltip) {
-            ChartTooltip(
-                value = entry.value,
-                style = style.tooltipStyle
-            )
-            Spacer(Modifier.height(4.dp))
-        }
+        val barHeight = this.maxHeight * animatedFraction
 
         Box(
             modifier = Modifier
-                .height(chartHeight * animatedFraction)
+                .height(barHeight)
                 .fillMaxWidth()
                 .background(
                     color = style.fillColor,
@@ -90,6 +82,20 @@ fun SimpleBar(
                     } else Modifier
                 )
         )
+
+        if (showTooltip) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .offset(y = -barHeight)
+            ) {
+                ChartTooltip(
+                    value = entry.value,
+                    style = style.tooltipStyle
+                )
+            }
+        }
     }
 }
 

@@ -14,7 +14,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.charts.composables.tooltip.ChartTooltip
 import br.com.fitnesspro.charts.states.line.LineChartState
 import br.com.fitnesspro.charts.styles.line.LineChartStyle
@@ -95,7 +94,6 @@ internal fun GroupLines(
                                 .offset {
                                     IntOffset(offset.x.roundToInt(), offset.y.roundToInt())
                                 }
-                                .offset(y = (-16).dp)
                                 .align(Alignment.TopStart)
                         )
                     }
