@@ -1,5 +1,8 @@
 package br.com.fitnesspro.common.ui.screen.login
 
+import android.content.Context
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -24,6 +28,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.health.connect.client.HealthConnectClient
+import androidx.health.connect.client.PermissionController
+import androidx.health.connect.client.permission.HealthPermission
+import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
+import androidx.health.connect.client.records.HeartRateRecord
+import androidx.health.connect.client.records.SleepSessionRecord
+import androidx.health.connect.client.records.StepsRecord
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.BottomSheetRegisterUser
@@ -47,12 +58,16 @@ import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordVali
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
+import br.com.fitnesspro.core.callback.showConfirmationDialog
+import br.com.fitnesspro.core.callback.showInformationDialog
 import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
 import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.analytics
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -84,6 +99,19 @@ fun LoginScreen(
     onLoginWithGoogleClick: OnLoginWithGoogle? = null
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
+    val coroutine = rememberCoroutineScope()
+    val healthConnectInstall = rememberInstallHealthConnectLauncher()
+    val healthPermissionLauncher = rememberLauncherForActivityResult(PermissionController.createRequestPermissionResultContract()) { result ->
+        if (!result.containsAll(getRequestedPermissionSet())) {
+            state.messageDialogState.onShowDialog?.showConfirmationDialog(
+                message = context.getString(R.string.not_acepted_all_requested_permission_health_connect),
+                onConfirm = {
+                    onNavigateToHome()
+                }
+            )
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -164,7 +192,21 @@ fun LoginScreen(
                             onDone = {
                                 keyboardController?.hide()
                                 Firebase.analytics.logButtonClick(EnumLoginScreenTags.LOGIN_SCREEN_DONE_BUTTON)
-                                onLoginClick?.onExecute(onNavigateToHome)
+
+                                requestHealthConnectPermissions(
+                                    state = state,
+                                    context = context,
+                                    healthConnectInstall = healthConnectInstall,
+                                    coroutine = coroutine,
+                                    healthPermissionLauncher = healthPermissionLauncher,
+                                    onPermissionsGranted = {
+                                        onLoginClick?.onExecute(
+                                            onSuccess = {
+                                                onNavigateToHome()
+                                            }
+                                        )
+                                    }
+                                )
                             }
                         )
                     )
@@ -187,7 +229,21 @@ fun LoginScreen(
                         enabled = state.showLoading.not(),
                         onClickListener = {
                             Firebase.analytics.logButtonClick(LOGIN_SCREEN_LOGIN_BUTTON)
-                            onLoginClick?.onExecute(onNavigateToHome)
+
+                            requestHealthConnectPermissions(
+                                state = state,
+                                context = context,
+                                healthConnectInstall = healthConnectInstall,
+                                coroutine = coroutine,
+                                healthPermissionLauncher = healthPermissionLauncher,
+                                onPermissionsGranted = {
+                                    onLoginClick?.onExecute(
+                                        onSuccess = {
+                                            onNavigateToHome()
+                                        }
+                                    )
+                                }
+                            )
                         }
                     )
 
@@ -223,16 +279,25 @@ fun LoginScreen(
                         onClick = {
                             Firebase.analytics.logButtonClick(LOGIN_SCREEN_GOOGLE_BUTTON)
 
-                            onLoginWithGoogleClick?.onExecute(
-                                onUserNotExistsLocal = {
-                                    onNavigateToRegisterUser?.onNavigate(
-                                        args = RegisterUserScreenArgs(
-                                            toPersonAuthService = it
-                                        )
+                            requestHealthConnectPermissions(
+                                state = state,
+                                context = context,
+                                healthConnectInstall = healthConnectInstall,
+                                coroutine = coroutine,
+                                healthPermissionLauncher = healthPermissionLauncher,
+                                onPermissionsGranted = {
+                                    onLoginWithGoogleClick?.onExecute(
+                                        onUserNotExistsLocal = {
+                                            onNavigateToRegisterUser?.onNavigate(
+                                                args = RegisterUserScreenArgs(
+                                                    toPersonAuthService = it
+                                                )
+                                            )
+                                        },
+                                        onSuccess = {
+                                            onNavigateToHome()
+                                        }
                                     )
-                                },
-                                onSuccess = {
-                                    onNavigateToHome()
                                 }
                             )
                         }
@@ -249,6 +314,51 @@ fun LoginScreen(
         }
     }
 }
+
+private fun requestHealthConnectPermissions(
+    state: LoginUIState,
+    context: Context,
+    healthConnectInstall: () -> Unit,
+    coroutine: CoroutineScope,
+    healthPermissionLauncher: ManagedActivityResultLauncher<Set<String>, Set<String>>,
+    onPermissionsGranted: () -> Unit,
+) {
+    val availabilityStatus = HealthConnectClient.getSdkStatus(context)
+
+    when (availabilityStatus) {
+        HealthConnectClient.SDK_UNAVAILABLE -> {
+            state.messageDialogState.onShowDialog?.showInformationDialog(context.getString(R.string.request_permission_health_connect_sdk_unavailable))
+        }
+
+        HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED -> {
+            healthConnectInstall()
+        }
+
+        HealthConnectClient.SDK_AVAILABLE -> {
+            coroutine.launch {
+                val healthConnectClient = HealthConnectClient.getOrCreate(context)
+
+                val healthPermissionsSet = getRequestedPermissionSet()
+
+                val grantedHealthPermissions = healthConnectClient.permissionController.getGrantedPermissions()
+                val permissionsToRequest = healthPermissionsSet.filterNot { it in grantedHealthPermissions }
+
+                if (permissionsToRequest.isNotEmpty()) {
+                    healthPermissionLauncher.launch(permissionsToRequest.toSet())
+                } else {
+                    onPermissionsGranted()
+                }
+            }
+        }
+    }
+}
+
+private fun getRequestedPermissionSet(): Set<String> = setOf(
+    HealthPermission.getReadPermission(HeartRateRecord::class),
+    HealthPermission.getReadPermission(StepsRecord::class),
+    HealthPermission.getReadPermission(ActiveCaloriesBurnedRecord::class),
+    HealthPermission.getReadPermission(SleepSessionRecord::class)
+)
 
 @Preview(device = "id:small_phone", apiLevel = 35)
 @Composable

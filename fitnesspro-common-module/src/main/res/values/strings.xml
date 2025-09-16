@@ -140,4 +140,6 @@
     <string name="generated_reports_delete_report_confirmation_message">Tem certeza que deseja deletar permanentemente o relatório? Essa ação não poderá ser desfeita.</string>
     <string name="report_storage_exportation_description">Exportação dos Arquivos dos Relatórios</string>
     <string name="video_storage_exportation_description">Exportação dos Arquivos de Vídeos</string>
+    <string name="request_permission_health_connect_sdk_unavailable">O Health Connect não está disponível para o seu dispositivo, por conta disso, as funcionalidades de leitura dos sensores de relógios e outros dispositivos não serão realizadas e essas informações não serão armazenadas para análise futura.</string>
+    <string name="not_acepted_all_requested_permission_health_connect">Você não aceitou todas as permissões solicitadas para leitura de seus dados de saúde, algumas funcionalidades do aplicativo não estarão disponíveis até que conceda as permissões.</string>
 </resources>

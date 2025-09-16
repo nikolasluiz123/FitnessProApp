@@ -6,26 +6,28 @@ import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.Manifest.permission.READ_MEDIA_VIDEO
 import android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import br.com.fitnesspro.core.extensions.verifyPermissionGranted
 import br.com.fitnesspro.core.utils.PermissionUtils.requestMultiplePermissionsLauncher
 
 @Composable
 fun RequestAllPermissions(context: Context) {
-    val requestPermissionLauncher = requestMultiplePermissionsLauncher()
+    val standardPermissionLauncher = requestMultiplePermissionsLauncher()
 
     LaunchedEffect(Unit) {
-        val permissions = mutableListOf<String>()
+        val standardPermissions = mutableListOf<String>()
+        addNotificationsPermission(context, standardPermissions)
+        addCameraPermission(context, standardPermissions)
+        addMediaPermissions(context, standardPermissions)
+        addRecordAudioPermission(context, standardPermissions)
 
-        addNotificationsPermission(context, permissions)
-        addCameraPermission(context, permissions)
-        addMediaPermissions(context, permissions)
-        addRecordAudioPermission(context, permissions)
-
-        if (permissions.isNotEmpty()) {
-            requestPermissionLauncher.launch(permissions.toTypedArray())
+        if (standardPermissions.isNotEmpty()) {
+            standardPermissionLauncher.launch(standardPermissions.toTypedArray())
         }
     }
 }
@@ -80,5 +82,31 @@ private fun addNotificationsPermission(
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
     ) {
         permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+    }
+}
+
+@Composable
+fun rememberInstallHealthConnectLauncher(): () -> Unit {
+    val context = LocalContext.current
+    val providerPackageName = "com.google.android.apps.healthdata"
+
+    return {
+        val marketIntent = Intent(
+            Intent.ACTION_VIEW,
+            "market://details?id=$providerPackageName".toUri()
+        )
+
+        val webIntent = Intent(
+            Intent.ACTION_VIEW,
+            "https://play.google.com/store/apps/details?id=$providerPackageName".toUri()
+        )
+
+        val finalIntent = if (marketIntent.resolveActivity(context.packageManager) != null) {
+            marketIntent
+        } else {
+            webIntent
+        }
+
+        context.startActivity(finalIntent)
     }
 }
