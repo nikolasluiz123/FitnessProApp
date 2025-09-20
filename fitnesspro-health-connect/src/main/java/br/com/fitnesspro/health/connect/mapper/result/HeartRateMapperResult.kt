@@ -21,4 +21,7 @@ data class HeartRateMapperResult(
     val session: HealthConnectHeartRate,
     override val samples: List<HealthConnectHeartRateSamples>,
     override val metadata: HealthConnectMetadata
-) : ISeriesRecordMapperResult<HealthConnectHeartRateSamples>
+) : ISeriesRecordMapperResult<HealthConnectHeartRateSamples> {
+
+    override fun getEntityIdRelation(): List<String?> = listOf(session.exerciseExecutionId)
+}

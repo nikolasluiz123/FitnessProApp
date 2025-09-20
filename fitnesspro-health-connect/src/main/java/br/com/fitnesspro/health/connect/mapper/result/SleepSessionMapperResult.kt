@@ -23,4 +23,7 @@ data class SleepSessionMapperResult(
     val stages: List<HealthConnectSleepStages>,
     val associations: List<SleepSessionExerciseExecution>,
     override val metadata: HealthConnectMetadata
-) : IRecordMapperResult
+) : IRecordMapperResult {
+
+    override fun getEntityIdRelation(): List<String?> = associations.map { it.exerciseExecutionId }
+}

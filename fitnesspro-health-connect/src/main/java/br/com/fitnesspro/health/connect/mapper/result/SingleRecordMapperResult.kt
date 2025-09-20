@@ -1,5 +1,6 @@
 package br.com.fitnesspro.health.connect.mapper.result
 
+import br.com.fitnesspro.model.base.IRelationalHealthConnectEntity
 import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
 
 /**
@@ -15,7 +16,10 @@ import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
  *
  * @author Nikolas Luiz Schmitt
  */
-data class SingleRecordMapperResult<T>(
+data class SingleRecordMapperResult<T: IRelationalHealthConnectEntity>(
     val entity: T,
     override val metadata: HealthConnectMetadata
-) : IRecordMapperResult
+) : IRecordMapperResult {
+
+    override fun getEntityIdRelation(): List<String?> = listOf(entity.relationId)
+}

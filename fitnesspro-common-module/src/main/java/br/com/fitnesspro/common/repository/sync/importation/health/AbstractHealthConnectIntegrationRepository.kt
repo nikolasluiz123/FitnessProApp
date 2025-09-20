@@ -107,7 +107,7 @@ abstract class AbstractHealthConnectIntegrationRepository<ENTITY : IHealthDataRa
         Log.i(LogConstants.WORKER_IMPORT, "Importou ${mappedResults.size} registros")
 
         saveResults(mappedResults)
-        markEntitiesAsCollected(entitiesToAssociate)
+        markEntitiesAsCollected(mappedResults = mappedResults, entities = entitiesToAssociate)
     }
 
     protected suspend fun <T, M : IntegratedModel> segregate(
@@ -170,8 +170,11 @@ abstract class AbstractHealthConnectIntegrationRepository<ENTITY : IHealthDataRa
      * Atualiza as entidades de associação (ex: `ExerciseExecution`) no banco de dados,
      * marcando o campo `healthDataCollected` como `true`.
      */
-    private suspend fun markEntitiesAsCollected(entities: List<ENTITY>) {
-        entities.forEach { it.healthDataCollected = true }
+    private suspend fun markEntitiesAsCollected(mappedResults: List<RESULT>, entities: List<ENTITY>) {
+        val collectedEntityIds = mappedResults.flatMap { it.getEntityIdRelation() }.filterNotNull()
+        val entitiesToUpdate = entities.filter { collectedEntityIds.contains(it.id) }
+
+        entitiesToUpdate.forEach { it.healthDataCollected = true }
         getAssociationEntityDao().updateBatch(entities, writeTransmissionState = true)
     }
 

@@ -14,4 +14,9 @@ import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
  */
 interface IRecordMapperResult {
     val metadata: HealthConnectMetadata
+
+    /**
+     * Retorna o ID da entidade associada ao registro mapeado.
+     */
+    fun getEntityIdRelation(): List<String?>
 }

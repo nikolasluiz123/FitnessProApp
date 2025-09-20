@@ -5,6 +5,7 @@ import br.com.fitnesspro.core.adapters.LocalDateTimeTypeAdapter
 import br.com.fitnesspro.core.adapters.LocalDateTypeAdapter
 import br.com.fitnesspro.core.adapters.LocalTimeTypeAdapter
 import br.com.fitnesspro.core.adapters.OffsetDateTimeTypeAdapter
+import br.com.fitnesspro.core.adapters.ZoneOffsetTypeAdapter
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import java.time.Instant
@@ -12,6 +13,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 fun GsonBuilder.defaultGSon(): Gson {
     return this.registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeTypeAdapter())
@@ -19,5 +21,6 @@ fun GsonBuilder.defaultGSon(): Gson {
         .registerTypeAdapter(LocalTime::class.java, LocalTimeTypeAdapter())
         .registerTypeAdapter(OffsetDateTime::class.java, OffsetDateTimeTypeAdapter())
         .registerTypeAdapter(Instant::class.java, InstantTypeAdapter())
+        .registerTypeAdapter(ZoneOffset::class.java, ZoneOffsetTypeAdapter())
         .create()
 }

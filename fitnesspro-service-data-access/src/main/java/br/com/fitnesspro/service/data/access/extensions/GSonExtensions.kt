@@ -5,6 +5,7 @@ import br.com.fitnesspro.core.adapters.LocalDateTimeTypeAdapter
 import br.com.fitnesspro.core.adapters.LocalDateTypeAdapter
 import br.com.fitnesspro.core.adapters.LocalTimeTypeAdapter
 import br.com.fitnesspro.core.adapters.OffsetDateTimeTypeAdapter
+import br.com.fitnesspro.core.adapters.ZoneOffsetTypeAdapter
 import br.com.fitnesspro.service.data.access.adapters.GenericInterfaceAdapterFactory
 import br.com.fitnesspro.shared.communication.dtos.cache.CacheClearConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.cache.CacheDTO
@@ -99,6 +100,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 fun GsonBuilder.defaultServiceGSon(): Gson {
     return registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeTypeAdapter())
@@ -106,6 +108,7 @@ fun GsonBuilder.defaultServiceGSon(): Gson {
         .registerTypeAdapter(LocalTime::class.java, LocalTimeTypeAdapter())
         .registerTypeAdapter(OffsetDateTime::class.java, OffsetDateTimeTypeAdapter())
         .registerTypeAdapter(Instant::class.java, InstantTypeAdapter())
+        .registerTypeAdapter(ZoneOffset::class.java, ZoneOffsetTypeAdapter())
 
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(ICacheClearConfigDTO::class.java, CacheClearConfigDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(ICacheDTO::class.java, CacheDTO::class.java))

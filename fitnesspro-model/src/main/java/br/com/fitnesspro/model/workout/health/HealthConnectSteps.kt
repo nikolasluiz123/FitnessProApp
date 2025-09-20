@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import br.com.fitnesspro.model.base.IRelationalHealthConnectEntity
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
@@ -68,4 +69,8 @@ data class HealthConnectSteps(
 
     @ColumnInfo(name = "end_zone_offset")
     var endZoneOffset: ZoneOffset? = null,
-): IntegratedModel
+): IntegratedModel, IRelationalHealthConnectEntity {
+
+    override val relationId: String?
+        get() = exerciseExecutionId
+}
