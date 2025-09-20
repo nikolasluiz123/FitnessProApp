@@ -10,6 +10,20 @@ import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.model.workout.health.HealthConnectSteps
 import dagger.hilt.android.EntryPointAccessors
 
+/**
+ * Implementação concreta do [AbstractHealthConnectIntegrationRepository]
+ * para integrar dados de Passos ([HealthConnectSteps]) do Health Connect.
+ *
+ * Esta classe define as dependências específicas (Mapper e DAOs) e a lógica
+ * para associar os dados de passos com as entidades de [ExerciseExecution].
+ *
+ * @param context O contexto da aplicação, usado para acessar o EntryPoint do Hilt.
+ *
+ * @see AbstractHealthConnectIntegrationRepository
+ * @see br.com.fitnesspro.health.connect.mapper.StepsMapper
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 class StepsIntegrationRepository(context: Context)
     : AbstractHealthConnectIntegrationRepository<ExerciseExecution, SingleRecordMapperResult<HealthConnectSteps>>(context) {
 

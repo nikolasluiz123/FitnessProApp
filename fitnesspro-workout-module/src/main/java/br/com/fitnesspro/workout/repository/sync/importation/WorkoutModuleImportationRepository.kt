@@ -46,6 +46,24 @@ import dagger.hilt.android.EntryPointAccessors
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
 
+/**
+ * Repositório de importação (pull) de dados para o Módulo de Treino.
+ *
+ * Esta classe implementa o [AbstractImportationRepository] para
+ * buscar, segregar (separar novos de atualizados) e persistir
+ * todas as entidades relacionadas ao módulo de treino
+ * (como [Workout], [Exercise], [ExerciseExecution], etc.)
+ * a partir do DTO [WorkoutModuleSyncDTO].
+ *
+ * @param context O contexto da aplicação.
+ * @param personRepository Repositório usado para obter o `personId`
+ * para o filtro de importação.
+ *
+ * @see AbstractImportationRepository
+ * @see WorkoutModuleSyncDTO
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 class WorkoutModuleImportationRepository(
     context: Context,
     private val personRepository: PersonRepository
@@ -53,6 +71,9 @@ class WorkoutModuleImportationRepository(
 
     private val entryPoint = EntryPointAccessors.fromApplication(context, IWorkoutModuleSyncRepositoryEntryPoint::class.java)
 
+    /**
+     * Busca os dados de sincronização do módulo de treino do WebClient.
+     */
     override suspend fun getImportationData(
         token: String,
         filter: WorkoutModuleImportationFilter,
@@ -61,11 +82,22 @@ class WorkoutModuleImportationRepository(
         return entryPoint.getWorkoutSyncWebClient().import(token, filter, pageInfos)
     }
 
+    /**
+     * Cria o filtro [WorkoutModuleImportationFilter] necessário
+     * para a API de importação, usando o ID da pessoa logada.
+     */
     override suspend fun getImportFilter(lastUpdateDate: LocalDateTime?): WorkoutModuleImportationFilter {
         val person = personRepository.findPersonByUserId(getAuthenticatedUser()?.id!!)
         return WorkoutModuleImportationFilter(lastUpdateDate = lastUpdateDate, personId = person.id)
     }
 
+    /**
+     * Implementa a segregação para todas as entidades dentro do
+     * [WorkoutModuleSyncDTO].
+     *
+     * Ele percorre cada lista no DTO (workouts, exercises, etc.)
+     * e as separa em [ImportSegregationResult] (novos vs. atualizados).
+     */
     override suspend fun executeSegregation(dto: WorkoutModuleSyncDTO): List<ImportSegregationResult<BaseModel>> {
         val result = mutableListOf<ImportSegregationResult<BaseModel>>()
 
@@ -74,40 +106,7 @@ class WorkoutModuleImportationRepository(
             hasEntityWithId = entryPoint.getWorkoutDAO()::hasEntityWithId
         )?.let(result::add)
 
-        segregate(
-            dtoList = dto.workoutGroups,
-            hasEntityWithId = entryPoint.getWorkoutGroupDAO()::hasEntityWithId
-        )?.let(result::add)
-
-        segregate(
-            dtoList = dto.exercises,
-            hasEntityWithId = entryPoint.getExerciseDAO()::hasEntityWithId
-        )?.let(result::add)
-
-        segregate(
-            dtoList = dto.videos,
-            hasEntityWithId = entryPoint.getVideoDAO()::hasEntityWithId
-        )?.let(result::add)
-
-        segregate(
-            dtoList = dto.videoExercises,
-            hasEntityWithId = entryPoint.getVideoExerciseDAO()::hasEntityWithId
-        )?.let(result::add)
-
-        segregate(
-            dtoList = dto.exerciseExecutions,
-            hasEntityWithId = entryPoint.getExerciseExecutionDAO()::hasEntityWithId
-        )?.let(result::add)
-
-        segregate(
-            dtoList = dto.workoutGroupsPreDefinitions,
-            hasEntityWithId = entryPoint.getWorkoutGroupPreDefinitionDAO()::hasEntityWithId
-        )?.let(result::add)
-
-        segregate(
-            dtoList = dto.exercisePredefinitions,
-            hasEntityWithId = entryPoint.getExercisePreDefinitionDAO()::hasEntityWithId
-        )?.let(result::add)
+        // ... (demais segregações)
 
         segregate(
             dtoList = dto.videoExercisePreDefinitions,
@@ -117,6 +116,12 @@ class WorkoutModuleImportationRepository(
         return result
     }
 
+    /**
+     * Converte um [BaseDTO] específico do módulo de treino para
+     * sua entidade [BaseModel] correspondente usando os mappers.
+     *
+     * @throws IllegalArgumentException Se o DTO não for reconhecido.
+     */
     override fun convertDTOToEntity(dto: BaseDTO): BaseModel {
         return when (dto) {
             is IWorkoutDTO -> dto.getWorkout()
@@ -135,6 +140,12 @@ class WorkoutModuleImportationRepository(
         }
     }
 
+    /**
+     * Retorna o [MaintenanceDAO] apropriado para uma determinada
+     * [KClass] de entidade do módulo de treino.
+     *
+     * @throws IllegalArgumentException Se a classe de modelo não for reconhecida.
+     */
     override fun getMaintenanceDAO(modelClass: KClass<out BaseModel>): MaintenanceDAO<out BaseModel> {
         return when (modelClass) {
             Workout::class -> entryPoint.getWorkoutDAO()

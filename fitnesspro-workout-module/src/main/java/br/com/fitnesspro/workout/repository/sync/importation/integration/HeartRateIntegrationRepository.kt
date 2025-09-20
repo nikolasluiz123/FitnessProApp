@@ -9,6 +9,20 @@ import br.com.fitnesspro.local.data.access.dao.health.HealthConnectMetadataDAO
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import dagger.hilt.android.EntryPointAccessors
 
+/**
+ * Implementação concreta do [AbstractHealthConnectIntegrationRepository]
+ * para integrar dados de Frequência Cardíaca ([br.com.fitnesspro.model.workout.health.HealthConnectHeartRate]) do Health Connect.
+ *
+ * Esta classe define as dependências específicas (Mapper e DAOs) e a lógica
+ * para associar os dados de frequência cardíaca com as entidades de [ExerciseExecution].
+ *
+ * @param context O contexto da aplicação, usado para acessar o EntryPoint do Hilt.
+ *
+ * @see AbstractHealthConnectIntegrationRepository
+ * @see br.com.fitnesspro.health.connect.mapper.HeartRateMapper
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 class HeartRateIntegrationRepository(context: Context)
     : AbstractHealthConnectIntegrationRepository<ExerciseExecution, HeartRateMapperResult>(context) {
 

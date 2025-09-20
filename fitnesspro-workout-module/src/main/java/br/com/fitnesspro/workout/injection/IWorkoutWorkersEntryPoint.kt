@@ -1,6 +1,8 @@
 package br.com.fitnesspro.workout.injection
 
+import br.com.fitnesspro.workout.repository.sync.exportation.HealthConnectModuleExportationRepository
 import br.com.fitnesspro.workout.repository.sync.exportation.WorkoutModuleExportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.HealthConnectModuleImportationRepository
 import br.com.fitnesspro.workout.repository.sync.importation.WorkoutModuleImportationRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -14,8 +16,8 @@ interface IWorkoutWorkersEntryPoint {
 
     fun getWorkoutModuleExportationRepository(): WorkoutModuleExportationRepository
 
-    fun getHealthConnectModuleImportationRepository(): WorkoutModuleImportationRepository
+    fun getHealthConnectModuleImportationRepository(): HealthConnectModuleImportationRepository
 
-    fun getHealthConnectModuleExportationRepository(): WorkoutModuleExportationRepository
+    fun getHealthConnectModuleExportationRepository(): HealthConnectModuleExportationRepository
 
 }

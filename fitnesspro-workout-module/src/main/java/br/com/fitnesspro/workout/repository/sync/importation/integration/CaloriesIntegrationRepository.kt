@@ -10,6 +10,20 @@ import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.model.workout.health.HealthConnectCaloriesBurned
 import dagger.hilt.android.EntryPointAccessors
 
+/**
+ * Implementação concreta do [AbstractHealthConnectIntegrationRepository]
+ * para integrar dados de Calorias Queimadas ([HealthConnectCaloriesBurned]) do Health Connect.
+ *
+ * Esta classe define as dependências específicas (Mapper e DAOs) e a lógica
+ * para associar os dados de calorias com as entidades de [ExerciseExecution].
+ *
+ * @param context O contexto da aplicação, usado para acessar o EntryPoint do Hilt.
+ *
+ * @see AbstractHealthConnectIntegrationRepository
+ * @see br.com.fitnesspro.health.connect.mapper.CaloriesBurnedMapper
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 class CaloriesIntegrationRepository(context: Context)
     : AbstractHealthConnectIntegrationRepository<ExerciseExecution, SingleRecordMapperResult<HealthConnectCaloriesBurned>>(context) {
 

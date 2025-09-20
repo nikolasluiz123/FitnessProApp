@@ -12,9 +12,9 @@ import br.com.fitnesspro.model.workout.health.HealthConnectSteps
  * Mapper específico para converter dados de [StepsRecord] do Health Connect
  * em entidades de domínio [HealthConnectSteps].
  *
- * Utiliza o [AbstractHealthDataAssociatingMapper] para buscar dados de passos e
- * associá-los a uma entidade de execução de exercício correspondente
- * ([IHealthDataRangeEntity]) com base na sobreposição de tempo.
+ * Este mapper **APENAS** mapeia registros que possuem uma [IHealthDataRangeEntity]
+ * (como uma execução de exercício) correspondente com base na sobreposição de tempo.
+ * Registros sem uma associação correspondente são ignorados.
  *
  * @param service A instância de [StepsService] usada para buscar os dados.
  *
@@ -27,14 +27,15 @@ class StepsMapper(
 ) : AbstractHealthDataAssociatingMapper<SingleRecordMapperResult<HealthConnectSteps>, StepsRecord, StepsService>(service) {
 
     /**
-     * Mapeia um [StepsRecord] para [HealthConnectSteps] e tenta associá-lo a uma
+     * Mapeia um [StepsRecord] para [HealthConnectSteps], **se** conseguir associá-lo a uma
      * entidade de execução de exercício.
      *
      * @param record O registro de [StepsRecord] lido.
      * @param metadata Os [HealthConnectMetadata] extraídos.
      * @param associationEntities A lista de entidades (ex: execuções de exercício)
      * com as quais este registro pode ser associado.
-     * @return Um [SingleRecordMapperResult] contendo a entidade [HealthConnectSteps] mapeada.
+     * @return Um [SingleRecordMapperResult] contendo a entidade [HealthConnectSteps] mapeada,
+     * ou `null` se nenhuma entidade de associação correspondente for encontrada.
      */
     override suspend fun <T : IHealthDataRangeEntity> continueMappingAndAssociate(
         record: StepsRecord,
@@ -42,7 +43,7 @@ class StepsMapper(
         associationEntities: List<T>
     ): SingleRecordMapperResult<HealthConnectSteps>? {
         val matching = findMatchingEntity(record.startTime, record.endTime, associationEntities)
-        if (matching == null) return null
+            ?: return null
 
         val steps = HealthConnectSteps(
             healthConnectMetadataId = metadata.id,

@@ -4,7 +4,10 @@ import android.content.Context
 import android.util.Log
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.ImportSegregationResult
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_TIME_SHORT
+import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.worker.LogConstants
+import br.com.fitnesspro.core.worker.LogConstants.WORKER_IMPORT
 import br.com.fitnesspro.health.connect.mapper.base.AbstractHealthDataAssociatingMapper
 import br.com.fitnesspro.health.connect.mapper.result.IRecordMapperResult
 import br.com.fitnesspro.health.connect.service.filter.RangeFilter
@@ -182,6 +185,8 @@ abstract class AbstractHealthConnectIntegrationRepository<ENTITY : IHealthDataRa
         val maxEnd = entities.mapNotNull { it.rangeEndTime }.maxOrNull() ?: Instant.now()
 
         if (minStart.isAfter(maxEnd)) return null
+
+        Log.i(WORKER_IMPORT, "RangeFilter start = ${minStart.format(DATE_TIME_SHORT)} end = ${maxEnd.format(DATE_TIME_SHORT)}")
 
         return RangeFilter(minStart, maxEnd)
     }

@@ -13,8 +13,9 @@ import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
  * Mapper específico para converter dados de [HeartRateRecord] do Health Connect
  * em entidades de domínio [HealthConnectHeartRate] e [HealthConnectHeartRateSamples].
  *
- * Associa a sessão de frequência cardíaca a uma execução de exercício ([IHealthDataRangeEntity])
- * com base na sobreposição de tempo.
+ * Este mapper **APENAS** mapeia registros que possuem uma [IHealthDataRangeEntity]
+ * (como uma execução de exercício) correspondente com base na sobreposição de tempo.
+ * Registros sem uma associação correspondente são ignorados.
  *
  * @param service A instância de [HeartRateService] usada para buscar os dados.
  *
@@ -29,14 +30,15 @@ class HeartRateMapper(
 
     /**
      * Mapeia um [HeartRateRecord] para [HealthConnectHeartRate] (sessão) e uma lista de
-     * [HealthConnectHeartRateSamples] (amostras), e tenta associar a sessão a uma
+     * [HealthConnectHeartRateSamples] (amostras), **se** conseguir associar a sessão a uma
      * entidade de execução de exercício.
      *
      * @param record O registro de [HeartRateRecord] lido.
      * @param metadata Os [HealthConnectMetadata] extraídos.
      * @param associationEntities A lista de entidades (ex: execuções de exercício)
      * com as quais este registro pode ser associado.
-     * @return Um [HeartRateMapperResult] contendo a sessão, as amostras e os metadados.
+     * @return Um [HeartRateMapperResult] contendo a sessão, as amostras e os metadados,
+     * ou `null` se nenhuma entidade de associação correspondente for encontrada.
      */
     override suspend fun <T : IHealthDataRangeEntity> continueMappingAndAssociate(
         record: HeartRateRecord,
@@ -44,7 +46,7 @@ class HeartRateMapper(
         associationEntities: List<T>
     ): HeartRateMapperResult? {
         val matching = findMatchingEntity(record.startTime, record.endTime, associationEntities)
-        if (matching == null) return null
+            ?: return null
 
         val heartRateSession = HealthConnectHeartRate(
             healthConnectMetadataId = metadata.id,

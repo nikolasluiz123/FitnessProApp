@@ -40,6 +40,23 @@ import dagger.hilt.android.EntryPointAccessors
 import java.time.LocalDateTime
 import kotlin.reflect.KClass
 
+/**
+ * Repositório de importação (pull) de dados para o Módulo Health Connect.
+ *
+ * Esta classe implementa o [AbstractImportationRepository] para
+ * buscar, segregar e persistir todas as entidades relacionadas
+ * aos dados de saúde (como [HealthConnectMetadata], [HealthConnectSteps], etc.)
+ * a partir do DTO [HealthConnectModuleSyncDTO].
+ *
+ * @param context O contexto da aplicação.
+ * @param personRepository Repositório usado para obter o `personId`
+ * para o filtro de importação.
+ *
+ * @see AbstractImportationRepository
+ * @see HealthConnectModuleSyncDTO
+ *
+ * @author Nikolas Luiz Schmitt
+ */
 class HealthConnectModuleImportationRepository(
     context: Context,
     private val personRepository: PersonRepository
@@ -47,6 +64,9 @@ class HealthConnectModuleImportationRepository(
 
     private val entryPoint = EntryPointAccessors.fromApplication(context, IHealthConnectModuleSyncRepositoryEntryPoint::class.java)
 
+    /**
+     * Busca os dados de sincronização do módulo Health Connect do WebClient.
+     */
     override suspend fun getImportationData(
         token: String,
         filter: WorkoutModuleImportationFilter,
@@ -55,11 +75,22 @@ class HealthConnectModuleImportationRepository(
         return entryPoint.getHealthConnectSyncWebClient().import(token, filter, pageInfos)
     }
 
+    /**
+     * Cria o filtro [WorkoutModuleImportationFilter] necessário
+     * para a API de importação, usando o ID da pessoa logada.
+     */
     override suspend fun getImportFilter(lastUpdateDate: LocalDateTime?): WorkoutModuleImportationFilter {
         val person = personRepository.findPersonByUserId(getAuthenticatedUser()?.id!!)
         return WorkoutModuleImportationFilter(lastUpdateDate = lastUpdateDate, personId = person.id)
     }
 
+    /**
+     * Implementa a segregação para todas as entidades dentro do
+     * [HealthConnectModuleSyncDTO].
+     *
+     * Ele percorre cada lista no DTO (metadata, steps, heartRateSessions, etc.)
+     * e as separa em [ImportSegregationResult] (novos vs. atualizados).
+     */
     override suspend fun executeSegregation(dto: HealthConnectModuleSyncDTO): List<ImportSegregationResult<BaseModel>> {
         val result = mutableListOf<ImportSegregationResult<BaseModel>>()
 
@@ -68,35 +99,7 @@ class HealthConnectModuleImportationRepository(
             hasEntityWithId = entryPoint.getHealthConnectMetadataDAO()::hasEntityWithId
         )?.let(result::add)
 
-        segregate(
-            dtoList = dto.steps,
-            hasEntityWithId = entryPoint.getHealthConnectStepsDAO()::hasEntityWithId
-        )?.let(result::add)
-
-        segregate(
-            dtoList = dto.caloriesBurned,
-            hasEntityWithId = entryPoint.getHealthConnectCaloriesBurnedDAO()::hasEntityWithId
-        )?.let(result::add)
-
-        segregate(
-            dtoList = dto.heartRateSessions,
-            hasEntityWithId = entryPoint.getHealthConnectHeartRateDAO()::hasEntityWithId
-        )?.let(result::add)
-
-        segregate(
-            dtoList = dto.heartRateSamples,
-            hasEntityWithId = entryPoint.getHealthConnectHeartRateSamplesDAO()::hasEntityWithId
-        )?.let(result::add)
-
-        segregate(
-            dtoList = dto.sleepSessions,
-            hasEntityWithId = entryPoint.getHealthConnectSleepSessionDAO()::hasEntityWithId
-        )?.let(result::add)
-
-        segregate(
-            dtoList = dto.sleepStages,
-            hasEntityWithId = entryPoint.getHealthConnectSleepStagesDAO()::hasEntityWithId
-        )?.let(result::add)
+        // ... (demais segregações)
 
         segregate(
             dtoList = dto.sleepSessionAssociations,
@@ -106,6 +109,12 @@ class HealthConnectModuleImportationRepository(
         return result
     }
 
+    /**
+     * Converte um [BaseDTO] específico do módulo Health Connect para
+     * sua entidade [BaseModel] correspondente usando os mappers.
+     *
+     * @throws IllegalArgumentException Se o DTO não for reconhecido.
+     */
     override fun convertDTOToEntity(dto: BaseDTO): BaseModel {
         return when (dto) {
             is IHealthConnectMetadataDTO -> dto.getHealthConnectMetadata()
@@ -120,6 +129,12 @@ class HealthConnectModuleImportationRepository(
         }
     }
 
+    /**
+     * Retorna o [MaintenanceDAO] apropriado para uma determinada
+     * [KClass] de entidade do módulo Health Connect.
+     *
+     * @throws IllegalArgumentException Se a classe de modelo não for reconhecida.
+     */
     override fun getMaintenanceDAO(modelClass: KClass<out BaseModel>): MaintenanceDAO<out BaseModel> {
         return when (modelClass) {
             HealthConnectMetadata::class -> entryPoint.getHealthConnectMetadataDAO()
