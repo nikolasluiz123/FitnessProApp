@@ -99,7 +99,35 @@ class HealthConnectModuleImportationRepository(
             hasEntityWithId = entryPoint.getHealthConnectMetadataDAO()::hasEntityWithId
         )?.let(result::add)
 
-        // ... (demais segregações)
+        segregate(
+            dtoList = dto.steps,
+            hasEntityWithId = entryPoint.getHealthConnectStepsDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
+            dtoList = dto.caloriesBurned,
+            hasEntityWithId = entryPoint.getHealthConnectCaloriesBurnedDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
+            dtoList = dto.heartRateSessions,
+            hasEntityWithId = entryPoint.getHealthConnectHeartRateDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
+            dtoList = dto.heartRateSamples,
+            hasEntityWithId = entryPoint.getHealthConnectHeartRateSamplesDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
+            dtoList = dto.sleepSessions,
+            hasEntityWithId = entryPoint.getHealthConnectSleepSessionDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
+            dtoList = dto.sleepStages,
+            hasEntityWithId = entryPoint.getHealthConnectSleepStagesDAO()::hasEntityWithId
+        )?.let(result::add)
 
         segregate(
             dtoList = dto.sleepSessionAssociations,

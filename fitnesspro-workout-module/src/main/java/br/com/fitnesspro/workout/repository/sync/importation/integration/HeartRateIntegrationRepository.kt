@@ -42,7 +42,6 @@ class HeartRateIntegrationRepository(context: Context)
         return entryPoint.getExerciseExecutionDAO().getIntegrationData(personId)
     }
 
-    @Suppress("UNCHECKED_CAST")
     override suspend fun saveSpecificHealthData(results: List<HeartRateMapperResult>) {
         val sessionDAO = entryPoint.getHealthConnectHeartRateDAO()
         val samplesDAO = entryPoint.getHealthConnectHeartRateSamplesDAO()

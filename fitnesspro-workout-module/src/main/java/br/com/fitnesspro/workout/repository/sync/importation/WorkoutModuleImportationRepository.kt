@@ -106,7 +106,40 @@ class WorkoutModuleImportationRepository(
             hasEntityWithId = entryPoint.getWorkoutDAO()::hasEntityWithId
         )?.let(result::add)
 
-        // ... (demais segregações)
+        segregate(
+            dtoList = dto.workoutGroups,
+            hasEntityWithId = entryPoint.getWorkoutGroupDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
+            dtoList = dto.exercises,
+            hasEntityWithId = entryPoint.getExerciseDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
+            dtoList = dto.videos,
+            hasEntityWithId = entryPoint.getVideoDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
+            dtoList = dto.videoExercises,
+            hasEntityWithId = entryPoint.getVideoExerciseDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
+            dtoList = dto.exerciseExecutions,
+            hasEntityWithId = entryPoint.getExerciseExecutionDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
+            dtoList = dto.workoutGroupsPreDefinitions,
+            hasEntityWithId = entryPoint.getWorkoutGroupPreDefinitionDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
+            dtoList = dto.exercisePredefinitions,
+            hasEntityWithId = entryPoint.getExercisePreDefinitionDAO()::hasEntityWithId
+        )?.let(result::add)
 
         segregate(
             dtoList = dto.videoExercisePreDefinitions,
