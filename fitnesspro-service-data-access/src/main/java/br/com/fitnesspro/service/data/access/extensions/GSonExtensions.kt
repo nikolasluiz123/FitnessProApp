@@ -66,6 +66,14 @@ import br.com.fitnesspro.shared.communication.dtos.workout.VideoExercisePreDefin
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupPreDefinitionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.health.HealthConnectCaloriesBurnedDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.health.HealthConnectHeartRateDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.health.HealthConnectHeartRateSamplesDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.health.HealthConnectMetadataDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.health.HealthConnectSleepSessionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.health.HealthConnectSleepStagesDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.health.HealthConnectStepsDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.health.SleepSessionExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExercisePreDefinitionDTO
@@ -76,6 +84,14 @@ import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExer
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IWorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IWorkoutGroupDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IWorkoutGroupPreDefinitionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.IHealthConnectCaloriesBurnedDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.IHealthConnectHeartRateDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.IHealthConnectHeartRateSamplesDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.IHealthConnectMetadataDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.IHealthConnectSleepSessionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.IHealthConnectSleepStagesDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.IHealthConnectStepsDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.ISleepSessionExerciseExecutionDTO
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import java.time.Instant
@@ -133,5 +149,14 @@ fun GsonBuilder.defaultServiceGSon(): Gson {
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutDTO::class.java, WorkoutDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutGroupDTO::class.java, WorkoutGroupDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutGroupPreDefinitionDTO::class.java,WorkoutGroupPreDefinitionDTO::class.java))
+
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectMetadataDTO::class.java, HealthConnectMetadataDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectStepsDTO::class.java, HealthConnectStepsDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectCaloriesBurnedDTO::class.java, HealthConnectCaloriesBurnedDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectHeartRateDTO::class.java, HealthConnectHeartRateDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectHeartRateSamplesDTO::class.java, HealthConnectHeartRateSamplesDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectSleepSessionDTO::class.java, HealthConnectSleepSessionDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectSleepStagesDTO::class.java, HealthConnectSleepStagesDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(ISleepSessionExerciseExecutionDTO::class.java, SleepSessionExerciseExecutionDTO::class.java))
         .create()
 }
