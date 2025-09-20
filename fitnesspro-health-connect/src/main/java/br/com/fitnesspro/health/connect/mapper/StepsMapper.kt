@@ -46,7 +46,7 @@ class StepsMapper(
 
         val steps = HealthConnectSteps(
             healthConnectMetadataId = metadata.id,
-            exerciseExecutionId = null,
+            exerciseExecutionId = matching.id,
             count = record.count,
             startTime = record.startTime,
             endTime = record.endTime,

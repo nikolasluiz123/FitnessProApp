@@ -41,8 +41,8 @@ class GeneralModuleImportationRepository(context: Context): AbstractImportationR
         return entryPoint.getGeneralSyncWebClient().import(token, filter, pageInfos)
     }
 
-    override suspend fun executeSegregation(dto: GeneralModuleSyncDTO): List<ImportSegregationResult> {
-        val result = mutableListOf<ImportSegregationResult>()
+    override suspend fun executeSegregation(dto: GeneralModuleSyncDTO): List<ImportSegregationResult<BaseModel>> {
+        val result = mutableListOf<ImportSegregationResult<BaseModel>>()
 
         segregate(
             dtoList = dto.academies,

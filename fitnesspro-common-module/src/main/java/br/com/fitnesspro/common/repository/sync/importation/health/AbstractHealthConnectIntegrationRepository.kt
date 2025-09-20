@@ -3,6 +3,7 @@ package br.com.fitnesspro.common.repository.sync.importation.health
 import android.content.Context
 import android.util.Log
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
+import br.com.fitnesspro.common.repository.sync.importation.common.ImportSegregationResult
 import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.health.connect.mapper.base.AbstractHealthDataAssociatingMapper
 import br.com.fitnesspro.health.connect.mapper.result.IRecordMapperResult
@@ -10,6 +11,7 @@ import br.com.fitnesspro.health.connect.service.filter.RangeFilter
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.health.HealthConnectMetadataDAO
 import br.com.fitnesspro.model.base.IHealthDataRangeEntity
+import br.com.fitnesspro.model.base.IntegratedModel
 import java.time.Instant
 
 /**
@@ -105,14 +107,58 @@ abstract class AbstractHealthConnectIntegrationRepository<ENTITY : IHealthDataRa
         markEntitiesAsCollected(entitiesToAssociate)
     }
 
+    protected suspend fun <T, M : IntegratedModel> segregate(
+        list: List<T>,
+        hasEntityWithId: suspend (T) -> Boolean,
+        getEntity: (T) -> M
+    ): ImportSegregationResult<M>? {
+        return if (list.isNotEmpty()) {
+            val insertionList = list
+                .filter { !hasEntityWithId(it) }
+                .map { getEntity(it) }
+
+            val updateList = list
+                .filter { hasEntityWithId(it) }
+                .map { getEntity(it) }
+
+            ImportSegregationResult(insertionList, updateList)
+        } else {
+            null
+        }
+    }
+
+    protected suspend fun <M : IntegratedModel> saveSegregatedResult(
+        result: ImportSegregationResult<M>?,
+        dao: IntegratedMaintenanceDAO<M>
+    ) {
+        if (result?.insertionList?.isNotEmpty() == true) {
+            dao.insertBatch(result.insertionList)
+        }
+
+        if (result?.updateList?.isNotEmpty() == true) {
+            dao.updateBatch(result.updateList)
+        }
+    }
+
     /**
      * Salva os resultados mapeados no banco de dados.
      * Primeiro, salva os metadados comuns e, em seguida, chama
      * [saveSpecificHealthData] para salvar os dados específicos.
      */
     private suspend fun saveResults(results: List<RESULT>) {
-        val allMetadata = results.map { it.metadata }
-        getMetadataDao().insertBatch(allMetadata)
+        val segregationResult = segregate(
+            list = results,
+            hasEntityWithId = { getMetadataDao().hasEntityWithId(it.metadata.id) },
+            getEntity = { it.metadata }
+        )
+
+        if (segregationResult?.insertionList?.isNotEmpty() == true) {
+            getMetadataDao().insertBatch(segregationResult.insertionList)
+        }
+
+        if (segregationResult?.updateList?.isNotEmpty() == true) {
+            getMetadataDao().updateBatch(segregationResult.updateList)
+        }
 
         saveSpecificHealthData(results)
     }

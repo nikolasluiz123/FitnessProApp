@@ -29,13 +29,32 @@ class SleepIntegrationRepository(context: Context)
         return entryPoint.getExerciseExecutionDAO().getIntegrationData(personId)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override suspend fun saveSpecificHealthData(results: List<SleepSessionMapperResult>) {
-        val allSessions = results.map { it.session }
-        val allStages = results.flatMap { it.stages }
-        val allAssociations = results.flatMap { it.associations }
+        val healthConnectSleepSessionDAO = entryPoint.getHealthConnectSleepSessionDAO()
+        val healthConnectSleepStagesDAO = entryPoint.getHealthConnectSleepStagesDAO()
+        val sleepSessionExerciseExecutionDAO = entryPoint.getSleepSessionExerciseExecutionDAO()
 
-        entryPoint.getHealthConnectSleepSessionDAO().insertBatch(allSessions)
-        entryPoint.getHealthConnectSleepStagesDAO().insertBatch(allStages)
-        entryPoint.getSleepSessionExerciseExecutionDAO().insertBatch(allAssociations)
+        val sessionSegregationResult = segregate(
+            list = results,
+            hasEntityWithId = { healthConnectSleepSessionDAO.hasEntityWithId(it.session.id) },
+            getEntity = { it.session }
+        )
+
+        val stagesSegregationResult = segregate(
+            list = results.flatMap { it.stages },
+            hasEntityWithId = { healthConnectSleepStagesDAO.hasEntityWithId(it.id) },
+            getEntity = { it }
+        )
+
+        val associationsSegregationResult = segregate(
+            list = results.flatMap { it.associations },
+            hasEntityWithId = { sleepSessionExerciseExecutionDAO.hasEntityWithId(it.id) },
+            getEntity = { it }
+        )
+
+        saveSegregatedResult(sessionSegregationResult, healthConnectSleepSessionDAO)
+        saveSegregatedResult(stagesSegregationResult, healthConnectSleepStagesDAO)
+        saveSegregatedResult(associationsSegregationResult, sleepSessionExerciseExecutionDAO)
     }
 }

@@ -66,8 +66,8 @@ class WorkoutModuleImportationRepository(
         return WorkoutModuleImportationFilter(lastUpdateDate = lastUpdateDate, personId = person.id)
     }
 
-    override suspend fun executeSegregation(dto: WorkoutModuleSyncDTO): List<ImportSegregationResult> {
-        val result = mutableListOf<ImportSegregationResult>()
+    override suspend fun executeSegregation(dto: WorkoutModuleSyncDTO): List<ImportSegregationResult<BaseModel>> {
+        val result = mutableListOf<ImportSegregationResult<BaseModel>>()
 
         segregate(
             dtoList = dto.workouts,

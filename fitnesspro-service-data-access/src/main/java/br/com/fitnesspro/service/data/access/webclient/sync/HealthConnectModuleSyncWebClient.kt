@@ -5,7 +5,7 @@ import br.com.fitnesspro.service.data.access.extensions.defaultServiceGSon
 import br.com.fitnesspro.service.data.access.extensions.getResponseBody
 import br.com.fitnesspro.service.data.access.service.sync.HealthConnectModuleSyncService
 import br.com.fitnesspro.service.data.access.webclient.common.FitnessProWebClient
-import br.com.fitnesspro.shared.communication.dtos.workout.health.HealthConnectModuleSyncDTO
+import br.com.fitnesspro.shared.communication.dtos.sync.HealthConnectModuleSyncDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse

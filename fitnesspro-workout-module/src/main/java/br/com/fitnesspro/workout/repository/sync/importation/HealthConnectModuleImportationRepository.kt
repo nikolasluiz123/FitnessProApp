@@ -24,7 +24,7 @@ import br.com.fitnesspro.model.workout.health.HealthConnectSleepStages
 import br.com.fitnesspro.model.workout.health.HealthConnectSteps
 import br.com.fitnesspro.model.workout.health.SleepSessionExerciseExecution
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.health.HealthConnectModuleSyncDTO
+import br.com.fitnesspro.shared.communication.dtos.sync.HealthConnectModuleSyncDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.IHealthConnectCaloriesBurnedDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.IHealthConnectHeartRateDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.IHealthConnectHeartRateSamplesDTO
@@ -60,8 +60,8 @@ class HealthConnectModuleImportationRepository(
         return WorkoutModuleImportationFilter(lastUpdateDate = lastUpdateDate, personId = person.id)
     }
 
-    override suspend fun executeSegregation(dto: HealthConnectModuleSyncDTO): List<ImportSegregationResult> {
-        val result = mutableListOf<ImportSegregationResult>()
+    override suspend fun executeSegregation(dto: HealthConnectModuleSyncDTO): List<ImportSegregationResult<BaseModel>> {
+        val result = mutableListOf<ImportSegregationResult<BaseModel>>()
 
         segregate(
             dtoList = dto.metadata,

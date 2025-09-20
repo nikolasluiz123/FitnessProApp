@@ -48,7 +48,7 @@ class HeartRateMapper(
 
         val heartRateSession = HealthConnectHeartRate(
             healthConnectMetadataId = metadata.id,
-            exerciseExecutionId = null,
+            exerciseExecutionId = matching.id,
             startTime = record.startTime,
             endTime = record.endTime,
             startZoneOffset = record.startZoneOffset,

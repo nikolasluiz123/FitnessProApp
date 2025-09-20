@@ -1,7 +1,7 @@
 package br.com.fitnesspro.service.data.access.service.sync
 
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
-import br.com.fitnesspro.shared.communication.dtos.workout.health.HealthConnectModuleSyncDTO
+import br.com.fitnesspro.shared.communication.dtos.sync.HealthConnectModuleSyncDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import retrofit2.Response

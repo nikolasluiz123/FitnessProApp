@@ -51,8 +51,8 @@ class SchedulerModuleImportationRepository(
         )
     }
 
-    override suspend fun executeSegregation(dto: SchedulerModuleSyncDTO): List<ImportSegregationResult> {
-        val result = mutableListOf<ImportSegregationResult>()
+    override suspend fun executeSegregation(dto: SchedulerModuleSyncDTO): List<ImportSegregationResult<BaseModel>> {
+        val result = mutableListOf<ImportSegregationResult<BaseModel>>()
 
         segregate(
             dtoList = dto.schedulers,

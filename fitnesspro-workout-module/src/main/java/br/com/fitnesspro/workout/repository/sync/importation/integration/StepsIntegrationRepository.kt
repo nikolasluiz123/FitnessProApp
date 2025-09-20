@@ -31,7 +31,14 @@ class StepsIntegrationRepository(context: Context)
     }
 
     override suspend fun saveSpecificHealthData(results: List<SingleRecordMapperResult<HealthConnectSteps>>) {
-        val allSteps = results.map { it.entity }
-        entryPoint.getHealthConnectStepsDAO().insertBatch(allSteps)
+        val dao = entryPoint.getHealthConnectStepsDAO()
+
+        val steps = segregate(
+            list = results,
+            hasEntityWithId = { dao.hasEntityWithId(it.entity.id) },
+            getEntity = { it.entity }
+        )
+
+        saveSegregatedResult(steps, dao)
     }
 }

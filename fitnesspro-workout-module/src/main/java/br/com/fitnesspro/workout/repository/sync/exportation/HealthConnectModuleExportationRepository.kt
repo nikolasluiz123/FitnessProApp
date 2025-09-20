@@ -22,9 +22,9 @@ import br.com.fitnesspro.model.workout.health.HealthConnectSleepSession
 import br.com.fitnesspro.model.workout.health.HealthConnectSleepStages
 import br.com.fitnesspro.model.workout.health.HealthConnectSteps
 import br.com.fitnesspro.model.workout.health.SleepSessionExerciseExecution
-import br.com.fitnesspro.shared.communication.dtos.workout.health.HealthConnectModuleSyncDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.common.injection.health.IHealthConnectModuleSyncRepositoryEntryPoint
+import br.com.fitnesspro.shared.communication.dtos.sync.HealthConnectModuleSyncDTO
 import dagger.hilt.android.EntryPointAccessors
 import kotlin.reflect.KClass
 

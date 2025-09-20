@@ -45,7 +45,7 @@ class CaloriesBurnedMapper(
 
         val calories = HealthConnectCaloriesBurned(
             healthConnectMetadataId = metadata.id,
-            exerciseExecutionId = null,
+            exerciseExecutionId = matching.id,
             caloriesInKcal = record.energy.inKilocalories.toLong(),
             startTime = record.startTime,
             endTime = record.endTime,

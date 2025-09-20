@@ -3,8 +3,10 @@ package br.com.fitnesspro.common.repository.sync.importation.common
 import android.content.Context
 import android.util.Log
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.base.BaseModel
@@ -29,7 +31,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
         pageInfos: ImportPageInfos
     ): ImportationServiceResponse<DTO>
 
-    abstract suspend fun executeSegregation(dto: DTO): List<ImportSegregationResult>
+    abstract suspend fun executeSegregation(dto: DTO): List<ImportSegregationResult<BaseModel>>
 
     abstract fun convertDTOToEntity(dto: BaseDTO): BaseModel
 
@@ -41,7 +43,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
     }
 
     suspend fun import(serviceToken: String, lastUpdateDate: LocalDateTime?) {
-        Log.i(LogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName}")
+        Log.i(LogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName} lastUpdateDate = ${lastUpdateDate?.format(EnumDateTimePatterns.DATE_TIME_SHORT)}")
 
         var response: ImportationServiceResponse<DTO>? = null
         var clientStartDateTime: LocalDateTime? = null
@@ -66,6 +68,8 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
                 when {
                     response.success && response.value!!.isEmpty() -> {
+                        Log.i(LogConstants.WORKER_IMPORT, "Sucesso Sem Dados")
+
                         updateExecutionLogPackageWithSuccessIterationInfos(
                             logPackageId = response.executionLogPackageId,
                             insertionListCount = 0,
@@ -75,6 +79,8 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
                     }
 
                     response.success -> {
+                        Log.i(LogConstants.WORKER_IMPORT, "Sucesso Com Dados Novos. pageNumber = ${pageInfos.pageNumber} pageSize = ${pageInfos.pageSize} maxListSize = ${response.value?.getMaxListSize()}")
+
                         val segregationResult = executeSegregation(response.value!!)
 
                         saveDataLocally(segregationResult)
@@ -111,7 +117,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
         }
     }
 
-    protected suspend fun segregate(dtoList: List<BaseDTO>, hasEntityWithId: suspend (String) -> Boolean): ImportSegregationResult? {
+    protected suspend fun segregate(dtoList: List<BaseDTO>, hasEntityWithId: suspend (String) -> Boolean): ImportSegregationResult<BaseModel>? {
         return if (dtoList.isNotEmpty()) {
             val insertionList = dtoList
                 .filter { !hasEntityWithId(it.id!!) }
@@ -127,8 +133,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    protected suspend fun saveDataLocally(segregationResult: List<ImportSegregationResult>) {
+    protected suspend fun saveDataLocally(segregationResult: List<ImportSegregationResult<BaseModel>>) {
         segregationResult.forEach { result ->
             if (result.insertionList.isNotEmpty() || result.updateList.isNotEmpty()) {
                 val clazz = (result.insertionList.firstOrNull() ?: result.updateList.firstOrNull())!!::class

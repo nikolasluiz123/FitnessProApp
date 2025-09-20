@@ -30,8 +30,15 @@ class CaloriesIntegrationRepository(context: Context)
         return entryPoint.getExerciseExecutionDAO().getIntegrationData(personId)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override suspend fun saveSpecificHealthData(results: List<SingleRecordMapperResult<HealthConnectCaloriesBurned>>) {
-        val allCalories = results.map { it.entity }
-        entryPoint.getHealthConnectCaloriesBurnedDAO().insertBatch(allCalories)
+        val dao = entryPoint.getHealthConnectCaloriesBurnedDAO()
+        val segregationResult = segregate(
+            list = results,
+            hasEntityWithId = { dao.hasEntityWithId(it.entity.id) },
+            getEntity = { it.entity }
+        )
+
+        saveSegregatedResult(segregationResult, dao)
     }
 }
