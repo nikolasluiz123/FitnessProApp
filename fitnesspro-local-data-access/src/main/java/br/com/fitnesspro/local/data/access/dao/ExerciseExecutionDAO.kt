@@ -36,9 +36,9 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
             add("  null as actualSet, ")
             add("  null as rest, ")
             add("  null as weight, ")
-            add("  date(e.date) as date, ")
+            add("  date(e.execution_start_time) as date, ")
             add("  0 as sortOrder, ")
-            add("  date(e.date) as groupDate ")
+            add("  date(e.execution_start_time) as groupDate ")
         }
 
         val fromDates = StringJoiner(QR_NL).apply {
@@ -53,7 +53,7 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
         }
 
         val groupByDates = StringJoiner(QR_NL).apply {
-            add(" group by date(e.date)")
+            add(" group by date(e.execution_start_time)")
         }
 
         val sqlDates = StringJoiner(QR_NL).apply {
@@ -71,9 +71,9 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
             add("  e.actual_set as actualSet, ")
             add("  e.rest as rest, ")
             add("  e.weight as weight, ")
-            add("  e.date as date, ")
+            add("  e.execution_start_time as date, ")
             add("  1 as sortOrder, ")
-            add("  date(e.date) as groupDate ")
+            add("  date(e.execution_start_time) as groupDate ")
         }
 
         val fromExecutions = StringJoiner(QR_NL).apply {
@@ -154,7 +154,7 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
             select * 
             from exercise_execution
             where exercise_id = :exerciseId
-            and date(date) = :date
+            and date(execution_start_time) = :date
             and active = 1
         """
     )
@@ -273,7 +273,7 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
 
     @Query(
         """
-        select date(execution.date) as date,
+        select date(execution.execution_start_time) as date,
                execution.weight as weight,
                execution.repetitions as reps,
                execution.rest as rest,
@@ -281,9 +281,42 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
         from exercise_execution execution
         where execution.exercise_id = :exerciseId
         and execution.active = 1
-        order by execution.date
+        order by execution.execution_start_time
         """
     )
     abstract suspend fun getListExerciseExecutionGroupedBarChartTuple(exerciseId: String): List<ExerciseExecutionChartTuple>
 
+    suspend fun getIntegrationData(personId: String): List<ExerciseExecution> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select exec.* ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from exercise_execution exec ")
+            add(" inner join exercise e on e.id = exec.exercise_id ")
+            add(" inner join workout_group wg on wg.id = e.workout_group_id ")
+            add(" inner join workout w on w.id = wg.workout_id ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where w.academy_member_person_id = ? ")
+            add(" and exec.active = 1 ")
+            add(" and exec.health_data_collected = 0 ")
+
+            params.add(personId)
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        return executeGetIntegrationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery(observedEntities = [ExerciseExecution::class])
+    abstract suspend fun executeGetIntegrationData(query: SupportSQLiteQuery): List<ExerciseExecution>
 }

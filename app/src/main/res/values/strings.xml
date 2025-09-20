@@ -23,4 +23,6 @@
     <string name="splash_screen_ic_launcher_description">Ícone Fitness Pro</string>
     <string name="home_screen_menu_item_backup">Executar Backup do Banco</string>
     <string name="home_screen_dialog_backup_message">O backup do banco de dados foi executado com sucesso. Para acessá-lo você precisará entrar na pasta %s no Android.</string>
+    <string name="home_screen_dialog_health_connect_integration_message">Você tem certeza de que deseja realizar uma importação dos dados do Health Connect manualmente?</string>
+    <string name="home_screen_menu_item_health_connect_integration">Importar dados do Health Connect</string>
 </resources>

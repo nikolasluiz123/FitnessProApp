@@ -1,10 +1,11 @@
 package br.com.fitnesspro.service.data.access.extensions
 
-import br.com.fitnesspro.service.data.access.adapters.GenericInterfaceAdapterFactory
+import br.com.fitnesspro.core.adapters.InstantTypeAdapter
 import br.com.fitnesspro.core.adapters.LocalDateTimeTypeAdapter
 import br.com.fitnesspro.core.adapters.LocalDateTypeAdapter
 import br.com.fitnesspro.core.adapters.LocalTimeTypeAdapter
 import br.com.fitnesspro.core.adapters.OffsetDateTimeTypeAdapter
+import br.com.fitnesspro.service.data.access.adapters.GenericInterfaceAdapterFactory
 import br.com.fitnesspro.shared.communication.dtos.cache.CacheClearConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.cache.CacheDTO
 import br.com.fitnesspro.shared.communication.dtos.cache.CacheEntryDTO
@@ -77,6 +78,7 @@ import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IWorkoutGr
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IWorkoutGroupPreDefinitionDTO
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -87,6 +89,7 @@ fun GsonBuilder.defaultServiceGSon(): Gson {
         .registerTypeAdapter(LocalDate::class.java, LocalDateTypeAdapter())
         .registerTypeAdapter(LocalTime::class.java, LocalTimeTypeAdapter())
         .registerTypeAdapter(OffsetDateTime::class.java, OffsetDateTimeTypeAdapter())
+        .registerTypeAdapter(Instant::class.java, InstantTypeAdapter())
 
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(ICacheClearConfigDTO::class.java, CacheClearConfigDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(ICacheDTO::class.java, CacheDTO::class.java))

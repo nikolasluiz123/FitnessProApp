@@ -5,8 +5,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.ExerciseExecutionDAO
 import br.com.fitnesspro.mappers.getExerciseExecution
 import br.com.fitnesspro.mappers.getTOExerciseExecution
@@ -107,7 +105,7 @@ class ExerciseExecutionRepository(
     private suspend fun reorderExecutions(exerciseExecution: ExerciseExecution) {
         val exercisesReorder = exerciseExecutionDAO.getListActiveExerciseExecution(
             exerciseId = exerciseExecution.exerciseId!!,
-            date = exerciseExecution.date.format(EnumDateTimePatterns.DATE_SQLITE)
+            date = exerciseExecution.executionStartTime.toString()
         )
 
         if (exercisesReorder.isNotEmpty()) {

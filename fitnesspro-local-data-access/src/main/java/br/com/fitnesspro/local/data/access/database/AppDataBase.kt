@@ -26,6 +26,14 @@ import br.com.fitnesspro.local.data.access.dao.VideoExercisePreDefinitionDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupPreDefinitionDAO
+import br.com.fitnesspro.local.data.access.dao.health.HealthConnectCaloriesBurnedDAO
+import br.com.fitnesspro.local.data.access.dao.health.HealthConnectHeartRateDAO
+import br.com.fitnesspro.local.data.access.dao.health.HealthConnectHeartRateSamplesDAO
+import br.com.fitnesspro.local.data.access.dao.health.HealthConnectMetadataDAO
+import br.com.fitnesspro.local.data.access.dao.health.HealthConnectSleepSessionDAO
+import br.com.fitnesspro.local.data.access.dao.health.HealthConnectSleepStagesDAO
+import br.com.fitnesspro.local.data.access.dao.health.HealthConnectStepsDAO
+import br.com.fitnesspro.local.data.access.dao.health.SleepSessionExerciseExecutionDAO
 import br.com.fitnesspro.model.authentication.Application
 import br.com.fitnesspro.model.authentication.Device
 import br.com.fitnesspro.model.authentication.ServiceToken
@@ -53,12 +61,20 @@ import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.model.workout.execution.VideoExerciseExecution
+import br.com.fitnesspro.model.workout.health.HealthConnectCaloriesBurned
+import br.com.fitnesspro.model.workout.health.HealthConnectHeartRate
+import br.com.fitnesspro.model.workout.health.HealthConnectHeartRateSamples
+import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
+import br.com.fitnesspro.model.workout.health.HealthConnectSleepSession
+import br.com.fitnesspro.model.workout.health.HealthConnectSleepStages
+import br.com.fitnesspro.model.workout.health.HealthConnectSteps
+import br.com.fitnesspro.model.workout.health.SleepSessionExerciseExecution
 import br.com.fitnesspro.model.workout.predefinition.ExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 
 @Database(
-    version = 42,
+    version = 46,
     entities = [
         User::class, Person::class, Academy::class, PersonAcademyTime::class, PhysicEvaluation::class,
         IngredientPreDefinition::class, MealOptionPreDefinition::class, Diet::class, DayWeekDiet::class, Meal::class,
@@ -66,7 +82,10 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
         VideoExerciseExecution::class, ExercisePreDefinition::class, VideoExercisePreDefinition::class,
         WorkoutGroupPreDefinition::class, Exercise::class, Video::class, VideoExercise::class,
         Workout::class, WorkoutGroup::class, ImportationHistory::class, ServiceToken::class, Device::class,
-        Application::class, Report::class, SchedulerReport::class
+        Application::class, Report::class, SchedulerReport::class, HealthConnectCaloriesBurned::class,
+        HealthConnectHeartRate::class, HealthConnectHeartRateSamples::class, HealthConnectMetadata::class,
+        HealthConnectSleepSession::class, HealthConnectSleepStages::class, HealthConnectSteps::class,
+        SleepSessionExerciseExecution::class
     ],
     exportSchema = true
 )
@@ -116,5 +135,21 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun reportDAO(): ReportDAO
 
     abstract fun schedulerReportDAO(): SchedulerReportDAO
+
+    abstract fun healthConnectMetadataDAO(): HealthConnectMetadataDAO
+
+    abstract fun healthConnectStepsDAO(): HealthConnectStepsDAO
+
+    abstract fun healthConnectCaloriesBurnedDAO(): HealthConnectCaloriesBurnedDAO
+
+    abstract fun healthConnectHeartRateDAO(): HealthConnectHeartRateDAO
+
+    abstract fun healthConnectHeartRateSamplesDAO(): HealthConnectHeartRateSamplesDAO
+
+    abstract fun healthConnectSleepSessionDAO(): HealthConnectSleepSessionDAO
+
+    abstract fun healthConnectSleepStagesDAO(): HealthConnectSleepStagesDAO
+
+    abstract fun sleepSessionExerciseExecutionDAO(): SleepSessionExerciseExecutionDAO
 
 }

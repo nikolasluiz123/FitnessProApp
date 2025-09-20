@@ -38,7 +38,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.time.delay
 import java.io.File
+import java.time.Duration
+import java.time.Instant
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
@@ -175,6 +178,7 @@ class RegisterEvolutionViewModel @Inject constructor(
             val args = jsonArgs?.fromJsonNavParamToArgs(RegisterEvolutionScreenArgs::class.java)!!
             val toExerciseExecution = args.exerciseExecutionId?.let { executionRepository.findById(it) }
 
+            loadChronometerRunning(args)
             loadTitle(toExerciseExecution)
             loadExecutionInfosEdition(toExerciseExecution)
             loadExerciseInfos(args)
@@ -182,6 +186,12 @@ class RegisterEvolutionViewModel @Inject constructor(
 
             _uiState.value.executeLoad = false
         }
+    }
+
+    private fun loadChronometerRunning(args: RegisterEvolutionScreenArgs) {
+        _uiState.value = _uiState.value.copy(
+            chronometerRunning = args.exerciseExecutionId == null
+        )
     }
 
     private fun loadExecutionInfosEdition(toExerciseExecution: TOExerciseExecution?) {
@@ -214,7 +224,7 @@ class RegisterEvolutionViewModel @Inject constructor(
         return toExecution?.let {
             context.getString(
                 R.string.register_evolution_screen_title_edit_exercise,
-                it.date!!.format(EnumDateTimePatterns.DATE)
+                it.executionStartTime.format(EnumDateTimePatterns.DATE)
             )
         } ?: context.getString(R.string.register_evolution_screen_title_new_exercise)
     }
@@ -429,6 +439,25 @@ class RegisterEvolutionViewModel @Inject constructor(
                     }
                 }
             )
+        }
+    }
+
+    fun onStopChronometer() {
+        _uiState.value = _uiState.value.copy(
+            chronometerRunning = false,
+            toExerciseExecution = _uiState.value.toExerciseExecution.copy(
+                executionEndTime = Instant.now()
+            )
+        )
+    }
+
+    suspend fun onUpdateChronometer() {
+        while (true) {
+            _uiState.value = _uiState.value.copy(
+                chronometerTime = _uiState.value.chronometerTime.plus(1, ChronoUnit.SECONDS)
+            )
+
+            delay(Duration.of(1, ChronoUnit.SECONDS))
         }
     }
 }

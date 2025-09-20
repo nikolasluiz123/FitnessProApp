@@ -9,10 +9,13 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -20,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -41,6 +45,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,6 +55,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
+import br.com.fitnesspro.compose.components.buttons.fab.FitnessProFloatingActionButton
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCamera
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
@@ -61,8 +67,10 @@ import br.com.fitnesspro.compose.components.gallery.video.callbacks.OnVideoClick
 import br.com.fitnesspro.compose.components.gallery.video.components.VideoGallery
 import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
 import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
+import br.com.fitnesspro.core.extensions.formatSimpleTime
 import br.com.fitnesspro.core.extensions.launchVideosOnly
 import br.com.fitnesspro.core.extensions.openCameraVideo
+import br.com.fitnesspro.core.theme.ChronometerStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logButtonClick
@@ -79,6 +87,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.analytics.analytics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import br.com.fitnesspro.core.R as CoreRes
 
 @Composable
 fun RegisterEvolutionScreen(
@@ -98,6 +107,8 @@ fun RegisterEvolutionScreen(
         onExecuteLoad = viewModel::loadUIStateWithDatabaseInfos,
         onVideoDeleteClick = viewModel::onDeleteVideo,
         onInactivateExecutionClick = viewModel::onInactivateExecution,
+        onStopChronometer = viewModel::onStopChronometer,
+        onUpdateChronometer = viewModel::onUpdateChronometer
     )
 }
 
@@ -114,6 +125,8 @@ fun RegisterEvolutionScreen(
     onExecuteLoad: () -> Unit = { },
     onVideoDeleteClick: (String, () -> Unit) -> Unit = { _, _ -> },
     onInactivateExecutionClick: OnInactivateExecutionClick? = null,
+    onStopChronometer: () -> Unit = {},
+    onUpdateChronometer: suspend () -> Unit = {}
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
@@ -181,13 +194,27 @@ fun RegisterEvolutionScreen(
                         )
                     },
                     floatingActionButton = {
-                        FloatingActionButtonSave(
-                            iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            onClick = {
-                                onSave(keyboardController, state, onSaveRegisterEvolution, coroutineScope, snackbarHostState, context)
-                            }
-                        )
+                        if (state.toExerciseExecution.executionEndTime != null) {
+                            FloatingActionButtonSave(
+                                iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                onClick = {
+                                    onSave(keyboardController, state, onSaveRegisterEvolution, coroutineScope, snackbarHostState, context)
+                                }
+                            )
+                        } else {
+                            FitnessProFloatingActionButton(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                onClick = { onStopChronometer() },
+                                content = {
+                                    Icon(
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        painter = painterResource(CoreRes.drawable.ic_timer_pause_24dp),
+                                        contentDescription = stringResource(R.string.label_end_execution)
+                                    )
+                                }
+                            )
+                        }
                     }
                 )
             }
@@ -208,6 +235,12 @@ fun RegisterEvolutionScreen(
             }
         }
 
+        LaunchedEffect(state.chronometerRunning) {
+            if (state.chronometerRunning) {
+                onUpdateChronometer()
+            }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -224,14 +257,38 @@ fun RegisterEvolutionScreen(
                     .nestedScroll(nestedScrollConnection)
                     .verticalScroll(scrollState)
             ) {
-                val (weightRef, repsRef, restRef, restUnitRef, durationRef, durationUnitRef, videoGalleryRef) = createRefs()
+                val (weightRef, repsRef, restRef, restUnitRef, durationRef, durationUnitRef,
+                    videoGalleryRef, chronometerRef) = createRefs()
+
+                if (state.chronometerRunning) {
+                    Box(
+                        Modifier
+                            .constrainAs(chronometerRef) {
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                top.linkTo(parent.top)
+                            }
+                            .background(MaterialTheme.colorScheme.primaryContainer, shape = MaterialTheme.shapes.small)
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = state.chronometerTime.formatSimpleTime(),
+                            style = ChronometerStyle,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                }
 
                 OutlinedTextFieldValidation(
                     modifier = Modifier
                         .constrainAs(weightRef) {
+                            val topAnchor = if (state.chronometerRunning) chronometerRef.bottom else parent.top
+
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                            top.linkTo(parent.top)
+                            top.linkTo(topAnchor, margin = 8.dp)
 
                             width = Dimension.fillToConstraints
                         },

@@ -14,4 +14,8 @@ interface IWorkoutWorkersEntryPoint {
 
     fun getWorkoutModuleExportationRepository(): WorkoutModuleExportationRepository
 
+    fun getHealthConnectModuleImportationRepository(): WorkoutModuleImportationRepository
+
+    fun getHealthConnectModuleExportationRepository(): WorkoutModuleExportationRepository
+
 }

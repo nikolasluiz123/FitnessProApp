@@ -7,6 +7,7 @@ import br.com.fitnesspro.service.data.access.service.log.IExecutionLogService
 import br.com.fitnesspro.service.data.access.service.scheduler.ISchedulerService
 import br.com.fitnesspro.service.data.access.service.storage.IStorageService
 import br.com.fitnesspro.service.data.access.service.sync.GeneralModuleSyncService
+import br.com.fitnesspro.service.data.access.service.sync.HealthConnectModuleSyncService
 import br.com.fitnesspro.service.data.access.service.sync.SchedulerModuleSyncService
 import br.com.fitnesspro.service.data.access.service.sync.WorkoutModuleSyncService
 import br.com.fitnesspro.service.data.access.webclient.general.AuthenticationWebClient
@@ -15,6 +16,7 @@ import br.com.fitnesspro.service.data.access.webclient.log.ExecutionLogWebClient
 import br.com.fitnesspro.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.service.data.access.webclient.storage.StorageWebClient
 import br.com.fitnesspro.service.data.access.webclient.sync.GeneralModuleSyncWebClient
+import br.com.fitnesspro.service.data.access.webclient.sync.HealthConnectModuleSyncWebClient
 import br.com.fitnesspro.service.data.access.webclient.sync.SchedulerModuleSyncWebClient
 import br.com.fitnesspro.service.data.access.webclient.sync.WorkoutModuleSyncWebClient
 import dagger.Module
@@ -110,6 +112,17 @@ class SingletonWebClientModule {
         service: WorkoutModuleSyncService
     ): WorkoutModuleSyncWebClient {
         return WorkoutModuleSyncWebClient(
+            context = context,
+            service = service
+        )
+    }
+
+    @Provides
+    fun provideHealthConnectModuleSyncWebClient(
+        @ApplicationContext context: Context,
+        service: HealthConnectModuleSyncService
+    ): HealthConnectModuleSyncWebClient {
+        return HealthConnectModuleSyncWebClient(
             context = context,
             service = service
         )

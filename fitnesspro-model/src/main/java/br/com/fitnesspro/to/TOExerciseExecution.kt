@@ -1,6 +1,6 @@
 package br.com.fitnesspro.to
 
-import java.time.LocalDateTime
+import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 data class TOExerciseExecution(
@@ -13,6 +13,8 @@ data class TOExerciseExecution(
     var rest: Long? = null,
     var restUnit: ChronoUnit? = null,
     var weight: Double? = null,
-    var date: LocalDateTime? = null,
-    var active: Boolean = true
+    var active: Boolean = true,
+    var healthDataCollected: Boolean = false,
+    var executionStartTime: Instant = Instant.now(),
+    var executionEndTime: Instant? = null,
 ): BaseTO

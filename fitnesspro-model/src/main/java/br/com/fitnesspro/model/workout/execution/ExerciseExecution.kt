@@ -3,11 +3,12 @@ package br.com.fitnesspro.model.workout.execution
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.IntegratedModel
+import br.com.fitnesspro.model.base.IHealthDataRangeEntity
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Exercise
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.UUID
 
 @Entity(
@@ -34,6 +35,20 @@ data class ExerciseExecution(
     var actualSet: Int? = null,
     var rest: Long? = null,
     var weight: Double? = null,
-    var date: LocalDateTime = LocalDateTime.now(),
-    var active: Boolean = true
-): IntegratedModel
+    var active: Boolean = true,
+    @ColumnInfo(name = "health_data_collected")
+    override var healthDataCollected: Boolean = false,
+    @ColumnInfo(name = "execution_start_time")
+    var executionStartTime: Instant = Instant.now(),
+    @ColumnInfo(name = "execution_end_time")
+    var executionEndTime: Instant? = null,
+) : IHealthDataRangeEntity {
+
+    @get:Ignore
+    override val rangeStartTime: Instant
+        get() = this.executionStartTime
+
+    @get:Ignore
+    override val rangeEndTime: Instant?
+        get() = this.executionEndTime
+}

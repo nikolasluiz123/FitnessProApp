@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -13,12 +14,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
+import br.com.fitnesspro.compose.components.buttons.fab.FitnessProFloatingActionButton
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
 import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
 import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
@@ -30,6 +32,7 @@ import br.com.fitnesspro.workout.ui.screen.details.enums.EnumTabsExerciseDetails
 import br.com.fitnesspro.workout.ui.screen.evolution.callbacks.OnNavigateToRegisterEvolution
 import br.com.fitnesspro.workout.ui.state.ExerciseDetailsUIState
 import br.com.fitnesspro.workout.ui.viewmodel.ExerciseDetailsViewModel
+import br.com.fitnesspro.core.R as CoreRes
 
 @Composable
 fun ExerciseDetailsScreen(
@@ -66,16 +69,23 @@ fun ExerciseDetailsScreen(
             )
         },
         floatingActionButton = {
-            if (state.tabState.selectedTab.enum == EnumTabsExerciseDetailsScreen.EVOLUTION)
-            FloatingActionButtonAdd(
-                onClick = {
-                    state.toExercise.id?.let { exerciseId ->
-                        onNavigateToRegisterEvolution?.onNavigate(
-                            args = RegisterEvolutionScreenArgs(exerciseId = exerciseId)
+            if (state.tabState.selectedTab.enum == EnumTabsExerciseDetailsScreen.EVOLUTION) {
+                FitnessProFloatingActionButton(
+                    onClick = {
+                        state.toExercise.id?.let { exerciseId ->
+                            onNavigateToRegisterEvolution?.onNavigate(
+                                args = RegisterEvolutionScreenArgs(exerciseId = exerciseId)
+                            )
+                        }
+                    },
+                    content = {
+                        Icon(
+                            painter = painterResource(CoreRes.drawable.ic_timer_play_24dp),
+                            contentDescription = stringResource(R.string.label_start_execution)
                         )
                     }
-                }
-            )
+                )
+            }
         }
     ) { paddings ->
         Column(

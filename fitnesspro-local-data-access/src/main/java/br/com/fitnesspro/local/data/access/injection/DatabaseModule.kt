@@ -117,5 +117,36 @@ class DatabaseModule {
     @Singleton
     fun provideSchedulerReportDao(appDatabase: AppDatabase) = appDatabase.schedulerReportDAO()
 
+    @Provides
+    @Singleton
+    fun provideHealthConnectMetadataDAO(appDatabase: AppDatabase) = appDatabase.healthConnectMetadataDAO()
+
+    @Provides
+    @Singleton
+    fun provideHealthConnectStepsDAO(appDatabase: AppDatabase) = appDatabase.healthConnectStepsDAO()
+
+    @Provides
+    @Singleton
+    fun provideHealthConnectCaloriesBurnedDAO(appDatabase: AppDatabase) = appDatabase.healthConnectCaloriesBurnedDAO()
+
+    @Provides
+    @Singleton
+    fun provideHealthConnectHeartRateDAO(appDatabase: AppDatabase) = appDatabase.healthConnectHeartRateDAO()
+
+    @Provides
+    @Singleton
+    fun provideHealthConnectHeartRateSamplesDAO(appDatabase: AppDatabase) = appDatabase.healthConnectHeartRateSamplesDAO()
+
+    @Provides
+    @Singleton
+    fun provideHealthConnectSleepSessionDAO(appDatabase: AppDatabase) = appDatabase.healthConnectSleepSessionDAO()
+
+    @Provides
+    @Singleton
+    fun provideHealthConnectSleepStagesDAO(appDatabase: AppDatabase) = appDatabase.healthConnectSleepStagesDAO()
+
+    @Provides
+    @Singleton
+    fun provideSleepSessionExerciseExecutionDAO(appDatabase: AppDatabase) = appDatabase.sleepSessionExerciseExecutionDAO()
 
 }

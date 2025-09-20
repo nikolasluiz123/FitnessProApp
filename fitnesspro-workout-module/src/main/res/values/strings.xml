@@ -189,4 +189,6 @@
     <string name="excution_grouped_bar_chart_filters_screen_label_grouped_bar">Barras Agrupadas</string>
     <string name="excution_grouped_bar_chart_filters_screen_label_lines">Linhas</string>
     <string name="excution_grouped_bar_chart_filters_screen_label_visible_values">Valores Visíveis</string>
+    <string name="label_start_execution">Iniciar Execução</string>
+    <string name="label_end_execution">Finalizar Execução</string>
 </resources>

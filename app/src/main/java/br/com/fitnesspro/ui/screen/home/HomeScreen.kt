@@ -88,7 +88,8 @@ fun HomeScreen(
         onNavigateToPreDefinitionsScreen = onNavigateToPreDefinitionsScreen,
         onNavigateToMemberEvolutionScreen = onNavigateToMemberEvolutionScreen,
         onNavigateToExecutionEvolutionHistory = onNavigateToExecutionEvolutionHistory,
-        onExecuteBackup = viewModel::onExecuteBackup
+        onExecuteBackup = viewModel::onExecuteBackup,
+        onExecuteHealthConnectIntegration = viewModel::onExecuteHealthConnectIntegration
     )
 }
 
@@ -105,7 +106,8 @@ fun HomeScreen(
     onNavigateToPreDefinitionsScreen: () -> Unit = { },
     onNavigateToMemberEvolutionScreen: () -> Unit = { },
     onNavigateToExecutionEvolutionHistory: OnNavigateToExecutionEvolutionHistory? = null,
-    onExecuteBackup: OnExecuteBackup? = null
+    onExecuteBackup: OnExecuteBackup? = null,
+    onExecuteHealthConnectIntegration: () -> Unit = {}
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
@@ -146,6 +148,18 @@ fun HomeScreen(
                                 onExecuteBackup?.onExecute {
                                     state.onToggleLoading()
                                 }
+                            }
+                        )
+
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = stringResource(R.string.home_screen_menu_item_health_connect_integration),
+                                    style = LabelTextStyle
+                                )
+                            },
+                            onClick = {
+                                onExecuteHealthConnectIntegration()
                             }
                         )
                     }

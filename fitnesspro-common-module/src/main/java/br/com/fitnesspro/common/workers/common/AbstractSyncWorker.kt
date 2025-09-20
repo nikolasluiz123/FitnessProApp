@@ -6,6 +6,8 @@ import br.com.fitnesspro.common.injection.ISyncRepositoryEntryPoint
 import br.com.fitnesspro.core.worker.onetime.FitnessProOneTimeCoroutineWorker
 import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
 import dagger.hilt.android.EntryPointAccessors
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 
 abstract class AbstractSyncWorker(
     context: Context,
@@ -14,6 +16,8 @@ abstract class AbstractSyncWorker(
 
     protected val repositoryEntryPoint: ISyncRepositoryEntryPoint = EntryPointAccessors.fromApplication(context, ISyncRepositoryEntryPoint::class.java)
     protected val userRepository = repositoryEntryPoint.getUserRepository()
+
+    override fun getMaxRetryTimeMillis(): Long = Duration.of(15, ChronoUnit.MINUTES).toMillis()
 
     protected suspend fun getValidUserTokenOrNull(): String? {
         return userRepository.getValidUserToken()

@@ -116,8 +116,10 @@ fun TOExerciseExecution.getExerciseExecution(): ExerciseExecution {
         duration = duration,
         rest = rest,
         weight = weight,
-        date = date!!,
         active = active,
+        healthDataCollected = healthDataCollected,
+        executionStartTime = executionStartTime,
+        executionEndTime = executionEndTime
     )
 
     id?.let { model.id = it }
@@ -134,10 +136,12 @@ fun ExerciseExecution.getTOExerciseExecution(): TOExerciseExecution {
         duration = duration,
         rest = rest,
         weight = weight,
-        date = date,
         active = active,
         restUnit = rest?.bestChronoUnit(),
-        durationUnit = duration?.bestChronoUnit()
+        durationUnit = duration?.bestChronoUnit(),
+        healthDataCollected = healthDataCollected,
+        executionStartTime = executionStartTime,
+        executionEndTime = executionEndTime
     )
 }
 
@@ -150,8 +154,10 @@ fun ExerciseExecution.getExerciseExecutionDTO(): ExerciseExecutionDTO {
         duration = duration,
         rest = rest,
         weight = weight,
-        date = date,
         active = active,
+        healthDataCollected = healthDataCollected,
+        executionStartTime = executionStartTime,
+        executionEndTime = executionEndTime
     )
 }
 
@@ -195,9 +201,11 @@ fun IExerciseExecutionDTO.getExerciseExecution(): ExerciseExecution {
         duration = duration,
         rest = rest,
         weight = weight,
-        date = date!!,
         active = active,
         transmissionState = EnumTransmissionState.TRANSMITTED,
+        healthDataCollected = healthDataCollected,
+        executionStartTime = executionStartTime,
+        executionEndTime = executionEndTime
     )
 }
 

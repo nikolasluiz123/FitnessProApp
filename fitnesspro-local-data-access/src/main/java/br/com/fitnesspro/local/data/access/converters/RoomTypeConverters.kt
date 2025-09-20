@@ -6,10 +6,13 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.core.extensions.parseToLocalDateTime
 import br.com.fitnesspro.core.extensions.parseToLocalTime
+import java.time.DateTimeException
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeParseException
 
 class RoomTypeConverters {
@@ -55,6 +58,30 @@ class RoomTypeConverters {
         } catch (e: DateTimeParseException) {
             null
         }
+    }
+
+    @TypeConverter
+    fun fromZoneOffset(value: ZoneOffset?): String? {
+        return value?.toString()
+    }
+
+    @TypeConverter
+    fun toZoneOffset(value: String?): ZoneOffset? {
+        return try {
+            value?.let { ZoneOffset.of(it) }
+        } catch (e: DateTimeException) {
+            null
+        }
+    }
+
+    @TypeConverter
+    fun fromInstant(value: Instant?): String? {
+        return value?.toString()
+    }
+
+    @TypeConverter
+    fun toInstant(value: String?): Instant? {
+        return value?.let { Instant.parse(it) }
     }
 }
 

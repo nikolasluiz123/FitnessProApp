@@ -2,6 +2,7 @@ package br.com.fitnesspro.core.extensions
 
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import java.time.DateTimeException
+import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -112,6 +113,19 @@ fun LocalTime.format(enumDateTimePatterns: EnumDateTimePatterns): String {
  */
 fun LocalDateTime.format(enumDateTimePatterns: EnumDateTimePatterns): String {
     return this.format(DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
+}
+
+fun Instant.format(enumDateTimePatterns: EnumDateTimePatterns): String {
+    return this.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
+}
+
+fun Duration.formatSimpleTime(): String {
+    val totalSeconds = this.seconds
+    val hours = totalSeconds / 3600
+    val minutes = (totalSeconds % 3600) / 60
+    val seconds = totalSeconds % 60
+
+    return "%02d:%02d:%02d".format(hours, minutes, seconds)
 }
 
 fun YearMonth.format(enumDateTimePatterns: EnumDateTimePatterns): String {

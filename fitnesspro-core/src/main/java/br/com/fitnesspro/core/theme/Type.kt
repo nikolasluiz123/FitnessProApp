@@ -156,3 +156,11 @@ val VideoGalleryTitleStyle = TextStyle(
     lineHeight = 18.sp,
     letterSpacing = 0.2.sp
 )
+
+val ChronometerStyle = TextStyle(
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Normal,
+    fontSize = 18.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.2.sp
+)

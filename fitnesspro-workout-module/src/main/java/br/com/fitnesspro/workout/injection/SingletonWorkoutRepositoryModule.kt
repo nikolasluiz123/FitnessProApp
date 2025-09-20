@@ -18,8 +18,15 @@ import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
+import br.com.fitnesspro.workout.repository.sync.exportation.HealthConnectModuleExportationRepository
 import br.com.fitnesspro.workout.repository.sync.exportation.WorkoutModuleExportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.HealthConnectModuleImportationRepository
 import br.com.fitnesspro.workout.repository.sync.importation.WorkoutModuleImportationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.integration.CaloriesIntegrationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.integration.HealthConnectIntegrationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.integration.HeartRateIntegrationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.integration.SleepIntegrationRepository
+import br.com.fitnesspro.workout.repository.sync.importation.integration.StepsIntegrationRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -141,6 +148,83 @@ class SingletonWorkoutRepositoryModule {
         return WorkoutModuleExportationRepository(
             context = context,
             personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideCaloriesIntegrationRepository(
+        @ApplicationContext context: Context,
+    ): CaloriesIntegrationRepository {
+        return CaloriesIntegrationRepository(
+            context = context,
+        )
+    }
+
+    @Provides
+    fun provideHeartRateIntegrationRepository(
+        @ApplicationContext context: Context,
+    ): HeartRateIntegrationRepository {
+        return HeartRateIntegrationRepository(
+            context = context,
+        )
+    }
+
+    @Provides
+    fun provideSleepIntegrationRepository(
+        @ApplicationContext context: Context,
+    ): SleepIntegrationRepository {
+        return SleepIntegrationRepository(
+            context = context,
+        )
+    }
+
+    @Provides
+    fun provideStepsIntegrationRepository(
+        @ApplicationContext context: Context,
+    ): StepsIntegrationRepository {
+        return StepsIntegrationRepository(
+            context = context,
+        )
+    }
+
+    @Provides
+    fun provideHealthConnectModuleExportationRepository(
+        @ApplicationContext context: Context,
+        personRepository: PersonRepository
+    ): HealthConnectModuleExportationRepository {
+        return HealthConnectModuleExportationRepository(
+            context = context,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideHealthConnectModuleImportationRepository(
+        @ApplicationContext context: Context,
+        personRepository: PersonRepository
+    ): HealthConnectModuleImportationRepository {
+        return HealthConnectModuleImportationRepository(
+            context = context,
+            personRepository = personRepository
+        )
+    }
+
+    @Provides
+    fun provideHealthConnectIntegrationRepository(
+        @ApplicationContext context: Context,
+        personRepository: PersonRepository,
+        caloriesIntegrationRepository: CaloriesIntegrationRepository,
+        heartRateIntegrationRepository: HeartRateIntegrationRepository,
+        sleepIntegrationRepository: SleepIntegrationRepository,
+        stepsIntegrationRepository: StepsIntegrationRepository,
+    ): HealthConnectIntegrationRepository {
+        return HealthConnectIntegrationRepository(
+            context = context,
+            personRepository = personRepository,
+            caloriesIntegrationRepository = caloriesIntegrationRepository,
+            heartRateIntegrationRepository = heartRateIntegrationRepository,
+            sleepIntegrationRepository = sleepIntegrationRepository,
+            stepsIntegrationRepository = stepsIntegrationRepository,
         )
     }
 }

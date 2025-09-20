@@ -35,7 +35,6 @@ class SaveExerciseExecutionUseCase(
             if (toExerciseExecution.id != null) {
                 exerciseExecutionRepository.saveExerciseExecution(toExerciseExecution)
             } else {
-                toExerciseExecution.date = dateTimeNow(ZoneId.systemDefault())
                 toExerciseExecution.set = exerciseExecutionRepository.getActualExecutionSet(toExerciseExecution.exerciseId!!)
 
                 val toVideos = getListTOVideoExecutionFromFiles(videoFiles)

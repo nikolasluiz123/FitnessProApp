@@ -1,0 +1,3534 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 45,
+    "identityHash": "1f4bfd8a4bd7dc2c21db55a4a2e12a16",
+    "entities": [
+      {
+        "tableName": "user",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `email` TEXT, `password` TEXT, `type` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "password",
+            "columnName": "password",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "person",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `name` TEXT, `birth_date` TEXT, `phone` TEXT, `user_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "birthDate",
+            "columnName": "birth_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "phone",
+            "columnName": "phone",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_person_user_id",
+            "unique": false,
+            "columnNames": [
+              "user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_person_user_id` ON `${TABLE_NAME}` (`user_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "academy",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT, `address` TEXT, `phone` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "phone",
+            "columnName": "phone",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "person_academy_time",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `person_id` TEXT, `academy_id` TEXT, `time_start` TEXT, `time_end` TEXT, `day_week` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`academy_id`) REFERENCES `academy`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "personId",
+            "columnName": "person_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "academyId",
+            "columnName": "academy_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "timeStart",
+            "columnName": "time_start",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "timeEnd",
+            "columnName": "time_end",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dayOfWeek",
+            "columnName": "day_week",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_person_academy_time_person_id",
+            "unique": false,
+            "columnNames": [
+              "person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_person_academy_time_person_id` ON `${TABLE_NAME}` (`person_id`)"
+          },
+          {
+            "name": "index_person_academy_time_academy_id",
+            "unique": false,
+            "columnNames": [
+              "academy_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_person_academy_time_academy_id` ON `${TABLE_NAME}` (`academy_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "academy",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "academy_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "physic_evaluation",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `date` TEXT, `weight` REAL, `height` REAL, `measure_neck` REAL, `measure_shoulders` REAL, `measure_chest` REAL, `measure_abdomen` REAL, `measure_waist` REAL, `measure_arm_relaxed_right` REAL, `measure_arm_relaxed_left` REAL, `measure_arm_contracted_right` REAL, `measure_arm_contracted_left` REAL, `measure_forearm_right` REAL, `measure_forearm_left` REAL, `measure_wrist_right` REAL, `measure_wrist_left` REAL, `measure_hip` REAL, `measure_thigh_right` REAL, `measure_thigh_left` REAL, `measure_calf_right` REAL, `measure_calf_left` REAL, `measure_femur` REAL, `skin_fold_biceps` REAL, `skin_fold_triceps` REAL, `skin_fold_middle_axillary` REAL, `skin_fold_chest` REAL, `skin_fold_abdomen` REAL, `skin_fold_suprailiac` REAL, `skin_fold_subescapularis` REAL, `skin_fold_thigh` REAL, `skin_fold_medial_calf` REAL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "height",
+            "columnName": "height",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureNeck",
+            "columnName": "measure_neck",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureShoulders",
+            "columnName": "measure_shoulders",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureChest",
+            "columnName": "measure_chest",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureAbdomen",
+            "columnName": "measure_abdomen",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureWaist",
+            "columnName": "measure_waist",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureArmRelaxedRight",
+            "columnName": "measure_arm_relaxed_right",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureArmRelaxedLeft",
+            "columnName": "measure_arm_relaxed_left",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureArmContractedRight",
+            "columnName": "measure_arm_contracted_right",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureArmContractedLeft",
+            "columnName": "measure_arm_contracted_left",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureForearmRight",
+            "columnName": "measure_forearm_right",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureForearmLeft",
+            "columnName": "measure_forearm_left",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureWristRight",
+            "columnName": "measure_wrist_right",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureWristLeft",
+            "columnName": "measure_wrist_left",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureHip",
+            "columnName": "measure_hip",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureThighRight",
+            "columnName": "measure_thigh_right",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureThighLeft",
+            "columnName": "measure_thigh_left",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureCalfRight",
+            "columnName": "measure_calf_right",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureCalfLeft",
+            "columnName": "measure_calf_left",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measureFemur",
+            "columnName": "measure_femur",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "skinFoldBiceps",
+            "columnName": "skin_fold_biceps",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "skinFoldTriceps",
+            "columnName": "skin_fold_triceps",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "skinFoldMiddleAxillary",
+            "columnName": "skin_fold_middle_axillary",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "skinFoldChest",
+            "columnName": "skin_fold_chest",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "skinFoldAbdomen",
+            "columnName": "skin_fold_abdomen",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "skinFoldSuprailiac",
+            "columnName": "skin_fold_suprailiac",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "skinFoldSubscapularis",
+            "columnName": "skin_fold_subescapularis",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "skinFoldThigh",
+            "columnName": "skin_fold_thigh",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "skinFoldMedialCalf",
+            "columnName": "skin_fold_medial_calf",
+            "affinity": "REAL"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "ingredient_pre_definition",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `name` TEXT, `quantity` REAL, `unit` TEXT, `meal_option_pre_definition_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`meal_option_pre_definition_id`) REFERENCES `meal_option_pre_definition`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "quantity",
+            "columnName": "quantity",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "unit",
+            "columnName": "unit",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "mealOptionPreDefinitionId",
+            "columnName": "meal_option_pre_definition_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_ingredient_pre_definition_meal_option_pre_definition_id",
+            "unique": false,
+            "columnNames": [
+              "meal_option_pre_definition_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ingredient_pre_definition_meal_option_pre_definition_id` ON `${TABLE_NAME}` (`meal_option_pre_definition_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "meal_option_pre_definition",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "meal_option_pre_definition_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "meal_option_pre_definition",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `name` TEXT, `description` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "diet",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `nutritionist_person_id` TEXT, `academy_member_person_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`nutritionist_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`academy_member_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "nutritionistPersonId",
+            "columnName": "nutritionist_person_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "academyMemberPersonId",
+            "columnName": "academy_member_person_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_diet_nutritionist_person_id",
+            "unique": false,
+            "columnNames": [
+              "nutritionist_person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_diet_nutritionist_person_id` ON `${TABLE_NAME}` (`nutritionist_person_id`)"
+          },
+          {
+            "name": "index_diet_academy_member_person_id",
+            "unique": false,
+            "columnNames": [
+              "academy_member_person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_diet_academy_member_person_id` ON `${TABLE_NAME}` (`academy_member_person_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "nutritionist_person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "academy_member_person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "day_week_foods",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `day_week` TEXT, `diet_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`diet_id`) REFERENCES `diet`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "dayWeek",
+            "columnName": "day_week",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dietId",
+            "columnName": "diet_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_day_week_foods_diet_id",
+            "unique": false,
+            "columnNames": [
+              "diet_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_day_week_foods_diet_id` ON `${TABLE_NAME}` (`diet_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "diet",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "diet_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "meal",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `name` TEXT, `time` TEXT, `day_week_diet_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`day_week_diet_id`) REFERENCES `day_week_foods`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "time",
+            "columnName": "time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dayWeekDietId",
+            "columnName": "day_week_diet_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_meal_day_week_diet_id",
+            "unique": false,
+            "columnNames": [
+              "day_week_diet_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_meal_day_week_diet_id` ON `${TABLE_NAME}` (`day_week_diet_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "day_week_foods",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "day_week_diet_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "meal_option",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `name` TEXT, `description` TEXT, `meal_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "mealId",
+            "columnName": "meal_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_meal_option_meal_id",
+            "unique": false,
+            "columnNames": [
+              "meal_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_meal_option_meal_id` ON `${TABLE_NAME}` (`meal_id`)"
+          }
+        ]
+      },
+      {
+        "tableName": "ingredient",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `name` TEXT, `quantity` REAL, `unit` TEXT, `meal_option_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`meal_option_id`) REFERENCES `meal_option`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "quantity",
+            "columnName": "quantity",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "unit",
+            "columnName": "unit",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "mealOptionId",
+            "columnName": "meal_option_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_ingredient_meal_option_id",
+            "unique": false,
+            "columnNames": [
+              "meal_option_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ingredient_meal_option_id` ON `${TABLE_NAME}` (`meal_option_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "meal_option",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "meal_option_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "scheduler",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `academy_member_person_id` TEXT, `professional_person_id` TEXT, `date_time_start` TEXT, `date_time_end` TEXT, `canceled_date` TEXT, `cancellation_person_id` TEXT, `situation` TEXT, `compromise_type` TEXT, `observation` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`academy_member_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`professional_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`cancellation_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "academyMemberPersonId",
+            "columnName": "academy_member_person_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "professionalPersonId",
+            "columnName": "professional_person_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dateTimeStart",
+            "columnName": "date_time_start",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dateTimeEnd",
+            "columnName": "date_time_end",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "canceledDate",
+            "columnName": "canceled_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cancellationPersonId",
+            "columnName": "cancellation_person_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "situation",
+            "columnName": "situation",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "compromiseType",
+            "columnName": "compromise_type",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "observation",
+            "columnName": "observation",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_scheduler_academy_member_person_id",
+            "unique": false,
+            "columnNames": [
+              "academy_member_person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scheduler_academy_member_person_id` ON `${TABLE_NAME}` (`academy_member_person_id`)"
+          },
+          {
+            "name": "index_scheduler_professional_person_id",
+            "unique": false,
+            "columnNames": [
+              "professional_person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scheduler_professional_person_id` ON `${TABLE_NAME}` (`professional_person_id`)"
+          },
+          {
+            "name": "index_scheduler_cancellation_person_id",
+            "unique": false,
+            "columnNames": [
+              "cancellation_person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scheduler_cancellation_person_id` ON `${TABLE_NAME}` (`cancellation_person_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "academy_member_person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "professional_person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "cancellation_person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "scheduler_config",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `notification` INTEGER NOT NULL, `notification_antecedence_time` INTEGER NOT NULL, `min_schedule_density` INTEGER NOT NULL, `max_schedule_density` INTEGER NOT NULL, `person_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "notification",
+            "columnName": "notification",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notificationAntecedenceTime",
+            "columnName": "notification_antecedence_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minScheduleDensity",
+            "columnName": "min_schedule_density",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxScheduleDensity",
+            "columnName": "max_schedule_density",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "personId",
+            "columnName": "person_id",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_scheduler_config_person_id",
+            "unique": false,
+            "columnNames": [
+              "person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scheduler_config_person_id` ON `${TABLE_NAME}` (`person_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "exercise_execution",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `exercise_id` TEXT, `duration` INTEGER, `repetitions` INTEGER, `actual_set` INTEGER, `rest` INTEGER, `weight` REAL, `active` INTEGER NOT NULL, `health_data_collected` INTEGER NOT NULL, `execution_start_time` TEXT NOT NULL, `execution_end_time` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`exercise_id`) REFERENCES `exercise`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "exerciseId",
+            "columnName": "exercise_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "repetitions",
+            "columnName": "repetitions",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "actualSet",
+            "columnName": "actual_set",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "rest",
+            "columnName": "rest",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "healthDataCollected",
+            "columnName": "health_data_collected",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "executionStartTime",
+            "columnName": "execution_start_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "executionEndTime",
+            "columnName": "execution_end_time",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_exercise_execution_exercise_id",
+            "unique": false,
+            "columnNames": [
+              "exercise_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_execution_exercise_id` ON `${TABLE_NAME}` (`exercise_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "exercise",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "exercise_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "video_exercise_execution",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `exercise_execution_id` TEXT, `video_id` TEXT, `active` INTEGER NOT NULL DEFAULT true, PRIMARY KEY(`id`), FOREIGN KEY(`exercise_execution_id`) REFERENCES `exercise_execution`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`video_id`) REFERENCES `video`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "exerciseExecutionId",
+            "columnName": "exercise_execution_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "videoId",
+            "columnName": "video_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "true"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_video_exercise_execution_exercise_execution_id",
+            "unique": false,
+            "columnNames": [
+              "exercise_execution_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_execution_exercise_execution_id` ON `${TABLE_NAME}` (`exercise_execution_id`)"
+          },
+          {
+            "name": "index_video_exercise_execution_video_id",
+            "unique": false,
+            "columnNames": [
+              "video_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_execution_video_id` ON `${TABLE_NAME}` (`video_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "exercise_execution",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "exercise_execution_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "video",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "video_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "exercise_pre_definition",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `name` TEXT, `duration` INTEGER, `repetitions` INTEGER, `sets` INTEGER, `rest` INTEGER, `exercise_order` INTEGER, `personal_trainer_person_id` TEXT, `workout_group_pre_definition_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`personal_trainer_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`workout_group_pre_definition_id`) REFERENCES `workout_group_pre_definition`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "repetitions",
+            "columnName": "repetitions",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "sets",
+            "columnName": "sets",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "rest",
+            "columnName": "rest",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "exerciseOrder",
+            "columnName": "exercise_order",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "personalTrainerPersonId",
+            "columnName": "personal_trainer_person_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "workoutGroupPreDefinitionId",
+            "columnName": "workout_group_pre_definition_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_exercise_pre_definition_personal_trainer_person_id",
+            "unique": false,
+            "columnNames": [
+              "personal_trainer_person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_pre_definition_personal_trainer_person_id` ON `${TABLE_NAME}` (`personal_trainer_person_id`)"
+          },
+          {
+            "name": "index_exercise_pre_definition_workout_group_pre_definition_id",
+            "unique": false,
+            "columnNames": [
+              "workout_group_pre_definition_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_pre_definition_workout_group_pre_definition_id` ON `${TABLE_NAME}` (`workout_group_pre_definition_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "personal_trainer_person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "workout_group_pre_definition",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "workout_group_pre_definition_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "video_exercise_pre_definition",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `exercise_pre_definition_id` TEXT, `video_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`exercise_pre_definition_id`) REFERENCES `exercise_pre_definition`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`video_id`) REFERENCES `video`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "exercisePreDefinitionId",
+            "columnName": "exercise_pre_definition_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "videoId",
+            "columnName": "video_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_video_exercise_pre_definition_exercise_pre_definition_id",
+            "unique": false,
+            "columnNames": [
+              "exercise_pre_definition_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_pre_definition_exercise_pre_definition_id` ON `${TABLE_NAME}` (`exercise_pre_definition_id`)"
+          },
+          {
+            "name": "index_video_exercise_pre_definition_video_id",
+            "unique": false,
+            "columnNames": [
+              "video_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_pre_definition_video_id` ON `${TABLE_NAME}` (`video_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "exercise_pre_definition",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "exercise_pre_definition_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "video",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "video_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "workout_group_pre_definition",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `name` TEXT, `personal_trainer_person_id` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`personal_trainer_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "personalTrainerPersonId",
+            "columnName": "personal_trainer_person_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_workout_group_pre_definition_personal_trainer_person_id",
+            "unique": false,
+            "columnNames": [
+              "personal_trainer_person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_group_pre_definition_personal_trainer_person_id` ON `${TABLE_NAME}` (`personal_trainer_person_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "personal_trainer_person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "exercise",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `name` TEXT, `duration` INTEGER, `repetitions` INTEGER, `sets` INTEGER, `rest` INTEGER, `observation` TEXT, `workout_group_id` TEXT, `exercise_order` INTEGER, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`workout_group_id`) REFERENCES `workout_group`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "repetitions",
+            "columnName": "repetitions",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "sets",
+            "columnName": "sets",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "rest",
+            "columnName": "rest",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "observation",
+            "columnName": "observation",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "workoutGroupId",
+            "columnName": "workout_group_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "exerciseOrder",
+            "columnName": "exercise_order",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_exercise_workout_group_id",
+            "unique": false,
+            "columnNames": [
+              "workout_group_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_exercise_workout_group_id` ON `${TABLE_NAME}` (`workout_group_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "workout_group",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "workout_group_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "video",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `storage_transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `storage_transmission_date` TEXT, `file_path` TEXT, `kb_size` INTEGER, `storage_url` TEXT, `extension` TEXT, `date` TEXT NOT NULL, `seconds` INTEGER, `width` INTEGER, `height` INTEGER, `active` INTEGER NOT NULL DEFAULT true, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "storageTransmissionState",
+            "columnName": "storage_transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "storageTransmissionDate",
+            "columnName": "storage_transmission_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "filePath",
+            "columnName": "file_path",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "kbSize",
+            "columnName": "kb_size",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "storageUrl",
+            "columnName": "storage_url",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "extension",
+            "columnName": "extension",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "seconds",
+            "columnName": "seconds",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "width",
+            "columnName": "width",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "height",
+            "columnName": "height",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "true"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "video_exercise",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `exercise_id` TEXT, `video_id` TEXT, `active` INTEGER NOT NULL DEFAULT true, PRIMARY KEY(`id`), FOREIGN KEY(`exercise_id`) REFERENCES `exercise`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`video_id`) REFERENCES `video`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "exerciseId",
+            "columnName": "exercise_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "videoId",
+            "columnName": "video_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "true"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_video_exercise_exercise_id",
+            "unique": false,
+            "columnNames": [
+              "exercise_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_exercise_id` ON `${TABLE_NAME}` (`exercise_id`)"
+          },
+          {
+            "name": "index_video_exercise_video_id",
+            "unique": false,
+            "columnNames": [
+              "video_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_video_exercise_video_id` ON `${TABLE_NAME}` (`video_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "exercise",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "exercise_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "video",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "video_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "workout",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `academy_member_person_id` TEXT, `personal_trainer_person_id` TEXT, `date_start` TEXT, `date_end` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`academy_member_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`personal_trainer_person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "academyMemberPersonId",
+            "columnName": "academy_member_person_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "professionalPersonId",
+            "columnName": "personal_trainer_person_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dateStart",
+            "columnName": "date_start",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dateEnd",
+            "columnName": "date_end",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_workout_academy_member_person_id",
+            "unique": false,
+            "columnNames": [
+              "academy_member_person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_academy_member_person_id` ON `${TABLE_NAME}` (`academy_member_person_id`)"
+          },
+          {
+            "name": "index_workout_personal_trainer_person_id",
+            "unique": false,
+            "columnNames": [
+              "personal_trainer_person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_personal_trainer_person_id` ON `${TABLE_NAME}` (`personal_trainer_person_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "academy_member_person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "personal_trainer_person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "workout_group",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `name` TEXT, `workout_id` TEXT, `day_week` TEXT, `group_order` INTEGER NOT NULL DEFAULT 1, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`workout_id`) REFERENCES `workout`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "workoutId",
+            "columnName": "workout_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dayWeek",
+            "columnName": "day_week",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "groupOrder",
+            "columnName": "group_order",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "1"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_workout_group_workout_id",
+            "unique": false,
+            "columnNames": [
+              "workout_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_group_workout_id` ON `${TABLE_NAME}` (`workout_id`)"
+          },
+          {
+            "name": "index_workout_group_day_week",
+            "unique": false,
+            "columnNames": [
+              "day_week"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_workout_group_day_week` ON `${TABLE_NAME}` (`day_week`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "workout",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "workout_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "importation_history",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`module` TEXT NOT NULL, `date` TEXT, PRIMARY KEY(`module`))",
+        "fields": [
+          {
+            "fieldPath": "module",
+            "columnName": "module",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "module"
+          ]
+        }
+      },
+      {
+        "tableName": "service_token",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `jwt_token` TEXT, `type` TEXT, `creation_date` TEXT, `expiration_date` TEXT, `user_id` TEXT, `device_id` TEXT, `application_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`user_id`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`application_id`) REFERENCES `application`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`device_id`) REFERENCES `device`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "jwtToken",
+            "columnName": "jwt_token",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "expirationDate",
+            "columnName": "expiration_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "deviceId",
+            "columnName": "device_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "applicationId",
+            "columnName": "application_id",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_service_token_user_id",
+            "unique": false,
+            "columnNames": [
+              "user_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_service_token_user_id` ON `${TABLE_NAME}` (`user_id`)"
+          },
+          {
+            "name": "index_service_token_application_id",
+            "unique": false,
+            "columnNames": [
+              "application_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_service_token_application_id` ON `${TABLE_NAME}` (`application_id`)"
+          },
+          {
+            "name": "index_service_token_device_id",
+            "unique": false,
+            "columnNames": [
+              "device_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_service_token_device_id` ON `${TABLE_NAME}` (`device_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "application",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "application_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "device",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "device_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "device",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `model` TEXT, `brand` TEXT, `android_version` TEXT, `application_id` TEXT, `active` INTEGER NOT NULL, `person_id` TEXT, `firebase_messaging_token` TEXT, `zone_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`application_id`) REFERENCES `application`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "brand",
+            "columnName": "brand",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "androidVersion",
+            "columnName": "android_version",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "applicationId",
+            "columnName": "application_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "personId",
+            "columnName": "person_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "firebaseMessagingToken",
+            "columnName": "firebase_messaging_token",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "zoneId",
+            "columnName": "zone_id",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_device_application_id",
+            "unique": false,
+            "columnNames": [
+              "application_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_device_application_id` ON `${TABLE_NAME}` (`application_id`)"
+          },
+          {
+            "name": "index_device_person_id",
+            "unique": false,
+            "columnNames": [
+              "person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_device_person_id` ON `${TABLE_NAME}` (`person_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "application",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "application_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "application",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "report",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL, `storage_transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `storage_transmission_date` TEXT, `file_path` TEXT, `kb_size` INTEGER, `storage_url` TEXT, `name` TEXT, `extension` TEXT, `date` TEXT NOT NULL, `active` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "storageTransmissionState",
+            "columnName": "storage_transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "storageTransmissionDate",
+            "columnName": "storage_transmission_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "filePath",
+            "columnName": "file_path",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "kbSize",
+            "columnName": "kb_size",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "storageUrl",
+            "columnName": "storage_url",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "extension",
+            "columnName": "extension",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "scheduler_report",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `person_id` TEXT, `report_id` TEXT, `report_context` TEXT, `active` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`person_id`) REFERENCES `person`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`report_id`) REFERENCES `report`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "personId",
+            "columnName": "person_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "reportId",
+            "columnName": "report_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "context",
+            "columnName": "report_context",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_scheduler_report_person_id",
+            "unique": false,
+            "columnNames": [
+              "person_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scheduler_report_person_id` ON `${TABLE_NAME}` (`person_id`)"
+          },
+          {
+            "name": "index_scheduler_report_report_id",
+            "unique": false,
+            "columnNames": [
+              "report_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scheduler_report_report_id` ON `${TABLE_NAME}` (`report_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "person",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "person_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "report",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "report_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "health_connect_calories_burned",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `health_connect_metadata_id` TEXT, `exercise_execution_id` TEXT, `calories_in_kcal` INTEGER, `start_time` TEXT, `end_time` TEXT, `start_zone_offset` TEXT, `end_zone_offset` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`health_connect_metadata_id`) REFERENCES `health_connect_metadata`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "healthConnectMetadataId",
+            "columnName": "health_connect_metadata_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "exerciseExecutionId",
+            "columnName": "exercise_execution_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "caloriesInKcal",
+            "columnName": "calories_in_kcal",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "startTime",
+            "columnName": "start_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "end_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startZoneOffset",
+            "columnName": "start_zone_offset",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endZoneOffset",
+            "columnName": "end_zone_offset",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_health_connect_calories_burned_health_connect_metadata_id",
+            "unique": false,
+            "columnNames": [
+              "health_connect_metadata_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_calories_burned_health_connect_metadata_id` ON `${TABLE_NAME}` (`health_connect_metadata_id`)"
+          },
+          {
+            "name": "index_health_connect_calories_burned_exercise_execution_id",
+            "unique": false,
+            "columnNames": [
+              "exercise_execution_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_calories_burned_exercise_execution_id` ON `${TABLE_NAME}` (`exercise_execution_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "health_connect_metadata",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "health_connect_metadata_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "health_connect_heart_rate",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `health_connect_metadata_id` TEXT, `exercise_execution_id` TEXT, `start_time` TEXT, `end_time` TEXT, `start_zone_offset` TEXT, `end_zone_offset` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`health_connect_metadata_id`) REFERENCES `health_connect_metadata`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`exercise_execution_id`) REFERENCES `exercise_execution`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "healthConnectMetadataId",
+            "columnName": "health_connect_metadata_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "exerciseExecutionId",
+            "columnName": "exercise_execution_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startTime",
+            "columnName": "start_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "end_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startZoneOffset",
+            "columnName": "start_zone_offset",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endZoneOffset",
+            "columnName": "end_zone_offset",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_health_connect_heart_rate_health_connect_metadata_id",
+            "unique": false,
+            "columnNames": [
+              "health_connect_metadata_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_heart_rate_health_connect_metadata_id` ON `${TABLE_NAME}` (`health_connect_metadata_id`)"
+          },
+          {
+            "name": "index_health_connect_heart_rate_exercise_execution_id",
+            "unique": false,
+            "columnNames": [
+              "exercise_execution_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_heart_rate_exercise_execution_id` ON `${TABLE_NAME}` (`exercise_execution_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "health_connect_metadata",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "health_connect_metadata_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "exercise_execution",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "exercise_execution_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "health_connect_heart_rate_samples",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `health_connect_heart_rate_id` TEXT, `sample_time` TEXT, `bpm` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`health_connect_heart_rate_id`) REFERENCES `health_connect_heart_rate`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "healthConnectHeartRateId",
+            "columnName": "health_connect_heart_rate_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sampleTime",
+            "columnName": "sample_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "bpm",
+            "columnName": "bpm",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_health_connect_heart_rate_samples_health_connect_heart_rate_id",
+            "unique": false,
+            "columnNames": [
+              "health_connect_heart_rate_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_heart_rate_samples_health_connect_heart_rate_id` ON `${TABLE_NAME}` (`health_connect_heart_rate_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "health_connect_heart_rate",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "health_connect_heart_rate_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "health_connect_metadata",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `data_origin_package` TEXT, `last_modified_time` TEXT, `client_record_id` TEXT, `device_manufacturer` TEXT, `device_model` TEXT, `recording_method` TEXT, `device_type` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "dataOriginPackage",
+            "columnName": "data_origin_package",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastModifiedTime",
+            "columnName": "last_modified_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "clientRecordId",
+            "columnName": "client_record_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "deviceManufacturer",
+            "columnName": "device_manufacturer",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "deviceModel",
+            "columnName": "device_model",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "recordingMethod",
+            "columnName": "recording_method",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "deviceType",
+            "columnName": "device_type",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "health_connect_sleep_session",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `health_connect_metadata_id` TEXT, `start_time` TEXT, `end_time` TEXT, `title` TEXT, `notes` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`health_connect_metadata_id`) REFERENCES `health_connect_metadata`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "healthConnectMetadataId",
+            "columnName": "health_connect_metadata_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startTime",
+            "columnName": "start_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "end_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_health_connect_sleep_session_health_connect_metadata_id",
+            "unique": false,
+            "columnNames": [
+              "health_connect_metadata_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_sleep_session_health_connect_metadata_id` ON `${TABLE_NAME}` (`health_connect_metadata_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "health_connect_metadata",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "health_connect_metadata_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "health_connect_sleep_stages",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `health_connect_sleep_session_id` TEXT, `start_time` TEXT, `end_time` TEXT, `stage` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`health_connect_sleep_session_id`) REFERENCES `health_connect_sleep_session`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "healthConnectSleepSessionId",
+            "columnName": "health_connect_sleep_session_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startTime",
+            "columnName": "start_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "end_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "stage",
+            "columnName": "stage",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_health_connect_sleep_stages_health_connect_sleep_session_id",
+            "unique": false,
+            "columnNames": [
+              "health_connect_sleep_session_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_sleep_stages_health_connect_sleep_session_id` ON `${TABLE_NAME}` (`health_connect_sleep_session_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "health_connect_sleep_session",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "health_connect_sleep_session_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "health_connect_steps",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `health_connect_metadata_id` TEXT, `exercise_execution_id` TEXT, `count` INTEGER, `start_time` TEXT, `end_time` TEXT, `start_zone_offset` TEXT, `end_zone_offset` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`health_connect_metadata_id`) REFERENCES `health_connect_metadata`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`exercise_execution_id`) REFERENCES `exercise_execution`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "healthConnectMetadataId",
+            "columnName": "health_connect_metadata_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "exerciseExecutionId",
+            "columnName": "exercise_execution_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "count",
+            "columnName": "count",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "startTime",
+            "columnName": "start_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "end_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startZoneOffset",
+            "columnName": "start_zone_offset",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endZoneOffset",
+            "columnName": "end_zone_offset",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_health_connect_steps_health_connect_metadata_id",
+            "unique": false,
+            "columnNames": [
+              "health_connect_metadata_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_steps_health_connect_metadata_id` ON `${TABLE_NAME}` (`health_connect_metadata_id`)"
+          },
+          {
+            "name": "index_health_connect_steps_exercise_execution_id",
+            "unique": false,
+            "columnNames": [
+              "exercise_execution_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_steps_exercise_execution_id` ON `${TABLE_NAME}` (`exercise_execution_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "health_connect_metadata",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "health_connect_metadata_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "exercise_execution",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "exercise_execution_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "sleep_session_exercise_execution",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL, `health_connect_sleep_session_id` TEXT, `exercise_execution_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`health_connect_sleep_session_id`) REFERENCES `health_connect_sleep_session`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`exercise_execution_id`) REFERENCES `exercise_execution`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "healthConnectSleepSessionId",
+            "columnName": "health_connect_sleep_session_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "exerciseExecutionId",
+            "columnName": "exercise_execution_id",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_sleep_session_exercise_execution_health_connect_sleep_session_id",
+            "unique": false,
+            "columnNames": [
+              "health_connect_sleep_session_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sleep_session_exercise_execution_health_connect_sleep_session_id` ON `${TABLE_NAME}` (`health_connect_sleep_session_id`)"
+          },
+          {
+            "name": "index_sleep_session_exercise_execution_exercise_execution_id",
+            "unique": false,
+            "columnNames": [
+              "exercise_execution_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sleep_session_exercise_execution_exercise_execution_id` ON `${TABLE_NAME}` (`exercise_execution_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "health_connect_sleep_session",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "health_connect_sleep_session_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "exercise_execution",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "exercise_execution_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "health_connect_speed",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `health_connect_metadata_id` TEXT, `exercise_execution_id` TEXT, `start_time` TEXT, `end_time` TEXT, `start_zone_offset` TEXT, `end_zone_offset` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`health_connect_metadata_id`) REFERENCES `health_connect_metadata`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`exercise_execution_id`) REFERENCES `exercise_execution`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "healthConnectMetadataId",
+            "columnName": "health_connect_metadata_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "exerciseExecutionId",
+            "columnName": "exercise_execution_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startTime",
+            "columnName": "start_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "end_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startZoneOffset",
+            "columnName": "start_zone_offset",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endZoneOffset",
+            "columnName": "end_zone_offset",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_health_connect_speed_health_connect_metadata_id",
+            "unique": false,
+            "columnNames": [
+              "health_connect_metadata_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_speed_health_connect_metadata_id` ON `${TABLE_NAME}` (`health_connect_metadata_id`)"
+          },
+          {
+            "name": "index_health_connect_speed_exercise_execution_id",
+            "unique": false,
+            "columnNames": [
+              "exercise_execution_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_speed_exercise_execution_id` ON `${TABLE_NAME}` (`exercise_execution_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "health_connect_metadata",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "health_connect_metadata_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "exercise_execution",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "exercise_execution_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "health_connect_speed_samples",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `health_connect_speed_id` TEXT, `sample_time` TEXT, `speed` REAL, PRIMARY KEY(`id`), FOREIGN KEY(`health_connect_speed_id`) REFERENCES `health_connect_speed`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "healthConnectSpeedId",
+            "columnName": "health_connect_speed_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sampleTime",
+            "columnName": "sample_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "speed",
+            "columnName": "speed",
+            "affinity": "REAL"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_health_connect_speed_samples_health_connect_speed_id",
+            "unique": false,
+            "columnNames": [
+              "health_connect_speed_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_speed_samples_health_connect_speed_id` ON `${TABLE_NAME}` (`health_connect_speed_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "health_connect_speed",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "health_connect_speed_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "health_connect_steps_cadence",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `health_connect_metadata_id` TEXT, `exercise_execution_id` TEXT, `start_time` TEXT, `end_time` TEXT, `start_zone_offset` TEXT, `end_zone_offset` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`health_connect_metadata_id`) REFERENCES `health_connect_metadata`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`exercise_execution_id`) REFERENCES `exercise_execution`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "healthConnectMetadataId",
+            "columnName": "health_connect_metadata_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "exerciseExecutionId",
+            "columnName": "exercise_execution_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startTime",
+            "columnName": "start_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "end_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startZoneOffset",
+            "columnName": "start_zone_offset",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endZoneOffset",
+            "columnName": "end_zone_offset",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_health_connect_steps_cadence_health_connect_metadata_id",
+            "unique": false,
+            "columnNames": [
+              "health_connect_metadata_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_steps_cadence_health_connect_metadata_id` ON `${TABLE_NAME}` (`health_connect_metadata_id`)"
+          },
+          {
+            "name": "index_health_connect_steps_cadence_exercise_execution_id",
+            "unique": false,
+            "columnNames": [
+              "exercise_execution_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_steps_cadence_exercise_execution_id` ON `${TABLE_NAME}` (`exercise_execution_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "health_connect_metadata",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "health_connect_metadata_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "exercise_execution",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "exercise_execution_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "health_connect_steps_cadence_samples",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `health_connect_steps_cadence_id` TEXT, `sample_time` TEXT, `rate` REAL, PRIMARY KEY(`id`), FOREIGN KEY(`health_connect_steps_cadence_id`) REFERENCES `health_connect_steps_cadence`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "healthConnectStepsCadenceId",
+            "columnName": "health_connect_steps_cadence_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sampleTime",
+            "columnName": "sample_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "rate",
+            "columnName": "rate",
+            "affinity": "REAL"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_health_connect_steps_cadence_samples_health_connect_steps_cadence_id",
+            "unique": false,
+            "columnNames": [
+              "health_connect_steps_cadence_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_steps_cadence_samples_health_connect_steps_cadence_id` ON `${TABLE_NAME}` (`health_connect_steps_cadence_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "health_connect_steps_cadence",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "health_connect_steps_cadence_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "health_connect_total_calories_burned",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `transmission_state` TEXT NOT NULL DEFAULT 'PENDING', `health_connect_metadata_id` TEXT, `exercise_execution_id` TEXT, `calories` REAL, `start_time` TEXT, `end_time` TEXT, `start_zone_offset` TEXT, `end_zone_offset` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`health_connect_metadata_id`) REFERENCES `health_connect_metadata`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transmissionState",
+            "columnName": "transmission_state",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'PENDING'"
+          },
+          {
+            "fieldPath": "healthConnectMetadataId",
+            "columnName": "health_connect_metadata_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "exerciseExecutionId",
+            "columnName": "exercise_execution_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "calories",
+            "columnName": "calories",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "startTime",
+            "columnName": "start_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "end_time",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startZoneOffset",
+            "columnName": "start_zone_offset",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "endZoneOffset",
+            "columnName": "end_zone_offset",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_health_connect_total_calories_burned_health_connect_metadata_id",
+            "unique": false,
+            "columnNames": [
+              "health_connect_metadata_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_total_calories_burned_health_connect_metadata_id` ON `${TABLE_NAME}` (`health_connect_metadata_id`)"
+          },
+          {
+            "name": "index_health_connect_total_calories_burned_exercise_execution_id",
+            "unique": false,
+            "columnNames": [
+              "exercise_execution_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_health_connect_total_calories_burned_exercise_execution_id` ON `${TABLE_NAME}` (`exercise_execution_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "health_connect_metadata",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "health_connect_metadata_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1f4bfd8a4bd7dc2c21db55a4a2e12a16')"
+    ]
+  }
+}

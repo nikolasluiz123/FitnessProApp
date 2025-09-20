@@ -9,6 +9,7 @@ import br.com.fitnesspro.core.state.IThrowableUIState
 import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.to.TOExerciseExecution
 import java.io.File
+import java.time.Duration
 import java.time.temporal.ChronoUnit
 
 data class RegisterEvolutionUIState(
@@ -25,6 +26,8 @@ data class RegisterEvolutionUIState(
     var notSavedVideoFiles: MutableList<File> = mutableListOf(),
     val onFabVisibilityChange: (Boolean) -> Unit = {},
     val bottomBarVisible: Boolean = true,
+    val chronometerTime: Duration = Duration.ZERO,
+    val chronometerRunning: Boolean = false,
     override val messageDialogState: MessageDialogState = MessageDialogState(),
     override val showLoading: Boolean = false,
     override val onToggleLoading: () -> Unit = { },
