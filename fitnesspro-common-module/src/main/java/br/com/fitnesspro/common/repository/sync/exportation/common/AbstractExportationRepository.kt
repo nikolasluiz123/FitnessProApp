@@ -48,6 +48,8 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
                 models = getExportationData(pageInfos)
                 hasAnyListPopulated = models.any { it.value.isNotEmpty() }
 
+                Log.i(LogConstants.WORKER_EXPORT, "hasAnyListPopulated = $hasAnyListPopulated")
+
                 if (hasAnyListPopulated) {
                     syncDTO = getExportationDTO(models)
                     updateTransmissionState(models, EnumTransmissionState.RUNNING)
@@ -67,6 +69,7 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
                     )
 
                     if (response.success) {
+                        Log.i(LogConstants.WORKER_EXPORT, "Sucesso pageNumber = ${pageInfos.pageNumber} pageSize = ${pageInfos.pageSize} maxListSize = ${syncDTO.getMaxListSize()}")
                         updateTransmissionState(models, EnumTransmissionState.TRANSMITTED)
 
                         updateExecutionLogPackageWithSuccessIterationInfos(
