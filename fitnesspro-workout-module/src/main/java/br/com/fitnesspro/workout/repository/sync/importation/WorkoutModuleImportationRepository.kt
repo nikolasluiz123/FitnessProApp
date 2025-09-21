@@ -99,9 +99,7 @@ class WorkoutModuleImportationRepository(
     private val entryPoint = EntryPointAccessors.fromApplication(context, IWorkoutModuleSyncRepositoryEntryPoint::class.java)
     private val healthConnectEntryPoint = EntryPointAccessors.fromApplication(context, IHealthConnectModuleSyncRepositoryEntryPoint::class.java)
 
-    override fun getPageSize(): Int = 200
-
-    override fun getMaxIterations(): Int = 3
+    override fun getPageSize(): Int = 500
 
     /**
      * Busca os dados de sincronização do módulo de treino do WebClient.

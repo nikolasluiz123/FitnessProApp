@@ -11,9 +11,7 @@ abstract class AbstractSyncRepository(context: Context): FitnessProRepository(co
     protected val syncEntryPoint: ISyncEntryPoint = EntryPointAccessors.fromApplication(context, ISyncEntryPoint::class.java)
     protected val executionLogWebClient = syncEntryPoint.getExecutionLogWebClient()
 
-    open fun getPageSize(): Int = 500
-
-    open fun getMaxIterations(): Int = 2
+    open fun getPageSize(): Int = 1000
 
     abstract fun getModule(): EnumSyncModule
 

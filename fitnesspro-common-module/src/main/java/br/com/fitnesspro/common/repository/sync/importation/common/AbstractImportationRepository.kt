@@ -62,7 +62,6 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
         var response: ImportationServiceResponse<DTO>? = null
         var clientStartDateTime: LocalDateTime? = null
-        var iterationsCount = 0
 
         try {
             val history = getHistoryFromDB()
@@ -71,57 +70,52 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
             val importFilter = getImportFilter(cursorTimestampMap)
             val pageInfos = ImportPageInfos(pageSize = getPageSize(), cursorIdMap = cursorIdsMap)
 
-            do {
-                clientStartDateTime = dateTimeNow(ZoneOffset.UTC)
+            clientStartDateTime = dateTimeNow(ZoneOffset.UTC)
 
-                response = getImportationData(serviceToken, importFilter, pageInfos)
+            response = getImportationData(serviceToken, importFilter, pageInfos)
 
-                updateLogWithStartRunningInfos(
-                    serviceToken = serviceToken,
-                    logPackageId = response.executionLogPackageId,
-                    logId = response.executionLogId,
-                    importFilter = importFilter,
-                    pageInfos = pageInfos,
-                    clientStartDateTime = clientStartDateTime
-                )
+            updateLogWithStartRunningInfos(
+                serviceToken = serviceToken,
+                logPackageId = response.executionLogPackageId,
+                logId = response.executionLogId,
+                importFilter = importFilter,
+                pageInfos = pageInfos,
+                clientStartDateTime = clientStartDateTime
+            )
 
-                when {
-                    response.success && response.value!!.isEmpty() -> {
-                        Log.i(LogConstants.WORKER_IMPORT, "Sucesso Sem Dados")
+            when {
+                response.success && response.value!!.isEmpty() -> {
+                    Log.i(LogConstants.WORKER_IMPORT, "Sucesso Sem Dados")
 
-                        updateExecutionLogPackageWithSuccessIterationInfos(
-                            logPackageId = response.executionLogPackageId,
-                            insertionListCount = 0,
-                            updateListCount = 0,
-                            serviceToken = serviceToken
-                        )
-                    }
-
-                    response.success -> {
-                        Log.i(LogConstants.WORKER_IMPORT, "Sucesso Com Dados Novos. pageSize = ${pageInfos.pageSize} maxListSize = ${response.value?.getMaxListSize()}")
-
-                        val segregationResult = executeSegregation(response.value!!)
-
-                        saveDataLocally(segregationResult)
-
-                        updateExecutionLogPackageWithSuccessIterationInfos(
-                            logPackageId = response.executionLogPackageId,
-                            insertionListCount = segregationResult.sumOf { it.insertionList.size },
-                            updateListCount = segregationResult.sumOf { it.updateList.size },
-                            serviceToken = serviceToken
-                        )
-
-                        updateCursorsImportationHistory(response.value!!, history)
-                    }
-
-                    else -> {
-                        throw ServiceException(response.error!!)
-                    }
+                    updateExecutionLogPackageWithSuccessIterationInfos(
+                        logPackageId = response.executionLogPackageId,
+                        insertionListCount = 0,
+                        updateListCount = 0,
+                        serviceToken = serviceToken
+                    )
                 }
 
-                iterationsCount++
+                response.success -> {
+                    Log.i(LogConstants.WORKER_IMPORT, "Sucesso Com Dados Novos. pageSize = ${pageInfos.pageSize} maxListSize = ${response.value?.getMaxListSize()}")
 
-            } while (response.value?.getMaxListSize() == pageInfos.pageSize && iterationsCount < getMaxIterations())
+                    val segregationResult = executeSegregation(response.value!!)
+
+                    saveDataLocally(segregationResult)
+
+                    updateExecutionLogPackageWithSuccessIterationInfos(
+                        logPackageId = response.executionLogPackageId,
+                        insertionListCount = segregationResult.sumOf { it.insertionList.size },
+                        updateListCount = segregationResult.sumOf { it.updateList.size },
+                        serviceToken = serviceToken
+                    )
+
+                    updateCursorsImportationHistory(response.value!!, history)
+                }
+
+                else -> {
+                    throw ServiceException(response.error!!)
+                }
+            }
 
             updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
 

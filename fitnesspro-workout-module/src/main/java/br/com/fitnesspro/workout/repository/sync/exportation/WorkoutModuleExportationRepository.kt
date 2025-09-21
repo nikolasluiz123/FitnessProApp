@@ -57,9 +57,7 @@ class WorkoutModuleExportationRepository(
     private val entryPoint = EntryPointAccessors.fromApplication(context, IWorkoutModuleSyncRepositoryEntryPoint::class.java)
     private val healthConnectEntryPoint = EntryPointAccessors.fromApplication(context, IHealthConnectModuleSyncRepositoryEntryPoint::class.java)
 
-    override fun getPageSize() = 200
-
-    override fun getMaxIterations() = 3
+    override fun getPageSize() = 500
 
     override suspend fun getExportationData(pageSize: Int): Map<KClass<out IntegratedModel>, List<IntegratedModel>> {
         val map = mutableMapOf<KClass<out IntegratedModel>, List<IntegratedModel>>()

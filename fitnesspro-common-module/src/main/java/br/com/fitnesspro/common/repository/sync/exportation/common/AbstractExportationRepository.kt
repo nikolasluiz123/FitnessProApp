@@ -35,55 +35,49 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
         var response: ExportationServiceResponse? = null
         var clientDateTimeStart: LocalDateTime? = null
         var models: Map<KClass<out IntegratedModel>, List<IntegratedModel>>
-        var syncDTO: DTO? = null
+        var syncDTO: DTO?
         var hasAnyListPopulated: Boolean
-        var iterationsCount = 0
         val pageSize = getPageSize()
 
         try {
-            do {
-                clientDateTimeStart = dateTimeNow(ZoneOffset.UTC)
-                models = getExportationData(pageSize)
-                hasAnyListPopulated = models.any { it.value.isNotEmpty() }
+            clientDateTimeStart = dateTimeNow(ZoneOffset.UTC)
+            models = getExportationData(pageSize)
+            hasAnyListPopulated = models.any { it.value.isNotEmpty() }
 
-                Log.i(LogConstants.WORKER_EXPORT, "hasAnyListPopulated = $hasAnyListPopulated")
+            Log.i(LogConstants.WORKER_EXPORT, "hasAnyListPopulated = $hasAnyListPopulated")
 
-                if (hasAnyListPopulated) {
-                    syncDTO = getExportationDTO(models)
-                    updateTransmissionState(models, EnumTransmissionState.RUNNING)
+            if (hasAnyListPopulated) {
+                syncDTO = getExportationDTO(models)
+                updateTransmissionState(models, EnumTransmissionState.RUNNING)
 
-                    val serviceCallExportationStart = dateTimeNow(ZoneOffset.UTC)
-                    response = callExportationService(syncDTO, serviceToken)
-                    val serviceCallExportationEnd = dateTimeNow(ZoneOffset.UTC)
+                val serviceCallExportationStart = dateTimeNow(ZoneOffset.UTC)
+                response = callExportationService(syncDTO, serviceToken)
+                val serviceCallExportationEnd = dateTimeNow(ZoneOffset.UTC)
 
-                    val callExportationTime = Duration.between(serviceCallExportationStart, serviceCallExportationEnd)
+                val callExportationTime = Duration.between(serviceCallExportationStart, serviceCallExportationEnd)
 
-                    updateLogWithStartRunningInfos(
-                        serviceToken = serviceToken,
+                updateLogWithStartRunningInfos(
+                    serviceToken = serviceToken,
+                    logPackageId = response.executionLogPackageId,
+                    logId = response.executionLogId,
+                    pageSize = pageSize,
+                    clientStartDateTime = clientDateTimeStart
+                )
+
+                if (response.success) {
+                    Log.i(LogConstants.WORKER_EXPORT, "Sucesso pageSize = $pageSize maxListSize = ${syncDTO.getMaxListSize()}")
+                    updateTransmissionState(models, EnumTransmissionState.TRANSMITTED)
+
+                    updateExecutionLogPackageWithSuccessIterationInfos(
                         logPackageId = response.executionLogPackageId,
-                        logId = response.executionLogId,
-                        pageSize = pageSize,
-                        clientStartDateTime = clientDateTimeStart
+                        dto = syncDTO,
+                        serviceToken = serviceToken,
+                        clientExecutionEnd = dateTimeNow(ZoneOffset.UTC).minus(callExportationTime)
                     )
-
-                    if (response.success) {
-                        Log.i(LogConstants.WORKER_EXPORT, "Sucesso pageSize = $pageSize maxListSize = ${syncDTO.getMaxListSize()}")
-                        updateTransmissionState(models, EnumTransmissionState.TRANSMITTED)
-
-                        updateExecutionLogPackageWithSuccessIterationInfos(
-                            logPackageId = response.executionLogPackageId,
-                            dto = syncDTO,
-                            serviceToken = serviceToken,
-                            clientExecutionEnd = dateTimeNow(ZoneOffset.UTC).minus(callExportationTime)
-                        )
-                    } else {
-                        throw ServiceException(response.error!!)
-                    }
+                } else {
+                    throw ServiceException(response.error!!)
                 }
-
-                iterationsCount++
-
-            } while (syncDTO?.getMaxListSize() == pageSize && iterationsCount < getMaxIterations())
+            }
 
             if (hasAnyListPopulated) {
                 updateLogWithFinalizationInfos(serviceToken, response?.executionLogId!!)

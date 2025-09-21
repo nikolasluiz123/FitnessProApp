@@ -40,6 +40,6 @@ abstract class AbstractSyncWorker(
     }
 
     companion object {
-        const val DEFAULT_WORKER_DELAY = 1L
+        const val DEFAULT_WORKER_DELAY = 3L
     }
 }
