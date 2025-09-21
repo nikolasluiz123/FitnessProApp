@@ -38,6 +38,7 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
         var models: Map<KClass<out IntegratedModel>, List<IntegratedModel>>
         var syncDTO: DTO? = null
         var hasAnyListPopulated: Boolean
+        var iterationsCount = 0
 
         try {
             val pageInfos = ExportPageInfos(pageSize = getPageSize())
@@ -84,7 +85,10 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
                         throw ServiceException(response.error!!)
                     }
                 }
-            } while (syncDTO?.getMaxListSize() == pageInfos.pageSize)
+
+                iterationsCount++
+
+            } while (syncDTO?.getMaxListSize() == pageInfos.pageSize && iterationsCount < getMaxIterations())
 
             if (hasAnyListPopulated) {
                 updateLogWithFinalizationInfos(serviceToken, response?.executionLogId!!)

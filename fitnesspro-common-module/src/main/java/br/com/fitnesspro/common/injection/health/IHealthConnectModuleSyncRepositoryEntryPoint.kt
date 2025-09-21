@@ -8,7 +8,6 @@ import br.com.fitnesspro.local.data.access.dao.health.HealthConnectSleepSessionD
 import br.com.fitnesspro.local.data.access.dao.health.HealthConnectSleepStagesDAO
 import br.com.fitnesspro.local.data.access.dao.health.HealthConnectStepsDAO
 import br.com.fitnesspro.local.data.access.dao.health.SleepSessionExerciseExecutionDAO
-import br.com.fitnesspro.service.data.access.webclient.sync.HealthConnectModuleSyncWebClient
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -16,8 +15,6 @@ import dagger.hilt.components.SingletonComponent
 @EntryPoint
 @InstallIn(SingletonComponent::class)
 interface IHealthConnectModuleSyncRepositoryEntryPoint {
-
-    fun getHealthConnectSyncWebClient(): HealthConnectModuleSyncWebClient
 
     fun getHealthConnectMetadataDAO(): HealthConnectMetadataDAO
     fun getHealthConnectStepsDAO(): HealthConnectStepsDAO

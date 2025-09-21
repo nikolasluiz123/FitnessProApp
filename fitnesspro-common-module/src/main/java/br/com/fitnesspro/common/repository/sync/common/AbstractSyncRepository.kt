@@ -14,6 +14,8 @@ abstract class AbstractSyncRepository(context: Context): FitnessProRepository(co
 
     protected val userDAO: UserDAO = entryPoint.getUserDAO()
 
-    open fun getPageSize(): Int = 1000
+    open fun getPageSize(): Int = 500
+
+    open fun getMaxIterations(): Int = 2
 
 }

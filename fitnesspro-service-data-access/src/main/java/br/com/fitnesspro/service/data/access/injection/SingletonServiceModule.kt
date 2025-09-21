@@ -2,7 +2,6 @@ package br.com.fitnesspro.service.data.access.injection
 
 import br.com.fitnesspro.service.data.access.service.general.IAuthenticationService
 import br.com.fitnesspro.service.data.access.service.general.IPersonService
-import br.com.fitnesspro.service.data.access.service.sync.HealthConnectModuleSyncService
 import br.com.fitnesspro.service.data.access.service.log.IExecutionLogService
 import br.com.fitnesspro.service.data.access.service.scheduler.ISchedulerService
 import br.com.fitnesspro.service.data.access.service.storage.IStorageService
@@ -57,11 +56,6 @@ class SingletonServiceModule {
     @Provides
     fun provideWorkoutModuleSyncService(retrofit: Retrofit): WorkoutModuleSyncService {
         return retrofit.create(WorkoutModuleSyncService::class.java)
-    }
-
-    @Provides
-    fun provideHealthConnectModuleSyncService(retrofit: Retrofit): HealthConnectModuleSyncService {
-        return retrofit.create(HealthConnectModuleSyncService::class.java)
     }
 
 }

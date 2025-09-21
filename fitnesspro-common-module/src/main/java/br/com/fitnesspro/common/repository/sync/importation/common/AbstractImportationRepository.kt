@@ -47,6 +47,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
         var response: ImportationServiceResponse<DTO>? = null
         var clientStartDateTime: LocalDateTime? = null
+        var iterationsCount = 0
 
         try {
             val importFilter = getImportFilter(lastUpdateDate)
@@ -99,7 +100,10 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
                         throw ServiceException(response.error!!)
                     }
                 }
-            } while (response.value?.getMaxListSize() == pageInfos.pageSize)
+
+                iterationsCount++
+
+            } while (response.value?.getMaxListSize() == pageInfos.pageSize && iterationsCount < getMaxIterations())
 
             updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
         } catch (ex: Exception) {

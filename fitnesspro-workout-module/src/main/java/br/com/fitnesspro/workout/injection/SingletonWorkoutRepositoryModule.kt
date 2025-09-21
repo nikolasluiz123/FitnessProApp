@@ -18,9 +18,7 @@ import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
-import br.com.fitnesspro.workout.repository.sync.exportation.HealthConnectModuleExportationRepository
 import br.com.fitnesspro.workout.repository.sync.exportation.WorkoutModuleExportationRepository
-import br.com.fitnesspro.workout.repository.sync.importation.HealthConnectModuleImportationRepository
 import br.com.fitnesspro.workout.repository.sync.importation.WorkoutModuleImportationRepository
 import br.com.fitnesspro.workout.repository.sync.importation.integration.CaloriesIntegrationRepository
 import br.com.fitnesspro.workout.repository.sync.importation.integration.HealthConnectIntegrationRepository
@@ -184,28 +182,6 @@ class SingletonWorkoutRepositoryModule {
     ): StepsIntegrationRepository {
         return StepsIntegrationRepository(
             context = context,
-        )
-    }
-
-    @Provides
-    fun provideHealthConnectModuleExportationRepository(
-        @ApplicationContext context: Context,
-        personRepository: PersonRepository
-    ): HealthConnectModuleExportationRepository {
-        return HealthConnectModuleExportationRepository(
-            context = context,
-            personRepository = personRepository
-        )
-    }
-
-    @Provides
-    fun provideHealthConnectModuleImportationRepository(
-        @ApplicationContext context: Context,
-        personRepository: PersonRepository
-    ): HealthConnectModuleImportationRepository {
-        return HealthConnectModuleImportationRepository(
-            context = context,
-            personRepository = personRepository
         )
     }
 
