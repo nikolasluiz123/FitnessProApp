@@ -8,7 +8,6 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_SQLITE
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.local.data.access.dao.filters.SchedulerReportFilter
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CANCELLED
@@ -182,7 +181,7 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
     @Query("select exists ( select 1 from scheduler where id = :id )")
     abstract suspend fun hasEntityWithId(id: String?): Boolean
 
-    suspend fun getExportationData(pageInfos: ExportPageInfos): List<Scheduler> {
+    suspend fun getExportationData(pageSize: Int): List<Scheduler> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -195,10 +194,9 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
 
         val where = StringJoiner(QR_NL).apply {
             add(" where s.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
-            add(" limit ? offset ? ")
+            add(" limit ? ")
 
-            params.add(pageInfos.pageSize)
-            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+            params.add(pageSize)
         }
 
         val sql = StringJoiner(QR_NL).apply {

@@ -5,9 +5,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import br.com.fitnesspro.common.ui.screen.registeruser.RegisterAcademyScreen
 import br.com.fitnesspro.common.ui.viewmodel.RegisterAcademyViewModel
 import br.com.fitnesspro.core.extensions.defaultGSon
-import br.com.fitnesspro.common.ui.screen.registeruser.RegisterAcademyScreen
 import com.google.gson.GsonBuilder
 
 internal const val registerAcademyScreenRoute = "registerAcademy"

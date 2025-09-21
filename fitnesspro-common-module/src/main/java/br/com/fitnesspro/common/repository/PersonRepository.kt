@@ -3,7 +3,6 @@ package br.com.fitnesspro.common.repository
 import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import br.com.fitnesspro.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
@@ -15,6 +14,7 @@ import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User
+import br.com.fitnesspro.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
 import br.com.fitnesspro.to.TOPerson

@@ -6,7 +6,6 @@ import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.health.HealthConnectCaloriesBurned
 import java.util.StringJoiner
@@ -20,7 +19,7 @@ abstract class HealthConnectCaloriesBurnedDAO : IntegratedMaintenanceDAO<HealthC
     @Query("select exists(select 1 from health_connect_calories_burned where id = :id)")
     abstract suspend fun hasEntityWithId(id: String): Boolean
 
-    suspend fun getExportationData(pageInfos: ExportPageInfos, personId: String): List<HealthConnectCaloriesBurned> {
+    suspend fun getExportationData(pageSize: Int, personId: String): List<HealthConnectCaloriesBurned> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -38,12 +37,11 @@ abstract class HealthConnectCaloriesBurnedDAO : IntegratedMaintenanceDAO<HealthC
         val where = StringJoiner(QR_NL).apply {
             add(" where (w.academy_member_person_id = ? or w.personal_trainer_person_id = ?) ")
             add(" and calories.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
-            add(" limit ? offset ? ")
+            add(" limit ? ")
 
             params.add(personId)
             params.add(personId)
-            params.add(pageInfos.pageSize)
-            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+            params.add(pageSize)
         }
 
         val sql = StringJoiner(QR_NL).apply {

@@ -3,12 +3,12 @@ package br.com.fitnesspro.scheduler.repository.sync.exportation
 import android.content.Context
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.mappers.getReportDTO
 import br.com.fitnesspro.mappers.getSchedulerDTO
 import br.com.fitnesspro.mappers.getSchedulerReportDTO
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumReportContext
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.enums.EnumUserType.NUTRITIONIST
 import br.com.fitnesspro.model.enums.EnumUserType.PERSONAL_TRAINER
 import br.com.fitnesspro.model.general.report.Report
@@ -26,12 +26,12 @@ class SchedulerModuleExportationRepository(context: Context): AbstractExportatio
 
     private val entryPoint = EntryPointAccessors.fromApplication(context, ISchedulerModuleSyncRepositoryEntryPoint::class.java)
 
-    override suspend fun getExportationData(pageInfos: ExportPageInfos): Map<KClass<out IntegratedModel>, List<IntegratedModel>> {
+    override suspend fun getExportationData(pageSize: Int): Map<KClass<out IntegratedModel>, List<IntegratedModel>> {
         val map = mutableMapOf<KClass<out IntegratedModel>, List<IntegratedModel>>()
 
-        map.put(Scheduler::class, entryPoint.getSchedulerDAO().getExportationData(pageInfos))
-        map.put(Report::class, entryPoint.getReportDAO().getExportationData(EnumReportContext.SCHEDULERS_REPORT, pageInfos))
-        map.put(SchedulerReport::class, entryPoint.getSchedulerReportDAO().getExportationData(pageInfos))
+        map.put(Scheduler::class, entryPoint.getSchedulerDAO().getExportationData(pageSize))
+        map.put(Report::class, entryPoint.getReportDAO().getExportationData(EnumReportContext.SCHEDULERS_REPORT, pageSize))
+        map.put(SchedulerReport::class, entryPoint.getSchedulerReportDAO().getExportationData(pageSize))
 
         return map
     }
@@ -79,4 +79,6 @@ class SchedulerModuleExportationRepository(context: Context): AbstractExportatio
             else -> throw IllegalArgumentException("Não foi possível recuperar o DAO. Classe de modelo inválida.")
         }
     }
+
+    override fun getModule() = EnumSyncModule.SCHEDULER
 }

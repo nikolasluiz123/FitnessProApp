@@ -6,7 +6,6 @@ import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.health.HealthConnectSleepSession
 import java.util.StringJoiner
@@ -20,7 +19,7 @@ abstract class HealthConnectSleepSessionDAO : IntegratedMaintenanceDAO<HealthCon
     @Query("select exists(select 1 from health_connect_sleep_session where id = :id)")
     abstract suspend fun hasEntityWithId(id: String): Boolean
 
-    suspend fun getExportationData(pageInfos: ExportPageInfos, personId: String): List<HealthConnectSleepSession> {
+    suspend fun getExportationData(pageSize: Int, personId: String): List<HealthConnectSleepSession> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -47,9 +46,9 @@ abstract class HealthConnectSleepSessionDAO : IntegratedMaintenanceDAO<HealthCon
             params.add(personId)
             add(" ) ")
 
-            add(" limit ? offset ? ")
-            params.add(pageInfos.pageSize)
-            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+            add(" limit ? ")
+            params.add(pageSize)
+            
         }
 
         val sql = StringJoiner(QR_NL).apply {

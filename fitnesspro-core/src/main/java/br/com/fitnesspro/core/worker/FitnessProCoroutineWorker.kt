@@ -16,7 +16,11 @@ abstract class FitnessProCoroutineWorker(
 
     abstract suspend fun onWork()
 
-    open fun getMaxRetryTimeMillis(): Long = 60_000L
+    /**
+     * Define o tempo máximo de espera para a execução do Worker. Isso serve para limitar o número
+     * de reexecuções em caso de falha.
+     */
+    abstract fun getMaxRetryTimeMillis(): Long
 
     override suspend fun doWork() = withContext(IO) {
         val startTime = inputData.getLong("startTime", System.currentTimeMillis())

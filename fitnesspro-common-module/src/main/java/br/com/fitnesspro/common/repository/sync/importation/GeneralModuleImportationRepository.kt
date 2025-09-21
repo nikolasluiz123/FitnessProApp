@@ -3,6 +3,7 @@ package br.com.fitnesspro.common.repository.sync.importation
 import android.content.Context
 import br.com.fitnesspro.common.injection.IGeneralModuleSyncRepositoryEntryPoint
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.common.CursorData
 import br.com.fitnesspro.common.repository.sync.importation.common.ImportSegregationResult
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.mappers.getAcademy
@@ -11,6 +12,7 @@ import br.com.fitnesspro.mappers.getPersonAcademyTime
 import br.com.fitnesspro.mappers.getSchedulerConfig
 import br.com.fitnesspro.mappers.getUser
 import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.PersonAcademyTime
@@ -27,6 +29,7 @@ import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import dagger.hilt.android.EntryPointAccessors
+import java.time.LocalDateTime
 import kotlin.reflect.KClass
 
 class GeneralModuleImportationRepository(context: Context): AbstractImportationRepository<GeneralModuleSyncDTO, CommonImportFilter>(context) {
@@ -95,4 +98,29 @@ class GeneralModuleImportationRepository(context: Context): AbstractImportationR
             else -> throw IllegalArgumentException("Não foi possível recuperar o DAO. Classe de modelo inválida.")
         }
     }
+
+    override fun getListModelClassesNames(): List<String> {
+        return listOf(
+            Academy::class.simpleName!!,
+            Person::class.simpleName!!,
+            User::class.simpleName!!,
+            PersonAcademyTime::class.simpleName!!,
+            SchedulerConfig::class.simpleName!!
+        )
+    }
+
+    override fun getCursorDataFrom(syncDTO: GeneralModuleSyncDTO): CursorData {
+        val cursorIdsMap = mutableMapOf<String, String?>()
+        val cursorTimestampMap = mutableMapOf<String, LocalDateTime?>()
+
+        syncDTO.academies.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Academy::class)
+        syncDTO.persons.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Person::class)
+        syncDTO.persons.mapNotNull { it.user }.populateCursorInfos(cursorIdsMap, cursorTimestampMap, User::class)
+        syncDTO.personAcademyTimes.populateCursorInfos(cursorIdsMap, cursorTimestampMap, PersonAcademyTime::class)
+        syncDTO.schedulerConfigs.populateCursorInfos(cursorIdsMap, cursorTimestampMap, SchedulerConfig::class)
+
+        return CursorData(cursorIdsMap, cursorTimestampMap)
+    }
+
+    override fun getModule() = EnumSyncModule.GENERAL
 }

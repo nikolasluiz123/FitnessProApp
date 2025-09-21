@@ -6,12 +6,11 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.workers.common.AbstractAuthenticatedImportationWorker
-import br.com.fitnesspro.model.enums.EnumImportationModule
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.scheduler.injection.IScheduleWorkersEntryPoint
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
-import java.time.LocalDateTime
 
 @HiltWorker
 class SchedulerModuleImportationWorker @AssistedInject constructor(
@@ -21,15 +20,17 @@ class SchedulerModuleImportationWorker @AssistedInject constructor(
 
     private val scheduleEntryPoint = EntryPointAccessors.fromApplication(context, IScheduleWorkersEntryPoint::class.java)
 
-    override suspend fun onImport(serviceToken: String, lastUpdateDate: LocalDateTime?) {
-        scheduleEntryPoint.getSchedulerModuleImportationRepository().import(serviceToken, lastUpdateDate)
+    override suspend fun onImport(serviceToken: String) {
+        return scheduleEntryPoint.getSchedulerModuleImportationRepository().import(serviceToken)
     }
 
-    override fun getModule() = EnumImportationModule.SCHEDULER
+    override fun getModule() = EnumSyncModule.SCHEDULER
 
     override fun getClazz() = javaClass
 
     override fun getOneTimeWorkRequestBuilder(): OneTimeWorkRequest.Builder {
         return OneTimeWorkRequestBuilder<SchedulerModuleImportationWorker>()
     }
+
+    override fun getWorkerDelay(): Long = DEFAULT_WORKER_DELAY
 }

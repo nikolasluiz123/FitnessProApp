@@ -3,13 +3,14 @@ package br.com.fitnesspro.common.repository.sync.importation.common
 import android.content.Context
 import android.util.Log
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.sync.ImportationHistory
+import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
@@ -18,12 +19,22 @@ import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import kotlin.reflect.KClass
 
 abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImportFilter>(context: Context)
     : AbstractSyncRepository(context) {
+
+    protected val importationHistoryDAO = syncEntryPoint.getImportationHistoryDAO()
+
+    private val gson: Gson = GsonBuilder().defaultGSon(serializeNulls = true)
+    protected val timestampMapType: Type? = object : TypeToken<Map<String, LocalDateTime?>>() {}.type
+    protected val idMapType: Type? = object : TypeToken<Map<String, String?>>() {}.type
 
     abstract suspend fun getImportationData(
         token: String,
@@ -37,21 +48,28 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
     abstract fun getMaintenanceDAO(modelClass: KClass<out BaseModel>): MaintenanceDAO<out BaseModel>
 
+    abstract fun getListModelClassesNames(): List<String>
+
+    abstract fun getCursorDataFrom(syncDTO: DTO): CursorData
+
     @Suppress("UNCHECKED_CAST")
-    open suspend fun getImportFilter(lastUpdateDate: LocalDateTime?): FILTER {
-        return CommonImportFilter(lastUpdateDate = lastUpdateDate?.minusMinutes(5)) as FILTER
+    open suspend fun getImportFilter(lastUpdateDateMap: MutableMap<String, LocalDateTime?>): FILTER {
+        return CommonImportFilter(lastUpdateDateMap = lastUpdateDateMap) as FILTER
     }
 
-    suspend fun import(serviceToken: String, lastUpdateDate: LocalDateTime?) {
-        Log.i(LogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName} lastUpdateDate = ${lastUpdateDate?.format(EnumDateTimePatterns.DATE_TIME_SHORT)}")
+    suspend fun import(serviceToken: String) {
+        Log.i(LogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName}")
 
         var response: ImportationServiceResponse<DTO>? = null
         var clientStartDateTime: LocalDateTime? = null
         var iterationsCount = 0
 
         try {
-            val importFilter = getImportFilter(lastUpdateDate)
-            val pageInfos = ImportPageInfos(pageSize = getPageSize())
+            val history = getHistoryFromDB()
+            val cursorIdsMap: MutableMap<String, String?> = getCursorIdsMap(history)
+            val cursorTimestampMap: MutableMap<String, LocalDateTime?> = getCursorTimestampMap(history)
+            val importFilter = getImportFilter(cursorTimestampMap)
+            val pageInfos = ImportPageInfos(pageSize = getPageSize(), cursorIdMap = cursorIdsMap)
 
             do {
                 clientStartDateTime = dateTimeNow(ZoneOffset.UTC)
@@ -80,7 +98,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
                     }
 
                     response.success -> {
-                        Log.i(LogConstants.WORKER_IMPORT, "Sucesso Com Dados Novos. pageNumber = ${pageInfos.pageNumber} pageSize = ${pageInfos.pageSize} maxListSize = ${response.value?.getMaxListSize()}")
+                        Log.i(LogConstants.WORKER_IMPORT, "Sucesso Com Dados Novos. pageSize = ${pageInfos.pageSize} maxListSize = ${response.value?.getMaxListSize()}")
 
                         val segregationResult = executeSegregation(response.value!!)
 
@@ -93,7 +111,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
                             serviceToken = serviceToken
                         )
 
-                        pageInfos.pageNumber++
+                        updateCursorsImportationHistory(response.value!!, history)
                     }
 
                     else -> {
@@ -106,6 +124,10 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
             } while (response.value?.getMaxListSize() == pageInfos.pageSize && iterationsCount < getMaxIterations())
 
             updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
+
+            if ((response.value?.getMaxListSize() ?: 0) < pageInfos.pageSize) {
+                updateImportationHistoryFinishedExecution(history)
+            }
         } catch (ex: Exception) {
             response?.let { serviceResponse ->
                 updateLogPackageWithErrorInfos(
@@ -121,6 +143,58 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
         }
     }
 
+    private suspend fun updateCursorsImportationHistory(syncDTO: DTO, importationHistory: ImportationHistory) {
+        val cursorData = getCursorDataFrom(syncDTO)
+
+        importationHistory.cursorIdMapJson = gson.toJson(cursorData.cursorIdsMap, idMapType)
+        importationHistory.cursorTimestampMapJson = gson.toJson(cursorData.cursorTimestampMap, timestampMapType)
+
+        importationHistoryDAO.update(importationHistory)
+    }
+
+    private suspend fun updateImportationHistoryFinishedExecution(importationHistory: ImportationHistory) {
+        importationHistory.date = dateTimeNow(ZoneOffset.UTC)
+
+        importationHistory.cursorIdMapJson = null
+        importationHistory.cursorTimestampMapJson = null
+
+        importationHistoryDAO.update(importationHistory)
+    }
+
+    private suspend fun getHistoryFromDB(): ImportationHistory {
+        val databaseHistory = importationHistoryDAO.getImportationHistory(getModule())
+
+        return if (databaseHistory == null) {
+            val model = ImportationHistory(module = getModule())
+            importationHistoryDAO.insert(model)
+            model
+        } else {
+            databaseHistory
+        }
+    }
+
+    private fun getCursorTimestampMap(importationHistory: ImportationHistory?): MutableMap<String, LocalDateTime?> {
+        val cursorTimestampMap: MutableMap<String, LocalDateTime?> = importationHistory?.cursorTimestampMapJson?.let {
+            gson.fromJson(it, timestampMapType)
+        } ?: mutableMapOf()
+
+        if (cursorTimestampMap.isEmpty()) {
+            getListModelClassesNames().map {
+                cursorTimestampMap[it] = importationHistory?.date
+            }
+        }
+
+        return cursorTimestampMap
+    }
+
+    private fun getCursorIdsMap(importationHistory: ImportationHistory?): MutableMap<String, String?> {
+        val cursorIdsMap: MutableMap<String, String?> = importationHistory?.cursorIdMapJson?.let {
+            gson.fromJson(it, idMapType)
+        } ?: mutableMapOf()
+
+        return cursorIdsMap
+    }
+
     protected suspend fun segregate(dtoList: List<BaseDTO>, hasEntityWithId: suspend (String) -> Boolean): ImportSegregationResult<BaseModel>? {
         return if (dtoList.isNotEmpty()) {
             val insertionList = dtoList
@@ -134,6 +208,17 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
             ImportSegregationResult(insertionList, updateList)
         } else {
             null
+        }
+    }
+
+    protected fun List<AuditableDTO>.populateCursorInfos(
+        cursorIdsMap: MutableMap<String, String?>,
+        cursorTimestampMap: MutableMap<String, LocalDateTime?>,
+        entityClass: KClass<*>
+    ) {
+        forEach {
+            cursorIdsMap[entityClass.simpleName!!] = it.id
+            cursorTimestampMap[entityClass.simpleName!!] = it.updateDate
         }
     }
 
@@ -192,7 +277,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
             token = serviceToken,
             logId = logId,
             dto = UpdatableExecutionLogInfosDTO(
-                lastUpdateDate = importFilter.lastUpdateDate,
+                lastUpdateDate = null, // TODO - Preciso repensar esses logs e já fazer uma nova entidade para guardar dados da execução de cada entidade sincronizada
                 pageSize = pageInfos.pageSize
             )
         )

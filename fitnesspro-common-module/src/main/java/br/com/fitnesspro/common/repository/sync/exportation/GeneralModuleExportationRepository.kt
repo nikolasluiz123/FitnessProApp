@@ -4,11 +4,11 @@ import android.content.Context
 import br.com.fitnesspro.common.injection.IGeneralModuleSyncRepositoryEntryPoint
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.mappers.getPersonAcademyTimeDTO
 import br.com.fitnesspro.mappers.getPersonDTO
 import br.com.fitnesspro.mappers.getSchedulerConfigDTO
 import br.com.fitnesspro.model.base.IntegratedModel
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.model.general.User
@@ -22,12 +22,12 @@ class GeneralModuleExportationRepository(context: Context): AbstractExportationR
 
     private val entryPoint = EntryPointAccessors.fromApplication(context, IGeneralModuleSyncRepositoryEntryPoint::class.java)
 
-    override suspend fun getExportationData(pageInfos: ExportPageInfos): Map<KClass<out IntegratedModel>, List<IntegratedModel>> {
+    override suspend fun getExportationData(pageSize: Int): Map<KClass<out IntegratedModel>, List<IntegratedModel>> {
         val map = mutableMapOf<KClass<out IntegratedModel>, List<IntegratedModel>>()
 
-        map.put(Person::class, entryPoint.getPersonDAO().getExportationData(pageInfos))
-        map.put(PersonAcademyTime::class, entryPoint.getPersonAcademyTimeDAO().getExportationData(pageInfos))
-        map.put(SchedulerConfig::class, entryPoint.getSchedulerConfigDAO().getExportationData(pageInfos))
+        map.put(Person::class, entryPoint.getPersonDAO().getExportationData(pageSize))
+        map.put(PersonAcademyTime::class, entryPoint.getPersonAcademyTimeDAO().getExportationData(pageSize))
+        map.put(SchedulerConfig::class, entryPoint.getSchedulerConfigDAO().getExportationData(pageSize))
 
         return map
     }
@@ -73,4 +73,6 @@ class GeneralModuleExportationRepository(context: Context): AbstractExportationR
             else -> throw IllegalArgumentException("Não foi possível recuperar o DAO. Classe de modelo inválida.")
         }
     }
+
+    override fun getModule(): EnumSyncModule = EnumSyncModule.GENERAL
 }

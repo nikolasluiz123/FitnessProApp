@@ -4,6 +4,7 @@ import android.content.Context
 import br.com.fitnesspro.common.injection.health.IHealthConnectModuleSyncRepositoryEntryPoint
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.common.CursorData
 import br.com.fitnesspro.common.repository.sync.importation.common.ImportSegregationResult
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.mappers.getExercise
@@ -25,6 +26,7 @@ import br.com.fitnesspro.mappers.getWorkout
 import br.com.fitnesspro.mappers.getWorkoutGroup
 import br.com.fitnesspro.mappers.getWorkoutGroupPreDefinition
 import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
@@ -116,9 +118,9 @@ class WorkoutModuleImportationRepository(
      * Cria o filtro [WorkoutModuleImportationFilter] necessário
      * para a API de importação, usando o ID da pessoa logada.
      */
-    override suspend fun getImportFilter(lastUpdateDate: LocalDateTime?): WorkoutModuleImportationFilter {
+    override suspend fun getImportFilter(lastUpdateDateMap: MutableMap<String, LocalDateTime?>): WorkoutModuleImportationFilter {
         val person = personRepository.findPersonByUserId(getAuthenticatedUser()?.id!!)
-        return WorkoutModuleImportationFilter(lastUpdateDate = lastUpdateDate, personId = person.id)
+        return WorkoutModuleImportationFilter(lastUpdateDateMap = lastUpdateDateMap, personId = person.id)
     }
 
     /**
@@ -283,5 +285,56 @@ class WorkoutModuleImportationRepository(
 
             else -> throw IllegalArgumentException("Não foi possível recuperar o DAO. Classe de modelo inválida.")
         }
+    }
+
+    override fun getModule() = EnumSyncModule.WORKOUT
+
+    override fun getListModelClassesNames(): List<String> {
+        return listOf(
+            Workout::class.simpleName!!,
+            WorkoutGroup::class.simpleName!!,
+            Exercise::class.simpleName!!,
+            Video::class.simpleName!!,
+            VideoExercise::class.simpleName!!,
+            ExerciseExecution::class.simpleName!!,
+            VideoExerciseExecution::class.simpleName!!,
+            WorkoutGroupPreDefinition::class.simpleName!!,
+            ExercisePreDefinition::class.simpleName!!,
+            VideoExercisePreDefinition::class.simpleName!!,
+            HealthConnectMetadata::class.simpleName!!,
+            HealthConnectSteps::class.simpleName!!,
+            HealthConnectCaloriesBurned::class.simpleName!!,
+            HealthConnectHeartRate::class.simpleName!!,
+            HealthConnectHeartRateSamples::class.simpleName!!,
+            HealthConnectSleepSession::class.simpleName!!,
+            HealthConnectSleepStages::class.simpleName!!,
+            SleepSessionExerciseExecution::class.simpleName!!
+        )
+    }
+
+    override fun getCursorDataFrom(syncDTO: WorkoutModuleSyncDTO): CursorData {
+        val cursorIdsMap = mutableMapOf<String, String?>()
+        val cursorTimestampMap = mutableMapOf<String, LocalDateTime?>()
+
+        syncDTO.workouts.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Workout::class)
+        syncDTO.workoutGroups.populateCursorInfos(cursorIdsMap, cursorTimestampMap, WorkoutGroup::class)
+        syncDTO.exercises.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Exercise::class)
+        syncDTO.videos.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Video::class)
+        syncDTO.videoExercises.populateCursorInfos(cursorIdsMap, cursorTimestampMap, VideoExercise::class)
+        syncDTO.exerciseExecutions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, ExerciseExecution::class)
+        syncDTO.videoExerciseExecutions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, VideoExerciseExecution::class)
+        syncDTO.workoutGroupsPreDefinitions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, WorkoutGroupPreDefinition::class)
+        syncDTO.exercisePredefinitions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, ExercisePreDefinition::class)
+        syncDTO.videoExercisePreDefinitions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, VideoExercisePreDefinition::class)
+        syncDTO.metadata.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectMetadata::class)
+        syncDTO.steps.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectSteps::class)
+        syncDTO.caloriesBurned.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectCaloriesBurned::class)
+        syncDTO.heartRateSessions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectHeartRate::class)
+        syncDTO.heartRateSamples.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectHeartRateSamples::class)
+        syncDTO.sleepSessions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectSleepSession::class)
+        syncDTO.sleepStages.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectSleepStages::class)
+        syncDTO.sleepSessionAssociations.populateCursorInfos(cursorIdsMap, cursorTimestampMap, SleepSessionExerciseExecution::class)
+
+        return CursorData(cursorIdsMap, cursorTimestampMap)
     }
 }

@@ -13,6 +13,8 @@ import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 
 @HiltWorker
 class AuthenticationSessionWorker@AssistedInject constructor(
@@ -21,6 +23,8 @@ class AuthenticationSessionWorker@AssistedInject constructor(
 ): FitnessProPeriodicCoroutineWorker(context, workerParams) {
 
     private val entryPoint = EntryPointAccessors.fromApplication(context,IAuthenticationSessionWorkerEntryPoint::class.java)
+
+    override fun getMaxRetryTimeMillis(): Long = Duration.of(DEFAULT_WORKER_DELAY * 3L, ChronoUnit.MINUTES).toMillis()
 
     override suspend fun onWorkOneTime() {
         Log.i(LogConstants.WORKER_AUTHENTICATION, "Verificando Token")
@@ -35,5 +39,9 @@ class AuthenticationSessionWorker@AssistedInject constructor(
             e.sendToFirebaseCrashlytics()
             Result.retry()
         }
+    }
+
+    companion object {
+        const val DEFAULT_WORKER_DELAY = 15L
     }
 }

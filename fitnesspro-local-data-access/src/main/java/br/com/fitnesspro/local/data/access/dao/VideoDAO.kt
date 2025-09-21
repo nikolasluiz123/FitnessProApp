@@ -8,7 +8,6 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Video
 import java.time.LocalDateTime
@@ -20,7 +19,7 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
     @Query(" select exists(select 1 from video where id = :id) ")
     abstract suspend fun hasEntityWithId(id: String): Boolean
 
-    suspend fun getExportationData(pageInfos: ExportPageInfos): List<Video> {
+    suspend fun getExportationData(pageSize: Int): List<Video> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -33,10 +32,9 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
 
         val where = StringJoiner(QR_NL).apply {
             add(" where v.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
-            add(" limit ? offset ? ")
+            add(" limit ? ")
 
-            params.add(pageInfos.pageSize)
-            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+            params.add(pageSize)
         }
 
         val sql = StringJoiner(QR_NL).apply {
@@ -48,7 +46,7 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
         return executeQueryExportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
     }
 
-    suspend fun getStorageExportationData(pageInfos: ExportPageInfos): List<Video> {
+    suspend fun getStorageExportationData(pageSize: Int): List<Video> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -62,10 +60,9 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
         val where = StringJoiner(QR_NL).apply {
             add(" where v.storage_transmission_state = '${EnumTransmissionState.PENDING.name}' ")
             add(" and v.transmission_state = '${EnumTransmissionState.TRANSMITTED.name}' ")
-            add(" limit ? offset ? ")
+            add(" limit ? ")
 
-            params.add(pageInfos.pageSize)
-            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+            params.add(pageSize)
         }
 
         val sql = StringJoiner(QR_NL).apply {

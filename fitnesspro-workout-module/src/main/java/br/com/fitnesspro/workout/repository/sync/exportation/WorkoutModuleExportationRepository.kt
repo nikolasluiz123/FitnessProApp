@@ -5,7 +5,6 @@ import br.com.fitnesspro.common.injection.health.IHealthConnectModuleSyncReposit
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.mappers.getExerciseDTO
 import br.com.fitnesspro.mappers.getExerciseExecutionDTO
 import br.com.fitnesspro.mappers.getExercisePreDefinitionDTO
@@ -25,6 +24,7 @@ import br.com.fitnesspro.mappers.getWorkoutDTO
 import br.com.fitnesspro.mappers.getWorkoutGroupDTO
 import br.com.fitnesspro.mappers.getWorkoutGroupPreDefinitionDTO
 import br.com.fitnesspro.model.base.IntegratedModel
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
@@ -57,29 +57,33 @@ class WorkoutModuleExportationRepository(
     private val entryPoint = EntryPointAccessors.fromApplication(context, IWorkoutModuleSyncRepositoryEntryPoint::class.java)
     private val healthConnectEntryPoint = EntryPointAccessors.fromApplication(context, IHealthConnectModuleSyncRepositoryEntryPoint::class.java)
 
-    override suspend fun getExportationData(pageInfos: ExportPageInfos): Map<KClass<out IntegratedModel>, List<IntegratedModel>> {
+    override fun getPageSize() = 200
+
+    override fun getMaxIterations() = 3
+
+    override suspend fun getExportationData(pageSize: Int): Map<KClass<out IntegratedModel>, List<IntegratedModel>> {
         val map = mutableMapOf<KClass<out IntegratedModel>, List<IntegratedModel>>()
         val personId = personRepository.findPersonByUserId(getAuthenticatedUser()?.id!!).id
 
-        map.put(Workout::class, entryPoint.getWorkoutDAO().getExportationData(pageInfos, personId))
-        map.put(WorkoutGroup::class, entryPoint.getWorkoutGroupDAO().getExportationData(pageInfos, personId))
-        map.put(Exercise::class, entryPoint.getExerciseDAO().getExportationData(pageInfos, personId))
-        map.put(Video::class, entryPoint.getVideoDAO().getExportationData(pageInfos))
-        map.put(VideoExercise::class, entryPoint.getVideoExerciseDAO().getExportationData(pageInfos, personId))
-        map.put(ExerciseExecution::class, entryPoint.getExerciseExecutionDAO().getExportationData(pageInfos, personId))
-        map.put(VideoExerciseExecution::class, entryPoint.getVideoExerciseExecutionDAO().getExportationData(pageInfos, personId))
-        map.put(WorkoutGroupPreDefinition::class, entryPoint.getWorkoutGroupPreDefinitionDAO().getExportationData(pageInfos, personId))
-        map.put(ExercisePreDefinition::class, entryPoint.getExercisePreDefinitionDAO().getExportationData(pageInfos, personId))
-        map.put(VideoExercisePreDefinition::class, entryPoint.getVideoExercisePreDefinitionDAO().getExportationData(pageInfos, personId))
+        map.put(Workout::class, entryPoint.getWorkoutDAO().getExportationData(pageSize, personId))
+        map.put(WorkoutGroup::class, entryPoint.getWorkoutGroupDAO().getExportationData(pageSize, personId))
+        map.put(Exercise::class, entryPoint.getExerciseDAO().getExportationData(pageSize, personId))
+        map.put(Video::class, entryPoint.getVideoDAO().getExportationData(pageSize))
+        map.put(VideoExercise::class, entryPoint.getVideoExerciseDAO().getExportationData(pageSize, personId))
+        map.put(ExerciseExecution::class, entryPoint.getExerciseExecutionDAO().getExportationData(pageSize, personId))
+        map.put(VideoExerciseExecution::class, entryPoint.getVideoExerciseExecutionDAO().getExportationData(pageSize, personId))
+        map.put(WorkoutGroupPreDefinition::class, entryPoint.getWorkoutGroupPreDefinitionDAO().getExportationData(pageSize, personId))
+        map.put(ExercisePreDefinition::class, entryPoint.getExercisePreDefinitionDAO().getExportationData(pageSize, personId))
+        map.put(VideoExercisePreDefinition::class, entryPoint.getVideoExercisePreDefinitionDAO().getExportationData(pageSize, personId))
 
-        map.put(HealthConnectMetadata::class, healthConnectEntryPoint.getHealthConnectMetadataDAO().getExportationData(pageInfos, personId))
-        map.put(HealthConnectSteps::class, healthConnectEntryPoint.getHealthConnectStepsDAO().getExportationData(pageInfos, personId))
-        map.put(HealthConnectCaloriesBurned::class, healthConnectEntryPoint.getHealthConnectCaloriesBurnedDAO().getExportationData(pageInfos, personId))
-        map.put(HealthConnectHeartRate::class, healthConnectEntryPoint.getHealthConnectHeartRateDAO().getExportationData(pageInfos, personId))
-        map.put(HealthConnectHeartRateSamples::class, healthConnectEntryPoint.getHealthConnectHeartRateSamplesDAO().getExportationData(pageInfos, personId))
-        map.put(HealthConnectSleepSession::class, healthConnectEntryPoint.getHealthConnectSleepSessionDAO().getExportationData(pageInfos, personId))
-        map.put(HealthConnectSleepStages::class, healthConnectEntryPoint.getHealthConnectSleepStagesDAO().getExportationData(pageInfos, personId))
-        map.put(SleepSessionExerciseExecution::class, healthConnectEntryPoint.getSleepSessionExerciseExecutionDAO().getExportationData(pageInfos, personId))
+        map.put(HealthConnectMetadata::class, healthConnectEntryPoint.getHealthConnectMetadataDAO().getExportationData(pageSize, personId))
+        map.put(HealthConnectSteps::class, healthConnectEntryPoint.getHealthConnectStepsDAO().getExportationData(pageSize, personId))
+        map.put(HealthConnectCaloriesBurned::class, healthConnectEntryPoint.getHealthConnectCaloriesBurnedDAO().getExportationData(pageSize, personId))
+        map.put(HealthConnectHeartRate::class, healthConnectEntryPoint.getHealthConnectHeartRateDAO().getExportationData(pageSize, personId))
+        map.put(HealthConnectHeartRateSamples::class, healthConnectEntryPoint.getHealthConnectHeartRateSamplesDAO().getExportationData(pageSize, personId))
+        map.put(HealthConnectSleepSession::class, healthConnectEntryPoint.getHealthConnectSleepSessionDAO().getExportationData(pageSize, personId))
+        map.put(HealthConnectSleepStages::class, healthConnectEntryPoint.getHealthConnectSleepStagesDAO().getExportationData(pageSize, personId))
+        map.put(SleepSessionExerciseExecution::class, healthConnectEntryPoint.getSleepSessionExerciseExecutionDAO().getExportationData(pageSize, personId))
 
         return map
     }
@@ -203,4 +207,6 @@ class WorkoutModuleExportationRepository(
             else -> throw IllegalArgumentException("Não foi possível recuperar o DAO. Classe de modelo inválida.")
         }
     }
+
+    override fun getModule() = EnumSyncModule.WORKOUT
 }

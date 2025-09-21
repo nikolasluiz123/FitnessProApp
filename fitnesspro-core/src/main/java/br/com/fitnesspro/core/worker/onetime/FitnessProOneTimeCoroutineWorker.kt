@@ -18,6 +18,8 @@ abstract class FitnessProOneTimeCoroutineWorker(
 
     abstract fun getOneTimeWorkRequestBuilder(): OneTimeWorkRequest.Builder
 
+    abstract fun getWorkerDelay(): Long
+
     override suspend fun onWork() {
         onWorkOneTime()
         scheduleNext()
@@ -28,7 +30,8 @@ abstract class FitnessProOneTimeCoroutineWorker(
             requester = OneTimeWorkerRequester(
                 context = context,
                 clazz = getClazz(),
-                builder = getOneTimeWorkRequestBuilder()
+                builder = getOneTimeWorkRequestBuilder(),
+                workerDelay = getWorkerDelay()
             )
         }
 

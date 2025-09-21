@@ -8,7 +8,6 @@ import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.base.FileModel
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.base.StorageModel
@@ -25,7 +24,7 @@ import java.time.ZoneOffset
 abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMaintenanceDAO<MODEL>>(context: Context) : AbstractSyncRepository(context)
     where MODEL: IntegratedModel, MODEL: StorageModel, MODEL: FileModel {
 
-    abstract suspend fun getExportationModels(pageInfos: ExportPageInfos): List<MODEL>
+    abstract suspend fun getExportationModels(pageSize: Int): List<MODEL>
 
     abstract suspend fun callExportationService(modelIds: List<String>, files: List<File>, token: String): StorageServiceResponse
 
@@ -42,13 +41,13 @@ abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMainte
         var clientDateTimeStart: LocalDateTime? = null
         var models: List<MODEL>
         var files: List<File>
+        val pageSize = getPageSize()
 
         try {
-            val pageInfos = ExportPageInfos(pageSize = getPageSize())
 
             do {
                 clientDateTimeStart = dateTimeNow(ZoneOffset.UTC)
-                models = getExportationModels(pageInfos)
+                models = getExportationModels(pageSize)
 
                 if (models.isNotEmpty()) {
                     val paths: MutableList<String> = mutableListOf()
@@ -73,7 +72,7 @@ abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMainte
                         serviceToken = serviceToken,
                         logPackageId = response.executionLogPackageId,
                         logId = response.executionLogId,
-                        pageInfos = pageInfos,
+                        pageSize = pageSize,
                         clientStartDateTime = clientDateTimeStart
                     )
 
@@ -87,12 +86,11 @@ abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMainte
                             clientExecutionEnd = dateTimeNow(ZoneOffset.UTC).minus(callExportationTime)
                         )
 
-                        pageInfos.pageNumber++
                     } else {
                         throw ServiceException(response.error!!)
                     }
                 }
-            } while (models.size == pageInfos.pageSize)
+            } while (models.size == pageSize)
 
             if (models.isNotEmpty()) {
                 updateLogWithFinalizationInfos(serviceToken, response?.executionLogId!!)
@@ -125,14 +123,14 @@ abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMainte
         serviceToken: String,
         logId: String,
         logPackageId: String,
-        pageInfos: ExportPageInfos,
+        pageSize: Int,
         clientStartDateTime: LocalDateTime
     ) {
         executionLogWebClient.updateLogInformation(
             token = serviceToken,
             logId = logId,
             dto = UpdatableExecutionLogInfosDTO(
-                pageSize = pageInfos.pageSize
+                pageSize = pageSize
             )
         )
 

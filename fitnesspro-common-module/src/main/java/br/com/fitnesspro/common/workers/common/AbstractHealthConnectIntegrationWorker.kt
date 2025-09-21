@@ -8,6 +8,8 @@ import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.core.worker.periodic.FitnessProPeriodicCoroutineWorker
 import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
 import dagger.hilt.android.EntryPointAccessors
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 
 /**
  * Classe base abstrata para Workers periódicos (via [FitnessProPeriodicCoroutineWorker])
@@ -56,6 +58,8 @@ abstract class AbstractHealthConnectIntegrationWorker(
      * }`
      */
     abstract suspend fun onIntegrateWithTransaction()
+
+    override fun getMaxRetryTimeMillis(): Long = Duration.of(9, ChronoUnit.MINUTES).toMillis()
 
     /**
      * Ponto de entrada do [FitnessProPeriodicCoroutineWorker].

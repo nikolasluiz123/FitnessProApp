@@ -6,6 +6,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.workers.common.AbstractExportationWorker
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.scheduler.injection.IScheduleWorkersEntryPoint
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -25,7 +26,11 @@ class SchedulerModuleExportationWorker @AssistedInject constructor(
 
     override fun getClazz() = javaClass
 
+    override fun getModule() = EnumSyncModule.SCHEDULER
+
     override fun getOneTimeWorkRequestBuilder(): OneTimeWorkRequest.Builder {
         return OneTimeWorkRequestBuilder<SchedulerModuleExportationWorker>()
     }
+
+    override fun getWorkerDelay(): Long = DEFAULT_WORKER_DELAY
 }

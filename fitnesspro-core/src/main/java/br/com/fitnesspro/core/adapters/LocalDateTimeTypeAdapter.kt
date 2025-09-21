@@ -3,6 +3,7 @@ package br.com.fitnesspro.core.adapters
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import com.google.gson.JsonNull
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
@@ -14,13 +15,16 @@ class LocalDateTimeTypeAdapter : JsonSerializer<LocalDateTime?>, JsonDeserialize
 
     private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
-
     override fun serialize(
         src: LocalDateTime?,
         typeOfSrc: Type?,
         context: JsonSerializationContext?
     ): JsonElement {
-        return JsonPrimitive(src?.format(formatter))
+        return if (src == null) {
+            JsonNull.INSTANCE
+        } else {
+            JsonPrimitive(src.format(formatter))
+        }
     }
 
     override fun deserialize(
@@ -28,6 +32,10 @@ class LocalDateTimeTypeAdapter : JsonSerializer<LocalDateTime?>, JsonDeserialize
         typeOfT: Type?,
         context: JsonDeserializationContext?
     ): LocalDateTime? {
-        return LocalDateTime.parse(json?.asString, formatter)
+        return if (json == null || json.isJsonNull) {
+            null
+        } else {
+            LocalDateTime.parse(json.asString, formatter)
+        }
     }
 }

@@ -3,12 +3,14 @@ package br.com.fitnesspro.scheduler.repository.sync.importation
 import android.content.Context
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
+import br.com.fitnesspro.common.repository.sync.importation.common.CursorData
 import br.com.fitnesspro.common.repository.sync.importation.common.ImportSegregationResult
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.mappers.getReport
 import br.com.fitnesspro.mappers.getScheduler
 import br.com.fitnesspro.mappers.getSchedulerReport
 import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.model.general.report.SchedulerReport
 import br.com.fitnesspro.model.scheduler.Scheduler
@@ -41,11 +43,11 @@ class SchedulerModuleImportationRepository(
         return entryPoint.getSchedulerSyncWebClient().import(token, filter, pageInfos)
     }
 
-    override suspend fun getImportFilter(lastUpdateDate: LocalDateTime?): SchedulerModuleImportationFilter {
+    override suspend fun getImportFilter(lastUpdateDateMap: MutableMap<String, LocalDateTime?>): SchedulerModuleImportationFilter {
         val personId = personRepository.findPersonByUserId(getAuthenticatedUser()!!.id).id
 
         return SchedulerModuleImportationFilter(
-            lastUpdateDate = lastUpdateDate,
+            lastUpdateDateMap = lastUpdateDateMap,
             reportContext = EnumReportContext.SCHEDULERS_REPORT,
             personId = personId
         )
@@ -91,4 +93,25 @@ class SchedulerModuleImportationRepository(
             else -> throw IllegalArgumentException("Não foi possível recuperar o DAO. Classe de modelo inválida.")
         }
     }
+
+    override fun getListModelClassesNames(): List<String> {
+        return listOf(
+            Scheduler::class.simpleName!!,
+            Report::class.simpleName!!,
+            SchedulerReport::class.simpleName!!
+        )
+    }
+
+    override fun getCursorDataFrom(syncDTO: SchedulerModuleSyncDTO): CursorData {
+        val cursorIdsMap = mutableMapOf<String, String?>()
+        val cursorTimestampMap = mutableMapOf<String, LocalDateTime?>()
+
+        syncDTO.schedulers.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Scheduler::class)
+        syncDTO.reports.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Report::class)
+        syncDTO.schedulerReports.populateCursorInfos(cursorIdsMap, cursorTimestampMap, SchedulerReport::class)
+
+        return CursorData(cursorIdsMap, cursorTimestampMap)
+    }
+
+    override fun getModule() = EnumSyncModule.SCHEDULER
 }

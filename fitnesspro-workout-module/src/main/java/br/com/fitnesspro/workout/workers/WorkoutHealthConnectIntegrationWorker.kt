@@ -23,4 +23,8 @@ class WorkoutHealthConnectIntegrationWorker @AssistedInject constructor(
     override suspend fun onIntegrateWithTransaction() {
         entryPoint.getHealthConnectIntegrationRepository().runIntegration()
     }
+
+    companion object {
+        const val DEFAULT_WORKER_DELAY = 8L
+    }
 }

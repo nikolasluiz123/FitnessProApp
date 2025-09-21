@@ -10,6 +10,7 @@ import br.com.fitnesspro.common.workers.GeneralModuleExportationWorker
 import br.com.fitnesspro.common.workers.GeneralModuleImportationWorker
 import br.com.fitnesspro.common.workers.StorageExportationWorker
 import br.com.fitnesspro.common.workers.StorageImportationWorker
+import br.com.fitnesspro.common.workers.common.AbstractSyncWorker
 import br.com.fitnesspro.core.worker.onetime.OneTimeWorkerRequester
 import br.com.fitnesspro.core.worker.periodic.PeriodicWorkerRequester
 import br.com.fitnesspro.scheduler.workers.SchedulerModuleExportationWorker
@@ -42,61 +43,75 @@ class FitnessProApplication : Application(), Configuration.Provider {
         PeriodicWorkerRequester(
             context = this,
             clazz = AuthenticationSessionWorker::class.java,
-            builder = PeriodicWorkRequestBuilder<AuthenticationSessionWorker>(15, TimeUnit.MINUTES)
+            builder = PeriodicWorkRequestBuilder<AuthenticationSessionWorker>(
+                repeatInterval = AuthenticationSessionWorker.DEFAULT_WORKER_DELAY,
+                repeatIntervalTimeUnit = TimeUnit.MINUTES
+            )
         ).enqueue()
 
         PeriodicWorkerRequester(
             context = this,
             clazz = WorkoutHealthConnectIntegrationWorker::class.java,
-            builder = PeriodicWorkRequestBuilder<WorkoutHealthConnectIntegrationWorker>(8, TimeUnit.HOURS)
+            builder = PeriodicWorkRequestBuilder<WorkoutHealthConnectIntegrationWorker>(
+                repeatInterval = WorkoutHealthConnectIntegrationWorker.DEFAULT_WORKER_DELAY,
+                repeatIntervalTimeUnit = TimeUnit.HOURS
+            )
         ).enqueue()
 
         OneTimeWorkerRequester(
             context = this,
             clazz = GeneralModuleImportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<GeneralModuleImportationWorker>()
+            builder = OneTimeWorkRequestBuilder<GeneralModuleImportationWorker>(),
+            workerDelay = AbstractSyncWorker.DEFAULT_WORKER_DELAY
         ).enqueue()
 
         OneTimeWorkerRequester(
             context = this,
             clazz = SchedulerModuleImportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<SchedulerModuleImportationWorker>()
+            builder = OneTimeWorkRequestBuilder<SchedulerModuleImportationWorker>(),
+            workerDelay = AbstractSyncWorker.DEFAULT_WORKER_DELAY
         ).enqueue()
 
         OneTimeWorkerRequester(
             context = this,
             clazz = WorkoutModuleImportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<WorkoutModuleImportationWorker>()
+            builder = OneTimeWorkRequestBuilder<WorkoutModuleImportationWorker>(),
+            workerDelay = AbstractSyncWorker.DEFAULT_WORKER_DELAY
         ).enqueue()
 
         OneTimeWorkerRequester(
             context = this,
             clazz = StorageImportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<StorageImportationWorker>()
+            builder = OneTimeWorkRequestBuilder<StorageImportationWorker>(),
+            workerDelay = AbstractSyncWorker.DEFAULT_WORKER_DELAY
         ).enqueue()
 
         OneTimeWorkerRequester(
             context = this,
             clazz = GeneralModuleExportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<GeneralModuleExportationWorker>()
+            builder = OneTimeWorkRequestBuilder<GeneralModuleExportationWorker>(),
+            workerDelay = AbstractSyncWorker.DEFAULT_WORKER_DELAY
         ).enqueue()
 
         OneTimeWorkerRequester(
             context = this,
             clazz = SchedulerModuleExportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<SchedulerModuleExportationWorker>()
+            builder = OneTimeWorkRequestBuilder<SchedulerModuleExportationWorker>(),
+            workerDelay = AbstractSyncWorker.DEFAULT_WORKER_DELAY
         ).enqueue()
 
         OneTimeWorkerRequester(
             context = this,
             clazz = WorkoutModuleExportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<WorkoutModuleExportationWorker>()
+            builder = OneTimeWorkRequestBuilder<WorkoutModuleExportationWorker>(),
+            workerDelay = AbstractSyncWorker.DEFAULT_WORKER_DELAY
         ).enqueue()
 
         OneTimeWorkerRequester(
             context = this,
             clazz = StorageExportationWorker::class.java,
-            builder = OneTimeWorkRequestBuilder<StorageExportationWorker>()
+            builder = OneTimeWorkRequestBuilder<StorageExportationWorker>(),
+            workerDelay = AbstractSyncWorker.DEFAULT_WORKER_DELAY
         ).enqueue()
 
     }

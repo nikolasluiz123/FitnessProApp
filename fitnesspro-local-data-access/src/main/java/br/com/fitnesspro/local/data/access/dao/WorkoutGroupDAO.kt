@@ -6,7 +6,6 @@ import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import java.time.DayOfWeek
@@ -85,7 +84,7 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
     @Query("select exists(select 1 from workout_group where id = :id)")
     abstract suspend fun hasEntityWithId(id: String): Boolean
 
-    suspend fun getExportationData(pageInfos: ExportPageInfos, personId: String): List<WorkoutGroup> {
+    suspend fun getExportationData(pageSize: Int, personId: String): List<WorkoutGroup> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -100,12 +99,11 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
         val where = StringJoiner(QR_NL).apply {
             add(" where (w.academy_member_person_id = ? or w.personal_trainer_person_id = ?) ")
             add(" and wg.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
-            add(" limit ? offset ? ")
+            add(" limit ? ")
 
             params.add(personId)
             params.add(personId)
-            params.add(pageInfos.pageSize)
-            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+            params.add(pageSize)
         }
 
         val sql = StringJoiner(QR_NL).apply {

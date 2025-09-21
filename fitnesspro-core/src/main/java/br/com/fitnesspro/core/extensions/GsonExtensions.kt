@@ -15,12 +15,17 @@ import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
-fun GsonBuilder.defaultGSon(): Gson {
-    return this.registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeTypeAdapter())
+fun GsonBuilder.defaultGSon(serializeNulls: Boolean = false): Gson {
+    val builder = this.registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeTypeAdapter())
         .registerTypeAdapter(LocalDate::class.java, LocalDateTypeAdapter())
         .registerTypeAdapter(LocalTime::class.java, LocalTimeTypeAdapter())
         .registerTypeAdapter(OffsetDateTime::class.java, OffsetDateTimeTypeAdapter())
         .registerTypeAdapter(Instant::class.java, InstantTypeAdapter())
         .registerTypeAdapter(ZoneOffset::class.java, ZoneOffsetTypeAdapter())
-        .create()
+
+    if (serializeNulls) {
+        builder.serializeNulls()
+    }
+
+    return builder.create()
 }

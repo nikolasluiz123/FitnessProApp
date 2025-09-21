@@ -65,6 +65,8 @@ dependencies {
     implementation(project(":fitnesspro-core"))
     implementation(project(":fitnesspro-model"))
 
+    implementation(libs.fitnesspro.shared.communication)
+
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

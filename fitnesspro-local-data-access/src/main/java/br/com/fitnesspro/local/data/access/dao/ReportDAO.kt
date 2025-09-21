@@ -9,7 +9,6 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.report.Report
@@ -20,7 +19,7 @@ import java.util.StringJoiner
 @Dao
 abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
 
-    suspend fun getExportationData(reportContext: EnumReportContext, pageInfos: ExportPageInfos): List<Report> {
+    suspend fun getExportationData(reportContext: EnumReportContext, pageSize: Int): List<Report> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -44,10 +43,9 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
                 }
             }
 
-            add(" limit ? offset ? ")
+            add(" limit ? ")
 
-            params.add(pageInfos.pageSize)
-            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+            params.add(pageSize)
         }
 
         val sql = StringJoiner(QR_NL).apply {
@@ -59,7 +57,7 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
         return executeQueryExportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
     }
 
-    suspend fun getStorageExportationData(pageInfos: ExportPageInfos): List<Report> {
+    suspend fun getStorageExportationData(pageSize: Int): List<Report> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -73,10 +71,9 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
         val where = StringJoiner(QR_NL).apply {
             add(" where report.storage_transmission_state = '${EnumTransmissionState.PENDING.name}' ")
             add(" and report.transmission_state = '${EnumTransmissionState.TRANSMITTED.name}' ")
-            add(" limit ? offset ? ")
+            add(" limit ? ")
 
-            params.add(pageInfos.pageSize)
-            params.add(pageInfos.pageSize * pageInfos.pageNumber)
+            params.add(pageSize)
         }
 
         val sql = StringJoiner(QR_NL).apply {

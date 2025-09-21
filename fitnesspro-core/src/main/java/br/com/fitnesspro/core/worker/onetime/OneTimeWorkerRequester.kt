@@ -13,14 +13,14 @@ class OneTimeWorkerRequester(
     private val context: Context,
     private val clazz: Class<out FitnessProOneTimeCoroutineWorker>,
     builder: OneTimeWorkRequest.Builder,
-    workerDelay: Long = 5
+    workerDelay: Long
 ) {
 
     private val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
     private val request = builder.setConstraints(constraints)
         .setInitialDelay(workerDelay, TimeUnit.MINUTES)
-        .setBackoffCriteria(BackoffPolicy.LINEAR, 5, TimeUnit.MINUTES)
+        .setBackoffCriteria(BackoffPolicy.LINEAR, workerDelay, TimeUnit.MINUTES)
         .build()
 
     fun enqueue() {

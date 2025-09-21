@@ -1,21 +1,18 @@
 package br.com.fitnesspro.common.workers.common
 
 import android.content.Context
-import android.util.Log
 import androidx.work.WorkerParameters
-import br.com.fitnesspro.core.worker.LogConstants
-import java.time.LocalDateTime
 
 abstract class AbstractAuthenticatedImportationWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : AbstractImportationWorker(context, workerParams) {
 
-    abstract suspend fun onImport(serviceToken: String, lastUpdateDate: LocalDateTime?)
+    abstract suspend fun onImport(serviceToken: String)
 
-    final override suspend fun onImport(lastUpdateDate: LocalDateTime?) {
+    final override suspend fun onImport() {
         getValidUserTokenOrNull()?.let { serviceToken ->
-            onImport(serviceToken, lastUpdateDate)
+            onImport(serviceToken)
         }
     }
 

@@ -7,7 +7,6 @@ import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.local.data.access.dao.common.filters.ExportPageInfos
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
@@ -22,7 +21,7 @@ import kotlin.reflect.KClass
 
 abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): AbstractSyncRepository(context) {
 
-    abstract suspend fun getExportationData(pageInfos: ExportPageInfos): Map<KClass<out IntegratedModel>, List<IntegratedModel>>
+    abstract suspend fun getExportationData(pageSize: Int): Map<KClass<out IntegratedModel>, List<IntegratedModel>>
 
     abstract suspend fun getExportationDTO(models: Map<KClass<out IntegratedModel>, List<IntegratedModel>>): DTO
 
@@ -39,14 +38,12 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
         var syncDTO: DTO? = null
         var hasAnyListPopulated: Boolean
         var iterationsCount = 0
+        val pageSize = getPageSize()
 
         try {
-            val pageInfos = ExportPageInfos(pageSize = getPageSize())
-
             do {
                 clientDateTimeStart = dateTimeNow(ZoneOffset.UTC)
-
-                models = getExportationData(pageInfos)
+                models = getExportationData(pageSize)
                 hasAnyListPopulated = models.any { it.value.isNotEmpty() }
 
                 Log.i(LogConstants.WORKER_EXPORT, "hasAnyListPopulated = $hasAnyListPopulated")
@@ -65,12 +62,12 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
                         serviceToken = serviceToken,
                         logPackageId = response.executionLogPackageId,
                         logId = response.executionLogId,
-                        pageInfos = pageInfos,
+                        pageSize = pageSize,
                         clientStartDateTime = clientDateTimeStart
                     )
 
                     if (response.success) {
-                        Log.i(LogConstants.WORKER_EXPORT, "Sucesso pageNumber = ${pageInfos.pageNumber} pageSize = ${pageInfos.pageSize} maxListSize = ${syncDTO.getMaxListSize()}")
+                        Log.i(LogConstants.WORKER_EXPORT, "Sucesso pageSize = $pageSize maxListSize = ${syncDTO.getMaxListSize()}")
                         updateTransmissionState(models, EnumTransmissionState.TRANSMITTED)
 
                         updateExecutionLogPackageWithSuccessIterationInfos(
@@ -79,8 +76,6 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
                             serviceToken = serviceToken,
                             clientExecutionEnd = dateTimeNow(ZoneOffset.UTC).minus(callExportationTime)
                         )
-
-                        pageInfos.pageNumber++
                     } else {
                         throw ServiceException(response.error!!)
                     }
@@ -88,7 +83,7 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
 
                 iterationsCount++
 
-            } while (syncDTO?.getMaxListSize() == pageInfos.pageSize && iterationsCount < getMaxIterations())
+            } while (syncDTO?.getMaxListSize() == pageSize && iterationsCount < getMaxIterations())
 
             if (hasAnyListPopulated) {
                 updateLogWithFinalizationInfos(serviceToken, response?.executionLogId!!)
@@ -124,14 +119,14 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
         serviceToken: String,
         logId: String,
         logPackageId: String,
-        pageInfos: ExportPageInfos,
+        pageSize: Int,
         clientStartDateTime: LocalDateTime
     ) {
         executionLogWebClient.updateLogInformation(
             token = serviceToken,
             logId = logId,
             dto = UpdatableExecutionLogInfosDTO(
-                pageSize = pageInfos.pageSize
+                pageSize = pageSize
             )
         )
 
