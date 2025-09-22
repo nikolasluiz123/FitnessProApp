@@ -16,7 +16,4 @@ data class ImportationHistory(
 
     @ColumnInfo(name = "cursor_timestamp_map_json")
     var cursorTimestampMapJson: String? = null,
-
-    @ColumnInfo(name = "cursor_id_map_json")
-    var cursorIdMapJson: String? = null,
 )

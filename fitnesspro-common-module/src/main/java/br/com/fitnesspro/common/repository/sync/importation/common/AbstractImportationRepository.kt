@@ -35,7 +35,6 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
     private val gson: Gson = GsonBuilder().defaultGSon(serializeNulls = true)
     protected val timestampMapType: Type? = object : TypeToken<Map<String, LocalDateTime?>>() {}.type
-    protected val idMapType: Type? = object : TypeToken<Map<String, String?>>() {}.type
 
     abstract suspend fun getImportationData(
         token: String,
@@ -68,10 +67,9 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
         try {
             val history = getHistoryFromDB()
-            val cursorIdsMap: MutableMap<String, String?> = getCursorIdsMap(history)
             val cursorTimestampMap: MutableMap<String, LocalDateTime?> = getCursorTimestampMap(history)
             val importFilter = getImportFilter(cursorTimestampMap)
-            val pageInfos = ImportPageInfos(pageSize = getPageSize(), cursorIdMap = cursorIdsMap)
+            val pageInfos = ImportPageInfos(pageSize = getPageSize())
 
             clientStartDateTime = dateTimeNow(ZoneOffset.UTC)
 
@@ -142,8 +140,6 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
     private suspend fun updateCursorsImportationHistory(syncDTO: DTO, importationHistory: ImportationHistory) {
         val cursorData = getCursorDataFrom(syncDTO)
-
-        importationHistory.cursorIdMapJson = gson.toJson(cursorData.cursorIdsMap, idMapType)
         importationHistory.cursorTimestampMapJson = gson.toJson(cursorData.cursorTimestampMap, timestampMapType)
 
         importationHistoryDAO.update(importationHistory)
@@ -151,8 +147,6 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
     private suspend fun updateImportationHistoryFinishedExecution(importationHistory: ImportationHistory) {
         importationHistory.date = dateTimeNow(ZoneOffset.UTC)
-
-        importationHistory.cursorIdMapJson = null
         importationHistory.cursorTimestampMapJson = null
 
         importationHistoryDAO.update(importationHistory)
@@ -182,14 +176,6 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
         }
 
         return cursorTimestampMap
-    }
-
-    private fun getCursorIdsMap(importationHistory: ImportationHistory?): MutableMap<String, String?> {
-        val cursorIdsMap: MutableMap<String, String?> = importationHistory?.cursorIdMapJson?.let {
-            gson.fromJson(it, idMapType)
-        } ?: mutableMapOf()
-
-        return cursorIdsMap
     }
 
     protected suspend fun segregate(dtoList: List<BaseDTO>, hasEntityWithId: suspend (String) -> Boolean): ImportSegregationResult<BaseModel>? {
