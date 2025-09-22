@@ -8,7 +8,6 @@ import br.com.fitnesspro.mappers.getSchedulerDTO
 import br.com.fitnesspro.mappers.getSchedulerReportDTO
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumReportContext
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.enums.EnumUserType.NUTRITIONIST
 import br.com.fitnesspro.model.enums.EnumUserType.PERSONAL_TRAINER
 import br.com.fitnesspro.model.general.report.Report
@@ -79,6 +78,4 @@ class SchedulerModuleExportationRepository(context: Context): AbstractExportatio
             else -> throw IllegalArgumentException("Não foi possível recuperar o DAO. Classe de modelo inválida.")
         }
     }
-
-    override fun getModule() = EnumSyncModule.SCHEDULER
 }

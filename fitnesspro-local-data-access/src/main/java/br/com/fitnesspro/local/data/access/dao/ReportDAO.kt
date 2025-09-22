@@ -6,14 +6,12 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.fitnesspro.model.enums.EnumDownloadState
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.to.TOReport
-import java.time.LocalDateTime
 import java.util.StringJoiner
 
 @Dao
@@ -88,7 +86,7 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Report>
 
-    suspend fun getStorageImportationData(lastUpdateDate: LocalDateTime?): List<Report> {
+    suspend fun getStorageImportationData(pageSize: Int): List<Report> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -96,13 +94,15 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
         }
 
         val from = getFromStorageImportationData()
-
-        val where = getWhereStorageImportationData(lastUpdateDate, params)
+        val where = getWhereStorageImportationData()
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+
+            add(" limit ? ")
+            params.add(pageSize)
         }
 
         return executeStorageImportationData(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
@@ -111,7 +111,7 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
     @RawQuery
     abstract suspend fun executeStorageImportationData(query: SupportSQLiteQuery): List<Report>
 
-    suspend fun getExistsStorageImportationData(lastUpdateDate: LocalDateTime?): Boolean {
+    suspend fun getExistsStorageImportationData(): Boolean {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -119,7 +119,7 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
         }
 
         val from = getFromStorageImportationData()
-        val where = getWhereStorageImportationData(lastUpdateDate, params)
+        val where = getWhereStorageImportationData()
 
         val sql = StringJoiner(QR_NL).apply {
             add(" select exists ( ")
@@ -138,15 +138,11 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
         }
     }
 
-    private fun getWhereStorageImportationData(lastUpdateDate: LocalDateTime?, params: MutableList<Any>): StringJoiner {
+    private fun getWhereStorageImportationData(): StringJoiner {
         return StringJoiner(QR_NL).apply {
             add(" where report.storage_url is not null ")
             add(" and report.active = 1 ")
-
-            lastUpdateDate?.let {
-                add(" and report.storage_transmission_date >= ? ")
-                params.add(it.format(EnumDateTimePatterns.DATE_TIME_SQLITE))
-            }
+            add(" and report.storage_download_state = '${EnumDownloadState.PENDING.name}' ")
         }
     }
 

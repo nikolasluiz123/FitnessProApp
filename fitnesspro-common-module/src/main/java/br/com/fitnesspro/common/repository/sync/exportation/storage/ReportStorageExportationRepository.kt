@@ -3,7 +3,6 @@ package br.com.fitnesspro.common.repository.sync.exportation.storage
 import android.content.Context
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractStorageExportationRepository
 import br.com.fitnesspro.local.data.access.dao.ReportDAO
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.service.data.access.webclient.storage.StorageWebClient
 import br.com.fitnesspro.shared.communication.responses.StorageServiceResponse
@@ -16,8 +15,6 @@ class ReportStorageExportationRepository(
 ): AbstractStorageExportationRepository<Report, ReportDAO>(context) {
 
     override fun getPageSize(): Int = 10
-
-    override fun getModule() = EnumSyncModule.STORAGE
 
     override suspend fun getExportationModels(pageSize: Int): List<Report> {
         return reportDAO.getStorageExportationData(pageSize)

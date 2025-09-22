@@ -1,5 +1,7 @@
 package br.com.fitnesspro.mappers
 
+import br.com.fitnesspro.core.utils.FileUtils
+import br.com.fitnesspro.model.enums.EnumDownloadState
 import br.com.fitnesspro.model.enums.EnumTransmissionState.PENDING
 import br.com.fitnesspro.model.enums.EnumTransmissionState.TRANSMITTED
 import br.com.fitnesspro.model.workout.Video
@@ -28,7 +30,8 @@ fun TOVideo.getVideo(): Video {
         seconds = seconds,
         width = width,
         height = height,
-        active = active
+        active = active,
+        storageDownloadState = getVideoDownloadState(filePath)
     )
 
     this.id?.let { model.id = it }
@@ -50,7 +53,8 @@ fun IVideoDTO.getVideo(): Video {
         transmissionState = TRANSMITTED,
         storageTransmissionState = if (storageTransmissionDate != null) TRANSMITTED else PENDING,
         storageUrl = storageUrl,
-        storageTransmissionDate = storageTransmissionDate
+        storageTransmissionDate = storageTransmissionDate,
+        storageDownloadState = getVideoDownloadState(filePath)
     )
 }
 
@@ -161,4 +165,9 @@ fun IVideoExercisePreDefinitionDTO.getVideoExercisePreDefinition(): VideoExercis
         videoId = videoId,
         active = active
     )
+}
+
+private fun getVideoDownloadState(filePath: String?): EnumDownloadState {
+    val exists = filePath?.let { FileUtils.getFileExists(it) } ?: false
+    return if (exists) EnumDownloadState.DOWNLOADED else EnumDownloadState.PENDING
 }

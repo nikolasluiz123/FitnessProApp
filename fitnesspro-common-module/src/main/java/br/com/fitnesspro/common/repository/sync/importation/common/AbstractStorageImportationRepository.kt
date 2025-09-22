@@ -3,38 +3,57 @@ package br.com.fitnesspro.common.repository.sync.importation.common
 import android.util.Log
 import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.firebase.api.storage.StorageBucketService
+import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.model.base.FileModel
+import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.base.StorageModel
+import br.com.fitnesspro.model.enums.EnumDownloadState
 import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketNames
 import java.io.File
-import java.time.LocalDateTime
 
 abstract class AbstractStorageImportationRepository<MODEL>(
     private val storageService: StorageBucketService
-) where MODEL : StorageModel, MODEL : FileModel {
+) where MODEL : StorageModel, MODEL : FileModel, MODEL : IntegratedModel {
 
-    abstract suspend fun getModelsDownload(lastUpdateDate: LocalDateTime?): List<MODEL>
+    protected abstract suspend fun getModelsDownload(pageSize: Int): List<MODEL>
 
-    abstract suspend fun getExistsModelsDownload(lastUpdateDate: LocalDateTime?): Boolean
+    abstract suspend fun getExistsModelsDownload(): Boolean
 
-    abstract suspend fun createFiles(models: List<MODEL>): List<File>
+    protected abstract suspend fun createFiles(models: List<MODEL>): List<File>
 
-    abstract fun getBucketName(): EnumGCBucketNames
+    protected abstract fun getBucketName(): EnumGCBucketNames
 
-    suspend fun import(lastUpdateDate: LocalDateTime?) {
+    protected abstract fun getPageSize(): Int
+
+    protected abstract fun getIntegratedMaintenanceDAO(): IntegratedMaintenanceDAO<MODEL>
+
+    suspend fun import() {
         Log.i(LogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName}")
 
-        val models = getModelsDownload(lastUpdateDate)
+        val models = getModelsDownload(getPageSize())
 
         if (models.isNotEmpty()) {
             val files = createFiles(models)
-            val urls = models.map { it.storageUrl!! }
+            val urls = mutableListOf<String>()
+
+            models.forEach {
+                urls.add(it.storageUrl!!)
+                it.storageDownloadState = EnumDownloadState.RUNNING
+            }
+
+            getIntegratedMaintenanceDAO().updateBatch(models, false)
 
             storageService.downloadAllByUrl(
                 storageBucket = getBucketName().value,
                 urls = urls,
                 files = files
             )
+
+            models.forEach {
+                it.storageDownloadState = EnumDownloadState.DOWNLOADED
+            }
+
+            getIntegratedMaintenanceDAO().updateBatch(models, false)
         }
     }
 }

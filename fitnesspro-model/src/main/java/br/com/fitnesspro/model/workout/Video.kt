@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.FileModel
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.base.StorageModel
+import br.com.fitnesspro.model.enums.EnumDownloadState
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import java.time.LocalDateTime
 import java.util.UUID
@@ -20,6 +21,8 @@ data class Video(
     override var transmissionState: EnumTransmissionState = EnumTransmissionState.PENDING,
     @ColumnInfo(name = "storage_transmission_state", defaultValue = "PENDING")
     override var storageTransmissionState: EnumTransmissionState = EnumTransmissionState.PENDING,
+    @ColumnInfo(name = "storage_download_state", defaultValue = "PENDING")
+    override var storageDownloadState: EnumDownloadState = EnumDownloadState.PENDING,
     @ColumnInfo(name = "storage_transmission_date")
     override var storageTransmissionDate: LocalDateTime? = null,
     @ColumnInfo(name = "file_path")

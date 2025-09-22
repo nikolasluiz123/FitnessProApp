@@ -9,7 +9,6 @@ import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.pdf.generator.utils.ReportFileUtils
 import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketNames
 import java.io.File
-import java.time.LocalDateTime
 
 class ReportStorageImportationRepository(
     private val context: Context,
@@ -17,12 +16,16 @@ class ReportStorageImportationRepository(
     storageService: StorageBucketService
 ): AbstractStorageImportationRepository<Report>(storageService) {
 
-    override suspend fun getModelsDownload(lastUpdateDate: LocalDateTime?): List<Report> {
-        return reportDAO.getStorageImportationData(lastUpdateDate)
+    override fun getPageSize(): Int = 10
+
+    override fun getIntegratedMaintenanceDAO() = reportDAO
+
+    override suspend fun getModelsDownload(pageSize: Int): List<Report> {
+        return reportDAO.getStorageImportationData(pageSize)
     }
 
-    override suspend fun getExistsModelsDownload(lastUpdateDate: LocalDateTime?): Boolean {
-        return reportDAO.getExistsStorageImportationData(lastUpdateDate)
+    override suspend fun getExistsModelsDownload(): Boolean {
+        return reportDAO.getExistsStorageImportationData()
     }
 
     override fun getBucketName(): EnumGCBucketNames {

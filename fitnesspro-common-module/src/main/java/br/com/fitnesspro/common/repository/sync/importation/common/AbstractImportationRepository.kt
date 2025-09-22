@@ -9,6 +9,7 @@ import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.model.base.BaseModel
+import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.sync.ImportationHistory
 import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
@@ -42,15 +43,17 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
         pageInfos: ImportPageInfos
     ): ImportationServiceResponse<DTO>
 
-    abstract suspend fun executeSegregation(dto: DTO): List<ImportSegregationResult<BaseModel>>
+    protected abstract suspend fun executeSegregation(dto: DTO): List<ImportSegregationResult<BaseModel>>
 
-    abstract fun convertDTOToEntity(dto: BaseDTO): BaseModel
+    protected abstract fun convertDTOToEntity(dto: BaseDTO): BaseModel
 
-    abstract fun getMaintenanceDAO(modelClass: KClass<out BaseModel>): MaintenanceDAO<out BaseModel>
+    protected abstract fun getMaintenanceDAO(modelClass: KClass<out BaseModel>): MaintenanceDAO<out BaseModel>
 
-    abstract fun getListModelClassesNames(): List<String>
+    protected abstract fun getListModelClassesNames(): List<String>
 
-    abstract fun getCursorDataFrom(syncDTO: DTO): CursorData
+    protected abstract fun getCursorDataFrom(syncDTO: DTO): CursorData
+
+    protected abstract fun getModule(): EnumSyncModule
 
     @Suppress("UNCHECKED_CAST")
     open suspend fun getImportFilter(lastUpdateDateMap: MutableMap<String, LocalDateTime?>): FILTER {

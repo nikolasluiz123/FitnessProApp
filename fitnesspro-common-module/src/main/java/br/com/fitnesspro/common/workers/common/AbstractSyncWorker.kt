@@ -5,7 +5,6 @@ import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.ISyncEntryPoint
 import br.com.fitnesspro.core.worker.onetime.FitnessProOneTimeCoroutineWorker
 import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import dagger.hilt.android.EntryPointAccessors
 import java.time.Duration
 import java.time.temporal.ChronoUnit
@@ -25,8 +24,6 @@ abstract class AbstractSyncWorker(
     }
 
     abstract suspend fun onSyncWithTransaction()
-
-    protected abstract fun getModule(): EnumSyncModule
 
     override suspend fun onWorkOneTime() {
         userRepository.runInTransaction {

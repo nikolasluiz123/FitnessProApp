@@ -7,7 +7,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.IGeneralWorkerEntryPoint
 import br.com.fitnesspro.common.workers.common.AbstractAuthenticatedImportationWorker
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
@@ -23,8 +22,6 @@ class GeneralModuleImportationWorker @AssistedInject constructor(
     override suspend fun onImport(serviceToken: String) {
         return entryPoint.getGeneralModuleImportationRepository().import(serviceToken)
     }
-
-    override fun getModule() = EnumSyncModule.GENERAL
 
     override fun getClazz() = javaClass
 

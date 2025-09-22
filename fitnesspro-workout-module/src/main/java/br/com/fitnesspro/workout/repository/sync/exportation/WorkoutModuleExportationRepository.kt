@@ -24,7 +24,6 @@ import br.com.fitnesspro.mappers.getWorkoutDTO
 import br.com.fitnesspro.mappers.getWorkoutGroupDTO
 import br.com.fitnesspro.mappers.getWorkoutGroupPreDefinitionDTO
 import br.com.fitnesspro.model.base.IntegratedModel
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
@@ -205,6 +204,4 @@ class WorkoutModuleExportationRepository(
             else -> throw IllegalArgumentException("Não foi possível recuperar o DAO. Classe de modelo inválida.")
         }
     }
-
-    override fun getModule() = EnumSyncModule.WORKOUT
 }

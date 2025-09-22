@@ -9,7 +9,6 @@ import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketNames
 import java.io.File
-import java.time.LocalDateTime
 
 class VideoStorageImportationRepository(
     private val context: Context,
@@ -17,12 +16,16 @@ class VideoStorageImportationRepository(
     storageService: StorageBucketService
 ): AbstractStorageImportationRepository<Video>(storageService) {
 
-    override suspend fun getModelsDownload(lastUpdateDate: LocalDateTime?): List<Video> {
-        return videoDAO.getStorageImportationData(lastUpdateDate)
+    override fun getPageSize(): Int = 5
+
+    override fun getIntegratedMaintenanceDAO() = videoDAO
+
+    override suspend fun getModelsDownload(pageSize: Int): List<Video> {
+        return videoDAO.getStorageImportationData()
     }
 
-    override suspend fun getExistsModelsDownload(lastUpdateDate: LocalDateTime?): Boolean {
-        return videoDAO.getExistsStorageImportationData(lastUpdateDate)
+    override suspend fun getExistsModelsDownload(): Boolean {
+        return videoDAO.getExistsStorageImportationData()
     }
 
     override fun getBucketName(): EnumGCBucketNames {

@@ -5,12 +5,10 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.fitnesspro.model.enums.EnumDownloadState
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Video
-import java.time.LocalDateTime
 import java.util.StringJoiner
 
 @Dao
@@ -77,7 +75,7 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Video>
 
-    suspend fun getStorageImportationData(lastUpdateDate: LocalDateTime?): List<Video> {
+    suspend fun getStorageImportationData(): List<Video> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -85,7 +83,7 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
         }
 
         val from = getFromStorageImportationData()
-        val where = getWhereStorageImportationData(lastUpdateDate, params)
+        val where = getWhereStorageImportationData()
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
@@ -99,7 +97,7 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
     @RawQuery
     abstract suspend fun executeStorageImportationData(query: SupportSQLiteQuery): List<Video>
 
-    suspend fun getExistsStorageImportationData(lastUpdateDate: LocalDateTime?): Boolean {
+    suspend fun getExistsStorageImportationData(): Boolean {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -107,7 +105,7 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
         }
 
         val from = getFromStorageImportationData()
-        val where = getWhereStorageImportationData(lastUpdateDate, params)
+        val where = getWhereStorageImportationData()
 
         val sql = StringJoiner(QR_NL).apply {
             add(" select exists ( ")
@@ -126,15 +124,11 @@ abstract class VideoDAO: IntegratedMaintenanceDAO<Video>() {
         }
     }
 
-    private fun getWhereStorageImportationData(lastUpdateDate: LocalDateTime?, params: MutableList<Any>): StringJoiner {
+    private fun getWhereStorageImportationData(): StringJoiner {
         return StringJoiner(QR_NL).apply {
             add(" where video.storage_url is not null ")
             add(" and video.active = 1 ")
-
-            lastUpdateDate?.let {
-                add(" and video.storage_transmission_date >= ? ")
-                params.add(it.format(EnumDateTimePatterns.DATE_TIME_SQLITE))
-            }
+            add(" and video.storage_download_state = '${EnumDownloadState.PENDING.name}' ")
         }
     }
 

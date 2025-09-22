@@ -50,6 +50,8 @@ abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMainte
                 models = getExportationModels(pageSize)
 
                 if (models.isNotEmpty()) {
+                    Log.i(LogConstants.WORKER_EXPORT, "${models.size} arquivos")
+
                     val paths: MutableList<String> = mutableListOf()
                     val modelIds: MutableList<String> = mutableListOf()
 

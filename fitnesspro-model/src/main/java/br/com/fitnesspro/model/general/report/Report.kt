@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.FileModel
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.base.StorageModel
+import br.com.fitnesspro.model.enums.EnumDownloadState
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import java.time.LocalDateTime
 import java.util.UUID
@@ -20,6 +21,8 @@ data class Report(
     override var storageTransmissionState: EnumTransmissionState = EnumTransmissionState.PENDING,
     @ColumnInfo(name = "storage_transmission_date")
     override var storageTransmissionDate: LocalDateTime? = null,
+    @ColumnInfo(name = "storage_download_state", defaultValue = "PENDING")
+    override var storageDownloadState: EnumDownloadState = EnumDownloadState.PENDING,
     @ColumnInfo(name = "file_path")
     override var filePath: String? = null,
     @ColumnInfo(name = "kb_size")

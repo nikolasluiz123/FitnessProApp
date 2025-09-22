@@ -8,7 +8,6 @@ import br.com.fitnesspro.mappers.getPersonAcademyTimeDTO
 import br.com.fitnesspro.mappers.getPersonDTO
 import br.com.fitnesspro.mappers.getSchedulerConfigDTO
 import br.com.fitnesspro.model.base.IntegratedModel
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.model.general.User
@@ -73,6 +72,4 @@ class GeneralModuleExportationRepository(context: Context): AbstractExportationR
             else -> throw IllegalArgumentException("Não foi possível recuperar o DAO. Classe de modelo inválida.")
         }
     }
-
-    override fun getModule(): EnumSyncModule = EnumSyncModule.GENERAL
 }

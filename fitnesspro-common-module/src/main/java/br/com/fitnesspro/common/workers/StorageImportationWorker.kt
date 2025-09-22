@@ -7,7 +7,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import br.com.fitnesspro.common.injection.IStorageWorkersEntryPoint
 import br.com.fitnesspro.common.workers.common.AbstractImportationWorker
-import br.com.fitnesspro.model.enums.EnumSyncModule
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.EntryPointAccessors
@@ -22,21 +21,18 @@ class StorageImportationWorker @AssistedInject constructor(
 
     override fun getClazz() = javaClass
 
-    override fun getModule() = EnumSyncModule.STORAGE
+    override suspend fun verifyShouldImport(): Boolean {
+        val shouldImportList = listOf(
+            entryPoint.getReportStorageImportationRepository().getExistsModelsDownload(),
+            entryPoint.getVideoStorageImportationRepository().getExistsModelsDownload()
+        )
 
-    // TODO - Analisar storage depois
-//    override suspend fun verifyShouldImport(lastUpdateDate: LocalDateTime?): Boolean {
-//        val shouldImportList = listOf(
-//            entryPoint.getReportStorageImportationRepository().getExistsModelsDownload(lastUpdateDate),
-//            entryPoint.getVideoStorageImportationRepository().getExistsModelsDownload(lastUpdateDate)
-//        )
-//
-//        return shouldImportList.any { it }
-//    }
+        return shouldImportList.any { it }
+    }
 
     override suspend fun onImport() {
-//        entryPoint.getReportStorageImportationRepository().import(lastUpdateDate)
-//        entryPoint.getVideoStorageImportationRepository().import(lastUpdateDate)
+        entryPoint.getReportStorageImportationRepository().import()
+        entryPoint.getVideoStorageImportationRepository().import()
     }
 
     override fun getOneTimeWorkRequestBuilder(): OneTimeWorkRequest.Builder {

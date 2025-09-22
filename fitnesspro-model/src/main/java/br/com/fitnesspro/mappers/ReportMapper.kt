@@ -1,5 +1,7 @@
 package br.com.fitnesspro.mappers
 
+import br.com.fitnesspro.core.utils.FileUtils
+import br.com.fitnesspro.model.enums.EnumDownloadState
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.model.enums.EnumTransmissionState.PENDING
 import br.com.fitnesspro.model.enums.EnumTransmissionState.TRANSMITTED
@@ -20,7 +22,8 @@ fun TOReport.getReport(): Report {
         filePath = filePath,
         date = date!!,
         kbSize = kbSize,
-        active = active
+        active = active,
+        storageDownloadState = getReportDownloadState(filePath)
     )
 
     id?.let { model.id = it }
@@ -53,7 +56,8 @@ fun IReportDTO.getReport(): Report {
         transmissionState = TRANSMITTED,
         storageTransmissionState = if (storageTransmissionDate != null) TRANSMITTED else PENDING,
         storageUrl = storageUrl,
-        storageTransmissionDate = storageTransmissionDate
+        storageTransmissionDate = storageTransmissionDate,
+        storageDownloadState = getReportDownloadState(filePath)
     )
 }
 
@@ -102,4 +106,9 @@ fun getEnumReportContext(context: EnumReportContextService): EnumReportContext {
     return when (context) {
         EnumReportContextService.SCHEDULERS_REPORT -> EnumReportContext.SCHEDULERS_REPORT
     }
+}
+
+private fun getReportDownloadState(filePath: String?): EnumDownloadState {
+    val exists = filePath?.let { FileUtils.getFileExists(it) } ?: false
+    return if (exists) EnumDownloadState.DOWNLOADED else EnumDownloadState.PENDING
 }
