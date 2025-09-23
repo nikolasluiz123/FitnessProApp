@@ -79,7 +79,7 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
                 }
             }
 
-            if (hasAnyListPopulated) {
+            if (hasAnyListPopulated && models.maxBy { it.value.size }.value.size < pageSize) {
                 updateLogWithFinalizationInfos(serviceToken, response?.executionLogId!!)
             }
 

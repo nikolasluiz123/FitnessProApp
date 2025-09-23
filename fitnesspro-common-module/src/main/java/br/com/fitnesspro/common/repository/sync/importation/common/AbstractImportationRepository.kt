@@ -120,10 +120,9 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
                 }
             }
 
-            updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
-
             if (!hasData) {
                 updateImportationHistoryFinishedExecution(history)
+                updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
             }
         } catch (ex: Exception) {
             response?.let { serviceResponse ->
