@@ -59,11 +59,12 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
         return CommonImportFilter(lastUpdateDateMap = lastUpdateDateMap) as FILTER
     }
 
-    suspend fun import(serviceToken: String) {
+    suspend fun import(serviceToken: String): Boolean {
         Log.i(LogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName}")
 
         var response: ImportationServiceResponse<DTO>? = null
         var clientStartDateTime: LocalDateTime? = null
+        var hasData: Boolean
 
         try {
             val history = getHistoryFromDB()
@@ -74,6 +75,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
             clientStartDateTime = dateTimeNow(ZoneOffset.UTC)
 
             response = getImportationData(serviceToken, importFilter, pageInfos)
+            hasData = (response.value?.getMaxListSize() ?: 0) == pageInfos.pageSize
 
             updateLogWithStartRunningInfos(
                 serviceToken = serviceToken,
@@ -120,7 +122,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
             updateLogWithFinalizationInfos(serviceToken, response.executionLogId)
 
-            if ((response.value?.getMaxListSize() ?: 0) < pageInfos.pageSize) {
+            if (!hasData) {
                 updateImportationHistoryFinishedExecution(history)
             }
         } catch (ex: Exception) {
@@ -136,6 +138,8 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
             throw ex
         }
+
+        return hasData
     }
 
     private suspend fun updateCursorsImportationHistory(syncDTO: DTO, importationHistory: ImportationHistory) {

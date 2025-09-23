@@ -20,7 +20,7 @@ class SchedulerModuleImportationWorker @AssistedInject constructor(
     private val scheduleEntryPoint = EntryPointAccessors.fromApplication(context, IScheduleWorkersEntryPoint::class.java)
 
     override suspend fun onImport(serviceToken: String) {
-        return scheduleEntryPoint.getSchedulerModuleImportationRepository().import(serviceToken)
+        scheduleEntryPoint.getSchedulerModuleImportationRepository().import(serviceToken)
     }
 
     override fun getClazz() = javaClass

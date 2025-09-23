@@ -15,6 +15,7 @@ import br.com.fitnesspro.local.data.access.backup.DatabaseBackupExporter
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.ui.state.HomeUIState
+import br.com.fitnesspro.usecase.FullManualImportationUseCase
 import br.com.fitnesspro.workout.usecase.exercise.HealthConnectManualIntegrationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -30,7 +31,8 @@ class HomeViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val personRepository: PersonRepository,
     private val globalEvents: GlobalEvents,
-    private val healthConnectManualIntegrationUseCase: HealthConnectManualIntegrationUseCase
+    private val healthConnectManualIntegrationUseCase: HealthConnectManualIntegrationUseCase,
+    private val fullManualImportationUseCase: FullManualImportationUseCase
 ) : FitnessProViewModel() {
 
     private val _uiState: MutableStateFlow<HomeUIState> = MutableStateFlow(HomeUIState())
@@ -147,6 +149,20 @@ class HomeViewModel @Inject constructor(
 
                 launch {
                     healthConnectManualIntegrationUseCase()
+                    _uiState.value.onToggleLoading()
+                }
+            }
+        )
+    }
+
+    fun onExecuteFullManualImport() {
+        _uiState.value.messageDialogState.onShowDialog?.showConfirmationDialog(
+            message = context.getString(R.string.home_screen_dialog_full_manual_import_message),
+            onConfirm = {
+                _uiState.value.onToggleLoading()
+
+                launch {
+                    fullManualImportationUseCase()
                     _uiState.value.onToggleLoading()
                 }
             }

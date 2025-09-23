@@ -3,6 +3,8 @@ package br.com.fitnesspro.common.workers.common
 import android.content.Context
 import android.util.Log
 import androidx.work.WorkerParameters
+import br.com.fitnesspro.core.extensions.dataStore
+import br.com.fitnesspro.core.extensions.getRunExportWorker
 import br.com.fitnesspro.core.worker.LogConstants
 
 abstract class AbstractExportationWorker(
@@ -11,6 +13,10 @@ abstract class AbstractExportationWorker(
 ) : AbstractSyncWorker(context, workerParams) {
 
     abstract suspend fun onExport(serviceToken: String)
+
+    override suspend fun shouldRunWorker(): Boolean {
+        return context.dataStore.getRunExportWorker()
+    }
 
     override suspend fun onSyncWithTransaction() {
         getValidUserTokenOrNull()?.let { serviceToken ->

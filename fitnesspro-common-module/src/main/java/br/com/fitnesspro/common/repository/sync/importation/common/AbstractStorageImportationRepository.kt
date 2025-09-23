@@ -27,12 +27,13 @@ abstract class AbstractStorageImportationRepository<MODEL>(
 
     protected abstract fun getIntegratedMaintenanceDAO(): IntegratedMaintenanceDAO<MODEL>
 
-    suspend fun import() {
+    suspend fun import(): Boolean {
         Log.i(LogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName}")
 
         val models = getModelsDownload(getPageSize())
+        val hasData: Boolean = models.isNotEmpty()
 
-        if (models.isNotEmpty()) {
+        if (hasData) {
             val files = createFiles(models)
             val urls = mutableListOf<String>()
 
@@ -55,5 +56,7 @@ abstract class AbstractStorageImportationRepository<MODEL>(
 
             getIntegratedMaintenanceDAO().updateBatch(models, false)
         }
+
+        return hasData
     }
 }

@@ -20,7 +20,7 @@ class WorkoutModuleImportationWorker @AssistedInject constructor(
     private val entryPoint = EntryPointAccessors.fromApplication(context, IWorkoutWorkersEntryPoint::class.java)
 
     override suspend fun onImport(serviceToken: String) {
-        return entryPoint.getWorkoutModuleImportationRepository().import(serviceToken)
+        entryPoint.getWorkoutModuleImportationRepository().import(serviceToken)
     }
 
     override fun getClazz() = javaClass

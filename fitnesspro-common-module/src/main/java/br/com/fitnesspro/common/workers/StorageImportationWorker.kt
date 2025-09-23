@@ -21,13 +21,15 @@ class StorageImportationWorker @AssistedInject constructor(
 
     override fun getClazz() = javaClass
 
-    override suspend fun verifyShouldImport(): Boolean {
+    override suspend fun shouldRunWorker(): Boolean {
+        val shouldRunWorker = super.shouldRunWorker()
+
         val shouldImportList = listOf(
             entryPoint.getReportStorageImportationRepository().getExistsModelsDownload(),
             entryPoint.getVideoStorageImportationRepository().getExistsModelsDownload()
         )
 
-        return shouldImportList.any { it }
+        return shouldRunWorker && shouldImportList.any { it }
     }
 
     override suspend fun onImport() {

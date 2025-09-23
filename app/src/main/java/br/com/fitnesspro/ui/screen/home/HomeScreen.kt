@@ -89,7 +89,8 @@ fun HomeScreen(
         onNavigateToMemberEvolutionScreen = onNavigateToMemberEvolutionScreen,
         onNavigateToExecutionEvolutionHistory = onNavigateToExecutionEvolutionHistory,
         onExecuteBackup = viewModel::onExecuteBackup,
-        onExecuteHealthConnectIntegration = viewModel::onExecuteHealthConnectIntegration
+        onExecuteHealthConnectIntegration = viewModel::onExecuteHealthConnectIntegration,
+        onExecuteFullManualImport = viewModel::onExecuteFullManualImport
     )
 }
 
@@ -107,7 +108,8 @@ fun HomeScreen(
     onNavigateToMemberEvolutionScreen: () -> Unit = { },
     onNavigateToExecutionEvolutionHistory: OnNavigateToExecutionEvolutionHistory? = null,
     onExecuteBackup: OnExecuteBackup? = null,
-    onExecuteHealthConnectIntegration: () -> Unit = {}
+    onExecuteHealthConnectIntegration: () -> Unit = {},
+    onExecuteFullManualImport: () -> Unit = {}
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
@@ -135,36 +137,46 @@ fun HomeScreen(
                     )
                 },
                 menuItems = {
-                    if (BuildConfig.DEBUG) {
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = stringResource(R.string.home_screen_menu_item_backup),
-                                    style = LabelTextStyle
-                                )
-                            },
-                            onClick = {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = stringResource(R.string.home_screen_menu_item_backup),
+                                style = LabelTextStyle
+                            )
+                        },
+                        onClick = {
+                            state.onToggleLoading()
+                            onExecuteBackup?.onExecute {
                                 state.onToggleLoading()
-                                onExecuteBackup?.onExecute {
-                                    state.onToggleLoading()
-                                }
                             }
-                        )
+                        }
+                    )
 
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = stringResource(R.string.home_screen_menu_item_health_connect_integration),
-                                    style = LabelTextStyle
-                                )
-                            },
-                            onClick = {
-                                onExecuteHealthConnectIntegration()
-                            }
-                        )
-                    }
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = stringResource(R.string.home_screen_menu_item_full_import),
+                                style = LabelTextStyle
+                            )
+                        },
+                        onClick = {
+                            onExecuteFullManualImport()
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = stringResource(R.string.home_screen_menu_item_health_connect_integration),
+                                style = LabelTextStyle
+                            )
+                        },
+                        onClick = {
+                            onExecuteHealthConnectIntegration()
+                        }
+                    )
                 },
-                showMenu = BuildConfig.DEBUG
+                showMenu = true
             )
         }
     ) { padding ->

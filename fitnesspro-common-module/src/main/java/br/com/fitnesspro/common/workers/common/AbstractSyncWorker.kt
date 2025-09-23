@@ -19,15 +19,19 @@ abstract class AbstractSyncWorker(
 
     override fun getMaxRetryTimeMillis(): Long = Duration.of(DEFAULT_WORKER_DELAY * 3L, ChronoUnit.MINUTES).toMillis()
 
+    abstract suspend fun onSyncWithTransaction()
+
+    protected abstract suspend fun shouldRunWorker(): Boolean
+
     protected suspend fun getValidUserTokenOrNull(): String? {
         return userRepository.getValidUserToken()
     }
 
-    abstract suspend fun onSyncWithTransaction()
-
     override suspend fun onWorkOneTime() {
-        userRepository.runInTransaction {
-            onSyncWithTransaction()
+        if (shouldRunWorker()) {
+            userRepository.runInTransaction {
+                onSyncWithTransaction()
+            }
         }
     }
 

@@ -25,4 +25,6 @@
     <string name="home_screen_dialog_backup_message">O backup do banco de dados foi executado com sucesso. Para acessá-lo você precisará entrar na pasta %s no Android.</string>
     <string name="home_screen_dialog_health_connect_integration_message">Você tem certeza de que deseja realizar uma importação dos dados do Health Connect manualmente?</string>
     <string name="home_screen_menu_item_health_connect_integration">Importar dados do Health Connect</string>
+    <string name="home_screen_dialog_full_manual_import_message">Você tem certeza que deseja importar todos os dados do servidor? Essa ação pode levar alguns minutos, para a conclusão com sucesso é recomendado aguardar a execução da importação com o aplicativo em primeiro plano.</string>
+    <string name="home_screen_menu_item_full_import">Importar Dados de Todos os Módulos</string>
 </resources>

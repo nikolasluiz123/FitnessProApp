@@ -20,7 +20,7 @@ class GeneralModuleImportationWorker @AssistedInject constructor(
     private val entryPoint = EntryPointAccessors.fromApplication(context, IGeneralWorkerEntryPoint::class.java)
 
     override suspend fun onImport(serviceToken: String) {
-        return entryPoint.getGeneralModuleImportationRepository().import(serviceToken)
+        entryPoint.getGeneralModuleImportationRepository().import(serviceToken)
     }
 
     override fun getClazz() = javaClass
