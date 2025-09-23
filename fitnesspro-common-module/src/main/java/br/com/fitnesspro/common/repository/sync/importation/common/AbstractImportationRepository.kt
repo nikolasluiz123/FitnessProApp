@@ -50,7 +50,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
     protected abstract fun getListModelClassesNames(): List<String>
 
-    protected abstract fun getCursorDataFrom(syncDTO: DTO): CursorData
+    protected abstract fun getCursorDataFrom(syncDTO: DTO): MutableMap<String, LocalDateTime?>
 
     protected abstract fun getModule(): EnumSyncModule
 
@@ -140,7 +140,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
     private suspend fun updateCursorsImportationHistory(syncDTO: DTO, importationHistory: ImportationHistory) {
         val cursorData = getCursorDataFrom(syncDTO)
-        importationHistory.cursorTimestampMapJson = gson.toJson(cursorData.cursorTimestampMap, timestampMapType)
+        importationHistory.cursorTimestampMapJson = gson.toJson(cursorData, timestampMapType)
 
         importationHistoryDAO.update(importationHistory)
     }
@@ -195,13 +195,15 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
     }
 
     protected fun List<AuditableDTO>.populateCursorInfos(
-        cursorIdsMap: MutableMap<String, String?>,
         cursorTimestampMap: MutableMap<String, LocalDateTime?>,
         entityClass: KClass<*>
     ) {
-        forEach {
-            cursorIdsMap[entityClass.simpleName!!] = it.id
-            cursorTimestampMap[entityClass.simpleName!!] = it.updateDate
+        if (this.size < getPageSize()) {
+            cursorTimestampMap[entityClass.simpleName!!] = dateTimeNow(ZoneOffset.UTC)
+        } else {
+            forEach {
+                cursorTimestampMap[entityClass.simpleName!!] = it.updateDate
+            }
         }
     }
 

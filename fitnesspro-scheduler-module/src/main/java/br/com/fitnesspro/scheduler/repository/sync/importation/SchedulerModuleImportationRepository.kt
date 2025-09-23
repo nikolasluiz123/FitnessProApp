@@ -3,7 +3,6 @@ package br.com.fitnesspro.scheduler.repository.sync.importation
 import android.content.Context
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
-import br.com.fitnesspro.common.repository.sync.importation.common.CursorData
 import br.com.fitnesspro.common.repository.sync.importation.common.ImportSegregationResult
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.mappers.getReport
@@ -102,15 +101,14 @@ class SchedulerModuleImportationRepository(
         )
     }
 
-    override fun getCursorDataFrom(syncDTO: SchedulerModuleSyncDTO): CursorData {
-        val cursorIdsMap = mutableMapOf<String, String?>()
+    override fun getCursorDataFrom(syncDTO: SchedulerModuleSyncDTO): MutableMap<String, LocalDateTime?> {
         val cursorTimestampMap = mutableMapOf<String, LocalDateTime?>()
 
-        syncDTO.schedulers.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Scheduler::class)
-        syncDTO.reports.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Report::class)
-        syncDTO.schedulerReports.populateCursorInfos(cursorIdsMap, cursorTimestampMap, SchedulerReport::class)
+        syncDTO.schedulers.populateCursorInfos(cursorTimestampMap, Scheduler::class)
+        syncDTO.reports.populateCursorInfos(cursorTimestampMap, Report::class)
+        syncDTO.schedulerReports.populateCursorInfos(cursorTimestampMap, SchedulerReport::class)
 
-        return CursorData(cursorIdsMap, cursorTimestampMap)
+        return cursorTimestampMap
     }
 
     override fun getModule() = EnumSyncModule.SCHEDULER

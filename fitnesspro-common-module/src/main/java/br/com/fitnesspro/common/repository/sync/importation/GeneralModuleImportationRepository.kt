@@ -3,7 +3,6 @@ package br.com.fitnesspro.common.repository.sync.importation
 import android.content.Context
 import br.com.fitnesspro.common.injection.IGeneralModuleSyncRepositoryEntryPoint
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
-import br.com.fitnesspro.common.repository.sync.importation.common.CursorData
 import br.com.fitnesspro.common.repository.sync.importation.common.ImportSegregationResult
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.mappers.getAcademy
@@ -109,17 +108,16 @@ class GeneralModuleImportationRepository(context: Context): AbstractImportationR
         )
     }
 
-    override fun getCursorDataFrom(syncDTO: GeneralModuleSyncDTO): CursorData {
-        val cursorIdsMap = mutableMapOf<String, String?>()
+    override fun getCursorDataFrom(syncDTO: GeneralModuleSyncDTO): MutableMap<String, LocalDateTime?> {
         val cursorTimestampMap = mutableMapOf<String, LocalDateTime?>()
 
-        syncDTO.academies.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Academy::class)
-        syncDTO.persons.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Person::class)
-        syncDTO.persons.mapNotNull { it.user }.populateCursorInfos(cursorIdsMap, cursorTimestampMap, User::class)
-        syncDTO.personAcademyTimes.populateCursorInfos(cursorIdsMap, cursorTimestampMap, PersonAcademyTime::class)
-        syncDTO.schedulerConfigs.populateCursorInfos(cursorIdsMap, cursorTimestampMap, SchedulerConfig::class)
+        syncDTO.academies.populateCursorInfos(cursorTimestampMap, Academy::class)
+        syncDTO.persons.populateCursorInfos(cursorTimestampMap, Person::class)
+        syncDTO.persons.mapNotNull { it.user }.populateCursorInfos(cursorTimestampMap, User::class)
+        syncDTO.personAcademyTimes.populateCursorInfos(cursorTimestampMap, PersonAcademyTime::class)
+        syncDTO.schedulerConfigs.populateCursorInfos(cursorTimestampMap, SchedulerConfig::class)
 
-        return CursorData(cursorIdsMap, cursorTimestampMap)
+        return cursorTimestampMap
     }
 
     override fun getModule() = EnumSyncModule.GENERAL

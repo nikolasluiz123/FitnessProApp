@@ -4,7 +4,6 @@ import android.content.Context
 import br.com.fitnesspro.common.injection.health.IHealthConnectModuleSyncRepositoryEntryPoint
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
-import br.com.fitnesspro.common.repository.sync.importation.common.CursorData
 import br.com.fitnesspro.common.repository.sync.importation.common.ImportSegregationResult
 import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.mappers.getExercise
@@ -310,29 +309,28 @@ class WorkoutModuleImportationRepository(
         )
     }
 
-    override fun getCursorDataFrom(syncDTO: WorkoutModuleSyncDTO): CursorData {
-        val cursorIdsMap = mutableMapOf<String, String?>()
+    override fun getCursorDataFrom(syncDTO: WorkoutModuleSyncDTO): MutableMap<String, LocalDateTime?> {
         val cursorTimestampMap = mutableMapOf<String, LocalDateTime?>()
 
-        syncDTO.workouts.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Workout::class)
-        syncDTO.workoutGroups.populateCursorInfos(cursorIdsMap, cursorTimestampMap, WorkoutGroup::class)
-        syncDTO.exercises.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Exercise::class)
-        syncDTO.videos.populateCursorInfos(cursorIdsMap, cursorTimestampMap, Video::class)
-        syncDTO.videoExercises.populateCursorInfos(cursorIdsMap, cursorTimestampMap, VideoExercise::class)
-        syncDTO.exerciseExecutions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, ExerciseExecution::class)
-        syncDTO.videoExerciseExecutions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, VideoExerciseExecution::class)
-        syncDTO.workoutGroupsPreDefinitions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, WorkoutGroupPreDefinition::class)
-        syncDTO.exercisePredefinitions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, ExercisePreDefinition::class)
-        syncDTO.videoExercisePreDefinitions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, VideoExercisePreDefinition::class)
-        syncDTO.metadata.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectMetadata::class)
-        syncDTO.steps.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectSteps::class)
-        syncDTO.caloriesBurned.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectCaloriesBurned::class)
-        syncDTO.heartRateSessions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectHeartRate::class)
-        syncDTO.heartRateSamples.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectHeartRateSamples::class)
-        syncDTO.sleepSessions.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectSleepSession::class)
-        syncDTO.sleepStages.populateCursorInfos(cursorIdsMap, cursorTimestampMap, HealthConnectSleepStages::class)
-        syncDTO.sleepSessionAssociations.populateCursorInfos(cursorIdsMap, cursorTimestampMap, SleepSessionExerciseExecution::class)
+        syncDTO.workouts.populateCursorInfos(cursorTimestampMap, Workout::class)
+        syncDTO.workoutGroups.populateCursorInfos(cursorTimestampMap, WorkoutGroup::class)
+        syncDTO.exercises.populateCursorInfos(cursorTimestampMap, Exercise::class)
+        syncDTO.videos.populateCursorInfos(cursorTimestampMap, Video::class)
+        syncDTO.videoExercises.populateCursorInfos(cursorTimestampMap, VideoExercise::class)
+        syncDTO.exerciseExecutions.populateCursorInfos(cursorTimestampMap, ExerciseExecution::class)
+        syncDTO.videoExerciseExecutions.populateCursorInfos(cursorTimestampMap, VideoExerciseExecution::class)
+        syncDTO.workoutGroupsPreDefinitions.populateCursorInfos(cursorTimestampMap, WorkoutGroupPreDefinition::class)
+        syncDTO.exercisePredefinitions.populateCursorInfos(cursorTimestampMap, ExercisePreDefinition::class)
+        syncDTO.videoExercisePreDefinitions.populateCursorInfos(cursorTimestampMap, VideoExercisePreDefinition::class)
+        syncDTO.metadata.populateCursorInfos(cursorTimestampMap, HealthConnectMetadata::class)
+        syncDTO.steps.populateCursorInfos(cursorTimestampMap, HealthConnectSteps::class)
+        syncDTO.caloriesBurned.populateCursorInfos(cursorTimestampMap, HealthConnectCaloriesBurned::class)
+        syncDTO.heartRateSessions.populateCursorInfos(cursorTimestampMap, HealthConnectHeartRate::class)
+        syncDTO.heartRateSamples.populateCursorInfos(cursorTimestampMap, HealthConnectHeartRateSamples::class)
+        syncDTO.sleepSessions.populateCursorInfos(cursorTimestampMap, HealthConnectSleepSession::class)
+        syncDTO.sleepStages.populateCursorInfos(cursorTimestampMap, HealthConnectSleepStages::class)
+        syncDTO.sleepSessionAssociations.populateCursorInfos(cursorTimestampMap, SleepSessionExerciseExecution::class)
 
-        return CursorData(cursorIdsMap, cursorTimestampMap)
+        return cursorTimestampMap
     }
 }
