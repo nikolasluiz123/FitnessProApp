@@ -201,9 +201,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
         if (this.size < getPageSize()) {
             cursorTimestampMap[entityClass.simpleName!!] = dateTimeNow(ZoneOffset.UTC)
         } else {
-            forEach {
-                cursorTimestampMap[entityClass.simpleName!!] = it.updateDate
-            }
+            cursorTimestampMap[entityClass.simpleName!!] = this.maxBy { it.updateDate!! }.updateDate
         }
     }
 
