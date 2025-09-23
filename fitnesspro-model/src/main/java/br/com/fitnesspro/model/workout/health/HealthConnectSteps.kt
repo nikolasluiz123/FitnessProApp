@@ -2,12 +2,10 @@ package br.com.fitnesspro.model.workout.health
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.IRelationalHealthConnectEntity
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumTransmissionState
-import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import java.time.Instant
 import java.time.ZoneOffset
 import java.util.UUID
@@ -28,20 +26,6 @@ import java.util.UUID
  */
 @Entity(
     tableName = "health_connect_steps",
-    foreignKeys = [
-        ForeignKey(
-            entity = HealthConnectMetadata::class,
-            parentColumns = ["id"],
-            childColumns = ["health_connect_metadata_id"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = ExerciseExecution::class,
-            parentColumns = ["id"],
-            childColumns = ["exercise_execution_id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
 )
 data class HealthConnectSteps(
     @PrimaryKey

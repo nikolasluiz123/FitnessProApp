@@ -2,7 +2,6 @@ package br.com.fitnesspro.model.general
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumTransmissionState
@@ -12,20 +11,6 @@ import java.util.UUID
 
 @Entity(
     tableName = "person_academy_time",
-    foreignKeys = [
-        ForeignKey(
-            entity = Person::class,
-            parentColumns = ["id"],
-            childColumns = ["person_id"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = Academy::class,
-            parentColumns = ["id"],
-            childColumns = ["academy_id"],
-            onDelete = ForeignKey.CASCADE
-        ),
-    ]
 )
 data class PersonAcademyTime(
     @PrimaryKey

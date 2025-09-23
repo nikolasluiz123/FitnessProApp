@@ -2,7 +2,6 @@ package br.com.fitnesspro.model.nutrition.diet
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumTransmissionState
@@ -11,14 +10,6 @@ import java.util.UUID
 
 @Entity(
     tableName = "meal",
-    foreignKeys = [
-        ForeignKey(
-            entity = DayWeekDiet::class,
-            parentColumns = ["id"],
-            childColumns = ["day_week_diet_id"],
-            onDelete = ForeignKey.CASCADE
-        ),
-    ]
 )
 data class Meal(
     @PrimaryKey

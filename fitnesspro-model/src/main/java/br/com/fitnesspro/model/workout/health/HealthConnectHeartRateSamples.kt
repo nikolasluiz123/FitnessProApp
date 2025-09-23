@@ -2,7 +2,6 @@ package br.com.fitnesspro.model.workout.health
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumTransmissionState
@@ -22,14 +21,6 @@ import java.util.UUID
  */
 @Entity(
     tableName = "health_connect_heart_rate_samples",
-    foreignKeys = [
-        ForeignKey(
-            entity = HealthConnectHeartRate::class,
-            parentColumns = ["id"],
-            childColumns = ["health_connect_heart_rate_id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
 )
 data class HealthConnectHeartRateSamples(
     @PrimaryKey

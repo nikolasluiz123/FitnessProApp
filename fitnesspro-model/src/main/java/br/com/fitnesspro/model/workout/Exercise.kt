@@ -2,7 +2,6 @@ package br.com.fitnesspro.model.workout
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumTransmissionState
@@ -10,14 +9,6 @@ import java.util.UUID
 
 @Entity(
     tableName = "exercise",
-    foreignKeys = [
-        ForeignKey(
-            entity = WorkoutGroup::class,
-            parentColumns = ["id"],
-            childColumns = ["workout_group_id"],
-            onDelete = ForeignKey.CASCADE
-        ),
-    ]
 )
 data class Exercise(
     @PrimaryKey

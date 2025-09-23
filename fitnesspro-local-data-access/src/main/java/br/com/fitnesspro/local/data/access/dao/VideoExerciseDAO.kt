@@ -1,7 +1,6 @@
 package br.com.fitnesspro.local.data.access.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
@@ -79,9 +78,6 @@ abstract class VideoExerciseDAO: IntegratedMaintenanceDAO<VideoExercise>() {
 
     @Query(" select * from video_exercise where exercise_id in (:exerciseIds) and active = 1 ")
     abstract suspend fun getListVideoExerciseActiveFromExercises(exerciseIds: List<String>): List<VideoExercise>
-
-    @Delete
-    abstract suspend fun deleteVideosExercise(videos: List<VideoExercise>)
 
     @RawQuery
     abstract suspend fun executeQueryExistsVideoExercise(query: SupportSQLiteQuery): Boolean

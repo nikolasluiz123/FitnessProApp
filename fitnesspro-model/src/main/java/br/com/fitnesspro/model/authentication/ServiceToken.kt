@@ -2,38 +2,15 @@ package br.com.fitnesspro.model.authentication
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.enums.EnumTokenType
-import br.com.fitnesspro.model.general.User
 import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity(
     tableName = "service_token",
-    foreignKeys = [
-        ForeignKey(
-            entity = User::class,
-            parentColumns = ["id"],
-            childColumns = ["user_id"],
-            onDelete = CASCADE,
-        ),
-        ForeignKey(
-            entity = Application::class,
-            parentColumns = ["id"],
-            childColumns = ["application_id"],
-            onDelete = CASCADE,
-        ),
-        ForeignKey(
-            entity = Device::class,
-            parentColumns = ["id"],
-            childColumns = ["device_id"],
-            onDelete = CASCADE
-        )
-    ],
     indices = [
         Index(value = ["user_id"]),
         Index(value = ["application_id"]),

@@ -2,25 +2,15 @@ package br.com.fitnesspro.model.workout.execution
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.IHealthDataRangeEntity
 import br.com.fitnesspro.model.enums.EnumTransmissionState
-import br.com.fitnesspro.model.workout.Exercise
 import java.time.Instant
 import java.util.UUID
 
 @Entity(
     tableName = "exercise_execution",
-    foreignKeys = [
-        ForeignKey(
-            entity = Exercise::class,
-            parentColumns = ["id"],
-            childColumns = ["exercise_id"],
-            onDelete = ForeignKey.CASCADE
-        ),
-    ]
 )
 data class ExerciseExecution(
     @PrimaryKey

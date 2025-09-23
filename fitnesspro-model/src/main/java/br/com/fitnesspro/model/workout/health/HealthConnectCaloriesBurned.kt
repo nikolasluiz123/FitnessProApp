@@ -2,7 +2,6 @@ package br.com.fitnesspro.model.workout.health
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.IRelationalHealthConnectEntity
 import br.com.fitnesspro.model.base.IntegratedModel
@@ -27,14 +26,6 @@ import java.util.UUID
  */
 @Entity(
     tableName = "health_connect_calories_burned",
-    foreignKeys = [
-        ForeignKey(
-            entity = HealthConnectMetadata::class,
-            parentColumns = ["id"],
-            childColumns = ["health_connect_metadata_id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
 )
 data class HealthConnectCaloriesBurned(
     @PrimaryKey

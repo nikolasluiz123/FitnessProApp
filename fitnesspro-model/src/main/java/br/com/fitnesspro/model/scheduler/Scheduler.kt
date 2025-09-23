@@ -2,38 +2,16 @@ package br.com.fitnesspro.model.scheduler
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.model.enums.EnumTransmissionState
-import br.com.fitnesspro.model.general.Person
 import java.time.OffsetDateTime
 import java.util.UUID
 
 @Entity(
     tableName = "scheduler",
-    foreignKeys = [
-        ForeignKey(
-            entity = Person::class,
-            parentColumns = ["id"],
-            childColumns = ["academy_member_person_id"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = Person::class,
-            parentColumns = ["id"],
-            childColumns = ["professional_person_id"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = Person::class,
-            parentColumns = ["id"],
-            childColumns = ["cancellation_person_id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
 )
 data class Scheduler(
     @PrimaryKey

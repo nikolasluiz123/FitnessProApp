@@ -74,7 +74,7 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 
 @Database(
-    version = 49,
+    version = 50,
     entities = [
         User::class, Person::class, Academy::class, PersonAcademyTime::class, PhysicEvaluation::class,
         IngredientPreDefinition::class, MealOptionPreDefinition::class, Diet::class, DayWeekDiet::class, Meal::class,

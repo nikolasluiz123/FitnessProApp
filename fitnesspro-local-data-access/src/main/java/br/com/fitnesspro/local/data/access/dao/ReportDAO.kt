@@ -1,7 +1,6 @@
 package br.com.fitnesspro.local.data.access.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
@@ -213,12 +212,6 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
 
     @Query("select * from report where id = :id")
     abstract suspend fun getReportById(id: String): Report?
-
-    @Delete
-    abstract suspend fun deleteReport(report: Report)
-
-    @Delete
-    abstract suspend fun deleteReports(reports: List<Report>)
 
     @Query("select exists (select 1 from report where id = :id)")
     abstract suspend fun hasEntityWithId(id: String): Boolean
