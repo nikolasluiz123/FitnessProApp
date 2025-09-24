@@ -33,10 +33,14 @@ import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogPackageDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogSubPackageEntityCountsDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogSubPackageInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.interfaces.IExecutionLogDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.interfaces.IExecutionLogPackageDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.interfaces.IUpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.interfaces.IUpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.interfaces.IUpdatableExecutionLogSubPackageEntityCountsDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.interfaces.IUpdatableExecutionLogSubPackageInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.notification.GlobalNotificationDTO
 import br.com.fitnesspro.shared.communication.dtos.notification.NotificationDTO
 import br.com.fitnesspro.shared.communication.dtos.notification.interfaces.IGlobalNotificationDTO
@@ -127,6 +131,8 @@ fun GsonBuilder.defaultServiceGSon(): Gson {
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IExecutionLogPackageDTO::class.java, ExecutionLogPackageDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IUpdatableExecutionLogInfosDTO::class.java, UpdatableExecutionLogInfosDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IUpdatableExecutionLogPackageInfosDTO::class.java, UpdatableExecutionLogPackageInfosDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IUpdatableExecutionLogSubPackageInfosDTO::class.java, UpdatableExecutionLogSubPackageInfosDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IUpdatableExecutionLogSubPackageEntityCountsDTO::class.java, UpdatableExecutionLogSubPackageEntityCountsDTO::class.java))
 
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IGlobalNotificationDTO::class.java, GlobalNotificationDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(INotificationDTO::class.java, NotificationDTO::class.java))

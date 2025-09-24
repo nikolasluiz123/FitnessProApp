@@ -7,6 +7,7 @@ import br.com.fitnesspro.service.data.access.webclient.common.FitnessProWebClien
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogSubPackageInfosDTO
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 
 class ExecutionLogWebClient(
@@ -38,6 +39,22 @@ class ExecutionLogWebClient(
         return persistenceServiceErrorHandlingBlock(
             codeBlock = {
                 executionLogService.updateExecutionLogPackage(
+                    token = formatToken(token),
+                    executionLogPackageId = logPackageId,
+                    dto = dto
+                ).getResponseBody(BaseDTO::class.java)
+            }
+        )
+    }
+
+    suspend fun updateLogSubPackageInformation(
+        token: String,
+        logPackageId: String,
+        dto: UpdatableExecutionLogSubPackageInfosDTO
+    ): PersistenceServiceResponse<BaseDTO> {
+        return persistenceServiceErrorHandlingBlock(
+            codeBlock = {
+                executionLogService.updateExecutionLogSubPackage(
                     token = formatToken(token),
                     executionLogPackageId = logPackageId,
                     dto = dto

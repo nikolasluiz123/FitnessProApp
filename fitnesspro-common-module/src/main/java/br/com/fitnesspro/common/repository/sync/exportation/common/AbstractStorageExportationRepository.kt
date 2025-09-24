@@ -155,7 +155,6 @@ abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMainte
             token = serviceToken,
             logPackageId = logPackageId,
             dto = UpdatableExecutionLogPackageInfosDTO(
-                allItemsCount = models.size,
                 clientExecutionEnd = clientExecutionEnd
             )
         )

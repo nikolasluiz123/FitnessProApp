@@ -4,6 +4,7 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogSubPackageInfosDTO
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -25,6 +26,13 @@ interface IExecutionLogService {
         @Header("Authorization") token: String,
         @Path("executionLogPackageId") executionLogPackageId: String,
         @Body dto: UpdatableExecutionLogPackageInfosDTO
+    ): Response<PersistenceServiceResponse<BaseDTO>>
+
+    @PUT("${EndPointsV1.LOGS}${EndPointsV1.LOGS_SUB_PACKAGE}")
+    suspend fun updateExecutionLogSubPackage(
+        @Header("Authorization") token: String,
+        @Path("executionLogPackageId") executionLogPackageId: String,
+        @Body dto: UpdatableExecutionLogSubPackageInfosDTO
     ): Response<PersistenceServiceResponse<BaseDTO>>
 
 }

@@ -35,6 +35,10 @@ class GeneralModuleImportationRepository(context: Context): AbstractImportationR
 
     private val entryPoint = EntryPointAccessors.fromApplication(context, IGeneralModuleSyncRepositoryEntryPoint::class.java)
 
+    override fun shouldIgnoreEntityLog(result: ImportSegregationResult<BaseModel>): Boolean {
+        return result.modelClass == User::class
+    }
+
     override suspend fun getImportationData(
         token: String,
         filter: CommonImportFilter,

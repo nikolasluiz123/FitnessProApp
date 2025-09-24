@@ -143,7 +143,6 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
             token = serviceToken,
             logPackageId = logPackageId,
             dto = UpdatableExecutionLogPackageInfosDTO(
-                allItemsCount = dto.getItemsCount(),
                 clientExecutionEnd = clientExecutionEnd
             )
         )

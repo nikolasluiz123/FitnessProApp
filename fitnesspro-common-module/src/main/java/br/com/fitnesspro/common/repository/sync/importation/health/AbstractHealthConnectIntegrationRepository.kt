@@ -124,7 +124,9 @@ abstract class AbstractHealthConnectIntegrationRepository<ENTITY : IHealthDataRa
                 .filter { hasEntityWithId(it) }
                 .map { getEntity(it) }
 
-            ImportSegregationResult(insertionList, updateList)
+            val clazz = (insertionList.firstOrNull() ?: updateList.firstOrNull())!!::class
+
+            ImportSegregationResult(insertionList, updateList, clazz)
         } else {
             null
         }

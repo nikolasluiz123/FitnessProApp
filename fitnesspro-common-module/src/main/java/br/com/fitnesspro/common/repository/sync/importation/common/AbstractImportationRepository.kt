@@ -15,6 +15,8 @@ import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogSubPackageEntityCountsDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogSubPackageInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.sync.interfaces.ISyncDTO
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -59,6 +61,8 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
         return CommonImportFilter(lastUpdateDateMap = lastUpdateDateMap) as FILTER
     }
 
+    open fun shouldIgnoreEntityLog(result: ImportSegregationResult<BaseModel>): Boolean = false
+
     suspend fun import(serviceToken: String): Boolean {
         Log.i(LogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName}")
 
@@ -81,7 +85,6 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
                 serviceToken = serviceToken,
                 logPackageId = response.executionLogPackageId,
                 logId = response.executionLogId,
-                importFilter = importFilter,
                 pageInfos = pageInfos,
                 clientStartDateTime = clientStartDateTime
             )
@@ -92,8 +95,6 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
                     updateExecutionLogPackageWithSuccessIterationInfos(
                         logPackageId = response.executionLogPackageId,
-                        insertionListCount = 0,
-                        updateListCount = 0,
                         serviceToken = serviceToken
                     )
                 }
@@ -102,14 +103,18 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
                     Log.i(LogConstants.WORKER_IMPORT, "Sucesso Com Dados Novos. pageSize = ${pageInfos.pageSize} maxListSize = ${response.value?.getMaxListSize()}")
 
                     val segregationResult = executeSegregation(response.value!!)
-
-                    saveDataLocally(segregationResult)
+                    val entityCounts = saveDataLocally(segregationResult)
 
                     updateExecutionLogPackageWithSuccessIterationInfos(
                         logPackageId = response.executionLogPackageId,
-                        insertionListCount = segregationResult.sumOf { it.insertionList.size },
-                        updateListCount = segregationResult.sumOf { it.updateList.size },
                         serviceToken = serviceToken
+                    )
+
+                    updateExecutionLogSubPackageEntityCounts(
+                        logPackageId = response.executionLogPackageId,
+                        serviceToken = serviceToken,
+                        entityCounts = entityCounts,
+                        cursorTimestampMap = cursorTimestampMap
                     )
 
                     updateCursorsImportationHistory(response.value!!, history)
@@ -191,7 +196,9 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
                 .filter { hasEntityWithId(it.id!!) }
                 .map { convertDTOToEntity(it) }
 
-            ImportSegregationResult(insertionList, updateList)
+            val clazz = (insertionList.firstOrNull() ?: updateList.firstOrNull())!!::class
+
+            ImportSegregationResult(insertionList, updateList, clazz)
         } else {
             null
         }
@@ -208,7 +215,9 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
         }
     }
 
-    protected suspend fun saveDataLocally(segregationResult: List<ImportSegregationResult<BaseModel>>) {
+    protected suspend fun saveDataLocally(segregationResult: List<ImportSegregationResult<BaseModel>>): Map<String, UpdatableExecutionLogSubPackageEntityCountsDTO> {
+        val entityCounts = mutableMapOf<String, UpdatableExecutionLogSubPackageEntityCountsDTO>()
+
         segregationResult.forEach { result ->
             if (result.insertionList.isNotEmpty() || result.updateList.isNotEmpty()) {
                 val clazz = (result.insertionList.firstOrNull() ?: result.updateList.firstOrNull())!!::class
@@ -222,7 +231,19 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
                     maintenanceDAO.updateBatch(result.updateList)
                 }
             }
+
+            if (!shouldIgnoreEntityLog(result)) {
+                entityCounts.put(
+                    result.modelClass.simpleName!!,
+                    UpdatableExecutionLogSubPackageEntityCountsDTO(
+                        insertedItemsCount = result.insertionList.size,
+                        updatedItemsCount = result.updateList.size
+                    )
+                )
+            }
         }
+
+        return entityCounts
     }
 
     private suspend fun updateLogPackageWithErrorInfos(
@@ -255,7 +276,6 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
         serviceToken: String,
         logId: String,
         logPackageId: String,
-        importFilter: CommonImportFilter,
         pageInfos: ImportPageInfos,
         clientStartDateTime: LocalDateTime
     ) {
@@ -263,7 +283,6 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
             token = serviceToken,
             logId = logId,
             dto = UpdatableExecutionLogInfosDTO(
-                lastUpdateDate = null, // TODO - Preciso repensar esses logs e já fazer uma nova entidade para guardar dados da execução de cada entidade sincronizada
                 pageSize = pageInfos.pageSize
             )
         )
@@ -280,16 +299,28 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
     private suspend fun updateExecutionLogPackageWithSuccessIterationInfos(
         serviceToken: String,
         logPackageId: String,
-        insertionListCount: Int,
-        updateListCount: Int,
     ) {
         executionLogWebClient.updateLogPackageInformation(
             token = serviceToken,
             logPackageId = logPackageId,
             dto = UpdatableExecutionLogPackageInfosDTO(
-                insertedItemsCount = insertionListCount,
-                updatedItemsCount = updateListCount,
                 clientExecutionEnd = dateTimeNow(ZoneOffset.UTC)
+            )
+        )
+    }
+
+    private suspend fun updateExecutionLogSubPackageEntityCounts(
+        logPackageId: String,
+        serviceToken: String,
+        entityCounts: Map<String, UpdatableExecutionLogSubPackageEntityCountsDTO>,
+        cursorTimestampMap: MutableMap<String, LocalDateTime?>
+    ) {
+        executionLogWebClient.updateLogSubPackageInformation(
+            token = serviceToken,
+            logPackageId = logPackageId,
+            dto = UpdatableExecutionLogSubPackageInfosDTO(
+                entityCounts = entityCounts,
+                lastUpdateDateMap = cursorTimestampMap
             )
         )
     }
