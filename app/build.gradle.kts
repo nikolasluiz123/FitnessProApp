@@ -39,7 +39,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = 1
-        versionName = "2.2.X-Melhorias-Logs-Servico"
+        versionName = "2.2.1"
 
         android.buildFeatures.buildConfig = true
         vectorDrawables {
