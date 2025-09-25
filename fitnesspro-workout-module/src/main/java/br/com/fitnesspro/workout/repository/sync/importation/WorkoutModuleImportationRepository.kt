@@ -286,7 +286,7 @@ class WorkoutModuleImportationRepository(
 
     override fun getModule() = EnumSyncModule.WORKOUT
 
-    override fun getListModelClassesNames(): List<String> {
+    override fun getListImportedModelClassesNames(): List<String> {
         return listOf(
             Workout::class.simpleName!!,
             WorkoutGroup::class.simpleName!!,

@@ -102,11 +102,10 @@ class GeneralModuleImportationRepository(context: Context): AbstractImportationR
         }
     }
 
-    override fun getListModelClassesNames(): List<String> {
+    override fun getListImportedModelClassesNames(): List<String> {
         return listOf(
             Academy::class.simpleName!!,
             Person::class.simpleName!!,
-            User::class.simpleName!!,
             PersonAcademyTime::class.simpleName!!,
             SchedulerConfig::class.simpleName!!
         )

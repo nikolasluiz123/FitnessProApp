@@ -50,7 +50,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
     protected abstract fun getMaintenanceDAO(modelClass: KClass<out BaseModel>): MaintenanceDAO<out BaseModel>
 
-    protected abstract fun getListModelClassesNames(): List<String>
+    protected abstract fun getListImportedModelClassesNames(): List<String>
 
     protected abstract fun getCursorDataFrom(syncDTO: DTO): MutableMap<String, LocalDateTime?>
 
@@ -178,7 +178,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
         } ?: mutableMapOf()
 
         if (cursorTimestampMap.isEmpty()) {
-            getListModelClassesNames().map {
+            getListImportedModelClassesNames().map {
                 cursorTimestampMap[it] = importationHistory?.date
             }
         }

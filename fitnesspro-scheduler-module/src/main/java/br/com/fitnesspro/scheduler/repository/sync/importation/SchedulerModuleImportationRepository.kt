@@ -93,7 +93,7 @@ class SchedulerModuleImportationRepository(
         }
     }
 
-    override fun getListModelClassesNames(): List<String> {
+    override fun getListImportedModelClassesNames(): List<String> {
         return listOf(
             Scheduler::class.simpleName!!,
             Report::class.simpleName!!,
