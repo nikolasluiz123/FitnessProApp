@@ -56,7 +56,6 @@ fun SimpleBarChart(
                     entry = entry,
                     style = barStyle,
                     maxValue = maxValue,
-                    chartHeight = chartHeight,
                     index = index,
                     modifier = slotModifier
                         .padding(horizontal = 24.dp)

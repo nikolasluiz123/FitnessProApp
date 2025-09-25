@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.charts.composables.bar.simple.SimpleBar
 import br.com.fitnesspro.charts.entries.bar.GroupedBarEntry
@@ -19,7 +18,6 @@ fun GroupedBars(
     entry: GroupedBarEntry,
     styles: List<BarStyle>,
     maxValue: Float,
-    chartHeight: Dp,
     groupIndex: Int,
     barWidthFraction: Float,
     modifier: Modifier = Modifier
@@ -37,7 +35,6 @@ fun GroupedBars(
                 entry = singleEntry,
                 style = style,
                 maxValue = maxValue,
-                chartHeight = chartHeight,
                 index = groupIndex,
                 modifier = Modifier
                     .weight(1f)

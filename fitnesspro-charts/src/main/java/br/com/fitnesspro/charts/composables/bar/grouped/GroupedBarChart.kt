@@ -58,7 +58,6 @@ fun GroupedBarChart(
                     entry = entry,
                     styles = style.defaultBarStyles,
                     maxValue = maxValue,
-                    chartHeight = chartHeight,
                     groupIndex = groupIndex,
                     barWidthFraction = barWidthFraction,
                     modifier = slotModifier.padding(horizontal = 24.dp)
