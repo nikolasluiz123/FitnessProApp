@@ -4,7 +4,10 @@ import android.content.Context
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.NAME
+import br.com.fitnesspro.core.extensions.dataStore
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.core.extensions.setRunExportWorker
+import br.com.fitnesspro.core.extensions.setRunImportWorker
 import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.local.data.access.dao.filters.SchedulerReportFilter
@@ -36,6 +39,8 @@ class GenerateSchedulerReportUseCase(
 
         return if (validationResult.isEmpty()) {
             try {
+                blockWorkersRun()
+
                 val filter = getReportFilter(reportResult)
                 file = generateReport(filter)
                 saveGeneratedReport(reportResult, file, filter)
@@ -47,6 +52,8 @@ class GenerateSchedulerReportUseCase(
             } catch (e: Exception) {
                 file?.delete()
                 throw e
+            } finally {
+                unblockWorkersRun()
             }
         } else {
             GenerateSchedulerReportUseCaseResult(
@@ -54,6 +61,16 @@ class GenerateSchedulerReportUseCase(
                 validations = validationResult
             )
         }
+    }
+
+    private suspend fun blockWorkersRun() {
+        context.dataStore.setRunImportWorker(false)
+        context.dataStore.setRunExportWorker(false)
+    }
+
+    private suspend fun unblockWorkersRun() {
+        context.dataStore.setRunImportWorker(true)
+        context.dataStore.setRunExportWorker(true)
     }
 
     private suspend fun getReportFilter(reportResult: NewSchedulerReportResult): SchedulerReportFilter {
