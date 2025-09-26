@@ -28,7 +28,7 @@ abstract class AbstractPDFReport<FILTER: Any>(var filter: FILTER) {
      * Função que deve ser utilizada para inicializar os componentes do relatório. Em resumo, é aqui
      * onde devem ser criados os objetos de cabeçalho, corpo e rodapé.
      */
-    protected abstract fun initialize()
+    protected abstract suspend fun initialize()
 
     /**
      * Função que executa [br.com.fitnesspro.pdf.generator.common.IPreparable.prepare] de cada uma

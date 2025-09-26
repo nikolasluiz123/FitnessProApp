@@ -1,6 +1,8 @@
 package br.com.fitnesspro.workout.repository
 
 import android.content.Context
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
@@ -9,6 +11,7 @@ import br.com.fitnesspro.mappers.geTOWorkout
 import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.to.TOWorkout
+import br.com.fitnesspro.tuple.WorkoutTuple
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.current.workout.decorator.CurrentWorkoutDecorator
 import kotlinx.coroutines.Dispatchers.Default
@@ -100,5 +103,19 @@ class WorkoutRepository(
     suspend fun findWorkoutByExerciseId(exerciseId: String): TOWorkout? {
         val workout = workoutDAO.findWorkoutByExerciseId(exerciseId)
         return getTOWorkoutFrom(workout)
+    }
+
+    suspend fun getWorkoutsFromPerson(simpleFilter: String? = null): Pager<Int, WorkoutTuple> {
+        val personId = personRepository.getAuthenticatedTOPerson()?.id!!
+
+        return Pager(
+            config = PagingConfig(
+                pageSize = 100,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                workoutDAO.getWorkoutsFromPerson(personId, simpleFilter)
+            }
+        )
     }
 }

@@ -27,6 +27,7 @@ import br.com.fitnesspro.local.data.access.dao.SchedulerReportDAO
 import br.com.fitnesspro.local.data.access.dao.ServiceTokenDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutReportDAO
 import br.com.fitnesspro.service.data.access.webclient.general.AuthenticationWebClient
 import br.com.fitnesspro.service.data.access.webclient.general.PersonWebClient
 import br.com.fitnesspro.service.data.access.webclient.storage.StorageWebClient
@@ -137,13 +138,15 @@ class SingletonCommonRepositoryModule {
         @ApplicationContext context: Context,
         reportDAO: ReportDAO,
         schedulerReportDAO: SchedulerReportDAO,
-        personRepository: PersonRepository
+        personRepository: PersonRepository,
+        workoutReportDAO: WorkoutReportDAO
     ): ReportRepository {
         return ReportRepository(
             context = context,
             reportDAO = reportDAO,
             schedulerReportDAO = schedulerReportDAO,
-            personRepository = personRepository
+            personRepository = personRepository,
+            workoutReportDAO = workoutReportDAO
         )
     }
 

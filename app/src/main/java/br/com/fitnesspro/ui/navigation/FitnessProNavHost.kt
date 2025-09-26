@@ -193,7 +193,8 @@ fun FitnessProNavHost(
 
         executionEvolutionHistoryScreen(
             onBackClick = navController::popBackStack,
-            onHistoryClick = navController::navigateToExecutionChartScreen
+            onHistoryClick = navController::navigateToExecutionChartScreen,
+            onNavigateToReports = navController::navigateToGeneratedReportsScreen
         )
 
         executionChartScreen(

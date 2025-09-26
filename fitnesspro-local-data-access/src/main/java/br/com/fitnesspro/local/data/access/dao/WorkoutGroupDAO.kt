@@ -6,8 +6,10 @@ import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.WorkoutGroup
+import br.com.fitnesspro.tuple.reports.evolution.WorkoutGroupInfosTuple
 import java.time.DayOfWeek
 import java.util.StringJoiner
 
@@ -118,4 +120,35 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<WorkoutGroup>
 
+    @RawQuery
+    abstract suspend fun getWorkoutGroupInfosTuple(query: SupportSQLiteQuery): List<WorkoutGroupInfosTuple>
+
+    suspend fun getWorkoutGroupInfosTuple(filter: RegisterEvolutionWorkoutReportFilter): List<WorkoutGroupInfosTuple> {
+        val params = mutableListOf<Any>()
+        val select = StringJoiner(QR_NL).apply {
+            add(" SELECT wg.day_week as dayWeek, wg.name as name ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" FROM workout_group wg ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" WHERE wg.workout_id = ? AND wg.active = 1 ")
+            params.add(filter.workoutId)
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" ORDER BY wg.group_order ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(orderBy.toString())
+        }
+
+        return getWorkoutGroupInfosTuple(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
 }

@@ -2,6 +2,7 @@ package br.com.fitnesspro.pdf.generator.session
 
 import android.content.Context
 import android.graphics.Canvas
+import android.text.TextPaint
 import br.com.fitnesspro.pdf.generator.common.IPageManager
 import br.com.fitnesspro.pdf.generator.components.IReportComponent
 import br.com.fitnesspro.pdf.generator.utils.Margins
@@ -25,8 +26,10 @@ abstract class AbstractReportSession<FILTER : Any>(
     protected lateinit var title: String
     protected var components: List<IReportComponent<FILTER>> = emptyList()
 
+    open fun getTitlePaint(): TextPaint = Paints.subtitlePaint
+
     override suspend fun measureHeight(pageManager: IPageManager): Float {
-        val titleHeight = Paints.subtitlePaint.textSize + Margins.MARGIN_8
+        val titleHeight = getTitlePaint().textSize + Margins.MARGIN_8
         val lineHeight = Margins.MARGIN_8
         var totalHeight = Margins.MARGIN_12 + titleHeight + lineHeight
 
@@ -42,7 +45,7 @@ abstract class AbstractReportSession<FILTER : Any>(
         val paddingStart = Margins.MARGIN_32.toFloat()
         val newYStart = yStart + Margins.MARGIN_12.toFloat()
 
-        val titleHeight = Paints.subtitlePaint.textSize + Margins.MARGIN_8
+        val titleHeight = getTitlePaint().textSize + Margins.MARGIN_8
         val lineHeight = Margins.MARGIN_8
         val headerHeight = titleHeight + lineHeight
 
@@ -66,13 +69,13 @@ abstract class AbstractReportSession<FILTER : Any>(
 
     private fun drawTitle(paddingStart: Float, yStart: Float, canvas: Canvas): Float {
         val titleX = paddingStart
-        val titleY = yStart + Paints.subtitlePaint.textSize + Margins.MARGIN_8
+        val titleY = yStart + getTitlePaint().textSize + Margins.MARGIN_8
 
         canvas.drawText(
             title,
             titleX,
             titleY,
-            Paints.subtitlePaint
+            getTitlePaint()
         )
         return titleY
     }

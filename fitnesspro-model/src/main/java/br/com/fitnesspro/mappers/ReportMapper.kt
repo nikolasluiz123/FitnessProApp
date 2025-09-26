@@ -7,12 +7,16 @@ import br.com.fitnesspro.model.enums.EnumTransmissionState.PENDING
 import br.com.fitnesspro.model.enums.EnumTransmissionState.TRANSMITTED
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.model.general.report.SchedulerReport
+import br.com.fitnesspro.model.general.report.WorkoutReport
 import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.SchedulerReportDTO
+import br.com.fitnesspro.shared.communication.dtos.general.WorkoutReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.ISchedulerReportDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IWorkoutReportDTO
 import br.com.fitnesspro.to.TOReport
 import br.com.fitnesspro.to.TOSchedulerReport
+import br.com.fitnesspro.to.TOWorkoutReport
 import br.com.fitnesspro.shared.communication.enums.report.EnumReportContext as EnumReportContextService
 
 fun TOReport.getReport(): Report {
@@ -35,6 +39,20 @@ fun TOSchedulerReport.getSchedulerReport(): SchedulerReport {
     val model = SchedulerReport(
         personId = personId,
         reportId = reportId,
+        context = context,
+        active = active
+    )
+
+    id?.let { model.id = it }
+
+    return model
+}
+
+fun TOWorkoutReport.getWorkoutReport(): WorkoutReport {
+    val model = WorkoutReport(
+        personId = personId,
+        reportId = reportId,
+        workoutId = workoutId,
         context = context,
         active = active
     )
@@ -72,6 +90,18 @@ fun ISchedulerReportDTO.getSchedulerReport(): SchedulerReport {
     )
 }
 
+fun IWorkoutReportDTO.getWorkoutReport(): WorkoutReport {
+    return WorkoutReport(
+        id = id!!,
+        transmissionState = TRANSMITTED,
+        workoutId = workoutId,
+        personId = personId,
+        reportId = reportId,
+        context = getEnumReportContext(reportContext!!),
+        active = active
+    )
+}
+
 fun Report.getReportDTO(): ReportDTO {
     return ReportDTO(
         id = id,
@@ -96,15 +126,28 @@ fun SchedulerReport.getSchedulerReportDTO(): SchedulerReportDTO {
     )
 }
 
+fun WorkoutReport.getWorkoutReportDTO(): WorkoutReportDTO {
+    return WorkoutReportDTO(
+        id = id,
+        workoutId = workoutId,
+        personId = personId,
+        reportId = reportId,
+        reportContext = getEnumReportContextService(context!!),
+        active = active
+    )
+}
+
 fun getEnumReportContextService(context: EnumReportContext): EnumReportContextService {
     return when (context) {
         EnumReportContext.SCHEDULERS_REPORT -> EnumReportContextService.SCHEDULERS_REPORT
+        EnumReportContext.WORKOUT_REGISTER_EVOLUTION -> EnumReportContextService.WORKOUT_REGISTER_EVOLUTION
     }
 }
 
 fun getEnumReportContext(context: EnumReportContextService): EnumReportContext {
     return when (context) {
         EnumReportContextService.SCHEDULERS_REPORT -> EnumReportContext.SCHEDULERS_REPORT
+        EnumReportContextService.WORKOUT_REGISTER_EVOLUTION -> EnumReportContext.WORKOUT_REGISTER_EVOLUTION
     }
 }
 

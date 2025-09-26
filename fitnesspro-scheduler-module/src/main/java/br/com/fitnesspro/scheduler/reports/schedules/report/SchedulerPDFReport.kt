@@ -17,7 +17,7 @@ class SchedulerPDFReport(
     filter: SchedulerReportFilter
 ): AbstractPDFReport<SchedulerReportFilter>(filter) {
 
-    override fun initialize() {
+    override suspend fun initialize() {
         this.header = SchedulerReportHeader(context)
 
         this.body = SchedulerReportBody()

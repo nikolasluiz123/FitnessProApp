@@ -26,6 +26,7 @@ import br.com.fitnesspro.local.data.access.dao.VideoExercisePreDefinitionDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupPreDefinitionDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutReportDAO
 import br.com.fitnesspro.local.data.access.dao.health.HealthConnectCaloriesBurnedDAO
 import br.com.fitnesspro.local.data.access.dao.health.HealthConnectHeartRateDAO
 import br.com.fitnesspro.local.data.access.dao.health.HealthConnectHeartRateSamplesDAO
@@ -43,6 +44,7 @@ import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.model.general.User
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.model.general.report.SchedulerReport
+import br.com.fitnesspro.model.general.report.WorkoutReport
 import br.com.fitnesspro.model.nutrition.avaliation.PhysicEvaluation
 import br.com.fitnesspro.model.nutrition.diet.DayWeekDiet
 import br.com.fitnesspro.model.nutrition.diet.Diet
@@ -74,7 +76,7 @@ import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 
 @Database(
-    version = 51,
+    version = 52,
     entities = [
         User::class, Person::class, Academy::class, PersonAcademyTime::class, PhysicEvaluation::class,
         IngredientPreDefinition::class, MealOptionPreDefinition::class, Diet::class, DayWeekDiet::class, Meal::class,
@@ -85,7 +87,7 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
         Application::class, Report::class, SchedulerReport::class, HealthConnectCaloriesBurned::class,
         HealthConnectHeartRate::class, HealthConnectHeartRateSamples::class, HealthConnectMetadata::class,
         HealthConnectSleepSession::class, HealthConnectSleepStages::class, HealthConnectSteps::class,
-        SleepSessionExerciseExecution::class
+        SleepSessionExerciseExecution::class, WorkoutReport::class
     ],
     exportSchema = true
 )
@@ -151,5 +153,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun healthConnectSleepStagesDAO(): HealthConnectSleepStagesDAO
 
     abstract fun sleepSessionExerciseExecutionDAO(): SleepSessionExerciseExecutionDAO
+
+    abstract fun workoutReportDAO(): WorkoutReportDAO
 
 }

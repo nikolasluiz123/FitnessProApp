@@ -6,9 +6,11 @@ import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.to.TOExercise
+import br.com.fitnesspro.tuple.reports.evolution.ExerciseInfosTuple
 import java.util.StringJoiner
 
 @Dao
@@ -104,4 +106,37 @@ abstract class ExerciseDAO: IntegratedMaintenanceDAO<Exercise>() {
 
     @RawQuery
     abstract suspend fun executeQueryExportationData(query: SupportSQLiteQuery): List<Exercise>
+
+    @RawQuery
+    abstract suspend fun getExerciseInfosTuple(query: SupportSQLiteQuery): List<ExerciseInfosTuple>
+
+    suspend fun getExerciseInfosTuple(filter: RegisterEvolutionWorkoutReportFilter): List<ExerciseInfosTuple> {
+        val params = mutableListOf<Any>()
+        val select = StringJoiner(QR_NL).apply {
+            add(" SELECT e.name as name, e.repetitions as repetitions, e.sets as sets, e.rest as rest, e.duration as duration ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" FROM exercise e ")
+            add(" INNER JOIN workout_group wg ON e.workout_group_id = wg.id ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" WHERE wg.workout_id = ? AND e.active = 1 ")
+            params.add(filter.workoutId)
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" ORDER BY e.exercise_order ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(orderBy.toString())
+        }
+
+        return getExerciseInfosTuple(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
 }

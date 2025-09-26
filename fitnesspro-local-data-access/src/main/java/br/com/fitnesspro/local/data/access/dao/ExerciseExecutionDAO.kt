@@ -7,12 +7,14 @@ import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.tuple.ExecutionEvolutionHistoryGroupedTuple
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
 import br.com.fitnesspro.tuple.charts.ExerciseExecutionChartTuple
+import br.com.fitnesspro.tuple.reports.evolution.ExecutionInfosTuple
 import java.util.StringJoiner
 
 @Dao
@@ -317,4 +319,44 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
 
     @RawQuery(observedEntities = [ExerciseExecution::class])
     abstract suspend fun executeGetIntegrationData(query: SupportSQLiteQuery): List<ExerciseExecution>
+
+    @RawQuery
+    abstract suspend fun getExecutionInfosTuple(query: SupportSQLiteQuery): List<ExecutionInfosTuple>
+
+    suspend fun getExecutionInfosTuple(filter: RegisterEvolutionWorkoutReportFilter): List<ExecutionInfosTuple> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" SELECT ee.execution_start_time as executionStartTime, ")
+            add("        ee.execution_end_time as executionEndTime, ")
+            add("        ee.actual_set as actualSet, ")
+            add("        ee.weight as weight, ")
+            add("        ee.repetitions as repetitions, ")
+            add("        ee.duration as duration ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" FROM exercise_execution ee ")
+            add(" INNER JOIN exercise e ON ee.exercise_id = e.id ")
+            add(" INNER JOIN workout_group wg ON e.workout_group_id = wg.id ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" WHERE wg.workout_id = ? AND ee.active = 1 ")
+            params.add(filter.workoutId)
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" ORDER BY ee.execution_start_time, ee.actual_set ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(orderBy.toString())
+        }
+
+        return getExecutionInfosTuple(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
 }

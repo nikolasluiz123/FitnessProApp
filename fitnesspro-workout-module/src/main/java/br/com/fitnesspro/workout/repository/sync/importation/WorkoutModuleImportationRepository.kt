@@ -16,6 +16,7 @@ import br.com.fitnesspro.mappers.getHealthConnectMetadata
 import br.com.fitnesspro.mappers.getHealthConnectSleepSession
 import br.com.fitnesspro.mappers.getHealthConnectSleepStages
 import br.com.fitnesspro.mappers.getHealthConnectSteps
+import br.com.fitnesspro.mappers.getReport
 import br.com.fitnesspro.mappers.getSleepSessionExerciseExecution
 import br.com.fitnesspro.mappers.getVideo
 import br.com.fitnesspro.mappers.getVideoExercise
@@ -24,8 +25,11 @@ import br.com.fitnesspro.mappers.getVideoExercisePreDefinition
 import br.com.fitnesspro.mappers.getWorkout
 import br.com.fitnesspro.mappers.getWorkoutGroup
 import br.com.fitnesspro.mappers.getWorkoutGroupPreDefinition
+import br.com.fitnesspro.mappers.getWorkoutReport
 import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.enums.EnumSyncModule
+import br.com.fitnesspro.model.general.report.Report
+import br.com.fitnesspro.model.general.report.WorkoutReport
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
@@ -45,6 +49,8 @@ import br.com.fitnesspro.model.workout.predefinition.ExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.VideoExercisePreDefinition
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IReportDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IWorkoutReportDTO
 import br.com.fitnesspro.shared.communication.dtos.sync.WorkoutModuleSyncDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExerciseExecutionDTO
@@ -176,6 +182,16 @@ class WorkoutModuleImportationRepository(
         )?.let(result::add)
 
         segregate(
+            dtoList = dto.reports,
+            hasEntityWithId = entryPoint.getReportDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
+            dtoList = dto.workoutReports,
+            hasEntityWithId = entryPoint.getWorkoutReportDAO()::hasEntityWithId
+        )?.let(result::add)
+
+        segregate(
             dtoList = dto.metadata,
             hasEntityWithId = healthConnectEntryPoint.getHealthConnectMetadataDAO()::hasEntityWithId
         )?.let(result::add)
@@ -236,6 +252,8 @@ class WorkoutModuleImportationRepository(
             is IWorkoutGroupPreDefinitionDTO -> dto.getWorkoutGroupPreDefinition()
             is IExercisePreDefinitionDTO -> dto.getExercisePreDefinition()
             is IVideoExercisePreDefinitionDTO -> dto.getVideoExercisePreDefinition()
+            is IReportDTO -> dto.getReport()
+            is IWorkoutReportDTO -> dto.getWorkoutReport()
 
             is IHealthConnectMetadataDTO -> dto.getHealthConnectMetadata()
             is IHealthConnectStepsDTO -> dto.getHealthConnectSteps()
@@ -270,6 +288,8 @@ class WorkoutModuleImportationRepository(
             WorkoutGroupPreDefinition::class -> entryPoint.getWorkoutGroupPreDefinitionDAO()
             ExercisePreDefinition::class -> entryPoint.getExercisePreDefinitionDAO()
             VideoExercisePreDefinition::class -> entryPoint.getVideoExercisePreDefinitionDAO()
+            Report::class -> entryPoint.getReportDAO()
+            WorkoutReport::class -> entryPoint.getWorkoutReportDAO()
 
             HealthConnectMetadata::class -> healthConnectEntryPoint.getHealthConnectMetadataDAO()
             HealthConnectSteps::class -> healthConnectEntryPoint.getHealthConnectStepsDAO()
@@ -298,6 +318,8 @@ class WorkoutModuleImportationRepository(
             WorkoutGroupPreDefinition::class.simpleName!!,
             ExercisePreDefinition::class.simpleName!!,
             VideoExercisePreDefinition::class.simpleName!!,
+            Report::class.simpleName!!,
+            WorkoutReport::class.simpleName!!,
             HealthConnectMetadata::class.simpleName!!,
             HealthConnectSteps::class.simpleName!!,
             HealthConnectCaloriesBurned::class.simpleName!!,
@@ -322,6 +344,8 @@ class WorkoutModuleImportationRepository(
         syncDTO.workoutGroupsPreDefinitions.populateCursorInfos(cursorTimestampMap, WorkoutGroupPreDefinition::class)
         syncDTO.exercisePredefinitions.populateCursorInfos(cursorTimestampMap, ExercisePreDefinition::class)
         syncDTO.videoExercisePreDefinitions.populateCursorInfos(cursorTimestampMap, VideoExercisePreDefinition::class)
+        syncDTO.reports.populateCursorInfos(cursorTimestampMap, Report::class)
+        syncDTO.workoutReports.populateCursorInfos(cursorTimestampMap, WorkoutReport::class)
         syncDTO.metadata.populateCursorInfos(cursorTimestampMap, HealthConnectMetadata::class)
         syncDTO.steps.populateCursorInfos(cursorTimestampMap, HealthConnectSteps::class)
         syncDTO.caloriesBurned.populateCursorInfos(cursorTimestampMap, HealthConnectCaloriesBurned::class)

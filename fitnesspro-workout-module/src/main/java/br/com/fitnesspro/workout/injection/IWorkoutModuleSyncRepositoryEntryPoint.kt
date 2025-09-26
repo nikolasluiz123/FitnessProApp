@@ -1,9 +1,9 @@
 package br.com.fitnesspro.workout.injection
 
-import br.com.fitnesspro.service.data.access.webclient.sync.WorkoutModuleSyncWebClient
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.ExerciseExecutionDAO
 import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO
+import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseExecutionDAO
@@ -11,6 +11,8 @@ import br.com.fitnesspro.local.data.access.dao.VideoExercisePreDefinitionDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupPreDefinitionDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutReportDAO
+import br.com.fitnesspro.service.data.access.webclient.sync.WorkoutModuleSyncWebClient
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -40,4 +42,8 @@ interface IWorkoutModuleSyncRepositoryEntryPoint {
     fun getExercisePreDefinitionDAO(): ExercisePreDefinitionDAO
 
     fun getVideoExercisePreDefinitionDAO(): VideoExercisePreDefinitionDAO
+
+    fun getWorkoutReportDAO(): WorkoutReportDAO
+
+    fun getReportDAO(): ReportDAO
 }

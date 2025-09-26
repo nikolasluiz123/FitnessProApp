@@ -149,4 +149,8 @@ class DatabaseModule {
     @Singleton
     fun provideSleepSessionExerciseExecutionDAO(appDatabase: AppDatabase) = appDatabase.sleepSessionExerciseExecutionDAO()
 
+    @Provides
+    @Singleton
+    fun provideWorkoutReportDAO(appDatabase: AppDatabase) = appDatabase.workoutReportDAO()
+
 }

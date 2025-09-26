@@ -142,4 +142,6 @@
     <string name="video_storage_exportation_description">Exportação dos Arquivos de Vídeos</string>
     <string name="request_permission_health_connect_sdk_unavailable">O Health Connect não está disponível para o seu dispositivo, por conta disso, as funcionalidades de leitura dos sensores de relógios e outros dispositivos não serão realizadas e essas informações não serão armazenadas para análise futura.</string>
     <string name="not_acepted_all_requested_permission_health_connect">Você não aceitou todas as permissões solicitadas para leitura de seus dados de saúde, algumas funcionalidades do aplicativo não estarão disponíveis até que conceda as permissões.</string>
+    <string name="generated_reports_subtitle_workout_register_evolution">Registros de Evolução</string>
+    <string name="new_register_evolution_report_dialog_label_workouts">Treino*</string>
 </resources>

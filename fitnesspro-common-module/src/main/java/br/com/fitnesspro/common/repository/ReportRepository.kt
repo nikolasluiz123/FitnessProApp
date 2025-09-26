@@ -4,6 +4,7 @@ import android.content.Context
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.local.data.access.dao.SchedulerReportDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutReportDAO
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.to.TOReport
@@ -12,7 +13,8 @@ class ReportRepository(
     context: Context,
     private val reportDAO: ReportDAO,
     private val schedulerReportDAO: SchedulerReportDAO,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
+    private val workoutReportDAO: WorkoutReportDAO
 ): FitnessProRepository(context) {
 
     suspend fun getListReports(context: EnumReportContext, quickFilter: String? = null): List<TOReport> {
@@ -36,6 +38,14 @@ class ReportRepository(
 
                 schedulerReportDAO.update(schedulerReport, true)
             }
+
+            EnumReportContext.WORKOUT_REGISTER_EVOLUTION -> {
+                val workoutReport = workoutReportDAO.getWorkoutReportByReportId(reportId).apply {
+                    active = false
+                }
+
+                workoutReportDAO.update(workoutReport, true)
+            }
         }
     }
 
@@ -57,6 +67,14 @@ class ReportRepository(
                 }
 
                 schedulerReportDAO.updateBatch(schedulerReportList, true)
+            }
+
+            EnumReportContext.WORKOUT_REGISTER_EVOLUTION -> {
+                val workoutReportList = workoutReportDAO.getWorkoutReportByReportIdIn(reportIds).onEach {
+                    it.active = false
+                }
+
+                workoutReportDAO.updateBatch(workoutReportList, true)
             }
         }
     }

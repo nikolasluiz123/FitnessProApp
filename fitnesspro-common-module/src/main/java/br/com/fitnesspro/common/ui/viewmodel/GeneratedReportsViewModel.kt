@@ -91,6 +91,10 @@ class GeneratedReportsViewModel @Inject constructor(
             EnumReportContext.SCHEDULERS_REPORT -> {
                 context.getString(R.string.generated_reports_subtitle_schedulers_report)
             }
+
+            EnumReportContext.WORKOUT_REGISTER_EVOLUTION -> {
+                context.getString(R.string.generated_reports_subtitle_workout_register_evolution)
+            }
         }
     }
 

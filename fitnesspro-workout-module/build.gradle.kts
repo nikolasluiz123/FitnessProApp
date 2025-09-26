@@ -53,6 +53,7 @@ dependencies {
     implementation(project(":fitnesspro-firebase-api"))
     implementation(project(":fitnesspro-charts"))
     implementation(project(":fitnesspro-health-connect"))
+    implementation(project(":fitnesspro-pdf-generator"))
 
     implementation(libs.fitnesspro.shared.communication)
     implementation(libs.data.store)

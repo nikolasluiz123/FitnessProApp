@@ -5,6 +5,7 @@ import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.ExerciseExecutionDAO
 import br.com.fitnesspro.local.data.access.dao.ExercisePreDefinitionDAO
+import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseExecutionDAO
@@ -12,9 +13,11 @@ import br.com.fitnesspro.local.data.access.dao.VideoExercisePreDefinitionDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupPreDefinitionDAO
+import br.com.fitnesspro.local.data.access.dao.WorkoutReportDAO
 import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
+import br.com.fitnesspro.workout.repository.RegisterEvolutionWorkoutRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
@@ -201,6 +204,27 @@ class SingletonWorkoutRepositoryModule {
             heartRateIntegrationRepository = heartRateIntegrationRepository,
             sleepIntegrationRepository = sleepIntegrationRepository,
             stepsIntegrationRepository = stepsIntegrationRepository,
+        )
+    }
+
+    @Provides
+    fun provideRegisterEvolutionWorkoutRepository(
+        @ApplicationContext context: Context,
+        workoutDAO: WorkoutDAO,
+        workoutGroupDAO: WorkoutGroupDAO,
+        exerciseDAO: ExerciseDAO,
+        exerciseExecutionDAO: ExerciseExecutionDAO,
+        reportDAO: ReportDAO,
+        workoutReportDAO: WorkoutReportDAO
+        ): RegisterEvolutionWorkoutRepository {
+        return RegisterEvolutionWorkoutRepository(
+            context = context,
+            workoutDAO = workoutDAO,
+            workoutGroupDAO = workoutGroupDAO,
+            exerciseDAO = exerciseDAO,
+            exerciseExecutionDAO = exerciseExecutionDAO,
+            reportDAO = reportDAO,
+            workoutReportDAO = workoutReportDAO
         )
     }
 }

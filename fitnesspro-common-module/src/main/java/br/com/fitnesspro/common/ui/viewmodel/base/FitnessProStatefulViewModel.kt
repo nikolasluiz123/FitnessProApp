@@ -185,7 +185,7 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
         updateState: (newState: PagedDialogListTextField<T>) -> Unit,
         dialogTitle: String,
         onDataListItemClick: (item: T) -> Unit,
-        getDataListFlow: (String) -> Flow<PagingData<T>>,
+        getDataListFlow: suspend (String) -> Flow<PagingData<T>>,
         onChange: (String) -> Unit = {},
         showTrailingIcon: Boolean = true
     ): PagedDialogListTextField<T> {
@@ -219,7 +219,7 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
         updateState: (newState: PagedDialogListState<T>) -> Unit,
         dialogTitle: String,
         onDataListItemClick: (item: T) -> Unit,
-        getDataListFlow: (String) -> Flow<PagingData<T>>,
+        getDataListFlow: suspend (String) -> Flow<PagingData<T>>,
         showTrailingIcon: Boolean = true
     ): PagedDialogListState<T> {
         return PagedDialogListState(
@@ -238,8 +238,10 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
                 getCurrentState().onHide()
             },
             onSimpleFilterChange = { filter ->
-                val newState = getCurrentState().copy(dataList = getDataListFlow(filter))
-                updateState(newState)
+                launch {
+                    val newState = getCurrentState().copy(dataList = getDataListFlow(filter))
+                    updateState(newState)
+                }
             },
         )
     }

@@ -15,6 +15,7 @@ import br.com.fitnesspro.mappers.getHealthConnectMetadataDTO
 import br.com.fitnesspro.mappers.getHealthConnectSleepSessionDTO
 import br.com.fitnesspro.mappers.getHealthConnectSleepStagesDTO
 import br.com.fitnesspro.mappers.getHealthConnectStepsDTO
+import br.com.fitnesspro.mappers.getReportDTO
 import br.com.fitnesspro.mappers.getSleepSessionExerciseExecutionDTO
 import br.com.fitnesspro.mappers.getVideoDTO
 import br.com.fitnesspro.mappers.getVideoExerciseDTO
@@ -23,7 +24,11 @@ import br.com.fitnesspro.mappers.getVideoExercisePreDefinitionDTO
 import br.com.fitnesspro.mappers.getWorkoutDTO
 import br.com.fitnesspro.mappers.getWorkoutGroupDTO
 import br.com.fitnesspro.mappers.getWorkoutGroupPreDefinitionDTO
+import br.com.fitnesspro.mappers.getWorkoutReportDTO
 import br.com.fitnesspro.model.base.IntegratedModel
+import br.com.fitnesspro.model.enums.EnumReportContext
+import br.com.fitnesspro.model.general.report.Report
+import br.com.fitnesspro.model.general.report.WorkoutReport
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
@@ -72,6 +77,8 @@ class WorkoutModuleExportationRepository(
         map.put(WorkoutGroupPreDefinition::class, entryPoint.getWorkoutGroupPreDefinitionDAO().getExportationData(pageSize, personId))
         map.put(ExercisePreDefinition::class, entryPoint.getExercisePreDefinitionDAO().getExportationData(pageSize, personId))
         map.put(VideoExercisePreDefinition::class, entryPoint.getVideoExercisePreDefinitionDAO().getExportationData(pageSize, personId))
+        map.put(Report::class, entryPoint.getReportDAO().getExportationData(EnumReportContext.WORKOUT_REGISTER_EVOLUTION, pageSize))
+        map.put(WorkoutReport::class, entryPoint.getWorkoutReportDAO().getExportationData(pageSize))
 
         map.put(HealthConnectMetadata::class, healthConnectEntryPoint.getHealthConnectMetadataDAO().getExportationData(pageSize, personId))
         map.put(HealthConnectSteps::class, healthConnectEntryPoint.getHealthConnectStepsDAO().getExportationData(pageSize, personId))
@@ -141,6 +148,16 @@ class WorkoutModuleExportationRepository(
             videoExercisePreDefinition.getVideoExercisePreDefinitionDTO()
         }
 
+        val reports = models[Report::class]!!.map { report ->
+            report as Report
+            report.getReportDTO()
+        }
+
+        val workoutReports = models[WorkoutReport::class]!!.map { workoutReport ->
+            workoutReport as WorkoutReport
+            workoutReport.getWorkoutReportDTO()
+        }
+
         val metadata = models[HealthConnectMetadata::class]!!.map { (it as HealthConnectMetadata).getHealthConnectMetadataDTO() }
         val steps = models[HealthConnectSteps::class]!!.map { (it as HealthConnectSteps).getHealthConnectStepsDTO() }
         val calories = models[HealthConnectCaloriesBurned::class]!!.map { (it as HealthConnectCaloriesBurned).getHealthConnectCaloriesBurnedDTO() }
@@ -161,6 +178,8 @@ class WorkoutModuleExportationRepository(
             workoutGroupsPreDefinitions = workoutGroupPreDefinitions,
             exercisePredefinitions = exercisePreDefinitions,
             videoExercisePreDefinitions = videoExercisePreDefinitions,
+            reports = reports,
+            workoutReports = workoutReports,
             metadata = metadata,
             steps = steps,
             caloriesBurned = calories,
@@ -191,6 +210,8 @@ class WorkoutModuleExportationRepository(
             WorkoutGroupPreDefinition::class -> entryPoint.getWorkoutGroupPreDefinitionDAO()
             ExercisePreDefinition::class -> entryPoint.getExercisePreDefinitionDAO()
             VideoExercisePreDefinition::class -> entryPoint.getVideoExercisePreDefinitionDAO()
+            Report::class -> entryPoint.getReportDAO()
+            WorkoutReport::class -> entryPoint.getWorkoutReportDAO()
 
             HealthConnectMetadata::class -> healthConnectEntryPoint.getHealthConnectMetadataDAO()
             HealthConnectSteps::class -> healthConnectEntryPoint.getHealthConnectStepsDAO()

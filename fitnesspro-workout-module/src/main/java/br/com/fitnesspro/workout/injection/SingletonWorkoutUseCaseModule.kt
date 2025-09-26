@@ -5,6 +5,7 @@ import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
+import br.com.fitnesspro.workout.repository.RegisterEvolutionWorkoutRepository
 import br.com.fitnesspro.workout.repository.VideoRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository
@@ -28,6 +29,7 @@ import br.com.fitnesspro.workout.usecase.exercise.video.SaveVideoPreDefinitionUs
 import br.com.fitnesspro.workout.usecase.exercise.video.gallery.SaveExerciseVideoFromGalleryUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.gallery.SaveVideoExecutionFromGalleryUseCase
 import br.com.fitnesspro.workout.usecase.exercise.video.gallery.SaveVideoExercisePreDefinitionFromGalleryUseCase
+import br.com.fitnesspro.workout.usecase.reports.GenerateWorkoutEvolutionReportUseCase
 import br.com.fitnesspro.workout.usecase.workout.EditWorkoutGroupUseCase
 import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutGroupUseCase
 import br.com.fitnesspro.workout.usecase.workout.InactivateWorkoutUseCase
@@ -276,6 +278,17 @@ class SingletonWorkoutUseCaseModule {
     ): HealthConnectManualIntegrationUseCase {
         return HealthConnectManualIntegrationUseCase(
             healthConnectIntegrationRepository = healthConnectIntegrationRepository,
+        )
+    }
+
+    @Provides
+    fun provideGenerateWorkoutEvolutionReportUseCase(
+        @ApplicationContext context: Context,
+        reportRepository: RegisterEvolutionWorkoutRepository
+    ): GenerateWorkoutEvolutionReportUseCase {
+        return GenerateWorkoutEvolutionReportUseCase(
+            context = context,
+            reportRepository = reportRepository
         )
     }
 }

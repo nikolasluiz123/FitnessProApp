@@ -38,6 +38,14 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
                     add("                where sr.report_id = report.id ")
                     add("            ) ")
                 }
+
+                EnumReportContext.WORKOUT_REGISTER_EVOLUTION -> {
+                    add(" and exists ( ")
+                    add("                select 1 ")
+                    add("                from workout_report wr ")
+                    add("                where wr.report_id = report.id ")
+                    add("            ) ")
+                }
             }
 
             add(" limit ? ")
@@ -171,6 +179,10 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
                 EnumReportContext.SCHEDULERS_REPORT -> {
                     add(" inner join scheduler_report sr on sr.report_id = report.id ")
                 }
+
+                EnumReportContext.WORKOUT_REGISTER_EVOLUTION -> {
+                    add(" inner join workout_report wr on wr.report_id = report.id ")
+                }
             }
         }
 
@@ -184,6 +196,12 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
                     add(" and sr.active = 1 ")
 
                     params.add(authenticatedPersonId)
+                }
+
+                EnumReportContext.WORKOUT_REGISTER_EVOLUTION -> {
+                    add(" and wr.person_id = ? ")
+                    add(" and wr.report_context = '${context.name}' ")
+                    add(" and wr.active = 1 ")
                 }
             }
 

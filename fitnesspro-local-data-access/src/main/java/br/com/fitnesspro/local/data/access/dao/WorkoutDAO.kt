@@ -1,15 +1,20 @@
 package br.com.fitnesspro.local.data.access.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.to.TOWorkout
+import br.com.fitnesspro.tuple.WorkoutTuple
+import br.com.fitnesspro.tuple.reports.evolution.ResumeRegisterEvolutionWorkoutGroupTuple
+import br.com.fitnesspro.tuple.reports.evolution.ResumeRegisterEvolutionWorkoutTuple
 import java.time.DayOfWeek
 import java.util.StringJoiner
 
@@ -171,4 +176,109 @@ abstract class WorkoutDAO: IntegratedMaintenanceDAO<Workout>() {
         limit 1
     """)
     abstract suspend fun getCurrentMemberWorkout(personId: String): Workout?
+
+    @RawQuery
+    abstract suspend fun getResumeRegisterEvolutionWorkoutTuple(query: SupportSQLiteQuery): ResumeRegisterEvolutionWorkoutTuple
+
+    @RawQuery
+    abstract suspend fun getResumeRegisterEvolutionWorkoutGroupTuple(query: SupportSQLiteQuery): List<ResumeRegisterEvolutionWorkoutGroupTuple>
+
+    suspend fun getResumeRegisterEvolutionWorkoutTuple(filter: RegisterEvolutionWorkoutReportFilter): ResumeRegisterEvolutionWorkoutTuple {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" SELECT w.date_start as dateStart, w.date_end as dateEnd, p.name as professionalPersonName ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" FROM workout w ")
+            add(" INNER JOIN person p ON w.personal_trainer_person_id = p.id ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" WHERE w.id = ? AND w.active = 1 ")
+            params.add(filter.workoutId)
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        return getResumeRegisterEvolutionWorkoutTuple(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    suspend fun getResumeRegisterEvolutionWorkoutGroupTuple(filter: RegisterEvolutionWorkoutReportFilter): List<ResumeRegisterEvolutionWorkoutGroupTuple> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" SELECT wg.day_week as dayWeek, wg.name as name ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" FROM workout_group wg ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" WHERE wg.workout_id = ? AND wg.active = 1 ")
+            params.add(filter.workoutId)
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" ORDER BY wg.group_order ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(orderBy.toString())
+        }
+        return getResumeRegisterEvolutionWorkoutGroupTuple(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    fun getWorkoutsFromPerson(authenticatedPersonId: String, simpleFilter: String? = null): PagingSource<Int, WorkoutTuple> {
+        val params = mutableListOf<Any>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select w.id as id, ")
+            add("        w.date_start as dateStart, ")
+            add("        w.date_end as dateEnd ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from workout w ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where w.active = 1 ")
+            add(" and (w.academy_member_person_id = ? or w.personal_trainer_person_id = ?) ")
+
+            params.add(authenticatedPersonId)
+            params.add(authenticatedPersonId)
+            
+            simpleFilter?.let {
+                add(" and (w.date_start like ? or w.date_end like ?) ")
+                params.add("%${simpleFilter}%")
+                params.add("%${simpleFilter}%")
+            }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by w.date_start desc ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(orderBy.toString())
+        }
+
+        return executeQueryWorkoutsFromPerson(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
+    }
+
+    @RawQuery(observedEntities = [Workout::class])
+    abstract fun executeQueryWorkoutsFromPerson(query: SupportSQLiteQuery): PagingSource<Int, WorkoutTuple>
 }
