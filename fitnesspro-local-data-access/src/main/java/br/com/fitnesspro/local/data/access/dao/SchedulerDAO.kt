@@ -265,9 +265,10 @@ abstract class SchedulerDAO: IntegratedMaintenanceDAO<Scheduler>() {
     }
 
     private fun StringJoiner.addSchedulerReportCommonFilters(params: MutableList<Any>, filter: SchedulerReportFilter) {
-        add(" where s.professional_person_id = ? ")
+        add(" where (s.professional_person_id = ? or s.academy_member_person_id = ?) ")
         add(" and s.active = 1 ")
 
+        params.add(filter.personId)
         params.add(filter.personId)
 
         when {
