@@ -2,6 +2,9 @@ package br.com.fitnesspro.workout.reports.evolution.sessions
 
 import android.content.Context
 import android.text.TextPaint
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
+import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
 import br.com.fitnesspro.pdf.generator.components.layout.LayoutGridComponent
 import br.com.fitnesspro.pdf.generator.components.table.TableComponent
@@ -30,9 +33,11 @@ class RegisterEvolutionWorkoutResumeSession(context: Context) : AbstractReportSe
             LayoutGridComponent(
                 columnCount = 3,
                 items = listOf(
-                    context.getString(R.string.start_date_label) to resumeData.dateStart.toString(),
-                    context.getString(R.string.end_date_label) to resumeData.dateEnd.toString(),
-                    context.getString(R.string.professional_label) to resumeData.professionalPersonName
+                    context.getString(R.string.start_date_label) to resumeData.dateStart.format(DATE),
+                    context.getString(R.string.end_date_label) to resumeData.dateEnd.format(DATE),
+                    context.getString(R.string.professional_label) to resumeData.professionalPersonName,
+                    context.getString(R.string.date_start_filter) to (filter.dateStart?.format(DATE) ?: ""),
+                    context.getString(R.string.date_end_filter) to (filter.dateEnd?.format(DATE) ?: "")
                 )
             ),
             TableComponent(
@@ -48,7 +53,7 @@ class RegisterEvolutionWorkoutResumeSession(context: Context) : AbstractReportSe
                 ),
                 rows = groupData.map {
                     listOf(
-                        it.dayWeek.name,
+                        it.dayWeek.getFirstPartFullDisplayName(),
                         it.name
                     )
                 }

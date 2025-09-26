@@ -11,6 +11,7 @@ import br.com.fitnesspro.mappers.getTOExerciseExecution
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.to.TOExerciseExecution
 import br.com.fitnesspro.to.TOVideoExerciseExecution
+import br.com.fitnesspro.tuple.ExecutionDurationTuple
 import br.com.fitnesspro.tuple.ExecutionEvolutionHistoryGroupedTuple
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
 import br.com.fitnesspro.tuple.charts.ExerciseExecutionChartTuple
@@ -119,5 +120,8 @@ class ExerciseExecutionRepository(
 
     suspend fun getListExerciseExecutionGroupedBarChartTuple(exerciseId: String): List<ExerciseExecutionChartTuple> {
         return exerciseExecutionDAO.getListExerciseExecutionGroupedBarChartTuple(exerciseId)
+    }
+    suspend fun getExecutionStartEnd(workoutId: String): ExecutionDurationTuple? = withContext(IO) {
+        exerciseExecutionDAO.getExecutionStartEnd(workoutId)
     }
 }

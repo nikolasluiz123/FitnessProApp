@@ -21,6 +21,7 @@ import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.SchedulerReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.shared.communication.dtos.general.WorkoutReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IAcademyDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IAuthenticationDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IFindPersonDTO
@@ -29,6 +30,7 @@ import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IPersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.ISchedulerReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IUserDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IWorkoutReportDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogPackageDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
@@ -158,6 +160,7 @@ fun GsonBuilder.defaultServiceGSon(): Gson {
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutDTO::class.java, WorkoutDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutGroupDTO::class.java, WorkoutGroupDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutGroupPreDefinitionDTO::class.java,WorkoutGroupPreDefinitionDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutReportDTO::class.java, WorkoutReportDTO::class.java))
 
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectMetadataDTO::class.java, HealthConnectMetadataDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectStepsDTO::class.java, HealthConnectStepsDTO::class.java))

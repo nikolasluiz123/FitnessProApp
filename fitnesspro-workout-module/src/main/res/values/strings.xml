@@ -218,5 +218,12 @@
     <string name="new_register_evolution_report_dialog_placeholder_search_workouts">Buscar por Data</string>
     <string name="new_register_evolution_report_dialog_empty_message_workouts">Não há treinos para gerar relatório</string>
     <string name="new_register_evolution_report_dialog_workout_title">Treinos</string>
-    <string name="new_register_evolution_report_dialog_label_workout">Treino</string>
+    <string name="new_register_evolution_report_dialog_label_workout">Treino *</string>
+    <string name="new_register_evolution_report_dialog_date_start_label">Início</string>
+    <string name="new_register_evolution_report_dialog_date_end_label">Fim</string>
+    <string name="enum_validated_register_evolution_report_fields_workout">Treino</string>
+    <string name="enum_validated_register_evolution_report_fields_date_start">Início</string>
+    <string name="enum_validated_register_evolution_report_fields_date_end">Fim</string>
+    <string name="date_start_filter">Data Início do Filtro</string>
+    <string name="date_end_filter">Data de Fim do Filtro</string>
 </resources>

@@ -28,6 +28,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonClose
+import br.com.fitnesspro.compose.components.fields.DatePickerOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
 import br.com.fitnesspro.compose.components.loading.FitnessProCircularBlockUIProgressIndicator
@@ -61,7 +62,7 @@ fun NewRegisterEvolutionReportDialog(
                     Modifier
                         .fillMaxWidth()
                 ) {
-                    val (headerRef, workoutRef, nameRef, buttonsContainerRef, loadingRef) = createRefs()
+                    val (headerRef, workoutRef, nameRef, dateStartRef, dateEndRef, buttonsContainerRef, loadingRef) = createRefs()
 
                     FitnessProCircularBlockUIProgressIndicator(
                         show = state.showLoading,
@@ -146,7 +147,32 @@ fun NewRegisterEvolutionReportDialog(
                             top.linkTo(workoutRef.bottom, margin = 8.dp)
                             start.linkTo(parent.start, margin = 16.dp)
                             end.linkTo(parent.end, margin = 16.dp)
-                            bottom.linkTo(buttonsContainerRef.top, margin = 8.dp)
+
+                            width = Dimension.fillToConstraints
+                        }
+                    )
+
+                    DatePickerOutlinedTextFieldValidation(
+                        field = state.dateStart,
+                        fieldLabel = stringResource(R.string.new_register_evolution_report_dialog_date_start_label),
+                        modifier = Modifier.constrainAs(dateStartRef) {
+                            top.linkTo(nameRef.bottom, margin = 8.dp)
+                            start.linkTo(parent.start, margin = 16.dp)
+                            end.linkTo(parent.end, margin = 16.dp)
+
+                            width = Dimension.fillToConstraints
+                        }
+                    )
+
+                    DatePickerOutlinedTextFieldValidation(
+                        field = state.dateEnd,
+                        fieldLabel = stringResource(R.string.new_register_evolution_report_dialog_date_end_label),
+                        imeAction = ImeAction.Done,
+                        modifier = Modifier.constrainAs(dateEndRef) {
+                            top.linkTo(dateStartRef.bottom, margin = 8.dp)
+                            start.linkTo(parent.start, margin = 16.dp)
+                            end.linkTo(parent.end, margin = 16.dp)
+                            bottom.linkTo(buttonsContainerRef.top)
 
                             width = Dimension.fillToConstraints
                         }

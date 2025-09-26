@@ -2,6 +2,9 @@ package br.com.fitnesspro.workout.reports.evolution.sessions
 
 import android.content.Context
 import android.text.TextPaint
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.extensions.formatToDecimal
 import br.com.fitnesspro.core.extensions.toReadableDuration
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
 import br.com.fitnesspro.pdf.generator.components.layout.LayoutGridComponent
@@ -17,7 +20,7 @@ import dagger.hilt.android.EntryPointAccessors
 
 class RegisterEvolutionWorkoutExerciseSession(
     context: Context,
-    private val exerciseInfosTuple: ExerciseInfosTuple
+    private val exerciseInfosTuple: ExerciseInfosTuple,
 ) : AbstractReportSession<RegisterEvolutionWorkoutReportFilter>(context) {
 
     private val entryPoint = EntryPointAccessors.fromApplication(context, IWorkoutReportsEntryPoint::class.java)
@@ -28,12 +31,12 @@ class RegisterEvolutionWorkoutExerciseSession(
         super.prepare(filter)
         this.title = exerciseInfosTuple.name
 
-        executionData = entryPoint.getRegisterEvolutionWorkoutRepository().getExecutionInfosTuple(filter)
+        executionData = entryPoint.getRegisterEvolutionWorkoutRepository().getExecutionInfosTuple(exerciseInfosTuple.id, filter)
 
-        this.components = listOfNotNull(
+        this.components = listOf(
             LayoutGridComponent(
                 columnCount = 3,
-                items = listOfNotNull(
+                items = listOf(
                     getRepetitionsPair(),
                     getSetsPair(),
                     getRestPair(),
@@ -43,18 +46,18 @@ class RegisterEvolutionWorkoutExerciseSession(
             TableComponent(
                 columnLayouts = listOfNotNull(
                     getStartColumn(),
+                    getEndColumn(),
                     getSetColumn(),
                     getWeightColumn(),
                     getRepetitionsColumn(),
-                    getEndColumn(),
                     getDurationColumn()
                 ),
                 rows = executionData.map {
                     listOfNotNull(
-                        it.executionStartTime.toString(),
-                        it.executionEndTime?.toString(),
+                        it.executionStartTime.format(EnumDateTimePatterns.DATE_TIME_SHORT),
+                        it.executionEndTime?.format(EnumDateTimePatterns.DATE_TIME_SHORT),
                         it.actualSet.toString(),
-                        it.weight?.toString(),
+                        it.weight?.formatToDecimal(),
                         it.repetitions?.toString(),
                         it.duration?.toReadableDuration(context)
                     )
@@ -95,20 +98,20 @@ class RegisterEvolutionWorkoutExerciseSession(
         widthPercent = 0.2f
     )
 
-    private fun getDurationPair(): Pair<String, String>? = exerciseInfosTuple.duration?.let {
-        context.getString(R.string.duration_label) to it.toReadableDuration(context)
+    private fun getDurationPair(): Pair<String, String> {
+        return context.getString(R.string.duration_label) to (exerciseInfosTuple.duration?.toReadableDuration(context) ?: "")
     }
 
-    private fun getRestPair(): Pair<String, String>? = exerciseInfosTuple.rest?.let {
-        context.getString(R.string.rest_label) to it.toReadableDuration(context)
+    private fun getRestPair(): Pair<String, String> {
+        return context.getString(R.string.rest_label) to (exerciseInfosTuple.rest?.toReadableDuration(context) ?: "")
     }
 
-    private fun getSetsPair(): Pair<String, String>? = exerciseInfosTuple.sets?.let {
-        context.getString(R.string.sets_label) to it.toString()
+    private fun getSetsPair(): Pair<String, String> {
+        return context.getString(R.string.sets_label) to (exerciseInfosTuple.sets?.toString() ?: "")
     }
 
-    private fun getRepetitionsPair(): Pair<String, String>? = exerciseInfosTuple.repetitions?.let {
-        context.getString(R.string.repetitions_label) to it.toString()
+    private fun getRepetitionsPair(): Pair<String, String> {
+        return context.getString(R.string.repetitions_label) to (exerciseInfosTuple.repetitions?.toString() ?: "")
     }
 
     override fun getTitlePaint(): TextPaint {

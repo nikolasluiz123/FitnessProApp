@@ -11,6 +11,7 @@ import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutR
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
+import br.com.fitnesspro.tuple.ExecutionDurationTuple
 import br.com.fitnesspro.tuple.ExecutionEvolutionHistoryGroupedTuple
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
 import br.com.fitnesspro.tuple.charts.ExerciseExecutionChartTuple
@@ -323,7 +324,7 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
     @RawQuery
     abstract suspend fun getExecutionInfosTuple(query: SupportSQLiteQuery): List<ExecutionInfosTuple>
 
-    suspend fun getExecutionInfosTuple(filter: RegisterEvolutionWorkoutReportFilter): List<ExecutionInfosTuple> {
+    suspend fun getExecutionInfosTuple(exerciseId: String, filter: RegisterEvolutionWorkoutReportFilter): List<ExecutionInfosTuple> {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -337,13 +338,19 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
 
         val from = StringJoiner(QR_NL).apply {
             add(" FROM exercise_execution ee ")
-            add(" INNER JOIN exercise e ON ee.exercise_id = e.id ")
-            add(" INNER JOIN workout_group wg ON e.workout_group_id = wg.id ")
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" WHERE wg.workout_id = ? AND ee.active = 1 ")
-            params.add(filter.workoutId)
+            add(" WHERE ee.exercise_id = ? AND ee.active = 1 ")
+            params.add(exerciseId)
+
+            filter.dateStart?.let {
+                add(" and ee.execution_start_time >= ? ")
+            }
+
+            filter.dateEnd?.let {
+                add(" and ee.execution_start_time <= ? ")
+            }
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
@@ -359,4 +366,20 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
 
         return getExecutionInfosTuple(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
     }
+
+    @Query(
+        """
+        select 
+            min(execution.execution_start_time) as executionStartTime,
+            max(execution.execution_end_time) as executionEndTime
+        from exercise_execution execution
+        inner join exercise on exercise.id = execution.exercise_id
+        inner join workout_group wg on wg.id = exercise.workout_group_id
+        where execution.active = 1
+        and exercise.active = 1
+        and wg.active = 1
+        and wg.workout_id = :workoutId
+    """
+    )
+    abstract suspend fun getExecutionStartEnd(workoutId: String): ExecutionDurationTuple?
 }

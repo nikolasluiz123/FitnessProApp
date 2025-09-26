@@ -98,6 +98,44 @@ class ExecutionEvolutionHistoryViewModel @Inject constructor(
                     )
                 }
             ),
+            dateStart = createDatePickerFieldState(
+                getCurrentState = { _uiState.value.newRegisterEvolutionReportDialogUIState.dateStart },
+                updateState = {
+                    _uiState.value = _uiState.value.copy(
+                        newRegisterEvolutionReportDialogUIState = _uiState.value.newRegisterEvolutionReportDialogUIState.copy(
+                            dateStart = it
+                        )
+                    )
+                },
+                onDateChange = { newLocalDate ->
+                    _uiState.value = _uiState.value.copy(
+                        newRegisterEvolutionReportDialogUIState = _uiState.value.newRegisterEvolutionReportDialogUIState.copy(
+                            result = _uiState.value.newRegisterEvolutionReportDialogUIState.result.copy(
+                                dateStart = newLocalDate
+                            )
+                        )
+                    )
+                }
+            ),
+            dateEnd = createDatePickerFieldState(
+                getCurrentState = { _uiState.value.newRegisterEvolutionReportDialogUIState.dateEnd },
+                updateState = {
+                    _uiState.value = _uiState.value.copy(
+                        newRegisterEvolutionReportDialogUIState = _uiState.value.newRegisterEvolutionReportDialogUIState.copy(
+                            dateEnd = it
+                        )
+                    )
+                },
+                onDateChange = { newLocalDate ->
+                    _uiState.value = _uiState.value.copy(
+                        newRegisterEvolutionReportDialogUIState = _uiState.value.newRegisterEvolutionReportDialogUIState.copy(
+                            result = _uiState.value.newRegisterEvolutionReportDialogUIState.result.copy(
+                                dateEnd = newLocalDate
+                            )
+                        )
+                    )
+                }
+            ),
             onDismissRequest = initReportOnDismiss(),
             onToggleLoading = initReportOnToggleLoading(),
             onShow = initReportOnShowDialog()
@@ -192,6 +230,16 @@ class ExecutionEvolutionHistoryViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(
                         newRegisterEvolutionReportDialogUIState = _uiState.value.newRegisterEvolutionReportDialogUIState.copy(
                             name = _uiState.value.newRegisterEvolutionReportDialogUIState.name.copy(
+                                errorMessage = it.message
+                            )
+                        )
+                    )
+                }
+
+                EnumValidatedRegisterEvolutionReportFields.WORKOUT -> {
+                    _uiState.value = _uiState.value.copy(
+                        newRegisterEvolutionReportDialogUIState = _uiState.value.newRegisterEvolutionReportDialogUIState.copy(
+                            workout = _uiState.value.newRegisterEvolutionReportDialogUIState.workout.copy(
                                 errorMessage = it.message
                             )
                         )

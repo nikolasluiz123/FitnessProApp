@@ -144,4 +144,6 @@
     <string name="not_acepted_all_requested_permission_health_connect">Você não aceitou todas as permissões solicitadas para leitura de seus dados de saúde, algumas funcionalidades do aplicativo não estarão disponíveis até que conceda as permissões.</string>
     <string name="generated_reports_subtitle_workout_register_evolution">Registros de Evolução</string>
     <string name="new_register_evolution_report_dialog_label_workouts">Treino*</string>
+    <string name="validation_msg_required_period_from_report">Já existem 3 meses ou mais de registros de execução, por conta disso, é obrigatório informar um período de até 3 meses (90 dias) nos campos de Início e Fim.</string>
+    <string name="validation_msg_invalid_period_from_report">O período máximo permitido para geração do relatório é de 3 meses (90 dias).</string>
 </resources>

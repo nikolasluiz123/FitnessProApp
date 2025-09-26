@@ -41,10 +41,11 @@ class RegisterEvolutionWorkoutPDFReport(
         body.addSession(RegisterEvolutionWorkoutResumeSession(context))
 
         val workoutGroups = entryPoint.getRegisterEvolutionWorkoutRepository().getWorkoutGroupInfosTuple(filter)
-        val exercises = entryPoint.getRegisterEvolutionWorkoutRepository().getExerciseInfosTuple(filter)
 
         workoutGroups.forEach { group ->
             body.addSession(RegisterEvolutionWorkoutGroupSession(context, group))
+
+            val exercises = entryPoint.getRegisterEvolutionWorkoutRepository().getExerciseInfosTuple(group.id)
 
             exercises.forEach { exercise ->
                 body.addSession(RegisterEvolutionWorkoutExerciseSession(context, exercise))

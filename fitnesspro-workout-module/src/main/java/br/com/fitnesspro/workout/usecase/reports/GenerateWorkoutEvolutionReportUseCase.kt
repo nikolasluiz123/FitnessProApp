@@ -16,21 +16,26 @@ import br.com.fitnesspro.pdf.generator.report.PDFReportGenerator
 import br.com.fitnesspro.to.TOReport
 import br.com.fitnesspro.to.TOWorkoutReport
 import br.com.fitnesspro.workout.reports.evolution.report.RegisterEvolutionWorkoutPDFReport
+import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.RegisterEvolutionWorkoutRepository
 import br.com.fitnesspro.workout.ui.state.reports.NewRegisterEvolutionReportResult
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 
 class GenerateWorkoutEvolutionReportUseCase(
     private val context: Context,
-    private val reportRepository: RegisterEvolutionWorkoutRepository
+    private val reportRepository: RegisterEvolutionWorkoutRepository,
+    private val exerciseExecutionRepository: ExerciseExecutionRepository
 ) {
 
     suspend operator fun invoke(reportResult: NewRegisterEvolutionReportResult): GenerateWorkoutEvolutionReportUseCaseResult {
         val validationResult = mutableListOf<FieldValidationError<EnumValidatedRegisterEvolutionReportFields>>()
+        validateWorkout(reportResult)?.let(validationResult::add)
         validateName(reportResult)?.let(validationResult::add)
+        validatePeriod(reportResult)?.let(validationResult::add)
 
         var file: File? = null
 
@@ -105,6 +110,26 @@ class GenerateWorkoutEvolutionReportUseCase(
         reportRepository.saveRegisterEvolutionReport(toReport, toWorkoutReport)
     }
 
+    private fun validateWorkout(result: NewRegisterEvolutionReportResult): FieldValidationError<EnumValidatedRegisterEvolutionReportFields>? {
+        val validationPair = when {
+            result.workoutId.isNullOrEmpty() -> {
+                val message = context.getString(
+                    R.string.validation_msg_required_field,
+                    context.getString(EnumValidatedRegisterEvolutionReportFields.WORKOUT.labelResId)
+                )
+
+                FieldValidationError(
+                    field = EnumValidatedRegisterEvolutionReportFields.WORKOUT,
+                    message = message,
+                )
+            }
+
+            else -> null
+        }
+
+        return validationPair
+    }
+
     private fun validateName(result: NewRegisterEvolutionReportResult): FieldValidationError<EnumValidatedRegisterEvolutionReportFields>? {
         val name = result.reportName?.trim()
 
@@ -142,6 +167,39 @@ class GenerateWorkoutEvolutionReportUseCase(
         }
 
         return validationPair
+    }
+
+    private suspend fun validatePeriod(result: NewRegisterEvolutionReportResult): FieldValidationError<EnumValidatedRegisterEvolutionReportFields>? {
+        val period = exerciseExecutionRepository.getExecutionStartEnd(result.workoutId!!)
+        if (period == null) return null
+
+        val days = ChronoUnit.DAYS.between(period.executionStartTime, period.executionEndTime)
+
+        return if (days > 90) {
+            when {
+                result.dateStart == null || result.dateEnd == null -> {
+                    val message = context.getString(R.string.validation_msg_required_period_from_report)
+
+                    FieldValidationError(
+                        field = null,
+                        message = message,
+                    )
+                }
+
+                ChronoUnit.DAYS.between(result.dateStart, result.dateEnd) > 90 -> {
+                    val message = context.getString(R.string.validation_msg_invalid_period_from_report)
+
+                    FieldValidationError(
+                        field = null,
+                        message = message,
+                    )
+                }
+
+                else -> null
+            }
+        } else {
+            null
+        }
     }
 }
 

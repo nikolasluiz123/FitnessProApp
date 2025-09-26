@@ -126,7 +126,7 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
     suspend fun getWorkoutGroupInfosTuple(filter: RegisterEvolutionWorkoutReportFilter): List<WorkoutGroupInfosTuple> {
         val params = mutableListOf<Any>()
         val select = StringJoiner(QR_NL).apply {
-            add(" SELECT wg.day_week as dayWeek, wg.name as name ")
+            add(" SELECT wg.id as id, wg.day_week as dayWeek, wg.name as name ")
         }
 
         val from = StringJoiner(QR_NL).apply {
