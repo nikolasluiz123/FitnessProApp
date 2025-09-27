@@ -43,6 +43,7 @@ fun CurrentWorkoutItem(
                     top.linkTo(parent.top, margin = 8.dp)
 
                     width = Dimension.fillToConstraints
+                    horizontalChainWeight = 0.35f
                 },
             label = stringResource(R.string.current_workout_item_label_day_week),
             value = decorator.dayWeek.getFirstPartFullDisplayName(),
@@ -56,6 +57,7 @@ fun CurrentWorkoutItem(
                     top.linkTo(parent.top, margin = 8.dp)
 
                     width = Dimension.fillToConstraints
+                    horizontalChainWeight = 0.65f
                 },
             label = stringResource(R.string.current_workout_item_label_workout_groups),
             value = decorator.muscularGroups,
@@ -67,7 +69,7 @@ fun CurrentWorkoutItem(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
-                top.linkTo(dayWeekRef.bottom, margin = 8.dp)
+                top.linkTo(muscularGroupRef.bottom, margin = 8.dp)
             },
         )
     }
