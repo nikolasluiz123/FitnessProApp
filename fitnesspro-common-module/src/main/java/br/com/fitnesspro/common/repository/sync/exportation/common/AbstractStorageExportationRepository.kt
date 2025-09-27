@@ -47,7 +47,9 @@ abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMainte
 
             do {
                 clientDateTimeStart = dateTimeNow(ZoneOffset.UTC)
-                models = getExportationModels(pageSize)
+                models = getExportationModels(pageSize).filter {
+                    it.filePath?.let(FileUtils::getFileExists) ?: false
+                }
 
                 if (models.isNotEmpty()) {
                     Log.i(LogConstants.WORKER_EXPORT, "${models.size} arquivos")
