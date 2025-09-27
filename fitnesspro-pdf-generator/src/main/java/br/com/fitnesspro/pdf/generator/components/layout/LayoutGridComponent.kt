@@ -1,7 +1,6 @@
 package br.com.fitnesspro.pdf.generator.components.layout
 
 import android.graphics.pdf.PdfDocument
-import android.text.StaticLayout
 import androidx.core.graphics.withSave
 import br.com.fitnesspro.pdf.generator.common.IPageManager
 import br.com.fitnesspro.pdf.generator.components.IReportComponent
@@ -28,15 +27,6 @@ class LayoutGridComponent<FILTER : Any>(
 ) : IReportComponent<FILTER> {
 
     /**
-     * Em [measureHeight] calculamos a altura necessária para exibição do componente, nesse processo
-     * aproveitamos para armazenar os [StaticLayout] que precisaram ser criados para podermos calcular
-     * essa altura.
-     *
-     * Fazendo isso, em [draw] podemos de fato apenas focar em desenhar os elementos na página.
-     */
-    private var cachedLayouts: List<Pair<StaticLayout, StaticLayout>>? = null
-
-    /**
      * Armazena a altura do componente que foi calculada em [measureHeight] para evitar recalcular
      * desnecessariamente.
      */
@@ -46,29 +36,28 @@ class LayoutGridComponent<FILTER : Any>(
         measuredTotalHeight?.let { return it }
 
         val config = calculateGridConfig(pageManager.pageInfo)
-        val layouts = mutableListOf<Pair<StaticLayout, StaticLayout>>()
+        val layoutWidth = config.columnWidth.toInt().coerceAtLeast(1)
 
-        items.forEach { (label, value) ->
+        val layoutsForMeasurement = items.map { (label, value) ->
             val labelLayout = label.createStaticLayout(
                 paint = Paints.defaultLabelPaint,
-                width = config.columnWidth.toInt(),
+                width = layoutWidth,
                 includePad = false
             )
 
             val valueLayout = (value ?: "").createStaticLayout(
                 paint = Paints.defaultValuePaint,
-                width = config.columnWidth.toInt(),
+                width = layoutWidth,
                 includePad = false
             )
-            layouts.add(labelLayout to valueLayout)
+            labelLayout to valueLayout
         }
-        this.cachedLayouts = layouts
 
         var totalHeight = config.paddingTop
         var columnIndex = 0
         var maxRowHeight = 0f
 
-        layouts.forEachIndexed { index, (labelLayout, valueLayout) ->
+        layoutsForMeasurement.forEachIndexed { index, (labelLayout, valueLayout) ->
             val labelHeight = labelLayout.height.toFloat()
             val valueHeight = valueLayout.height.toFloat()
             val totalCellHeight = labelHeight + valueHeight + Margins.MARGIN_16
@@ -76,7 +65,7 @@ class LayoutGridComponent<FILTER : Any>(
             maxRowHeight = maxOf(maxRowHeight, totalCellHeight)
             columnIndex++
 
-            if (columnIndex == columnCount || index == layouts.lastIndex) {
+            if (columnIndex == columnCount || index == layoutsForMeasurement.lastIndex) {
                 totalHeight += maxRowHeight
                 columnIndex = 0
                 maxRowHeight = 0f
@@ -89,18 +78,26 @@ class LayoutGridComponent<FILTER : Any>(
     }
 
     override suspend fun draw(pageManager: IPageManager, yStart: Float): Float {
-        if (cachedLayouts == null) {
-            measureHeight(pageManager)
-        }
-
         val config = calculateGridConfig(pageManager.pageInfo)
-        val canvas = pageManager.canvas
+        val layoutWidth = config.columnWidth.toInt().coerceAtLeast(1)
 
         var columnIndex = 0
         var rowStartY = yStart + config.paddingTop
         var maxRowHeight = 0f
 
-        this.cachedLayouts?.forEachIndexed { index, (labelLayout, valueLayout) ->
+        this.items.forEachIndexed { index, (label, value) ->
+            val labelLayout = label.createStaticLayout(
+                paint = Paints.defaultLabelPaint,
+                width = layoutWidth,
+                includePad = false
+            )
+
+            val valueLayout = (value ?: "").createStaticLayout(
+                paint = Paints.defaultValuePaint,
+                width = layoutWidth,
+                includePad = false
+            )
+
             val startX = config.horizontalPaddingStart + (columnIndex * (config.columnWidth + config.columnSpacing))
 
             val labelHeight = labelLayout.height.toFloat()
@@ -108,14 +105,15 @@ class LayoutGridComponent<FILTER : Any>(
             val totalCellHeight = labelHeight + valueHeight + Margins.MARGIN_16
 
             rowStartY = pageManager.ensureSpace(rowStartY, totalCellHeight)
+            val canvas = pageManager.canvas
 
             canvas.withSave {
                 translate(startX, rowStartY)
                 labelLayout.draw(this)
             }
 
+            val valueY = rowStartY + labelHeight + Margins.MARGIN_4
             canvas.withSave {
-                val valueY = rowStartY + labelHeight + Margins.MARGIN_4
                 translate(startX, valueY)
                 valueLayout.draw(this)
             }
@@ -141,12 +139,14 @@ class LayoutGridComponent<FILTER : Any>(
         val usableWidth = pageWidth - (padding * 2) - (spacing * (columnCount - 1))
         val columnWidth = usableWidth / columnCount
 
-        return GridConfig(
+        val config = GridConfig(
             pageWidth = pageWidth,
             horizontalPaddingStart = padding,
             columnSpacing = spacing,
             columnWidth = columnWidth,
             paddingTop = Margins.MARGIN_16.toFloat()
         )
+
+        return config
     }
 }
