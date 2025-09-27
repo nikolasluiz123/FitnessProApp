@@ -6,6 +6,8 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
 import br.com.fitnesspro.model.enums.EnumTransmissionState
@@ -346,10 +348,12 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
 
             filter.dateStart?.let {
                 add(" and ee.execution_start_time >= ? ")
+                params.add(it.format(EnumDateTimePatterns.DATE_SQLITE))
             }
 
             filter.dateEnd?.let {
-                add(" and ee.execution_start_time <= ? ")
+                add(" and ee.execution_end_time <= ? ")
+                params.add(it.format(EnumDateTimePatterns.DATE_SQLITE))
             }
         }
 

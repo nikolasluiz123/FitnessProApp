@@ -58,7 +58,6 @@ abstract class AbstractPDFReport<FILTER: Any>(var filter: FILTER) {
         val pageManager = PageManager(document, pageSize, header, footer)
         pageManager.start()
 
-        body.measureHeight(pageManager)
         body.draw(pageManager, pageManager.currentY)
 
         pageManager.finish()

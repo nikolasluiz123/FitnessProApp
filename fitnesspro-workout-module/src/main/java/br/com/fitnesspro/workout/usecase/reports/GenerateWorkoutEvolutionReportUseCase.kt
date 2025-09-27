@@ -78,7 +78,9 @@ class GenerateWorkoutEvolutionReportUseCase(
 
     private fun getReportFilter(reportResult: NewRegisterEvolutionReportResult): RegisterEvolutionWorkoutReportFilter {
         return RegisterEvolutionWorkoutReportFilter(
-            workoutId = reportResult.workoutId!!
+            workoutId = reportResult.workoutId!!,
+            dateStart = reportResult.dateStart,
+            dateEnd = reportResult.dateEnd
         )
     }
 
