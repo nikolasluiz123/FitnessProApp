@@ -285,12 +285,14 @@ class SingletonWorkoutUseCaseModule {
     fun provideGenerateWorkoutEvolutionReportUseCase(
         @ApplicationContext context: Context,
         reportRepository: RegisterEvolutionWorkoutRepository,
-        exerciseExecutionRepository: ExerciseExecutionRepository
+        exerciseExecutionRepository: ExerciseExecutionRepository,
+        personRepository: PersonRepository
     ): GenerateWorkoutEvolutionReportUseCase {
         return GenerateWorkoutEvolutionReportUseCase(
             context = context,
             reportRepository = reportRepository,
-            exerciseExecutionRepository = exerciseExecutionRepository
+            exerciseExecutionRepository = exerciseExecutionRepository,
+            personRepository = personRepository
         )
     }
 }

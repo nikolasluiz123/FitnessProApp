@@ -2,6 +2,7 @@ package br.com.fitnesspro.workout.usecase.reports
 
 import android.content.Context
 import br.com.fitnesspro.common.R
+import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.NAME
 import br.com.fitnesspro.core.extensions.dataStore
 import br.com.fitnesspro.core.extensions.dateTimeNow
@@ -28,7 +29,8 @@ import java.time.temporal.ChronoUnit
 class GenerateWorkoutEvolutionReportUseCase(
     private val context: Context,
     private val reportRepository: RegisterEvolutionWorkoutRepository,
-    private val exerciseExecutionRepository: ExerciseExecutionRepository
+    private val exerciseExecutionRepository: ExerciseExecutionRepository,
+    private val personRepository: PersonRepository
 ) {
 
     suspend operator fun invoke(reportResult: NewRegisterEvolutionReportResult): GenerateWorkoutEvolutionReportUseCaseResult {
@@ -107,6 +109,7 @@ class GenerateWorkoutEvolutionReportUseCase(
         val toWorkoutReport = TOWorkoutReport(
             context = EnumReportContext.WORKOUT_REGISTER_EVOLUTION,
             workoutId = filter.workoutId,
+            personId = personRepository.getAuthenticatedTOPerson()?.id!!
         )
 
         reportRepository.saveRegisterEvolutionReport(toReport, toWorkoutReport)
