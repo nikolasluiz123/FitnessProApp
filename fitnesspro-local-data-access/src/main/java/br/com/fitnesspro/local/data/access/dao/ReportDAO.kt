@@ -202,6 +202,8 @@ abstract class ReportDAO: IntegratedMaintenanceDAO<Report>() {
                     add(" and wr.person_id = ? ")
                     add(" and wr.report_context = '${context.name}' ")
                     add(" and wr.active = 1 ")
+
+                    params.add(authenticatedPersonId)
                 }
             }
 
