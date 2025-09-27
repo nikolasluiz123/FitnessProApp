@@ -257,6 +257,18 @@ class ExecutionEvolutionHistoryViewModel @Inject constructor(
                     value = "",
                     errorMessage = "",
                 ),
+                workout = _uiState.value.newRegisterEvolutionReportDialogUIState.workout.copy(
+                    value = "",
+                    errorMessage = "",
+                ),
+                dateStart = _uiState.value.newRegisterEvolutionReportDialogUIState.dateStart.copy(
+                    value = "",
+                    errorMessage = "",
+                ),
+                dateEnd = _uiState.value.newRegisterEvolutionReportDialogUIState.dateEnd.copy(
+                    value = "",
+                    errorMessage = "",
+                ),
             )
         )
 
