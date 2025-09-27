@@ -43,8 +43,11 @@ class RegisterEvolutionWorkoutRepository(
         workoutGroupDAO.getWorkoutGroupInfosTuple(filter)
     }
 
-    suspend fun getExerciseInfosTuple(workoutGroupId: String): List<ExerciseInfosTuple> = withContext(Dispatchers.IO) {
-        exerciseDAO.getExerciseInfosTuple(workoutGroupId)
+    suspend fun getExerciseInfosTuple(
+        workoutGroupId: String,
+        filter: RegisterEvolutionWorkoutReportFilter
+    ): List<ExerciseInfosTuple> = withContext(Dispatchers.IO) {
+        exerciseDAO.getExerciseInfosTuple(workoutGroupId, filter)
     }
 
     suspend fun getExecutionInfosTuple(

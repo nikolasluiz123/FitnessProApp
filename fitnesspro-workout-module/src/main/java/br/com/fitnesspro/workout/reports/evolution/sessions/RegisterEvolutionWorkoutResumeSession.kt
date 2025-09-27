@@ -44,11 +44,11 @@ class RegisterEvolutionWorkoutResumeSession(context: Context) : AbstractReportSe
                 columnLayouts = listOf(
                     ColumnLayout(
                         label = context.getString(R.string.day_of_week_column_label),
-                        widthPercent = 0.5f
+                        widthPercent = 0.3f
                     ),
                     ColumnLayout(
                         label = context.getString(R.string.name_column_label),
-                        widthPercent = 0.5f
+                        widthPercent = 0.7f
                     )
                 ),
                 rows = groupData.map {
@@ -62,6 +62,6 @@ class RegisterEvolutionWorkoutResumeSession(context: Context) : AbstractReportSe
     }
 
     override fun getTitlePaint(): TextPaint {
-        return Paints.subtitlePaintMoreFocus
+        return Paints.subtitlePaint
     }
 }

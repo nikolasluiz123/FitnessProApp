@@ -5,6 +5,8 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_SQLITE
+import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
 import br.com.fitnesspro.model.enums.EnumTransmissionState
@@ -136,10 +138,42 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
         val where = StringJoiner(QR_NL).apply {
             add(" WHERE wg.workout_id = ? AND wg.active = 1 ")
             params.add(filter.workoutId)
+
+            if (filter.dateStart != null || filter.dateEnd != null) {
+                add(" and exists ( ")
+                add("               select 1 ")
+                add("               from exercise_execution ee ")
+                add("               inner join exercise e on ee.exercise_id = e.id ")
+                add("               where e.workout_group_id = wg.id ")
+                add("               and ee.active = 1 ")
+                add("               and e.active = 1 ")
+
+                filter.dateStart?.let {
+                    add(" and date(ee.execution_start_time) >= ? ")
+                    params.add(it.format(DATE_SQLITE))
+                }
+
+                filter.dateEnd?.let {
+                    add(" and date(ee.execution_end_time) <= ? ")
+                    params.add(it.format(DATE_SQLITE))
+                }
+
+                add("            ) ")
+            }
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" ORDER BY wg.group_order ")
+            add(" order by case wg.day_week ")
+            add("     when '${DayOfWeek.MONDAY.name}' then 1 ")
+            add("     when '${DayOfWeek.TUESDAY.name}' then 2 ")
+            add("     when '${DayOfWeek.WEDNESDAY.name}' then 3 ")
+            add("     when '${DayOfWeek.THURSDAY.name}' then 4 ")
+            add("     when '${DayOfWeek.FRIDAY.name}' then 5 ")
+            add("     when '${DayOfWeek.SATURDAY.name}' then 6 ")
+            add("     when '${DayOfWeek.SUNDAY.name}' then 7 ")
+            add("     else 8 ")
+            add(" end, ")
+            add(" wg.group_order ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

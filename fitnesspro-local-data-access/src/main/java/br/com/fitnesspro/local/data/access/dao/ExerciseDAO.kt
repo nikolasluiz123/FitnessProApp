@@ -5,7 +5,10 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_SQLITE
+import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
 import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.to.TOExercise
@@ -109,7 +112,7 @@ abstract class ExerciseDAO: IntegratedMaintenanceDAO<Exercise>() {
     @RawQuery
     abstract suspend fun getExerciseInfosTuple(query: SupportSQLiteQuery): List<ExerciseInfosTuple>
 
-    suspend fun getExerciseInfosTuple(workoutGroupId: String): List<ExerciseInfosTuple> {
+    suspend fun getExerciseInfosTuple(workoutGroupId: String, filter: RegisterEvolutionWorkoutReportFilter): List<ExerciseInfosTuple> {
         val params = mutableListOf<Any>()
         val select = StringJoiner(QR_NL).apply {
             add(" SELECT e.id as id, ")
@@ -127,6 +130,26 @@ abstract class ExerciseDAO: IntegratedMaintenanceDAO<Exercise>() {
         val where = StringJoiner(QR_NL).apply {
             add(" WHERE e.workout_group_id = ? AND e.active = 1 ")
             params.add(workoutGroupId)
+
+            if (filter.dateStart != null || filter.dateEnd != null) {
+                add(" and exists ( ")
+                add("               select 1 ")
+                add("               from exercise_execution ee ")
+                add("               where ee.exercise_id = e.id ")
+                add("               and ee.active = 1 ")
+
+                filter.dateStart?.let {
+                    add(" and date(ee.execution_start_time) >= ? ")
+                    params.add(it.format(DATE_SQLITE))
+                }
+
+                filter.dateEnd?.let {
+                    add(" and date(ee.execution_end_time) <= ? ")
+                    params.add(it.format(DATE_SQLITE))
+                }
+
+                add("            ) ")
+            }
         }
 
         val orderBy = StringJoiner(QR_NL).apply {

@@ -20,6 +20,6 @@ class RegisterEvolutionWorkoutGroupSession(
     }
 
     override fun getTitlePaint(): TextPaint {
-        return Paints.subtitlePaintMoreFocus
+        return Paints.subtitlePaint
     }
 }

@@ -347,12 +347,12 @@ abstract class ExerciseExecutionDAO: IntegratedMaintenanceDAO<ExerciseExecution>
             params.add(exerciseId)
 
             filter.dateStart?.let {
-                add(" and ee.execution_start_time >= ? ")
+                add(" and date(ee.execution_start_time) >= ? ")
                 params.add(it.format(EnumDateTimePatterns.DATE_SQLITE))
             }
 
             filter.dateEnd?.let {
-                add(" and ee.execution_end_time <= ? ")
+                add(" and date(ee.execution_end_time) <= ? ")
                 params.add(it.format(EnumDateTimePatterns.DATE_SQLITE))
             }
         }

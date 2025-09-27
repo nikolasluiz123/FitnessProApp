@@ -3,7 +3,6 @@ package br.com.fitnesspro.pdf.generator.utils
 import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.graphics.Paint
-import android.graphics.Typeface
 import android.text.TextPaint
 
 /**
@@ -24,15 +23,10 @@ object Paints {
         }
     }
 
-    val subtitlePaintLessFocus by lazy {
-        subtitlePaint.apply {
-            textSize = 12f
-        }
-    }
-
-    val subtitlePaintMoreFocus by lazy {
-        subtitlePaint.apply {
-            typeface = Typeface.DEFAULT_BOLD
+    val subtitlePaintGrey by lazy {
+        TextPaint().apply {
+            color = Color.GRAY
+            textSize = 14f
         }
     }
 

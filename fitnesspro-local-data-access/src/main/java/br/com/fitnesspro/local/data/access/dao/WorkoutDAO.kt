@@ -6,6 +6,8 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_SQLITE
+import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
 import br.com.fitnesspro.model.enums.EnumTransmissionState
@@ -213,7 +215,7 @@ abstract class WorkoutDAO: IntegratedMaintenanceDAO<Workout>() {
         val params = mutableListOf<Any>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" SELECT wg.day_week as dayWeek, wg.name as name ")
+            add(" SELECT wg.day_week as dayWeek, GROUP_CONCAT(wg.name, ', ') as name ")
         }
 
         val from = StringJoiner(QR_NL).apply {
@@ -223,6 +225,32 @@ abstract class WorkoutDAO: IntegratedMaintenanceDAO<Workout>() {
         val where = StringJoiner(QR_NL).apply {
             add(" WHERE wg.workout_id = ? AND wg.active = 1 ")
             params.add(filter.workoutId)
+
+            if (filter.dateStart != null || filter.dateEnd != null) {
+                add(" and exists ( ")
+                add("               select 1 ")
+                add("               from exercise_execution ee ")
+                add("               inner join exercise e on ee.exercise_id = e.id ")
+                add("               where e.workout_group_id = wg.id ")
+                add("               and ee.active = 1 ")
+                add("               and e.active = 1 ")
+
+                filter.dateStart?.let {
+                    add(" and date(ee.execution_start_time) >= ? ")
+                    params.add(it.format(DATE_SQLITE))
+                }
+
+                filter.dateEnd?.let {
+                    add(" and date(ee.execution_end_time) <= ? ")
+                    params.add(it.format(DATE_SQLITE))
+                }
+
+                add("            ) ")
+            }
+        }
+
+        val groupBy = StringJoiner(QR_NL).apply {
+            add(" GROUP BY wg.day_week ")
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
@@ -233,6 +261,7 @@ abstract class WorkoutDAO: IntegratedMaintenanceDAO<Workout>() {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(groupBy.toString())
             add(orderBy.toString())
         }
         return getResumeRegisterEvolutionWorkoutGroupTuple(SimpleSQLiteQuery(sql.toString(), params.toTypedArray()))
