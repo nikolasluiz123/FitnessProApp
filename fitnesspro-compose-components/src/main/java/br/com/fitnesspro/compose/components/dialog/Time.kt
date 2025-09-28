@@ -21,7 +21,6 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,14 +29,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.compose.components.buttons.FitnessProTextButton
-import br.com.fitnesspro.compose.components.dialog.enums.EnumDatePickerDialogTestTags.DATE_PICKER_DIALOG
-import br.com.fitnesspro.compose.components.dialog.enums.EnumDatePickerDialogTestTags.DATE_PICKER_DIALOG_BUTTON_CANCEL
-import br.com.fitnesspro.compose.components.dialog.enums.EnumDatePickerDialogTestTags.DATE_PICKER_DIALOG_BUTTON_CONFIRM
-import br.com.fitnesspro.compose.components.dialog.enums.EnumTimePickerInputTestTags.TIME_PICKER_DIALOG
-import br.com.fitnesspro.compose.components.dialog.enums.EnumTimePickerInputTestTags.TIME_PICKER_DIALOG_BUTTON_CANCEL
-import br.com.fitnesspro.compose.components.dialog.enums.EnumTimePickerInputTestTags.TIME_PICKER_DIALOG_BUTTON_CONFIRM
-import br.com.fitnesspro.compose.components.dialog.enums.EnumTimePickerInputTestTags.TIME_PICKER_DIALOG_TITLE
-import br.com.fitnesspro.compose.components.dialog.enums.EnumTimePickerInputTestTags.TIME_PICKER_INPUT
 import br.com.fitnesspro.core.extensions.timeNow
 import br.com.fitnesspro.core.theme.DialogTitleTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -58,11 +49,10 @@ fun FitnessProDatePickerDialog(
     val datePickerState = rememberDatePickerState()
 
     DatePickerDialog(
-        modifier = modifier.testTag(DATE_PICKER_DIALOG.name),
+        modifier = modifier,
         onDismissRequest = onDismissRequest,
         confirmButton = {
             FitnessProTextButton(
-                modifier = Modifier.testTag(DATE_PICKER_DIALOG_BUTTON_CONFIRM.name),
                 label = stringResource(id = R.string.label_confirm),
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = MaterialTheme.colorScheme.onSurface,
@@ -78,7 +68,6 @@ fun FitnessProDatePickerDialog(
         },
         dismissButton = {
             FitnessProTextButton(
-                modifier = Modifier.testTag(DATE_PICKER_DIALOG_BUTTON_CANCEL.name),
                 label = stringResource(id = R.string.label_cancel),
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = MaterialTheme.colorScheme.onSurface,
@@ -112,7 +101,6 @@ fun TimePickerDialog(
     BasicAlertDialog(
         onDismissRequest = onDismiss,
         modifier = Modifier
-            .testTag(TIME_PICKER_DIALOG.name)
             .wrapContentHeight(),
         properties = properties
     ) {
@@ -127,7 +115,6 @@ fun TimePickerDialog(
 
                 Text(
                     modifier = Modifier
-                        .testTag(TIME_PICKER_DIALOG_TITLE.name)
                         .constrainAs(titleRef) {
                             start.linkTo(parent.start)
                             top.linkTo(parent.top)
@@ -139,7 +126,6 @@ fun TimePickerDialog(
 
                 TimeInput(
                     modifier = Modifier
-                        .testTag(TIME_PICKER_INPUT.name)
                         .focusable()
                         .padding(top = 16.dp)
                         .constrainAs(inputRef) {
@@ -168,7 +154,6 @@ fun TimePickerDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     FitnessProTextButton(
-                        modifier = Modifier.testTag(TIME_PICKER_DIALOG_BUTTON_CANCEL.name),
                         colors = ButtonDefaults.textButtonColors(
                             contentColor = MaterialTheme.colorScheme.onSurface,
                             disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
@@ -180,7 +165,6 @@ fun TimePickerDialog(
                     )
 
                     FitnessProTextButton(
-                        modifier = Modifier.testTag(TIME_PICKER_DIALOG_BUTTON_CONFIRM.name),
                         colors = ButtonDefaults.textButtonColors(
                             contentColor = MaterialTheme.colorScheme.onSurface,
                             disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)

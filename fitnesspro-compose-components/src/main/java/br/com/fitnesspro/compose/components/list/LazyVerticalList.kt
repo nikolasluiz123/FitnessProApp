@@ -7,13 +7,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.fitnesspro.compose.components.gallery.video.components.EmptyState
-import br.com.fitnesspro.compose.components.list.enums.EnumListTestTags.LAZY_COLUMN
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -40,7 +38,6 @@ fun <T> LazyVerticalList(
 ) {
     if (items.isNotEmpty()) {
         LazyColumn(
-            modifier = modifier.testTag(LAZY_COLUMN.name),
             verticalArrangement = Arrangement.spacedBy(verticalArrangementSpace),
             contentPadding = PaddingValues(contentPadding),
             reverseLayout = reverseLayout
@@ -70,7 +67,7 @@ fun <T> LazyVerticalList(
 
     if (items.isNotEmpty()) {
         LazyColumn(
-            modifier = modifier.testTag(LAZY_COLUMN.name),
+            modifier = modifier,
             verticalArrangement = Arrangement.spacedBy(verticalArrangementSpace),
             contentPadding = PaddingValues(contentPadding),
             reverseLayout = reverseLayout

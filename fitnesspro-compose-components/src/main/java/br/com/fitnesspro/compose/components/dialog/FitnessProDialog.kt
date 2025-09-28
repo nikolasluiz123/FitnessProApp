@@ -13,11 +13,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,15 +35,8 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import br.com.fitnesspro.compose.components.R
-import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProMessageDialogTestTags.FITNESS_PRO_MESSAGE_DIALOG
-import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProMessageDialogTestTags.FITNESS_PRO_MESSAGE_DIALOG_CANCEL_BUTTON
-import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProMessageDialogTestTags.FITNESS_PRO_MESSAGE_DIALOG_CONFIRM_BUTTON
-import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProMessageDialogTestTags.FITNESS_PRO_MESSAGE_DIALOG_MESSAGE
-import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProMessageDialogTestTags.FITNESS_PRO_MESSAGE_DIALOG_OK_BUTTON
-import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProMessageDialogTestTags.FITNESS_PRO_MESSAGE_DIALOG_TITLE
-import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG
-import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG_FILTER
-import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProPagedListDialogTestTags.FITNESS_PRO_PAGED_LIST_DIALOG_TITLE
+import br.com.fitnesspro.compose.components.buttons.DefaultDialogTextButton
+import br.com.fitnesspro.compose.components.dialog.enums.EnumFitnessProMessageDialogTags
 import br.com.fitnesspro.compose.components.fields.state.DialogListState
 import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
 import br.com.fitnesspro.compose.components.filter.SimpleFilter
@@ -105,11 +95,9 @@ fun FitnessProMessageDialog(
 
     if (show) {
         AlertDialog(
-            modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG.name),
             onDismissRequest = onDismissRequest,
             title = {
                 Text(
-                    modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_TITLE.name),
                     text = stringResource(type.titleResId),
                     style = DialogTitleTextStyle
                 )
@@ -117,7 +105,6 @@ fun FitnessProMessageDialog(
             text = {
                 Box(modifier = Modifier.verticalScroll(state = scrollState)) {
                     Text(
-                        modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_MESSAGE.name),
                         text = message,
                         style = ValueTextStyle
                     )
@@ -126,24 +113,26 @@ fun FitnessProMessageDialog(
             confirmButton = {
                 when (type) {
                     ERROR, INFORMATION -> {
-                        DialogTextButton(
-                            modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_OK_BUTTON.name),
+                        DefaultDialogTextButton(
                             labelResId = R.string.label_ok,
-                            onDismissRequest = onDismissRequest,
                             onClick = {
-                                Firebase.analytics.logButtonClick(FITNESS_PRO_MESSAGE_DIALOG_OK_BUTTON)
+                                Firebase.analytics.logButtonClick(
+                                    EnumFitnessProMessageDialogTags.FITNESS_PRO_MESSAGE_DIALOG_OK_BUTTON
+                                )
+                                onDismissRequest()
                                 onConfirm()
                             }
                         )
                     }
 
                     CONFIRMATION -> {
-                        DialogTextButton(
-                            modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_CONFIRM_BUTTON.name),
+                        DefaultDialogTextButton(
                             labelResId = R.string.label_confirm,
-                            onDismissRequest = onDismissRequest,
                             onClick = {
-                                Firebase.analytics.logButtonClick(FITNESS_PRO_MESSAGE_DIALOG_CONFIRM_BUTTON)
+                                Firebase.analytics.logButtonClick(
+                                    EnumFitnessProMessageDialogTags.FITNESS_PRO_MESSAGE_DIALOG_CONFIRM_BUTTON
+                                )
+                                onDismissRequest()
                                 onConfirm()
                             }
                         )
@@ -153,12 +142,13 @@ fun FitnessProMessageDialog(
             dismissButton = {
                 when (type) {
                     CONFIRMATION -> {
-                        DialogTextButton(
-                            modifier = Modifier.testTag(FITNESS_PRO_MESSAGE_DIALOG_CANCEL_BUTTON.name),
+                        DefaultDialogTextButton(
                             labelResId = R.string.label_cancel,
-                            onDismissRequest = onDismissRequest,
                             onClick = {
-                                Firebase.analytics.logButtonClick(FITNESS_PRO_MESSAGE_DIALOG_CANCEL_BUTTON)
+                                Firebase.analytics.logButtonClick(
+                                    EnumFitnessProMessageDialogTags.FITNESS_PRO_MESSAGE_DIALOG_CANCEL_BUTTON
+                                )
+                                onDismissRequest()
                                 onCancel()
                             }
                         )
@@ -170,28 +160,6 @@ fun FitnessProMessageDialog(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             textContentColor = MaterialTheme.colorScheme.onSurface,
         )
-    }
-}
-
-@Composable
-private fun DialogTextButton(
-    modifier: Modifier,
-    labelResId: Int,
-    onDismissRequest: () -> Unit,
-    onClick: () -> Unit
-) {
-    TextButton(
-        modifier = modifier,
-        colors = ButtonDefaults.textButtonColors(
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-        ),
-        onClick = {
-            onDismissRequest()
-            onClick()
-        }
-    ) {
-        Text(text = stringResource(id = labelResId))
     }
 }
 
@@ -252,7 +220,6 @@ fun <T : ITupleListItem> FitnessProPagedListDialog(
             shape = MaterialTheme.shapes.medium,
             color = MaterialTheme.colorScheme.surfaceContainer,
             modifier = Modifier
-                .testTag(FITNESS_PRO_PAGED_LIST_DIALOG.name)
                 .padding(16.dp)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -261,14 +228,12 @@ fun <T : ITupleListItem> FitnessProPagedListDialog(
                     style = DialogTitleTextStyle,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
-                        .testTag(FITNESS_PRO_PAGED_LIST_DIALOG_TITLE.name)
                         .padding(top = 8.dp, start = 8.dp, end = 8.dp)
                         .align(Alignment.CenterHorizontally)
                 )
 
                 SimpleFilter(
                     modifier = Modifier
-                        .testTag(FITNESS_PRO_PAGED_LIST_DIALOG_FILTER.name)
                         .padding(8.dp)
                         .fillMaxWidth(),
                     placeholderResId = simpleFilterPlaceholderResId,

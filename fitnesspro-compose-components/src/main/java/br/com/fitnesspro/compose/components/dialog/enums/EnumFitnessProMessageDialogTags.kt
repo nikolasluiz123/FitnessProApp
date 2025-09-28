@@ -1,9 +1,6 @@
 package br.com.fitnesspro.compose.components.dialog.enums
 
-enum class EnumFitnessProMessageDialogTestTags {
-    FITNESS_PRO_MESSAGE_DIALOG,
-    FITNESS_PRO_MESSAGE_DIALOG_TITLE,
-    FITNESS_PRO_MESSAGE_DIALOG_MESSAGE,
+enum class EnumFitnessProMessageDialogTags {
     FITNESS_PRO_MESSAGE_DIALOG_OK_BUTTON,
     FITNESS_PRO_MESSAGE_DIALOG_CONFIRM_BUTTON,
     FITNESS_PRO_MESSAGE_DIALOG_CANCEL_BUTTON

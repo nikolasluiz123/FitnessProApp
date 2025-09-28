@@ -23,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -40,9 +39,6 @@ import br.com.fitnesspro.compose.components.dialog.FitnessProDatePickerDialog
 import br.com.fitnesspro.compose.components.dialog.FitnessProListDialog
 import br.com.fitnesspro.compose.components.dialog.FitnessProPagedListDialog
 import br.com.fitnesspro.compose.components.dialog.TimePickerDialog
-import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_ERROR_MESSAGE
-import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_ERROR_TRAILING_ICON
-import br.com.fitnesspro.compose.components.fields.enums.EnumOutlinedTextFieldTestTags.OUTLINED_TEXT_FIELD_TRAILING_ICON
 import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
 import br.com.fitnesspro.compose.components.fields.state.DialogListTextField
 import br.com.fitnesspro.compose.components.fields.state.ITextField
@@ -73,7 +69,6 @@ fun OutlinedTextFieldValidation(
     trailingIcon: @Composable (() -> Unit)? = {
         if (field.errorMessage.isNotEmpty())
             Icon(
-                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_ERROR_TRAILING_ICON.name),
                 imageVector = Icons.Default.Warning,
                 contentDescription = LocalContext.current.getString(R.string.outlined_textfield_validation_error_icon_description),
                 tint = MaterialTheme.colorScheme.error
@@ -208,7 +203,6 @@ fun OutlinedTextFieldValidation(
     trailingIcon: @Composable (() -> Unit)? = {
         if (error.isNotEmpty())
             Icon(
-                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_ERROR_TRAILING_ICON.name),
                 imageVector = Icons.Default.Warning,
                 contentDescription = "error",
                 tint = MaterialTheme.colorScheme.error
@@ -245,7 +239,6 @@ fun OutlinedTextFieldValidation(
         supportingText = {
             if (error.isNotEmpty()) {
                 Text(
-                    modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_ERROR_MESSAGE.name),
                     text = error,
                     color = MaterialTheme.colorScheme.error,
                     style = FieldErrorTextStyle
@@ -366,7 +359,6 @@ fun OutlinedTextFieldPasswordValidation(
             }
 
             IconButton(
-                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),
                 onClick = { passwordVisible = !passwordVisible }
             ) {
                 Icon(painter = painterResource(resource), description, tint = MaterialTheme.colorScheme.onBackground)
@@ -392,7 +384,6 @@ fun TimePickerOutlinedTextFieldValidation(
         modifier = modifier,
         trailingIcon = {
             IconButtonTime(
-                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),
                 iconColor = MaterialTheme.colorScheme.secondary
             ) { field.onTimePickerOpenChange(true) }
         },
@@ -429,7 +420,6 @@ fun DatePickerOutlinedTextFieldValidation(
         modifier = modifier,
         trailingIcon = {
             IconButtonCalendar(
-                modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),
                 iconColor = MaterialTheme.colorScheme.secondary
             ) { field.onDatePickerOpenChange(true) }
         },
@@ -469,7 +459,6 @@ fun <T: ITupleListItem> PagedListDialogOutlinedTextFieldValidation(
         trailingIcon = {
             if (field.dialogListState.showTrailingIcon) {
                 IconButtonSearch(
-                    modifier = Modifier.testTag(OUTLINED_TEXT_FIELD_TRAILING_ICON.name),
                     onClick = field.dialogListState.onShow,
                     iconColor = MaterialTheme.colorScheme.secondary
                 )

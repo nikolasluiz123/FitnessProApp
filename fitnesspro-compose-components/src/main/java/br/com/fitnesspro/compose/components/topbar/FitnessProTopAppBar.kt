@@ -9,13 +9,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonArrowBack
 import br.com.fitnesspro.compose.components.buttons.icons.MenuIconButton
-import br.com.fitnesspro.compose.components.topbar.enums.EnumFitnessProTopAppBarTestTags.FITNESS_PRO_TOP_APP_BAR_NAVIGATE_BACK_BUTTON
 import br.com.fitnesspro.core.theme.FitnessProTheme
 
 /**
@@ -61,7 +58,6 @@ fun FitnessProTopAppBar(
                 } else {
                     IconButtonArrowBack(
                         onClick = onBackClick,
-                        modifier = Modifier.testTag(FITNESS_PRO_TOP_APP_BAR_NAVIGATE_BACK_BUTTON.name)
                     )
                 }
             }

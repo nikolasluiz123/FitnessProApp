@@ -21,10 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import br.com.fitnesspro.compose.components.fields.enums.EnumDayWeeksSelectorTestTags.DAY_WEEKS_SELECTOR_WEEK_CELL
 import br.com.fitnesspro.compose.components.fields.state.DayWeeksSelectorField
 import br.com.fitnesspro.core.extensions.getShortDisplayName
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -88,7 +86,6 @@ private fun DayWeekCell(
             .padding(4.dp)
             .size(40.dp)
             .background(color = backgroundColor, shape = CircleShape)
-            .testTag(DAY_WEEKS_SELECTOR_WEEK_CELL.name)
             .clickable(
                 interactionSource = interactionSource,
                 indication = ripple(bounded = true, radius = 20.dp, color = Color.Gray)

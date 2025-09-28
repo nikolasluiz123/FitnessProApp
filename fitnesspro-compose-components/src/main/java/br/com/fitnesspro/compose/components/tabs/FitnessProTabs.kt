@@ -14,14 +14,10 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
 import br.com.fitnesspro.compose.components.fields.state.TabState
-import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.HORIZONTAL_PAGER
-import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.TAB
-import br.com.fitnesspro.compose.components.tabs.EnumTabTestTags.TAB_ROW
 import br.com.fitnesspro.core.theme.TabTitleTextStyle
 import br.com.fitnesspro.firebase.api.analytics.logTabClick
 import br.com.fitnesspro.firebase.api.analytics.logTabScroll
@@ -46,7 +42,7 @@ fun FitnessProTabRow(
     pagerState: PagerState,
 ) {
     TabRow(
-        modifier = modifier.testTag(TAB_ROW.name),
+        modifier = modifier,
         selectedTabIndex = tabState.tabs.first { it.selected }.enum.index,
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -66,7 +62,7 @@ fun FitnessProTabRow(
     ) {
         tabState.tabs.forEach { tabToCreate ->
             Tab(
-                modifier = Modifier.testTag(TAB.name),
+                modifier = Modifier,
                 selected = tabToCreate.selected,
                 onClick = {
                     Firebase.analytics.logTabClick(tabToCreate.enum as Enum<*>)
@@ -110,7 +106,7 @@ fun FitnessProHorizontalPager(
     content: @Composable (index: Int) -> Unit
 ) {
     HorizontalPager(
-        modifier = modifier.testTag(HORIZONTAL_PAGER.name),
+        modifier = modifier,
         state = pagerState,
         pageSpacing = 0.dp,
         userScrollEnabled = getUserScrollEnabled(tabState.tabs),
