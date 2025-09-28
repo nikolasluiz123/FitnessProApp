@@ -20,12 +20,18 @@ dependencyResolutionManagement {
         mavenLocal()
 
         maven {
-            name = "GitHubPackages" // Um nome descritivo
-            url = uri("https://maven.pkg.github.com/nikolasluiz123/FitnessProService") // URL do seu repositório onde o pacote foi publicado
+            name = "GitHubPackagesFitnessPro"
+            url = uri("https://maven.pkg.github.com/nikolasluiz123/FitnessProService")
             credentials {
-                // Use providers.gradleProperty para acessar propriedades do Gradle
-                // OrNull para obter o valor String ou null se a propriedade não existir
-                // O fallback para System.getenv é bom para CI, onde variáveis podem ser setadas diretamente
+                username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GITHUB_ACTOR")
+                password = providers.gradleProperty("gpr.key").orNull ?: System.getenv("PACKAGES_TOKEN")
+            }
+        }
+
+        maven {
+            name = "GitHubPackagesAndroidLibs"
+            url = uri("https://maven.pkg.github.com/nikolasluiz123/AndroidLibs")
+            credentials {
                 username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GITHUB_ACTOR")
                 password = providers.gradleProperty("gpr.key").orNull ?: System.getenv("PACKAGES_TOKEN")
             }
