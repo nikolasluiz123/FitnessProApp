@@ -1,6 +1,6 @@
 package br.com.fitnesspro.workout.usecase.reports
 
-import br.com.fitnesspro.core.enums.IEnumFieldValidation
+import br.com.android.ui.compose.components.fields.validation.interfaces.IEnumFieldValidation
 import br.com.fitnesspro.workout.R
 
 enum class EnumValidatedRegisterEvolutionReportFields(

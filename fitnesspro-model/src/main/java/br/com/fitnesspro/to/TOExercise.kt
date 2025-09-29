@@ -1,7 +1,7 @@
 package br.com.fitnesspro.to
 
-import br.com.fitnesspro.core.extensions.bestChronoUnit
-import br.com.fitnesspro.core.menu.ITupleListItem
+import br.com.core.android.utils.interfaces.ISimpleListItem
+import br.com.core.utils.extensions.bestChronoUnit
 import java.time.DayOfWeek
 import java.time.temporal.ChronoUnit
 
@@ -23,7 +23,7 @@ data class TOExercise(
     var dayWeek: DayOfWeek? = null,
     var groupOrder: Int? = null,
     var exerciseOrder: Int? = null,
-): BaseTO, ITupleListItem {
+): BaseTO, ISimpleListItem {
 
     init {
         if (unitDuration == null) {

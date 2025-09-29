@@ -3,9 +3,9 @@ package br.com.fitnesspro.model.general.report
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.IntegratedModel
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.interfaces.sync.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumReportContext
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import java.util.UUID
 
 @Entity(

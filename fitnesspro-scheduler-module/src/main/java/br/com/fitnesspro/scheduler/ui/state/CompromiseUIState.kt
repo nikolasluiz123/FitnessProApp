@@ -1,14 +1,14 @@
 package br.com.fitnesspro.scheduler.ui.state
 
-import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
-import br.com.fitnesspro.compose.components.fields.state.DayWeeksSelectorField
-import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
-import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
-import br.com.fitnesspro.core.state.ILoadingUIState
-import br.com.fitnesspro.core.state.ISuspendedLoadUIState
-import br.com.fitnesspro.core.state.IThrowableUIState
-import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.android.ui.compose.components.dialog.message.MessageDialogState
+import br.com.android.ui.compose.components.fields.text.date.state.DatePickerTextField
+import br.com.android.ui.compose.components.fields.text.dialog.paged.state.PagedDialogListTextField
+import br.com.android.ui.compose.components.fields.text.state.TextField
+import br.com.android.ui.compose.components.fields.text.time.state.TimePickerTextField
+import br.com.android.ui.compose.components.fields.weekselector.DayWeeksSelectorField
+import br.com.android.ui.compose.components.states.ILoadingUIState
+import br.com.android.ui.compose.components.states.ISuspendedLoadUIState
+import br.com.android.ui.compose.components.states.IThrowableUIState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.usecase.scheduler.CompromiseRecurrentConfig
 import br.com.fitnesspro.to.TOPerson

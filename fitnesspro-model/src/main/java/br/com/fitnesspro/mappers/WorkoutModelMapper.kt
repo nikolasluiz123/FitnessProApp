@@ -1,6 +1,6 @@
 package br.com.fitnesspro.mappers
 
-import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition

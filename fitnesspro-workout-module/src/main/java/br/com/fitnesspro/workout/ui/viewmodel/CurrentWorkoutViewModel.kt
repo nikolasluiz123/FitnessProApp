@@ -1,11 +1,11 @@
 package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
-import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.repository.WorkoutRepository

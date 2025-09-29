@@ -1,8 +1,8 @@
 package br.com.fitnesspro.workout.repository
 
 import android.content.Context
+import br.com.core.utils.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
-import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.local.data.access.dao.ExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.getTOWorkoutGroup

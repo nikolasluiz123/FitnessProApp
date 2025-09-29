@@ -23,14 +23,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import br.com.fitnesspro.compose.components.LabeledText
-import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.formatToDecimal
-import br.com.fitnesspro.core.extensions.toReadableDuration
+import br.com.android.ui.compose.components.divider.BaseHorizontalDivider
+import br.com.android.ui.compose.components.label.LabeledText
+import br.com.android.ui.compose.components.styles.LabelGroupTextStyle
+import br.com.core.android.utils.extensions.toReadableDuration
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
+import br.com.core.utils.extensions.formatToDecimal
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.LabelGroupTextStyle
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
 import br.com.fitnesspro.workout.R
 import java.time.LocalDate
@@ -99,7 +99,7 @@ fun ExerciseExecutionItem(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        FitnessProHorizontalDivider()
+        BaseHorizontalDivider()
     }
 }
 

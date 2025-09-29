@@ -1,10 +1,10 @@
 package br.com.fitnesspro.workout.repository.sync.importation.integration
 
 import android.content.Context
+import br.com.android.health.connect.toolkit.mapper.result.SingleRecordMapperResult
+import br.com.android.room.toolkit.dao.IntegratedMaintenanceDAO
 import br.com.fitnesspro.common.injection.health.IHealthConnectIntegrationEntryPoint
 import br.com.fitnesspro.common.repository.sync.importation.health.AbstractHealthConnectIntegrationRepository
-import br.com.fitnesspro.health.connect.mapper.result.SingleRecordMapperResult
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.health.HealthConnectMetadataDAO
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.model.workout.health.HealthConnectCaloriesBurned

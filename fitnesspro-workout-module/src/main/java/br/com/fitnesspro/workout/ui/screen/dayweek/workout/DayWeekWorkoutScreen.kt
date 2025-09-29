@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.ui.compose.components.list.grouped.LazyGroupedVerticalList
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.list.grouped.LazyGroupedVerticalList
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.navigation.ExerciseDetailsScreenArgs
@@ -48,7 +48,7 @@ fun DayWeekWorkoutScreen(
 ) {
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
                 onBackClick = onBackClick

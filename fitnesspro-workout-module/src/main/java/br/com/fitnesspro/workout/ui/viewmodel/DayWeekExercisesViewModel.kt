@@ -2,18 +2,18 @@ package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
+import br.com.android.ui.compose.components.dialog.message.showConfirmationDialog
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
+import br.com.android.ui.compose.components.fields.dropdown.MenuItem
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.dateNow
+import br.com.core.utils.extensions.format
+import br.com.core.utils.extensions.fromJsonNavParamToArgs
+import br.com.core.utils.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
-import br.com.fitnesspro.compose.components.fields.menu.MenuItem
-import br.com.fitnesspro.core.callback.showConfirmationDialog
-import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.dateNow
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
-import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.time.DayOfWeek
 import java.time.ZoneOffset
 import javax.inject.Inject
+import kotlin.collections.toMutableList
 
 @HiltViewModel
 class DayWeekExercisesViewModel @Inject constructor(

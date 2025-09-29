@@ -2,6 +2,14 @@ package br.com.fitnesspro.common.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
+import br.com.android.ui.compose.components.dialog.message.showInformationDialog
+import br.com.android.ui.compose.components.fields.dropdown.MenuItem
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.android.ui.compose.components.tabs.state.Tab
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
+import br.com.core.utils.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
@@ -16,14 +24,6 @@ import br.com.fitnesspro.common.ui.state.RegisterUserUIState
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields
 import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
-import br.com.fitnesspro.compose.components.fields.menu.MenuItem
-import br.com.fitnesspro.compose.components.tabs.Tab
-import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.callback.showInformationDialog
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -188,9 +188,7 @@ class RegisterUserViewModel @Inject constructor(
                         name = _uiState.value.name.copy(value = toPerson.name!!),
                         email = _uiState.value.email.copy(value = toPerson.user?.email!!),
                         birthDate = _uiState.value.birthDate.copy(
-                            value = toPerson.birthDate?.format(
-                                DATE_ONLY_NUMBERS
-                            ) ?: ""
+                            value = toPerson.birthDate?.format(EnumDateTimePatterns.DATE_ONLY_NUMBERS) ?: ""
                         ),
                         phone = _uiState.value.phone.copy(value = toPerson.phone ?: ""),
                         tabState = _uiState.value.tabState.copy(tabs = getTabListAllEnabled()),

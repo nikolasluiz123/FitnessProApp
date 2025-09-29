@@ -1,7 +1,7 @@
 package br.com.fitnesspro.common.ui.screen.registeruser.enums
 
+import br.com.android.ui.compose.components.tabs.state.interfaces.IEnumTab
 import br.com.fitnesspro.common.R
-import br.com.fitnesspro.compose.components.tabs.IEnumTab
 
 enum class EnumTabsRegisterUserScreen(
     override val index: Int,

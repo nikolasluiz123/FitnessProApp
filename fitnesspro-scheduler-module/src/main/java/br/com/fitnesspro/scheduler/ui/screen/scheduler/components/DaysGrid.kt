@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import br.com.android.ui.compose.components.styles.LabelCalendarDayTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.LabelCalendarDayTextStyle
 import br.com.fitnesspro.core.theme.RED_200
 import br.com.fitnesspro.core.theme.RED_400
 import br.com.fitnesspro.core.theme.RED_600

@@ -1,6 +1,7 @@
 package br.com.fitnesspro.common.injection
 
 import android.content.Context
+import br.com.android.firebase.toolkit.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.ApplicationRepository
 import br.com.fitnesspro.common.repository.DeviceRepository
@@ -14,7 +15,6 @@ import br.com.fitnesspro.common.repository.sync.exportation.storage.VideoStorage
 import br.com.fitnesspro.common.repository.sync.importation.GeneralModuleImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.storage.ReportStorageImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.storage.VideoStorageImportationRepository
-import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.firebase.api.storage.StorageBucketService
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO

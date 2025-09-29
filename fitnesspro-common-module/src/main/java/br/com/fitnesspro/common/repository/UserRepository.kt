@@ -2,13 +2,13 @@ package br.com.fitnesspro.common.repository
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import br.com.android.firebase.toolkit.authentication.FirebaseDefaultAuthenticationService
+import br.com.core.android.utils.extensions.isNetworkAvailable
 import br.com.fitnesspro.common.BuildConfig
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.core.exceptions.ServiceException
 import br.com.fitnesspro.core.extensions.PreferencesKey
 import br.com.fitnesspro.core.extensions.dataStore
-import br.com.fitnesspro.core.extensions.isNetworkAvailable
-import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.mappers.getTOUser

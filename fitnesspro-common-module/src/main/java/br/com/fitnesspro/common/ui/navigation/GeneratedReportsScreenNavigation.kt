@@ -5,9 +5,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import br.com.core.utils.gson.extensions.defaultGSon
 import br.com.fitnesspro.common.ui.screen.report.GeneratedReportsScreen
 import br.com.fitnesspro.common.ui.viewmodel.GeneratedReportsViewModel
-import br.com.fitnesspro.core.extensions.defaultGSon
 import br.com.fitnesspro.model.enums.EnumReportContext
 import com.google.gson.GsonBuilder
 

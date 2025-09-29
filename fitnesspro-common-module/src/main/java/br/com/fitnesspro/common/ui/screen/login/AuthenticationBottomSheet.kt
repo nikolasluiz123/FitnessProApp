@@ -21,6 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.ui.compose.components.buttons.BaseButton
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldPasswordValidation
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.keyboard.EmailKeyboardOptions
+import br.com.android.ui.compose.components.keyboard.LastPasswordKeyboardOptions
+import br.com.android.ui.compose.components.loading.BaseCircularBlockUIProgressIndicator
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginClick
 import br.com.fitnesspro.common.ui.screen.login.callback.OnLoginWithGoogle
@@ -29,16 +36,9 @@ import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_LOGIN_BUTTON
 import br.com.fitnesspro.common.ui.state.BottomSheetAuthenticationUIState
 import br.com.fitnesspro.common.ui.viewmodel.BottomSheetAuthenticationViewModel
-import br.com.fitnesspro.compose.components.buttons.FitnessProButton
-import br.com.fitnesspro.compose.components.buttons.RoundedGoogleButton
+import br.com.fitnesspro.compose.components.buttons.rounded.RoundedGoogleButton
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.loading.FitnessProCircularBlockUIProgressIndicator
-import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
-import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.analytics
 
@@ -85,7 +85,7 @@ fun AuthenticationBottomSheet(
                 val (emailRef, passwordRef, loginButtonRef, loginGoogleRef, loginFacebookRef,
                     loadingRef) = createRefs()
 
-                FitnessProCircularBlockUIProgressIndicator(
+                BaseCircularBlockUIProgressIndicator(
                     show = state.showLoading,
                     label = stringResource(R.string.auth_bottom_sheet_label_loading),
                     modifier = Modifier.constrainAs(loadingRef) {
@@ -135,7 +135,7 @@ fun AuthenticationBottomSheet(
                     )
                 )
 
-                FitnessProButton(
+                BaseButton(
                     modifier = Modifier
                         .testTag(EnumAuthenticationBottomSheetTags.BOTTOM_SHEET_AUTH_LOGIN_BUTTON.name)
                         .constrainAs(loginButtonRef) {

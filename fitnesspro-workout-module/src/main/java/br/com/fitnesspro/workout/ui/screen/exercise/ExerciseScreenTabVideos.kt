@@ -14,13 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
+import br.com.android.ui.compose.components.video.callbacks.OnVideoClick
+import br.com.core.android.compose.utils.extensions.launchVideosOnly
+import br.com.core.android.compose.utils.extensions.openCameraVideo
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCamera
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonGallery
-import br.com.fitnesspro.compose.components.gallery.video.callbacks.OnVideoClick
-import br.com.fitnesspro.compose.components.gallery.video.components.VideoGallery
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.core.extensions.launchVideosOnly
-import br.com.fitnesspro.core.extensions.openCameraVideo
+import br.com.fitnesspro.compose.components.gallery.FitnessProVideoGallery
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnFinishVideoRecording
@@ -61,9 +61,9 @@ fun ExerciseScreenTabVideos(
     }
 
     Column(Modifier.fillMaxSize()) {
-        FitnessProLinearProgressIndicator(show = state.showLoading)
+        BaseLinearProgressIndicator(show = state.showLoading)
 
-        VideoGallery(
+        FitnessProVideoGallery(
             modifier = Modifier.padding(top = 12.dp),
             state = state.videoGalleryState,
             onVideoClick = onVideoClick,

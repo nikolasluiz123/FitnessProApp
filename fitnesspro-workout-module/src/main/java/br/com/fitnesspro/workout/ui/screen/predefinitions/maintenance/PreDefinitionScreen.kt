@@ -1,5 +1,6 @@
 package br.com.fitnesspro.workout.ui.screen.predefinitions.maintenance
 
+
 import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,24 +38,24 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.ui.compose.components.bottombar.BaseBottomAppBar
+import br.com.android.ui.compose.components.fields.dropdown.DefaultExposedDropdownMenu
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.dialog.paged.PagedListDialogOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
+import br.com.android.ui.compose.components.styles.SnackBarTextStyle
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
+import br.com.android.ui.compose.components.video.callbacks.OnVideoClick
+import br.com.core.android.compose.utils.extensions.launchVideosOnly
+import br.com.core.android.compose.utils.extensions.openCameraVideo
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCamera
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonGallery
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
-import br.com.fitnesspro.compose.components.gallery.video.callbacks.OnVideoClick
-import br.com.fitnesspro.compose.components.gallery.video.components.VideoGallery
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.extensions.launchVideosOnly
-import br.com.fitnesspro.core.extensions.openCameraVideo
+import br.com.fitnesspro.compose.components.gallery.FitnessProVideoGallery
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.SnackBarTextStyle
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnFinishVideoRecording
 import br.com.fitnesspro.workout.ui.screen.exercise.callbacks.OnOpenCameraVideo
@@ -110,34 +111,36 @@ fun PreDefinitionScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberScrollState()
 
-    val launcherVideo = rememberLauncherForActivityResult(ActivityResultContracts.CaptureVideo()) { success ->
-        if (success) {
-            state.onToggleLoading()
-            onFinishVideoRecording?.onExecute(onSuccess = { state.onToggleLoading() })
+    val launcherVideo =
+        rememberLauncherForActivityResult(ActivityResultContracts.CaptureVideo()) { success ->
+            if (success) {
+                state.onToggleLoading()
+                onFinishVideoRecording?.onExecute(onSuccess = { state.onToggleLoading() })
+            }
         }
-    }
 
-    val launcherVideosGallery = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        uri?.let {
-            state.onToggleLoading()
+    val launcherVideosGallery =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri?.let {
+                state.onToggleLoading()
 
-            onVideoSelectedOnGallery?.onExecute(
-                uri = it,
-                onSuccess = { state.onToggleLoading() }
-            )
+                onVideoSelectedOnGallery?.onExecute(
+                    uri = it,
+                    onSuccess = { state.onToggleLoading() }
+                )
+            }
         }
-    }
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
                 onBackClick = onBackClick
             )
         },
         bottomBar = {
-            FitnessProBottomAppBar(
+            BaseBottomAppBar(
                 modifier = Modifier.imePadding(),
                 actions = {
                     IconButtonDelete(
@@ -155,7 +158,14 @@ fun PreDefinitionScreen(
                         iconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         onClick = {
-                            onSave(keyboardController, state, onSaveClick, coroutineScope, snackbarHostState, context)
+                            onSave(
+                                keyboardController,
+                                state,
+                                onSaveClick,
+                                coroutineScope,
+                                snackbarHostState,
+                                context
+                            )
                         }
                     )
                 }
@@ -181,7 +191,7 @@ fun PreDefinitionScreen(
                 .consumeWindowInsets(paddingValues)
                 .fillMaxSize()
         ) {
-            FitnessProLinearProgressIndicator(show = state.showLoading)
+            BaseLinearProgressIndicator(show = state.showLoading)
             FitnessProMessageDialog(state.messageDialogState)
 
             ConstraintLayout(
@@ -220,7 +230,8 @@ fun PreDefinitionScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .constrainAs(exerciseRef) {
-                            val topAnchor = if (state.showGroupField) groupRef.bottom else parent.top
+                            val topAnchor =
+                                if (state.showGroupField) groupRef.bottom else parent.top
 
                             top.linkTo(topAnchor, margin = 8.dp)
                             start.linkTo(parent.start)
@@ -260,7 +271,8 @@ fun PreDefinitionScreen(
                 OutlinedTextFieldValidation(
                     modifier = Modifier
                         .constrainAs(setsRef) {
-                            val topAnchor = if (state.showGroupField) exerciseOrderRef.bottom else exerciseRef.bottom
+                            val topAnchor =
+                                if (state.showGroupField) exerciseOrderRef.bottom else exerciseRef.bottom
 
                             top.linkTo(topAnchor, margin = 8.dp)
                             start.linkTo(parent.start)
@@ -351,7 +363,7 @@ fun PreDefinitionScreen(
                     clearOptionText = stringResource(R.string.pre_definition_screen_label_clear_unit)
                 )
 
-                VideoGallery(
+                FitnessProVideoGallery(
                     modifier = Modifier.constrainAs(videoGalleryRef) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
@@ -362,7 +374,11 @@ fun PreDefinitionScreen(
                     onVideoClick = onVideoClick,
                     onVideoDeleteClick = {
                         onVideoDeleteClick(it) {
-                            showMessageDeleteVideoSuccess(coroutineScope, context, snackbarHostState)
+                            showMessageDeleteVideoSuccess(
+                                coroutineScope,
+                                context,
+                                snackbarHostState
+                            )
                         }
                     },
                     emptyMessage = stringResource(R.string.register_evolution_screen_videos_empty_message),
@@ -418,7 +434,11 @@ private fun onSave(
     }
 }
 
-private fun showSuccessMessage(coroutineScope: CoroutineScope, snackbarHostState: SnackbarHostState, context: Context) {
+private fun showSuccessMessage(
+    coroutineScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+    context: Context
+) {
     coroutineScope.launch {
         val message = context.getString(R.string.pre_definition_screen_success_message)
         snackbarHostState.showSnackbar(message = message)

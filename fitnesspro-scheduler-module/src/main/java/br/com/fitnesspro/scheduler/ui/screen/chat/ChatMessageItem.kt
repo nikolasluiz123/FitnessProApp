@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.core.extensions.toEpochMillis
+import br.com.core.utils.extensions.toEpochMillis
 import br.com.fitnesspro.core.theme.ChatMessageTextStyle
 import br.com.fitnesspro.core.theme.ChatMessageTimeTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme

@@ -18,18 +18,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import br.com.fitnesspro.charts.composables.bar.grouped.GroupedBarChart
-import br.com.fitnesspro.charts.composables.line.LineChart
-import br.com.fitnesspro.charts.styles.ChartContainerStyle
-import br.com.fitnesspro.charts.styles.bar.BarStyle
-import br.com.fitnesspro.charts.styles.bar.GroupedBarChartStyle
-import br.com.fitnesspro.charts.styles.legend.ChartLegendStyle
-import br.com.fitnesspro.charts.styles.line.LineChartStyle
-import br.com.fitnesspro.charts.styles.line.LineStyle
-import br.com.fitnesspro.charts.styles.text.ChartTextStyle
-import br.com.fitnesspro.charts.styles.tooltip.ChartTooltipStyle
+import br.com.android.compose.charts.composables.bar.grouped.GroupedBarChart
+import br.com.android.compose.charts.composables.line.LineChart
+import br.com.android.compose.charts.styles.ChartContainerStyle
+import br.com.android.compose.charts.styles.bar.BarStyle
+import br.com.android.compose.charts.styles.bar.GroupedBarChartStyle
+import br.com.android.compose.charts.styles.legend.ChartLegendStyle
+import br.com.android.compose.charts.styles.line.LineChartStyle
+import br.com.android.compose.charts.styles.line.LineStyle
+import br.com.android.compose.charts.styles.text.ChartTextStyle
+import br.com.android.compose.charts.styles.tooltip.ChartTooltipStyle
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.BLUE_500
 import br.com.fitnesspro.core.theme.GREEN_500
 import br.com.fitnesspro.core.theme.ORANGE_500
@@ -61,7 +61,7 @@ fun ExecutionGroupedBarChartScreen(
 ) {
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
                 onBackClick = onBackClick,

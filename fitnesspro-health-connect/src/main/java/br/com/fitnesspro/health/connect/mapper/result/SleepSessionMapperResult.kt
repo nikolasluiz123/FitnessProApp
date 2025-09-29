@@ -1,5 +1,7 @@
 package br.com.fitnesspro.health.connect.mapper.result
 
+import br.com.android.health.connect.toolkit.mapper.result.IRecordMapperResult
+import br.com.android.room.toolkit.model.health.interfaces.IHealthConnectMetadata
 import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
 import br.com.fitnesspro.model.workout.health.HealthConnectSleepSession
 import br.com.fitnesspro.model.workout.health.HealthConnectSleepStages
@@ -22,7 +24,7 @@ data class SleepSessionMapperResult(
     val session: HealthConnectSleepSession,
     val stages: List<HealthConnectSleepStages>,
     val associations: List<SleepSessionExerciseExecution>,
-    override val metadata: HealthConnectMetadata
+    override val metadata: IHealthConnectMetadata
 ) : IRecordMapperResult {
 
     override fun getEntityIdRelation(): List<String?> = associations.map { it.exerciseExecutionId }

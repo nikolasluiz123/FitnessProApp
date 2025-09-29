@@ -1,11 +1,11 @@
 package br.com.fitnesspro.health.connect.mapper
 
 import androidx.health.connect.client.records.StepsRecord
-import br.com.fitnesspro.health.connect.mapper.base.AbstractHealthDataAssociatingMapper
-import br.com.fitnesspro.health.connect.mapper.result.SingleRecordMapperResult
+import br.com.android.health.connect.toolkit.mapper.AbstractHealthDataAssociatingMapper
+import br.com.android.health.connect.toolkit.mapper.result.SingleRecordMapperResult
+import br.com.android.room.toolkit.model.health.interfaces.IHealthConnectMetadata
+import br.com.android.room.toolkit.model.health.interfaces.IHealthDataRangeEntity
 import br.com.fitnesspro.health.connect.service.StepsService
-import br.com.fitnesspro.model.base.IHealthDataRangeEntity
-import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
 import br.com.fitnesspro.model.workout.health.HealthConnectSteps
 
 /**
@@ -24,7 +24,7 @@ import br.com.fitnesspro.model.workout.health.HealthConnectSteps
  */
 class StepsMapper(
     service: StepsService
-) : AbstractHealthDataAssociatingMapper<SingleRecordMapperResult<HealthConnectSteps>, StepsRecord, StepsService>(service) {
+) : AbstractFitnessProHealthDataAssociatingMapper<SingleRecordMapperResult<HealthConnectSteps>, StepsRecord, StepsService>(service) {
 
     /**
      * Mapeia um [StepsRecord] para [HealthConnectSteps], **se** conseguir associá-lo a uma
@@ -39,7 +39,7 @@ class StepsMapper(
      */
     override suspend fun <T : IHealthDataRangeEntity> continueMappingAndAssociate(
         record: StepsRecord,
-        metadata: HealthConnectMetadata,
+        metadata: IHealthConnectMetadata,
         associationEntities: List<T>
     ): SingleRecordMapperResult<HealthConnectSteps>? {
         val matching = findMatchingEntity(record.startTime, record.endTime, associationEntities)

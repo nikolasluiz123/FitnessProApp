@@ -18,9 +18,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import br.com.android.ui.compose.components.styles.ValueTextStyle
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonSendMessage
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.ValueTextStyle
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.state.ChatUIState
 

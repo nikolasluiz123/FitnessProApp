@@ -1,9 +1,10 @@
 package br.com.fitnesspro.common.ui.state
 
-import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.core.state.ILoadingUIState
-import br.com.fitnesspro.core.state.IThrowableUIState
-import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.android.ui.compose.components.dialog.message.MessageDialogState
+import br.com.android.ui.compose.components.fields.text.state.TextField
+import br.com.android.ui.compose.components.states.ILoadingUIState
+import br.com.android.ui.compose.components.states.IThrowableUIState
+
 
 data class LoginUIState(
     val email: TextField = TextField(),

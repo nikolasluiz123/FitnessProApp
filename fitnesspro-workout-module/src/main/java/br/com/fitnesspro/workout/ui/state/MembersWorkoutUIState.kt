@@ -1,8 +1,8 @@
 package br.com.fitnesspro.workout.ui.state
 
-import br.com.fitnesspro.compose.components.filter.SimpleFilterState
-import br.com.fitnesspro.core.state.IThrowableUIState
-import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.android.ui.compose.components.dialog.message.MessageDialogState
+import br.com.android.ui.compose.components.simplefilter.SimpleFilterState
+import br.com.android.ui.compose.components.states.IThrowableUIState
 import br.com.fitnesspro.to.TOWorkout
 
 data class MembersWorkoutUIState(

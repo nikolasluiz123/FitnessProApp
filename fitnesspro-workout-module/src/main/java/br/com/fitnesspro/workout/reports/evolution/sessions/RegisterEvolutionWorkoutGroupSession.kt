@@ -2,10 +2,10 @@ package br.com.fitnesspro.workout.reports.evolution.sessions
 
 import android.content.Context
 import android.text.TextPaint
-import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
+import br.com.android.pdf.generator.session.AbstractReportSession
+import br.com.android.pdf.generator.utils.Paints
+import br.com.core.utils.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
-import br.com.fitnesspro.pdf.generator.session.AbstractReportSession
-import br.com.fitnesspro.pdf.generator.utils.Paints
 import br.com.fitnesspro.tuple.reports.evolution.WorkoutGroupInfosTuple
 
 class RegisterEvolutionWorkoutGroupSession(

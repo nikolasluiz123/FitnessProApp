@@ -21,12 +21,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.compose.components.buttons.DefaultDialogTextButton
+import br.com.android.ui.compose.components.buttons.DefaultDialogTextButton
+import br.com.android.ui.compose.components.checkbox.MultipleCheckBoxesField
+import br.com.android.ui.compose.components.radiobutton.MultipleRadioButtonsField
+import br.com.android.ui.compose.components.styles.DialogTitleTextStyle
+import br.com.android.ui.compose.components.styles.LabelMediumTextStyle
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonClose
-import br.com.fitnesspro.compose.components.fields.MultipleCheckBoxesField
-import br.com.fitnesspro.compose.components.fields.MultipleRadioButtonsField
-import br.com.fitnesspro.core.theme.DialogTitleTextStyle
-import br.com.fitnesspro.core.theme.LabelMediumTextStyle
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.state.ExecutionChartFiltersDialogUIState
 

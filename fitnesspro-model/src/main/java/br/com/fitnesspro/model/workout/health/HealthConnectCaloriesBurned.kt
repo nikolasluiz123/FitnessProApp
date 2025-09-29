@@ -3,9 +3,9 @@ package br.com.fitnesspro.model.workout.health
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.IRelationalHealthConnectEntity
-import br.com.fitnesspro.model.base.IntegratedModel
-import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.health.interfaces.IRelationalHealthConnectEntity
+import br.com.android.room.toolkit.model.interfaces.sync.IntegratedModel
 import java.time.Instant
 import java.time.ZoneOffset
 import java.util.UUID

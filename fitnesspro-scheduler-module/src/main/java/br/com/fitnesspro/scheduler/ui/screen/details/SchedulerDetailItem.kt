@@ -13,13 +13,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.compose.components.LabeledText
-import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.parseToLocalDate
+import br.com.android.firebase.toolkit.analytics.logListItemClick
+import br.com.android.ui.compose.components.divider.BaseHorizontalDivider
+import br.com.android.ui.compose.components.label.LabeledText
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.enums.EnumDateTimePatterns.TIME
+import br.com.core.utils.extensions.format
+import br.com.core.utils.extensions.parseToLocalDate
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.firebase.api.analytics.logListItemClick
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs
@@ -87,8 +88,8 @@ internal fun SchedulerDetailItem(
             label = stringResource(R.string.scheduler_details_hour_label),
             value = stringResource(
                 R.string.scheduler_details_hour_value,
-                to.dateTimeStart!!.format(EnumDateTimePatterns.TIME),
-                to.dateTimeEnd!!.format(EnumDateTimePatterns.TIME)
+                to.dateTimeStart!!.format(TIME),
+                to.dateTimeEnd!!.format(TIME)
             )
         )
 
@@ -138,7 +139,7 @@ internal fun SchedulerDetailItem(
             )
         }
 
-        FitnessProHorizontalDivider(
+        BaseHorizontalDivider(
             modifier = Modifier.constrainAs(dividerRef) {
                 if (state.userType == EnumUserType.ACADEMY_MEMBER) {
                     top.linkTo(professionalRef.bottom, margin = 8.dp)

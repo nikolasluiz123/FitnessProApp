@@ -2,13 +2,13 @@ package br.com.fitnesspro.common.repository.sync.importation.common
 
 import android.content.Context
 import android.util.Log
+import br.com.android.room.toolkit.dao.MaintenanceDAO
+import br.com.android.room.toolkit.model.interfaces.BaseModel
+import br.com.android.work.manager.toolkit.workers.log.WorkerLogConstants
+import br.com.core.utils.extensions.dateTimeNow
+import br.com.core.utils.gson.extensions.defaultGSon
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
 import br.com.fitnesspro.core.exceptions.ServiceException
-import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.core.extensions.defaultGSon
-import br.com.fitnesspro.core.worker.LogConstants
-import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
-import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.sync.ImportationHistory
 import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
@@ -64,7 +64,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
     open fun shouldIgnoreEntityLog(result: ImportSegregationResult<BaseModel>): Boolean = false
 
     suspend fun import(serviceToken: String): Boolean {
-        Log.i(LogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName}")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName}")
 
         var response: ImportationServiceResponse<DTO>? = null
         var clientStartDateTime: LocalDateTime? = null
@@ -91,7 +91,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
 
             when {
                 response.success && response.value!!.isEmpty() -> {
-                    Log.i(LogConstants.WORKER_IMPORT, "Sucesso Sem Dados")
+                    Log.i(WorkerLogConstants.WORKER_IMPORT, "Sucesso Sem Dados")
 
                     updateExecutionLogPackageWithSuccessIterationInfos(
                         logPackageId = response.executionLogPackageId,
@@ -100,7 +100,7 @@ abstract class AbstractImportationRepository<DTO: ISyncDTO, FILTER: CommonImport
                 }
 
                 response.success -> {
-                    Log.i(LogConstants.WORKER_IMPORT, "Sucesso Com Dados Novos. pageSize = ${pageInfos.pageSize} maxListSize = ${response.value?.getMaxListSize()}")
+                    Log.i(WorkerLogConstants.WORKER_IMPORT, "Sucesso Com Dados Novos. pageSize = ${pageInfos.pageSize} maxListSize = ${response.value?.getMaxListSize()}")
 
                     val segregationResult = executeSegregation(response.value!!)
                     val entityCounts = saveDataLocally(segregationResult)

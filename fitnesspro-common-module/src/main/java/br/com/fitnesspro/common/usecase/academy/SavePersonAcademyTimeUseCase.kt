@@ -1,12 +1,12 @@
 package br.com.fitnesspro.common.usecase.academy
 
 import android.content.Context
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
+import br.com.core.utils.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.AcademyRepository
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOPersonAcademyTime
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext

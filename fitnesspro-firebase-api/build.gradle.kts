@@ -62,6 +62,8 @@ dependencies {
     implementation(project(":fitnesspro-core"))
     implementation(project(":fitnesspro-model"))
 
+    implementation(libs.androidlibs.firebase.toolkit)
+
     implementation(libs.google.gson)
 
     implementation(platform(libs.firebase.bom))

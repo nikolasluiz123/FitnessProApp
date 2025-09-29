@@ -15,9 +15,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.ui.compose.components.list.LazyVerticalList
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.list.LazyVerticalList
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.scheduler.ui.state.ChatUIState
 import br.com.fitnesspro.scheduler.ui.viewmodel.ChatViewModel
@@ -47,7 +47,7 @@ fun ChatScreen(
 ) {
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
                 onBackClick = onBackClick

@@ -1,7 +1,7 @@
 package br.com.fitnesspro.mappers
 
-import br.com.fitnesspro.core.extensions.bestChronoUnit
-import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.core.utils.extensions.bestChronoUnit
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution

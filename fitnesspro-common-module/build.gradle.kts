@@ -79,9 +79,17 @@ dependencies {
     implementation(project(":fitnesspro-local-data-access"))
     implementation(project(":fitnesspro-service-data-access"))
     implementation(project(":fitnesspro-firebase-api"))
-    implementation(project(":fitnesspro-pdf-generator"))
     implementation(project(":fitnesspro-health-connect"))
 
+    implementation(libs.androidlibs.core.utils)
+    implementation(libs.androidlibs.core.android.utils)
+    implementation(libs.androidlibs.firebase.toolkit)
+    implementation(libs.androidlibs.work.manager.toolkit)
+    implementation(libs.androidlibs.room.toolkit)
+    implementation(libs.androidlibs.health.connect.toolkit)
+    implementation(libs.androidlibs.android.pdf.generator)
+    implementation(libs.androidlibs.ui.compose.components)
+    implementation(libs.androidlibs.core.android.compose.utils)
     implementation(libs.fitnesspro.shared.communication)
     implementation(libs.data.store)
 

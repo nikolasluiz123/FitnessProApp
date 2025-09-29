@@ -13,6 +13,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import br.com.android.ui.compose.components.divider.BaseHorizontalDivider
+import br.com.android.ui.compose.components.label.LabeledText
+import br.com.android.ui.compose.components.list.grouped.expandable.LazyExpandableGroupedVerticalList
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
+import br.com.core.utils.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.navigation.RegisterAcademyScreenArgs
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAcademyItemClick
@@ -22,12 +28,6 @@ import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScr
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_ACADEMY_LIST_ITEM_LABELED_DAY_WEEK
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_ACADEMY_LIST_ITEM_LABELED_TIME
 import br.com.fitnesspro.common.ui.state.RegisterUserUIState
-import br.com.fitnesspro.compose.components.LabeledText
-import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
-import br.com.fitnesspro.compose.components.list.grouped.expandable.LazyExpandableVerticalList
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.to.TOPersonAcademyTime
 import java.time.DayOfWeek
@@ -51,7 +51,7 @@ fun RegisterUserTabAcademies(
             onUpdateAcademies()
         }
 
-        LazyExpandableVerticalList(
+        LazyExpandableGroupedVerticalList(
             modifier = Modifier.constrainAs(listRef) {
                 top.linkTo(parent.top)
                 start.linkTo(parent.start)
@@ -125,7 +125,7 @@ fun AcademyTimeItem(item: TOPersonAcademyTime, onClick: () -> Unit) {
             )
         )
 
-        FitnessProHorizontalDivider(
+        BaseHorizontalDivider(
             modifier = Modifier.constrainAs(dividerRef) {
                 bottom.linkTo(parent.bottom)
                 top.linkTo(dayWeekRef.bottom, margin = 8.dp)

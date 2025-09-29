@@ -1,9 +1,10 @@
 package br.com.fitnesspro.scheduler.reports.schedules.report
 
 import android.content.Context
+import br.com.android.pdf.generator.footer.DefaultReportFooter
+import br.com.android.pdf.generator.report.AbstractPDFReport
+import br.com.fitnesspro.core.R
 import br.com.fitnesspro.local.data.access.dao.filters.SchedulerReportFilter
-import br.com.fitnesspro.pdf.generator.footer.DefaultReportFooter
-import br.com.fitnesspro.pdf.generator.report.AbstractPDFReport
 import br.com.fitnesspro.scheduler.reports.schedules.body.SchedulerReportBody
 import br.com.fitnesspro.scheduler.reports.schedules.header.SchedulerReportHeader
 import br.com.fitnesspro.scheduler.reports.schedules.sessions.SchedulerReportCanceledSchedulesSession
@@ -27,6 +28,9 @@ class SchedulerPDFReport(
         this.body.addSession(SchedulerReportCompletedSchedulesSession(context))
         this.body.addSession(SchedulerReportCanceledSchedulesSession(context))
 
-        this.footer = DefaultReportFooter(context)
+        this.footer = DefaultReportFooter(
+            context = context,
+            reportLogo = R.drawable.default_report_logo
+        )
     }
 }

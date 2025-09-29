@@ -1,12 +1,12 @@
 package br.com.fitnesspro.health.connect.mapper
 
 import androidx.health.connect.client.records.SleepSessionRecord
-import br.com.fitnesspro.health.connect.mapper.base.AbstractHealthDataAssociatingMapper
+import br.com.android.health.connect.toolkit.mapper.AbstractHealthDataAssociatingMapper
+import br.com.android.room.toolkit.model.health.interfaces.IHealthConnectMetadata
+import br.com.android.room.toolkit.model.health.interfaces.IHealthDataRangeEntity
 import br.com.fitnesspro.health.connect.mapper.result.SleepSessionMapperResult
 import br.com.fitnesspro.health.connect.service.SleepSessionService
-import br.com.fitnesspro.model.base.IHealthDataRangeEntity
 import br.com.fitnesspro.model.enums.health.EnumSleepStage
-import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
 import br.com.fitnesspro.model.workout.health.HealthConnectSleepSession
 import br.com.fitnesspro.model.workout.health.HealthConnectSleepStages
 import br.com.fitnesspro.model.workout.health.SleepSessionExerciseExecution
@@ -29,7 +29,7 @@ import java.time.temporal.ChronoUnit
  */
 class SleepSessionMapper(
     service: SleepSessionService
-) : AbstractHealthDataAssociatingMapper<SleepSessionMapperResult, SleepSessionRecord, SleepSessionService>(service) {
+) : AbstractFitnessProHealthDataAssociatingMapper<SleepSessionMapperResult, SleepSessionRecord, SleepSessionService>(service) {
 
     /**
      * Mapeia um [SleepSessionRecord] para [HealthConnectSleepSession], [HealthConnectSleepStages]
@@ -43,7 +43,7 @@ class SleepSessionMapper(
      */
     override suspend fun <T : IHealthDataRangeEntity> continueMappingAndAssociate(
         record: SleepSessionRecord,
-        metadata: HealthConnectMetadata,
+        metadata: IHealthConnectMetadata,
         associationEntities: List<T>
     ): SleepSessionMapperResult? {
 

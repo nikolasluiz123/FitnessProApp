@@ -1,10 +1,10 @@
 package br.com.fitnesspro.common.ui.screen.registeruser
 
+import br.com.android.ui.compose.components.tabs.state.Tab
+import br.com.android.ui.compose.components.tabs.state.TabState
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
 import br.com.fitnesspro.common.ui.state.RegisterUserUIState
-import br.com.fitnesspro.compose.components.fields.state.TabState
-import br.com.fitnesspro.compose.components.tabs.Tab
 
 internal val registerUserServiceState = RegisterUserUIState(
     isRegisterServiceAuth = true

@@ -15,11 +15,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.compose.components.fields.DatePickerOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.DayWeeksSelector
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.TimePickerOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.date.DatePickerOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.dialog.paged.PagedListDialogOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.time.TimePickerOutlinedTextFieldValidation
+import br.com.fitnesspro.compose.components.fields.FitnessProDayWeeksSelector
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_DAY_WEEKS_SELECTOR
@@ -138,7 +138,7 @@ internal fun RecurrentCompromise(state: CompromiseUIState) {
                 }
         )
 
-        DayWeeksSelector(
+        FitnessProDayWeeksSelector(
             selectorField = state.dayWeeksSelectorField,
             modifier = Modifier
                 .testTag(COMPROMISE_SCREEN_DAY_WEEKS_SELECTOR.name)

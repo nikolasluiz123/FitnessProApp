@@ -1,6 +1,6 @@
 package br.com.fitnesspro.ui.bottomsheet.nutrition
 
-import br.com.fitnesspro.compose.components.bottomsheet.interfaces.IEnumOptionsBottomSheet
+import br.com.android.ui.compose.components.bottomsheet.interfaces.IEnumOptionsBottomSheet
 
 enum class EnumOptionsBottomSheetNutrition(override val index: Int): IEnumOptionsBottomSheet {
     MY_DIET(0),

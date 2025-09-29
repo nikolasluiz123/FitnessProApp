@@ -1,5 +1,6 @@
 package br.com.fitnesspro.firebase.api.firestore.service
 
+import br.com.android.firebase.toolkit.firestore.service.FirestoreService
 import br.com.fitnesspro.firebase.api.firestore.documents.ChatDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.MessageDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.MessageNotificationDocument

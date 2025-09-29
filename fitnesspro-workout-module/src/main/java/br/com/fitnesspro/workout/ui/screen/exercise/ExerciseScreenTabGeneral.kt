@@ -19,11 +19,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.compose.components.fields.ListDialogOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
+import br.com.android.ui.compose.components.fields.dropdown.DefaultExposedDropdownMenu
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.dialog.ListDialogOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.dialog.paged.PagedListDialogOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.state.ExerciseUIState
@@ -36,7 +36,7 @@ fun ExerciseScreenTabGeneral(
     val scrollState = rememberScrollState()
 
     Column(Modifier.fillMaxSize()) {
-        FitnessProLinearProgressIndicator(show = state.showLoading)
+        BaseLinearProgressIndicator(show = state.showLoading)
 
         ConstraintLayout(
             Modifier

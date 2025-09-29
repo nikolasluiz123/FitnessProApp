@@ -1,15 +1,15 @@
 package br.com.fitnesspro.common.usecase.login
 
 import android.content.Context
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.core.android.utils.extensions.isNetworkAvailable
+import br.com.core.utils.security.IPasswordHasher
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.EMAIL
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields.PASSWORD
-import br.com.fitnesspro.core.extensions.isNetworkAvailable
-import br.com.fitnesspro.core.security.IPasswordHasher
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.mappers.getTOPerson
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext

@@ -1,6 +1,6 @@
 package br.com.fitnesspro.common.ui.bottomsheet.registeruser
 
-import br.com.fitnesspro.compose.components.bottomsheet.interfaces.IBottomSheetItem
+import br.com.android.ui.compose.components.bottomsheet.interfaces.IBottomSheetItem
 
 /**
  * Implementação do item do [BottomSheetRegisterUser]

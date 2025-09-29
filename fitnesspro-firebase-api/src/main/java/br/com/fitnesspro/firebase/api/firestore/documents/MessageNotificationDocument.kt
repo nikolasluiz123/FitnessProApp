@@ -1,5 +1,7 @@
 package br.com.fitnesspro.firebase.api.firestore.documents
 
+import br.com.android.firebase.toolkit.firestore.document.FirestoreDocument
+
 data class MessageNotificationDocument(
     val id: String = "",
     val text: String? = null,

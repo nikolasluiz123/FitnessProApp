@@ -9,8 +9,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import br.com.fitnesspro.compose.components.gallery.video.callbacks.OnVideoClick
-import br.com.fitnesspro.compose.components.gallery.video.components.VideoGallery
+import br.com.android.ui.compose.components.video.callbacks.OnVideoClick
+import br.com.fitnesspro.compose.components.gallery.FitnessProVideoGallery
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.DayWeekWorkoutItem
@@ -36,7 +36,7 @@ fun ExerciseDetailsTabOrientations(
             }
         )
 
-        VideoGallery(
+        FitnessProVideoGallery(
             modifier = Modifier
                 .padding(top = 12.dp, start = 8.dp, end = 8.dp, bottom = 48.dp)
                 .constrainAs(videoGalleryRef) {

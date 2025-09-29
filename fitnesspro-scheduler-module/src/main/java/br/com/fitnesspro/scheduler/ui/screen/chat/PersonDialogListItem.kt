@@ -14,9 +14,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
+import br.com.android.ui.compose.components.divider.BaseHorizontalDivider
+import br.com.android.ui.compose.components.styles.ValueTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.ValueTextStyle
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.defaultPersonTuple
@@ -53,7 +53,7 @@ internal fun PersonDialogListItem(
         )
     }
 
-    FitnessProHorizontalDivider()
+    BaseHorizontalDivider()
 }
 
 @Preview(device = "id:small_phone", apiLevel = 35)

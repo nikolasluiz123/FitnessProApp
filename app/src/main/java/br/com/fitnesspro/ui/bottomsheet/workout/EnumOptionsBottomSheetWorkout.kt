@@ -1,6 +1,6 @@
 package br.com.fitnesspro.ui.bottomsheet.workout
 
-import br.com.fitnesspro.compose.components.bottomsheet.interfaces.IEnumOptionsBottomSheet
+import br.com.android.ui.compose.components.bottomsheet.interfaces.IEnumOptionsBottomSheet
 
 enum class EnumOptionsBottomSheetWorkout(override val index: Int): IEnumOptionsBottomSheet {
     MY_EVOLUTION(0),

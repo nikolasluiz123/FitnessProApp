@@ -1,9 +1,9 @@
 package br.com.fitnesspro.common.ui.state
 
-import br.com.fitnesspro.compose.components.filter.SimpleFilterState
-import br.com.fitnesspro.core.state.ILoadingUIState
-import br.com.fitnesspro.core.state.IThrowableUIState
-import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.android.ui.compose.components.dialog.message.MessageDialogState
+import br.com.android.ui.compose.components.simplefilter.SimpleFilterState
+import br.com.android.ui.compose.components.states.ILoadingUIState
+import br.com.android.ui.compose.components.states.IThrowableUIState
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.to.TOReport
 

@@ -2,6 +2,10 @@ package br.com.fitnesspro.common.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
+import br.com.android.ui.compose.components.dialog.message.showConfirmationDialog
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
+import br.com.core.android.utils.extensions.toReadableFileSize
+import br.com.core.utils.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.ReportRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
@@ -11,10 +15,6 @@ import br.com.fitnesspro.common.ui.state.GeneratedReportsUIState
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.common.usecase.report.InactivateAllReportsUseCase
 import br.com.fitnesspro.common.usecase.report.InactivateReportUseCase
-import br.com.fitnesspro.core.callback.showConfirmationDialog
-import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
-import br.com.fitnesspro.core.extensions.toReadableFileSize
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.to.TOReport
 import dagger.hilt.android.lifecycle.HiltViewModel

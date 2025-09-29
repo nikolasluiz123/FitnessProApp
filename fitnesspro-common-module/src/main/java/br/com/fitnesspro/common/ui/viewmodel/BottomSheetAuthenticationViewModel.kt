@@ -1,6 +1,10 @@
 package br.com.fitnesspro.common.ui.viewmodel
 
 import android.content.Context
+import br.com.android.ui.compose.components.dialog.message.showConfirmationDialog
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.core.android.utils.extensions.isNetworkAvailable
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.event.GlobalEvent
 import br.com.fitnesspro.common.ui.event.GlobalEvents
@@ -9,10 +13,6 @@ import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
 import br.com.fitnesspro.common.usecase.login.DefaultLoginUseCase
 import br.com.fitnesspro.common.usecase.login.GoogleLoginUseCase
 import br.com.fitnesspro.common.usecase.login.enums.EnumValidatedLoginFields
-import br.com.fitnesspro.core.callback.showConfirmationDialog
-import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.extensions.isNetworkAvailable
-import br.com.fitnesspro.core.validation.FieldValidationError
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

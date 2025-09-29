@@ -29,6 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.ui.compose.components.bottombar.BaseBottomAppBar
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
+import br.com.android.ui.compose.components.styles.SnackBarTextStyle
+import br.com.android.ui.compose.components.tabs.BaseHorizontalPager
+import br.com.android.ui.compose.components.tabs.BaseTabRow
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAcademyItemClick
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnAddAcademy
@@ -38,17 +45,10 @@ import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScr
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumTabsRegisterUserScreen
 import br.com.fitnesspro.common.ui.state.RegisterUserUIState
 import br.com.fitnesspro.common.ui.viewmodel.RegisterUserViewModel
-import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.compose.components.tabs.FitnessProHorizontalPager
-import br.com.fitnesspro.compose.components.tabs.FitnessProTabRow
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.SnackBarTextStyle
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.analytics
 import kotlinx.coroutines.CoroutineScope
@@ -93,7 +93,7 @@ fun RegisterUserScreen(
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title!!,
                 subtitle = state.subtitle,
                 onBackClick = onBackClick
@@ -107,7 +107,7 @@ fun RegisterUserScreen(
             }
         },
         bottomBar = {
-            FitnessProBottomAppBar(
+            BaseBottomAppBar(
                 modifier = Modifier.imePadding(),
                 floatingActionButton = {
                     if (state.tabState.selectedTab.enum == EnumTabsRegisterUserScreen.GENERAL) {
@@ -164,7 +164,7 @@ fun RegisterUserScreen(
             ConstraintLayout(
                 Modifier.fillMaxWidth()
             ) {
-                FitnessProLinearProgressIndicator(
+                BaseLinearProgressIndicator(
                     state.showLoading,
                     Modifier.constrainAs(loadingRef) {
                         start.linkTo(parent.start)
@@ -190,7 +190,7 @@ fun RegisterUserScreen(
 
                 val pagerState = rememberPagerState(pageCount = state.tabState::tabsSize)
 
-                FitnessProTabRow(
+                BaseTabRow(
                     modifier = Modifier.constrainAs(tabRowRef) {
                         start.linkTo(parent.start)
                         top.linkTo(parent.top)
@@ -201,7 +201,7 @@ fun RegisterUserScreen(
                     pagerState = pagerState
                 )
 
-                FitnessProHorizontalPager(
+                BaseHorizontalPager(
                     modifier = Modifier.constrainAs(horizontalPagerRef) {
                         start.linkTo(parent.start)
                         top.linkTo(tabRowRef.bottom)

@@ -1,10 +1,11 @@
 package br.com.fitnesspro.workout.repository.sync.exportation
 
 import android.content.Context
+import br.com.android.room.toolkit.dao.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.model.interfaces.sync.IntegratedModel
 import br.com.fitnesspro.common.injection.health.IHealthConnectModuleSyncRepositoryEntryPoint
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.mappers.getExerciseDTO
 import br.com.fitnesspro.mappers.getExerciseExecutionDTO
 import br.com.fitnesspro.mappers.getExercisePreDefinitionDTO
@@ -25,7 +26,6 @@ import br.com.fitnesspro.mappers.getWorkoutDTO
 import br.com.fitnesspro.mappers.getWorkoutGroupDTO
 import br.com.fitnesspro.mappers.getWorkoutGroupPreDefinitionDTO
 import br.com.fitnesspro.mappers.getWorkoutReportDTO
-import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.model.general.report.WorkoutReport
@@ -51,6 +51,7 @@ import br.com.fitnesspro.shared.communication.dtos.sync.WorkoutModuleSyncDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.workout.injection.IWorkoutModuleSyncRepositoryEntryPoint
 import dagger.hilt.android.EntryPointAccessors
+import kotlin.collections.map
 import kotlin.reflect.KClass
 
 class WorkoutModuleExportationRepository(

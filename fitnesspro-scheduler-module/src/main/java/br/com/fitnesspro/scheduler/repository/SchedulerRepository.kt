@@ -1,7 +1,7 @@
 package br.com.fitnesspro.scheduler.repository
 
 import android.content.Context
-import br.com.fitnesspro.service.data.access.webclient.scheduler.SchedulerWebClient
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
@@ -10,12 +10,12 @@ import br.com.fitnesspro.local.data.access.dao.WorkoutDAO
 import br.com.fitnesspro.local.data.access.dao.WorkoutGroupDAO
 import br.com.fitnesspro.mappers.getScheduler
 import br.com.fitnesspro.mappers.getTOScheduler
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.workout.Workout
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
+import br.com.fitnesspro.service.data.access.webclient.scheduler.SchedulerWebClient
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOScheduler
 import kotlinx.coroutines.Dispatchers.IO

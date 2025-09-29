@@ -1,8 +1,8 @@
 package br.com.fitnesspro.model.enums.health
 
 import android.content.Context
+import br.com.android.room.toolkit.model.interfaces.IEnumDomain
 import br.com.fitnesspro.model.R
-import br.com.fitnesspro.model.enums.interfaces.IEnumDomain
 
 enum class EnumSleepStage : IEnumDomain {
     UNKNOWN {

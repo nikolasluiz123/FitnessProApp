@@ -1,5 +1,7 @@
 package br.com.fitnesspro.health.connect.mapper.result
 
+import br.com.android.health.connect.toolkit.mapper.result.ISeriesRecordMapperResult
+import br.com.android.room.toolkit.model.health.interfaces.IHealthConnectMetadata
 import br.com.fitnesspro.model.workout.health.HealthConnectHeartRate
 import br.com.fitnesspro.model.workout.health.HealthConnectHeartRateSamples
 import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
@@ -20,7 +22,7 @@ import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
 data class HeartRateMapperResult(
     val session: HealthConnectHeartRate,
     override val samples: List<HealthConnectHeartRateSamples>,
-    override val metadata: HealthConnectMetadata
+    override val metadata: IHealthConnectMetadata
 ) : ISeriesRecordMapperResult<HealthConnectHeartRateSamples> {
 
     override fun getEntityIdRelation(): List<String?> = listOf(session.exerciseExecutionId)

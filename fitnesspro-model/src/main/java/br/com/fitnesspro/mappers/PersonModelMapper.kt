@@ -1,6 +1,6 @@
 package br.com.fitnesspro.mappers
 
-import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User

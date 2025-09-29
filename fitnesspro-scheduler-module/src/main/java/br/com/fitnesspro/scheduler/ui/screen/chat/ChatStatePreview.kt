@@ -1,6 +1,6 @@
 package br.com.fitnesspro.scheduler.ui.screen.chat
 
-import br.com.fitnesspro.core.extensions.toEpochMillis
+import br.com.core.utils.extensions.toEpochMillis
 import br.com.fitnesspro.firebase.api.firestore.documents.ChatDocument
 import br.com.fitnesspro.firebase.api.firestore.documents.MessageDocument
 import br.com.fitnesspro.firebase.api.firestore.enums.EnumMessageState.READ

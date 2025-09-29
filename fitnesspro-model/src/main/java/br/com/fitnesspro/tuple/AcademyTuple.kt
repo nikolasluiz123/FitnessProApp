@@ -1,10 +1,10 @@
 package br.com.fitnesspro.tuple
 
-import br.com.fitnesspro.core.menu.ITupleListItem
+import br.com.core.android.utils.interfaces.ISimpleListItem
 
 data class AcademyTuple(
     val id: String,
     val name: String,
-): ITupleListItem {
+): ISimpleListItem {
     override fun getLabel(): String = name
 }

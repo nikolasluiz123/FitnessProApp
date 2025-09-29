@@ -6,11 +6,11 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.dao.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.model.workout.execution.ExerciseExecution
 import br.com.fitnesspro.tuple.ExecutionDurationTuple

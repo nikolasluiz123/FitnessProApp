@@ -2,7 +2,6 @@ package br.com.fitnesspro.local.data.access.injection
 
 import android.content.Context
 import androidx.room.Room
-import br.com.fitnesspro.local.data.access.backup.DatabaseBackupExporter.Companion.FITNESS_PRO_DB_FILE
 import br.com.fitnesspro.local.data.access.database.AppDatabase
 import dagger.Module
 import dagger.Provides
@@ -10,6 +9,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+
+const val FITNESS_PRO_DB_FILE_NAME = "fitnesspro.db"
 
 /**
  * Modulo de injeção de dependências do Room
@@ -24,7 +25,7 @@ class DatabaseModule {
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room
-            .databaseBuilder(context, AppDatabase::class.java, FITNESS_PRO_DB_FILE)
+            .databaseBuilder(context, AppDatabase::class.java, FITNESS_PRO_DB_FILE_NAME)
             .fallbackToDestructiveMigration(true) // TODO - Remover quando estiver em 'Producao'
             .build()
     }

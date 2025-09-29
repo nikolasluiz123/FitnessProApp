@@ -5,11 +5,11 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_SQLITE
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.dao.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.core.utils.enums.EnumDateTimePatterns.DATE_SQLITE
+import br.com.core.utils.extensions.format
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.WorkoutGroup
 import br.com.fitnesspro.tuple.reports.evolution.WorkoutGroupInfosTuple
 import java.time.DayOfWeek

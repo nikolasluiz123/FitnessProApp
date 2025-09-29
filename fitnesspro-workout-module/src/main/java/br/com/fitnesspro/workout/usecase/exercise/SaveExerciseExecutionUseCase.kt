@@ -1,12 +1,12 @@
 package br.com.fitnesspro.workout.usecase.exercise
 
 import android.content.Context
-import br.com.fitnesspro.core.extensions.bestChronoUnit
-import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.core.extensions.toMillis
-import br.com.fitnesspro.core.utils.FileUtils
-import br.com.fitnesspro.core.utils.VideoUtils
-import br.com.fitnesspro.core.validation.FieldValidationError
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.core.android.utils.media.FileUtils
+import br.com.core.android.utils.media.VideoUtils
+import br.com.core.utils.extensions.bestChronoUnit
+import br.com.core.utils.extensions.dateTimeNow
+import br.com.core.utils.extensions.millisTo
 import br.com.fitnesspro.to.TOExerciseExecution
 import br.com.fitnesspro.to.TOVideo
 import br.com.fitnesspro.to.TOVideoExerciseExecution
@@ -105,7 +105,7 @@ class SaveExerciseExecutionUseCase(
             toExerciseExecution.rest != null &&
             toExerciseExecution.rest?.bestChronoUnit() != toExerciseExecution.restUnit) {
 
-            toExerciseExecution.rest = toExerciseExecution.rest!!.toMillis(toExerciseExecution.restUnit!!)
+            toExerciseExecution.rest = toExerciseExecution.rest!!.millisTo(toExerciseExecution.restUnit!!)
         }
 
         return validationError
@@ -129,7 +129,7 @@ class SaveExerciseExecutionUseCase(
             toExerciseExecution.duration != null &&
             toExerciseExecution.duration?.bestChronoUnit() != toExerciseExecution.durationUnit) {
 
-            toExerciseExecution.duration = toExerciseExecution.duration!!.toMillis(toExerciseExecution.durationUnit!!)
+            toExerciseExecution.duration = toExerciseExecution.duration!!.millisTo(toExerciseExecution.durationUnit!!)
         }
 
         return validationError

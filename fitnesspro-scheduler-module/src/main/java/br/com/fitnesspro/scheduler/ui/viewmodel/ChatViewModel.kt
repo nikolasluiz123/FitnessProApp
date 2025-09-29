@@ -2,11 +2,11 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
+import br.com.core.utils.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
-import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.navigation.ChatArgs

@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.IHealthDataRangeEntity
-import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.health.interfaces.IHealthDataRangeEntity
 import java.time.Instant
 import java.util.UUID
 

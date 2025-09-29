@@ -65,6 +65,11 @@ dependencies {
     implementation(project(":fitnesspro-core"))
     implementation(project(":fitnesspro-model"))
 
+    implementation(libs.androidlibs.core.utils)
+    implementation(libs.androidlibs.core.android.utils)
+    implementation(libs.androidlibs.room.toolkit)
+    implementation(libs.androidlibs.firebase.toolkit)
+
     implementation(libs.fitnesspro.shared.communication)
 
     implementation(libs.hilt.navigation.compose)

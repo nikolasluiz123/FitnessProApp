@@ -1,11 +1,14 @@
 package br.com.fitnesspro.workout.reports.evolution.header
 
 import android.content.Context
+import br.com.android.pdf.generator.header.AbstractReportHeader
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
-import br.com.fitnesspro.pdf.generator.header.AbstractReportHeader
 import br.com.fitnesspro.workout.R
 
-class RegisterEvolutionWorkoutReportHeader(context: Context) : AbstractReportHeader<RegisterEvolutionWorkoutReportFilter>(context) {
+class RegisterEvolutionWorkoutReportHeader(context: Context) : AbstractReportHeader<RegisterEvolutionWorkoutReportFilter>(
+    context = context,
+    reportLogo = br.com.fitnesspro.core.R.drawable.default_report_logo
+) {
 
     override suspend fun prepare(filter: RegisterEvolutionWorkoutReportFilter) {
         super.prepare(filter)

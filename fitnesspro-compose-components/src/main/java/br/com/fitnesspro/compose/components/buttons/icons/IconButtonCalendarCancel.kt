@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import br.com.android.ui.compose.components.buttons.icons.BaseIconButton
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.core.theme.FitnessProTheme
 
@@ -17,7 +18,7 @@ fun IconButtonCalendarCancel(
     contentDescriptionResId: Int? = R.string.label_cancel_event,
     onClick: () -> Unit = { }
 ) {
-    FitnessProIconButton(
+    BaseIconButton(
         modifier = modifier,
         resId = br.com.fitnesspro.core.R.drawable.ic_calendar_cancel_32dp,
         iconColor = iconColor,

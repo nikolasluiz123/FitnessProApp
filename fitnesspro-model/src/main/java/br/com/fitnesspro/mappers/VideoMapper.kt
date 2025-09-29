@@ -1,9 +1,8 @@
 package br.com.fitnesspro.mappers
 
-import br.com.fitnesspro.core.utils.FileUtils
-import br.com.fitnesspro.model.enums.EnumDownloadState
-import br.com.fitnesspro.model.enums.EnumTransmissionState.PENDING
-import br.com.fitnesspro.model.enums.EnumTransmissionState.TRANSMITTED
+import br.com.android.room.toolkit.model.enums.EnumDownloadState
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.core.android.utils.media.FileUtils
 import br.com.fitnesspro.model.workout.Video
 import br.com.fitnesspro.model.workout.VideoExercise
 import br.com.fitnesspro.model.workout.execution.VideoExerciseExecution
@@ -50,8 +49,8 @@ fun IVideoDTO.getVideo(): Video {
         width = width,
         height = height,
         active = active,
-        transmissionState = TRANSMITTED,
-        storageTransmissionState = if (storageTransmissionDate != null) TRANSMITTED else PENDING,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
+        storageTransmissionState = if (storageTransmissionDate != null) EnumTransmissionState.TRANSMITTED else EnumTransmissionState.PENDING,
         storageUrl = storageUrl,
         storageTransmissionDate = storageTransmissionDate,
         storageDownloadState = getVideoDownloadState(filePath)
@@ -74,7 +73,7 @@ fun IVideoExerciseDTO.getVideoExercise(): VideoExercise {
     return VideoExercise(
         id = id!!,
         exerciseId = exerciseId,
-        transmissionState = TRANSMITTED,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
         videoId = videoId,
         active = active
     )
@@ -151,7 +150,7 @@ fun IVideoExerciseExecutionDTO.getVideoExerciseExecution(): VideoExerciseExecuti
     return VideoExerciseExecution(
         id = id!!,
         exerciseExecutionId = exerciseExecutionId,
-        transmissionState = TRANSMITTED,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
         videoId = videoId,
         active = active
     )
@@ -161,7 +160,7 @@ fun IVideoExercisePreDefinitionDTO.getVideoExercisePreDefinition(): VideoExercis
     return VideoExercisePreDefinition(
         id = id!!,
         exercisePreDefinitionId = exercisePreDefinitionId,
-        transmissionState = TRANSMITTED,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
         videoId = videoId,
         active = active
     )

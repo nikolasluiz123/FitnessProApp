@@ -2,19 +2,19 @@ package br.com.fitnesspro.common.repository.sync.importation.health
 
 import android.content.Context
 import android.util.Log
+import br.com.android.health.connect.toolkit.mapper.AbstractHealthDataAssociatingMapper
+import br.com.android.health.connect.toolkit.mapper.result.IRecordMapperResult
+import br.com.android.health.connect.toolkit.service.filter.RangeFilter
+import br.com.android.room.toolkit.dao.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.model.health.interfaces.IHealthDataRangeEntity
+import br.com.android.room.toolkit.model.interfaces.sync.IntegratedModel
+import br.com.android.work.manager.toolkit.workers.log.WorkerLogConstants
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.ImportSegregationResult
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_TIME_SHORT
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.worker.LogConstants
-import br.com.fitnesspro.core.worker.LogConstants.WORKER_IMPORT
-import br.com.fitnesspro.health.connect.mapper.base.AbstractHealthDataAssociatingMapper
-import br.com.fitnesspro.health.connect.mapper.result.IRecordMapperResult
-import br.com.fitnesspro.health.connect.service.filter.RangeFilter
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.local.data.access.dao.health.HealthConnectMetadataDAO
-import br.com.fitnesspro.model.base.IHealthDataRangeEntity
-import br.com.fitnesspro.model.base.IntegratedModel
+import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
 import java.time.Instant
 
 /**
@@ -90,7 +90,7 @@ abstract class AbstractHealthConnectIntegrationRepository<ENTITY : IHealthDataRa
      * @param personId O ID da pessoa para a qual a integração será executada.
      */
     suspend fun runIntegration(personId: String) {
-        Log.i(LogConstants.WORKER_IMPORT, "Realizando Integração ${javaClass.simpleName}")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "Realizando Integração ${javaClass.simpleName}")
 
         val entitiesToAssociate = getAssociationEntities(personId)
         if (entitiesToAssociate.isEmpty()) {
@@ -104,7 +104,7 @@ abstract class AbstractHealthConnectIntegrationRepository<ENTITY : IHealthDataRa
             return
         }
 
-        Log.i(LogConstants.WORKER_IMPORT, "Importou ${mappedResults.size} registros")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "Importou ${mappedResults.size} registros")
 
         saveResults(mappedResults)
         markEntitiesAsCollected(mappedResults = mappedResults, entities = entitiesToAssociate)
@@ -154,7 +154,7 @@ abstract class AbstractHealthConnectIntegrationRepository<ENTITY : IHealthDataRa
         val segregationResult = segregate(
             list = results,
             hasEntityWithId = { getMetadataDao().hasEntityWithId(it.metadata.id) },
-            getEntity = { it.metadata }
+            getEntity = { it.metadata as HealthConnectMetadata }
         )
 
         if (segregationResult?.insertionList?.isNotEmpty() == true) {
@@ -191,7 +191,9 @@ abstract class AbstractHealthConnectIntegrationRepository<ENTITY : IHealthDataRa
 
         if (minStart.isAfter(maxEnd)) return null
 
-        Log.i(WORKER_IMPORT, "RangeFilter start = ${minStart.format(DATE_TIME_SHORT)} end = ${maxEnd.format(DATE_TIME_SHORT)}")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "RangeFilter start = ${minStart.format(EnumDateTimePatterns.DATE_TIME_SHORT)} end = ${maxEnd.format(
+            EnumDateTimePatterns.DATE_TIME_SHORT
+        )}")
 
         return RangeFilter(minStart, maxEnd)
     }

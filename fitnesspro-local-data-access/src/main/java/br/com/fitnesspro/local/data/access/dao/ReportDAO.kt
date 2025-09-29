@@ -5,10 +5,10 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.model.enums.EnumDownloadState
+import br.com.android.room.toolkit.dao.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.model.enums.EnumDownloadState
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumReportContext
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.to.TOReport
 import java.util.StringJoiner

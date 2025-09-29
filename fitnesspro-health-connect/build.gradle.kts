@@ -45,6 +45,9 @@ tasks.withType<KotlinJvmCompile>().configureEach {
 dependencies {
     implementation(project(":fitnesspro-model"))
 
+    implementation(libs.androidlibs.health.connect.toolkit)
+    implementation(libs.androidlibs.room.toolkit)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.health.connect)

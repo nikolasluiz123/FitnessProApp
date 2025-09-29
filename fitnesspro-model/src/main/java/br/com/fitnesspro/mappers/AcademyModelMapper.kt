@@ -1,6 +1,6 @@
 package br.com.fitnesspro.mappers
 
-import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.PersonAcademyTime
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO

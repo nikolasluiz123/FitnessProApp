@@ -1,13 +1,13 @@
 package br.com.fitnesspro.workout.usecase.exercise
 
 import android.content.Context
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.core.android.utils.media.FileUtils
+import br.com.core.android.utils.media.VideoUtils
+import br.com.core.utils.extensions.bestChronoUnit
+import br.com.core.utils.extensions.dateTimeNow
+import br.com.core.utils.extensions.millisTo
 import br.com.fitnesspro.common.repository.PersonRepository
-import br.com.fitnesspro.core.extensions.bestChronoUnit
-import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.core.extensions.toMillis
-import br.com.fitnesspro.core.utils.FileUtils
-import br.com.fitnesspro.core.utils.VideoUtils
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOExercisePreDefinition
 import br.com.fitnesspro.to.TOVideo
 import br.com.fitnesspro.to.TOVideoExercisePreDefinition
@@ -153,7 +153,7 @@ class SaveExercisePreDefinitionUseCase(
             toExerciseExecution.rest != null &&
             toExerciseExecution.rest?.bestChronoUnit() != toExerciseExecution.unitRest) {
 
-            toExerciseExecution.rest = toExerciseExecution.rest!!.toMillis(toExerciseExecution.unitRest!!)
+            toExerciseExecution.rest = toExerciseExecution.rest!!.millisTo(toExerciseExecution.unitRest!!)
         }
 
         return validationError
@@ -177,7 +177,7 @@ class SaveExercisePreDefinitionUseCase(
             toExerciseExecution.duration != null &&
             toExerciseExecution.duration?.bestChronoUnit() != toExerciseExecution.unitDuration) {
 
-            toExerciseExecution.duration = toExerciseExecution.duration!!.toMillis(toExerciseExecution.unitDuration!!)
+            toExerciseExecution.duration = toExerciseExecution.duration!!.millisTo(toExerciseExecution.unitDuration!!)
         }
 
         return validationError

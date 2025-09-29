@@ -1,7 +1,8 @@
 package br.com.fitnesspro.workout.ui.state
 
-import br.com.fitnesspro.compose.components.fields.state.checkbox.MultipleCheckBoxesState
-import br.com.fitnesspro.compose.components.fields.state.radiobutton.MultipleRadioButtonsState
+import br.com.android.ui.compose.components.checkbox.state.MultipleCheckBoxesState
+import br.com.android.ui.compose.components.radiobutton.state.MultipleRadioButtonsState
+
 
 data class ExecutionChartFiltersDialogUIState(
     val focusValueRadioButtons: MultipleRadioButtonsState = MultipleRadioButtonsState(),

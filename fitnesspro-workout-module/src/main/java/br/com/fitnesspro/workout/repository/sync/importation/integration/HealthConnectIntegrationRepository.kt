@@ -12,7 +12,7 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
  * e salvamento no DB local), garantindo que calorias, frequência cardíaca,
  * sono e passos sejam integrados em uma única chamada.
  *
- * É tipicamente invocado por um Worker (ex: [br.com.fitnesspro.common.workers.common.AbstractHealthConnectIntegrationWorker]).
+ * É tipicamente invocado por um Worker (ex: [br.com.fitnesspro.common.workers.common.importation.periodic.AbstractFitnessProImportationHealthConnectPeriodicWorker]).
  *
  * @param context O contexto da aplicação.
  * @param personRepository Repositório para buscar o usuário logado.
@@ -22,7 +22,7 @@ import br.com.fitnesspro.common.repository.common.FitnessProRepository
  * @param stepsIntegrationRepository Repositório de integração de passos.
  *
  * @see br.com.fitnesspro.common.repository.sync.importation.health.AbstractHealthConnectIntegrationRepository
- * @see br.com.fitnesspro.common.workers.common.AbstractHealthConnectIntegrationWorker
+ * @see br.com.fitnesspro.common.workers.common.importation.periodic.AbstractFitnessProImportationHealthConnectPeriodicWorker
  *
  * @author Nikolas Luiz Schmitt
  */

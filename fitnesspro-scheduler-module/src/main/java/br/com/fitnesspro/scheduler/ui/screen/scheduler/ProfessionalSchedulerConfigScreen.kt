@@ -19,11 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.compose.components.buttons.HorizontalLabeledSwitchButton
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.buttons.switchbutton.HorizontalLabeledSwitchButton
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.styles.LabelTextStyle
+import br.com.android.ui.compose.components.styles.ValueTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.LabelTextStyle
-import br.com.fitnesspro.core.theme.ValueTextStyle
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.enums.EnumSchedulerConfigScreenTags.SCHEDULER_CONFIG_SCREEN_LABELED_SWITCH_BUTTON_NOTIFICATION

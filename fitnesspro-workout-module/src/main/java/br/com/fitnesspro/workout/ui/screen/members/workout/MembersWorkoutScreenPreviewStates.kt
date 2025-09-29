@@ -1,6 +1,6 @@
 package br.com.fitnesspro.workout.ui.screen.members.workout
 
-import br.com.fitnesspro.core.extensions.dateNow
+import br.com.core.utils.extensions.dateNow
 import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.workout.ui.state.MembersWorkoutUIState
 import java.time.ZoneId

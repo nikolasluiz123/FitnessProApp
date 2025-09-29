@@ -2,16 +2,17 @@ package br.com.fitnesspro.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
+import br.com.android.room.toolkit.backup.DatabaseBackupExporter
+import br.com.android.ui.compose.components.dialog.message.MessageDialogState
+import br.com.android.ui.compose.components.dialog.message.showConfirmationDialog
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
+import br.com.android.ui.compose.components.dialog.message.showInformationDialog
 import br.com.fitnesspro.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProViewModel
-import br.com.fitnesspro.core.callback.showConfirmationDialog
-import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.callback.showInformationDialog
-import br.com.fitnesspro.core.state.MessageDialogState
-import br.com.fitnesspro.local.data.access.backup.DatabaseBackupExporter
+import br.com.fitnesspro.local.data.access.injection.FITNESS_PRO_DB_FILE_NAME
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.ui.state.HomeUIState
@@ -132,7 +133,7 @@ class HomeViewModel @Inject constructor(
 
     fun onExecuteBackup(onSuccess: () -> Unit) {
         launch {
-            val backupPath = DatabaseBackupExporter(context).export()
+            val backupPath = DatabaseBackupExporter(context).export(FITNESS_PRO_DB_FILE_NAME)
             onSuccess()
 
             _uiState.value.messageDialogState.onShowDialog?.showInformationDialog(

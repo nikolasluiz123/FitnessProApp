@@ -1,8 +1,8 @@
 package br.com.fitnesspro.workout.usecase.workout
 
 import android.content.Context
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
 import br.com.fitnesspro.common.R
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.usecase.workout.enums.EnumValidatedWorkoutGroupFields

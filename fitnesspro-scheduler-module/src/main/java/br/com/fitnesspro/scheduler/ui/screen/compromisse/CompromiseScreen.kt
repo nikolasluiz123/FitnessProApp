@@ -29,19 +29,19 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.ui.compose.components.bottombar.BaseBottomAppBar
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
+import br.com.android.ui.compose.components.styles.SnackBarTextStyle
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
+import br.com.core.utils.enums.EnumDateTimePatterns.DATE
+import br.com.core.utils.extensions.format
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCalendarCancel
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCalendarCheck
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonMessage
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
-import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.SnackBarTextStyle
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CONFIRMED
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
@@ -103,7 +103,7 @@ fun CompromiseScreen(
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
                 onBackClick = onBackClick
@@ -117,7 +117,7 @@ fun CompromiseScreen(
             }
         },
         bottomBar = {
-            FitnessProBottomAppBar(
+            BaseBottomAppBar(
                 modifier = Modifier.imePadding(),
                 actions = {
                     if (!state.recurrent) {
@@ -215,7 +215,7 @@ fun CompromiseScreen(
                 .consumeWindowInsets(padding)
                 .fillMaxSize()
         ) {
-            FitnessProLinearProgressIndicator(state.showLoading)
+            BaseLinearProgressIndicator(state.showLoading)
 
             Box(
                 Modifier

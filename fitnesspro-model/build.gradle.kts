@@ -42,6 +42,11 @@ tasks.withType<KotlinJvmCompile>().configureEach {
 dependencies {
     implementation(project(":fitnesspro-core"))
 
+    implementation(libs.androidlibs.core.utils)
+    implementation(libs.androidlibs.core.android.utils)
+    implementation(libs.androidlibs.room.toolkit)
+    implementation(libs.androidlibs.firebase.toolkit)
+
     implementation(libs.fitnesspro.shared.communication)
 
     implementation(libs.hilt.android)

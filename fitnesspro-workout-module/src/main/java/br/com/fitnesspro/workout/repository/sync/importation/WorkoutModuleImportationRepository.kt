@@ -1,11 +1,12 @@
 package br.com.fitnesspro.workout.repository.sync.importation
 
 import android.content.Context
+import br.com.android.room.toolkit.dao.MaintenanceDAO
+import br.com.android.room.toolkit.model.interfaces.BaseModel
 import br.com.fitnesspro.common.injection.health.IHealthConnectModuleSyncRepositoryEntryPoint
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.ImportSegregationResult
-import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.mappers.getExercise
 import br.com.fitnesspro.mappers.getExerciseExecution
 import br.com.fitnesspro.mappers.getExercisePreDefinition
@@ -26,7 +27,6 @@ import br.com.fitnesspro.mappers.getWorkout
 import br.com.fitnesspro.mappers.getWorkoutGroup
 import br.com.fitnesspro.mappers.getWorkoutGroupPreDefinition
 import br.com.fitnesspro.mappers.getWorkoutReport
-import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.model.general.report.WorkoutReport

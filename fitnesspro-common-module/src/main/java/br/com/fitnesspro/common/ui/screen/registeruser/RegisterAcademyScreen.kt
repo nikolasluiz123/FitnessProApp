@@ -37,6 +37,16 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.ui.compose.components.bottombar.BaseBottomAppBar
+import br.com.android.ui.compose.components.divider.BaseHorizontalDivider
+import br.com.android.ui.compose.components.fields.dropdown.DefaultExposedDropdownMenu
+import br.com.android.ui.compose.components.fields.text.dialog.paged.PagedListDialogOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.time.TimePickerOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
+import br.com.android.ui.compose.components.styles.SnackBarTextStyle
+import br.com.android.ui.compose.components.styles.ValueTextStyle
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnInactivateAcademyClick
 import br.com.fitnesspro.common.ui.screen.registeruser.callback.OnSaveAcademyClick
@@ -50,20 +60,10 @@ import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademy
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterAcademyTestTags.REGISTER_ACADEMY_SCREEN_KEYBOARD_SAVE
 import br.com.fitnesspro.common.ui.state.RegisterAcademyUIState
 import br.com.fitnesspro.common.ui.viewmodel.RegisterAcademyViewModel
-import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
-import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.TimePickerOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.SnackBarTextStyle
-import br.com.fitnesspro.core.theme.ValueTextStyle
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.tuple.AcademyTuple
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.analytics
@@ -103,14 +103,14 @@ fun RegisterAcademyScreen(
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
                 onBackClick = onBackClick
             )
         },
         bottomBar = {
-            FitnessProBottomAppBar(
+            BaseBottomAppBar(
                 modifier = Modifier.imePadding(),
                 floatingActionButton = {
                     FloatingActionButtonSave(
@@ -173,7 +173,7 @@ fun RegisterAcademyScreen(
             ConstraintLayout(
                 Modifier.fillMaxWidth()
             ) {
-                FitnessProLinearProgressIndicator(
+                BaseLinearProgressIndicator(
                     state.showLoading,
                     Modifier.constrainAs(loadingRef) {
                         start.linkTo(parent.start)
@@ -314,7 +314,7 @@ fun DialogListItem(academy: AcademyTuple, onItemClick: (AcademyTuple) -> Unit) {
         )
     }
 
-    FitnessProHorizontalDivider()
+    BaseHorizontalDivider()
 }
 
 private fun showSaveSuccessMessage(

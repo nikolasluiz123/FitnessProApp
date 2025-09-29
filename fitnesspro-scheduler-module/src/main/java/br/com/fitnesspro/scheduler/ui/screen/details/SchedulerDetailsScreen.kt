@@ -15,15 +15,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.ui.compose.components.list.LazyVerticalList
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.dateNow
+import br.com.core.utils.extensions.parseToLocalDate
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.list.LazyVerticalList
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.dateNow
-import br.com.fitnesspro.core.extensions.parseToLocalDate
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.navigation.CompromiseScreenArgs
 import br.com.fitnesspro.scheduler.ui.screen.details.callbacks.OnNavigateToCompromise
@@ -60,7 +60,7 @@ fun SchedulerDetailsScreen(
 ) {
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
                 onBackClick = onBackClick

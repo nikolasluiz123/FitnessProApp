@@ -1,10 +1,11 @@
 package br.com.fitnesspro.health.connect.mapper
 
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
-import br.com.fitnesspro.health.connect.mapper.base.AbstractHealthDataAssociatingMapper
-import br.com.fitnesspro.health.connect.mapper.result.SingleRecordMapperResult
+import br.com.android.health.connect.toolkit.mapper.AbstractHealthDataAssociatingMapper
+import br.com.android.health.connect.toolkit.mapper.result.SingleRecordMapperResult
+import br.com.android.room.toolkit.model.health.interfaces.IHealthConnectMetadata
+import br.com.android.room.toolkit.model.health.interfaces.IHealthDataRangeEntity
 import br.com.fitnesspro.health.connect.service.CaloriesBurnedService
-import br.com.fitnesspro.model.base.IHealthDataRangeEntity
 import br.com.fitnesspro.model.workout.health.HealthConnectCaloriesBurned
 import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
 
@@ -24,7 +25,7 @@ import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
  */
 class CaloriesBurnedMapper(
     service: CaloriesBurnedService
-) : AbstractHealthDataAssociatingMapper<SingleRecordMapperResult<HealthConnectCaloriesBurned>, ActiveCaloriesBurnedRecord, CaloriesBurnedService>(service) {
+) : AbstractFitnessProHealthDataAssociatingMapper<SingleRecordMapperResult<HealthConnectCaloriesBurned>, ActiveCaloriesBurnedRecord, CaloriesBurnedService>(service) {
 
     /**
      * Mapeia um [ActiveCaloriesBurnedRecord] para [HealthConnectCaloriesBurned], **se**
@@ -39,7 +40,7 @@ class CaloriesBurnedMapper(
      */
     override suspend fun <T : IHealthDataRangeEntity> continueMappingAndAssociate(
         record: ActiveCaloriesBurnedRecord,
-        metadata: HealthConnectMetadata,
+        metadata: IHealthConnectMetadata,
         associationEntities: List<T>
     ): SingleRecordMapperResult<HealthConnectCaloriesBurned>? {
         val matching = findMatchingEntity(record.startTime, record.endTime, associationEntities)

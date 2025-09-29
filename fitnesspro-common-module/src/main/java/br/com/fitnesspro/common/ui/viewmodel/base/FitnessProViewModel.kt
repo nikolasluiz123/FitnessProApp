@@ -3,10 +3,10 @@ package br.com.fitnesspro.common.ui.viewmodel.base
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.android.firebase.toolkit.crashlytics.sendToFirebaseCrashlytics
 import br.com.fitnesspro.common.ui.event.GlobalEvent
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.core.exceptions.ServiceException
-import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
 import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
 import br.com.fitnesspro.shared.communication.exception.NotFoundTokenException
 import kotlinx.coroutines.CoroutineExceptionHandler

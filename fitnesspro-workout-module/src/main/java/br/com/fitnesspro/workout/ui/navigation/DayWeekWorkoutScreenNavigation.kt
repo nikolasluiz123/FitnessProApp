@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import br.com.fitnesspro.core.extensions.defaultGSon
+import br.com.core.utils.gson.extensions.defaultGSon
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.DayWeekWorkoutScreen
 import br.com.fitnesspro.workout.ui.screen.details.callbacks.OnNavigateToExerciseDetails
 import br.com.fitnesspro.workout.ui.viewmodel.DayWeekWorkoutViewModel

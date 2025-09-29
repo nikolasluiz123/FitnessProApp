@@ -1,6 +1,6 @@
 package br.com.fitnesspro.common.ui.screen.registeruser.decorator
 
-import br.com.fitnesspro.compose.components.list.grouped.expandable.IBasicExpandableGroup
+import br.com.android.ui.compose.components.list.grouped.expandable.IBasicExpandableGroup
 import br.com.fitnesspro.to.TOPersonAcademyTime
 
 data class AcademyGroupDecorator(

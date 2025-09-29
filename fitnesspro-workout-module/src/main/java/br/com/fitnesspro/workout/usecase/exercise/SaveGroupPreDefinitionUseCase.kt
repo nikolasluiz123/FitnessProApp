@@ -1,8 +1,8 @@
 package br.com.fitnesspro.workout.usecase.exercise
 
 import android.content.Context
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
 import br.com.fitnesspro.common.repository.PersonRepository
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOExercisePreDefinition
 import br.com.fitnesspro.to.TOWorkoutGroupPreDefinition
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository

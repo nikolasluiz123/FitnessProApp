@@ -22,14 +22,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.ui.compose.components.list.grouped.nested.NestedGroupedList
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
+import br.com.android.ui.compose.components.simplefilter.SimpleFilter
+import br.com.android.ui.compose.components.styles.SnackBarTextStyle
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.filter.SimpleFilter
-import br.com.fitnesspro.compose.components.list.grouped.nested.NestedGroupedList
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.SnackBarTextStyle
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.navigation.ExerciseScreenArgs
@@ -85,7 +85,7 @@ fun DayWeekExercisesScreen(
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
                 onBackClick = onBackClick,
@@ -129,7 +129,7 @@ fun DayWeekExercisesScreen(
                 }
             }
 
-            FitnessProLinearProgressIndicator(state.showLoading)
+            BaseLinearProgressIndicator(state.showLoading)
 
             FitnessProMessageDialog(state.messageDialogState)
 

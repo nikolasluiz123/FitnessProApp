@@ -1,12 +1,12 @@
 package br.com.fitnesspro.common.repository.sync.importation.storage
 
 import android.content.Context
+import br.com.android.pdf.generator.utils.ReportFileUtils
+import br.com.core.android.utils.media.FileUtils
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractStorageImportationRepository
-import br.com.fitnesspro.core.utils.FileUtils
 import br.com.fitnesspro.firebase.api.storage.StorageBucketService
 import br.com.fitnesspro.local.data.access.dao.ReportDAO
 import br.com.fitnesspro.model.general.report.Report
-import br.com.fitnesspro.pdf.generator.utils.ReportFileUtils
 import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketNames
 import java.io.File
 

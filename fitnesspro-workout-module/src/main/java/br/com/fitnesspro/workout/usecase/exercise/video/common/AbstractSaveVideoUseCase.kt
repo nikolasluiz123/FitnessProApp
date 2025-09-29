@@ -1,10 +1,10 @@
 package br.com.fitnesspro.workout.usecase.exercise.video.common
 
 import android.content.Context
-import br.com.fitnesspro.core.media3.CompressionParams
-import br.com.fitnesspro.core.media3.VideoCompressor
-import br.com.fitnesspro.core.utils.FileUtils
-import br.com.fitnesspro.core.utils.VideoUtils
+import br.com.core.android.utils.media.FileUtils
+import br.com.core.android.utils.media.VideoUtils
+import br.com.core.android.utils.media.compression.CompressionParams
+import br.com.core.android.utils.media.compression.VideoCompressor
 import br.com.fitnesspro.to.TOVideo
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.usecase.exercise.exception.VideoException
@@ -36,7 +36,8 @@ abstract class AbstractSaveVideoUseCase(
 
         if (toVideo.kbSize!! > maxVideoSizeKB) {
             val compressor = VideoCompressor(context)
-            val params = CompressionParams(file = videoFile, targetMaxSizeMb = 7, resolutionHeight = 480)
+            val params =
+                CompressionParams(file = videoFile, targetMaxSizeMb = 7, resolutionHeight = 480)
 
             val compressedFile = compressor.compress(params)
 

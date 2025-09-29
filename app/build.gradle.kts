@@ -103,6 +103,13 @@ dependencies {
     implementation(project(":fitnesspro-workout-module"))
     implementation(project(":fitnesspro-firebase-api"))
 
+    implementation(libs.androidlibs.work.manager.toolkit)
+    implementation(libs.androidlibs.core.utils)
+    implementation(libs.androidlibs.core.android.utils)
+    implementation(libs.androidlibs.room.toolkit)
+    implementation(libs.androidlibs.core.android.compose.utils)
+    implementation(libs.androidlibs.ui.compose.components)
+    implementation(libs.androidlibs.firebase.toolkit)
     implementation(libs.fitnesspro.shared.communication)
 
     implementation(libs.java.faker)

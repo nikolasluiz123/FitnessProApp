@@ -1,7 +1,0 @@
-package br.com.fitnesspro.charts.entries.bar
-
-
-data class SimpleBarEntry(
-    override val label: String,
-    val value: Float
-) : BarChartEntry

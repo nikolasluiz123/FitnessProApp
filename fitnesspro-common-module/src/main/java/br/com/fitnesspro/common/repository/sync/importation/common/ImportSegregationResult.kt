@@ -1,6 +1,6 @@
 package br.com.fitnesspro.common.repository.sync.importation.common
 
-import br.com.fitnesspro.model.base.BaseModel
+import br.com.android.room.toolkit.model.interfaces.BaseModel
 import kotlin.reflect.KClass
 
 data class ImportSegregationResult<T : BaseModel>(

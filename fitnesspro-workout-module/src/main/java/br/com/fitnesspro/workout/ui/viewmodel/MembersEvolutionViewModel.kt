@@ -1,11 +1,11 @@
 package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
-import br.com.fitnesspro.core.callback.showErrorDialog
 import br.com.fitnesspro.workout.ui.state.MembersEvolutionUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

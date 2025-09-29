@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import br.com.fitnesspro.compose.components.LabeledText
-import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
+import br.com.android.ui.compose.components.divider.BaseHorizontalDivider
+import br.com.android.ui.compose.components.label.LabeledText
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.tuple.PersonTuple
 import br.com.fitnesspro.workout.R
@@ -29,7 +29,7 @@ fun MemberItem(personTuple: PersonTuple, onClick: (PersonTuple) -> Unit = {}) {
             value = personTuple.name,
         )
 
-        FitnessProHorizontalDivider(modifier = Modifier.fillMaxWidth())
+        BaseHorizontalDivider(modifier = Modifier.fillMaxWidth())
     }
 }
 

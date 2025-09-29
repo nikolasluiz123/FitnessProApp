@@ -5,21 +5,21 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
+import br.com.android.ui.compose.components.dialog.message.showConfirmationDialog
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
+import br.com.android.ui.compose.components.fields.dropdown.getChronoUnitMenuItems
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.android.ui.compose.components.tabs.state.Tab
+import br.com.core.android.utils.extensions.getChronoUnitLabel
+import br.com.core.android.utils.media.FileUtils
+import br.com.core.android.utils.media.VideoUtils
+import br.com.core.utils.extensions.fromJsonNavParamToArgs
+import br.com.core.utils.extensions.getFirstPartFullDisplayName
+import br.com.core.utils.extensions.getStringFromConvertedChronoUnitValue
+import br.com.core.utils.extensions.toStringOrEmpty
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
-import br.com.fitnesspro.compose.components.fields.menu.getChronoUnitMenuItems
-import br.com.fitnesspro.compose.components.tabs.Tab
-import br.com.fitnesspro.core.callback.showConfirmationDialog
-import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
-import br.com.fitnesspro.core.extensions.getChronoUnitLabel
-import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
-import br.com.fitnesspro.core.extensions.getStringFromConvertedChronoUnitValue
-import br.com.fitnesspro.core.extensions.toStringOrEmpty
-import br.com.fitnesspro.core.utils.FileUtils
-import br.com.fitnesspro.core.utils.VideoUtils
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.R
@@ -46,6 +46,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.io.File
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
+import kotlin.collections.toMutableList
 
 @HiltViewModel
 class ExerciseViewModel @Inject constructor(

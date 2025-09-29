@@ -4,11 +4,12 @@ import android.content.Context
 import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.WorkerParameters
+import br.com.android.firebase.toolkit.crashlytics.sendToFirebaseCrashlytics
+import br.com.android.work.manager.toolkit.requester.PeriodicWorkerRequester.Companion.MIN_PERIODIC_WORKER_DELAY_MINS
+import br.com.android.work.manager.toolkit.workers.coroutine.periodic.AbstractPeriodicCoroutineWorker
 import br.com.fitnesspro.common.injection.IAuthenticationSessionWorkerEntryPoint
 import br.com.fitnesspro.common.ui.event.GlobalEvent
-import br.com.fitnesspro.core.worker.LogConstants
-import br.com.fitnesspro.core.worker.periodic.FitnessProPeriodicCoroutineWorker
-import br.com.fitnesspro.firebase.api.crashlytics.sendToFirebaseCrashlytics
+import br.com.fitnesspro.core.worker.FitnessProLogConstants
 import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -20,14 +21,14 @@ import java.time.temporal.ChronoUnit
 class AuthenticationSessionWorker@AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters
-): FitnessProPeriodicCoroutineWorker(context, workerParams) {
+): AbstractPeriodicCoroutineWorker(context, workerParams) {
 
     private val entryPoint = EntryPointAccessors.fromApplication(context,IAuthenticationSessionWorkerEntryPoint::class.java)
 
-    override fun getMaxRetryTimeMillis(): Long = Duration.of(DEFAULT_WORKER_DELAY * 3L, ChronoUnit.MINUTES).toMillis()
+    override fun getMaxRetryTimeMillis(): Long = Duration.of(MIN_PERIODIC_WORKER_DELAY_MINS * 3L, ChronoUnit.MINUTES).toMillis()
 
-    override suspend fun onWorkOneTime() {
-        Log.i(LogConstants.WORKER_AUTHENTICATION, "Verificando Token")
+    override suspend fun onWorkPeriodic() {
+        Log.i(FitnessProLogConstants.WORKER_AUTHENTICATION, "Verificando Token")
         entryPoint.getUserRepository().getValidToken()
     }
 
@@ -39,9 +40,5 @@ class AuthenticationSessionWorker@AssistedInject constructor(
             e.sendToFirebaseCrashlytics()
             Result.retry()
         }
-    }
-
-    companion object {
-        const val DEFAULT_WORKER_DELAY = 15L
     }
 }

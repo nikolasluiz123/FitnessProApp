@@ -1,8 +1,8 @@
 package br.com.fitnesspro.workout.repository
 
 import android.content.Context
+import br.com.core.android.utils.media.VideoUtils
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
-import br.com.fitnesspro.core.utils.VideoUtils
 import br.com.fitnesspro.local.data.access.dao.VideoDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseDAO
 import br.com.fitnesspro.local.data.access.dao.VideoExerciseExecutionDAO

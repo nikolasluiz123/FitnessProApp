@@ -1,5 +1,6 @@
 package br.com.fitnesspro.firebase.api.firestore.documents
 
+import br.com.android.firebase.toolkit.firestore.document.FirestoreDocument
 import br.com.fitnesspro.firebase.api.firestore.enums.EnumMessageState
 import java.util.UUID
 

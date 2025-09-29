@@ -1,9 +1,9 @@
 package br.com.fitnesspro.workout.usecase.exercise
 
 import android.content.Context
-import br.com.fitnesspro.core.extensions.bestChronoUnit
-import br.com.fitnesspro.core.extensions.toMillis
-import br.com.fitnesspro.core.validation.FieldValidationError
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.core.utils.extensions.bestChronoUnit
+import br.com.core.utils.extensions.millisTo
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
@@ -233,7 +233,7 @@ class SaveExerciseUseCase(
             toExercise.rest != null &&
             toExercise.rest?.bestChronoUnit() != toExercise.unitRest) {
 
-            toExercise.rest = toExercise.rest!!.toMillis(toExercise.unitRest!!)
+            toExercise.rest = toExercise.rest!!.millisTo(toExercise.unitRest!!)
         }
 
         return validationError
@@ -257,7 +257,7 @@ class SaveExerciseUseCase(
             toExercise.duration != null &&
             toExercise.duration?.bestChronoUnit() != toExercise.unitDuration) {
 
-            toExercise.duration = toExercise.duration!!.toMillis(toExercise.unitDuration!!)
+            toExercise.duration = toExercise.duration!!.millisTo(toExercise.unitDuration!!)
         }
 
         return validationError

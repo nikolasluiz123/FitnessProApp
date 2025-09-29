@@ -1,10 +1,10 @@
 package br.com.fitnesspro.scheduler.usecase.scheduler
 
 import android.content.Context
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.core.utils.extensions.dateNow
+import br.com.core.utils.extensions.timeNow
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.core.extensions.dateNow
-import br.com.fitnesspro.core.extensions.timeNow
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields

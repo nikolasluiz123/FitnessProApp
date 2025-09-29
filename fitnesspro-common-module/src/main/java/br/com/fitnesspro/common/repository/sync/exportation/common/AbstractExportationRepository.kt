@@ -2,13 +2,13 @@ package br.com.fitnesspro.common.repository.sync.exportation.common
 
 import android.content.Context
 import android.util.Log
+import br.com.android.room.toolkit.dao.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.interfaces.sync.IntegratedModel
+import br.com.android.work.manager.toolkit.workers.log.WorkerLogConstants
+import br.com.core.utils.extensions.dateTimeNow
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
 import br.com.fitnesspro.core.exceptions.ServiceException
-import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.core.worker.LogConstants
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.model.base.IntegratedModel
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.sync.interfaces.ISyncDTO
@@ -30,7 +30,7 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
     abstract fun getIntegratedMaintenanceDAO(modelClass: KClass<out IntegratedModel>): IntegratedMaintenanceDAO<out IntegratedModel>
 
     suspend fun export(serviceToken: String) {
-        Log.i(LogConstants.WORKER_EXPORT, "Exportando ${javaClass.simpleName}")
+        Log.i(WorkerLogConstants.WORKER_EXPORT, "Exportando ${javaClass.simpleName}")
 
         var response: ExportationServiceResponse? = null
         var clientDateTimeStart: LocalDateTime? = null
@@ -44,7 +44,7 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
             models = getExportationData(pageSize)
             hasAnyListPopulated = models.any { it.value.isNotEmpty() }
 
-            Log.i(LogConstants.WORKER_EXPORT, "hasAnyListPopulated = $hasAnyListPopulated")
+            Log.i(WorkerLogConstants.WORKER_EXPORT, "hasAnyListPopulated = $hasAnyListPopulated")
 
             if (hasAnyListPopulated) {
                 syncDTO = getExportationDTO(models)
@@ -65,7 +65,7 @@ abstract class AbstractExportationRepository<DTO: ISyncDTO>(context: Context): A
                 )
 
                 if (response.success) {
-                    Log.i(LogConstants.WORKER_EXPORT, "Sucesso pageSize = $pageSize maxListSize = ${syncDTO.getMaxListSize()}")
+                    Log.i(WorkerLogConstants.WORKER_EXPORT, "Sucesso pageSize = $pageSize maxListSize = ${syncDTO.getMaxListSize()}")
                     updateTransmissionState(models, EnumTransmissionState.TRANSMITTED)
 
                     updateExecutionLogPackageWithSuccessIterationInfos(

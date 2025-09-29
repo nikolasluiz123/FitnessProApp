@@ -1,8 +1,8 @@
 package br.com.fitnesspro.mappers
 
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.scheduler.Scheduler
 import br.com.fitnesspro.model.scheduler.SchedulerConfig
