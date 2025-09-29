@@ -24,10 +24,7 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room
-            .databaseBuilder(context, AppDatabase::class.java, FITNESS_PRO_DB_FILE_NAME)
-            .fallbackToDestructiveMigration(true) // TODO - Remover quando estiver em 'Producao'
-            .build()
+        return Room.databaseBuilder(context, AppDatabase::class.java, FITNESS_PRO_DB_FILE_NAME).build()
     }
 
     @Provides
