@@ -25,19 +25,19 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.ui.compose.components.buttons.SquaredButton
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
+import br.com.android.ui.compose.components.styles.LabelTextStyle
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.BuildConfig
 import br.com.fitnesspro.R
 import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
 import br.com.fitnesspro.common.ui.screen.login.RequestAllPermissions
-import br.com.fitnesspro.compose.components.buttons.SquaredButton
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonAccount
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonLogout
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.LabelTextStyle
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.ui.bottomsheet.workout.BottomSheetWorkout
 import br.com.fitnesspro.ui.bottomsheet.workout.EnumOptionsBottomSheetWorkout
 import br.com.fitnesspro.ui.screen.home.callbacks.OnExecuteBackup
@@ -114,7 +114,7 @@ fun HomeScreen(
     Scaffold(
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
                 actions = {
@@ -187,7 +187,7 @@ fun HomeScreen(
         ) {
             val (footerRef, moduleButtonsRef, loadingRef) = createRefs()
 
-            FitnessProLinearProgressIndicator(
+            BaseLinearProgressIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(loadingRef) {

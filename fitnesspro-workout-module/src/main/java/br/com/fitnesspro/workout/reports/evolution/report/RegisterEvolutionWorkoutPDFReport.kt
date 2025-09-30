@@ -1,9 +1,10 @@
 package br.com.fitnesspro.workout.reports.evolution.report
 
 import android.content.Context
+import br.com.android.pdf.generator.footer.DefaultReportFooter
+import br.com.android.pdf.generator.report.AbstractPDFReport
+import br.com.fitnesspro.core.R
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
-import br.com.fitnesspro.pdf.generator.footer.DefaultReportFooter
-import br.com.fitnesspro.pdf.generator.report.AbstractPDFReport
 import br.com.fitnesspro.workout.injection.IWorkoutReportsEntryPoint
 import br.com.fitnesspro.workout.reports.evolution.body.RegisterEvolutionWorkoutReportBody
 import br.com.fitnesspro.workout.reports.evolution.header.RegisterEvolutionWorkoutReportHeader
@@ -36,7 +37,7 @@ class RegisterEvolutionWorkoutPDFReport(
     override suspend fun initialize() {
         this.header = RegisterEvolutionWorkoutReportHeader(context)
         this.body = RegisterEvolutionWorkoutReportBody()
-        this.footer = DefaultReportFooter(context)
+        this.footer = DefaultReportFooter(context, R.drawable.default_report_logo)
 
         body.addSession(RegisterEvolutionWorkoutResumeSession(context))
 

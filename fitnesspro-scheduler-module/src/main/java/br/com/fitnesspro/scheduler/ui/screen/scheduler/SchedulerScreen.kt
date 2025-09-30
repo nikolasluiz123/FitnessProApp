@@ -22,18 +22,18 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.ui.compose.components.bottombar.BaseBottomAppBar
+import br.com.android.ui.compose.components.buttons.fab.BaseFloatingActionButton
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.common.ui.navigation.GeneratedReportsScreenArgs
 import br.com.fitnesspro.common.ui.screen.report.callback.OnNavigateToReports
-import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
-import br.com.fitnesspro.compose.components.buttons.fab.FitnessProFloatingActionButton
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonConfig
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonMessage
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonNewReport
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonViewReports
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.details.callbacks.OnNavigateToCompromise
@@ -94,7 +94,7 @@ fun SchedulerScreen(
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 onBackClick = onBackClick,
                 actions = {
@@ -114,10 +114,10 @@ fun SchedulerScreen(
             )
         },
         bottomBar = {
-            FitnessProBottomAppBar(
+            BaseBottomAppBar(
                 floatingActionButton = {
                     if (state.isVisibleFabRecurrentScheduler) {
-                        FitnessProFloatingActionButton(
+                        BaseFloatingActionButton(
                             modifier = Modifier.testTag(SCHEDULER_SCREEN_RECURRENT_SCHEDULE_FAB.name),
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             content = {

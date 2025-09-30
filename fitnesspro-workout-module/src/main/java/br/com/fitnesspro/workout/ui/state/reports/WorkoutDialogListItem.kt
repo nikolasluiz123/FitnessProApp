@@ -12,11 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
-import br.com.fitnesspro.core.extensions.format
+import br.com.android.ui.compose.components.divider.BaseHorizontalDivider
+import br.com.android.ui.compose.components.styles.ValueTextStyle
+import br.com.core.utils.enums.EnumDateTimePatterns.DATE
+import br.com.core.utils.extensions.format
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.ValueTextStyle
 import br.com.fitnesspro.tuple.WorkoutTuple
 
 @Composable
@@ -40,7 +40,7 @@ internal fun WorkoutDialogListItem(
         )
     }
 
-    FitnessProHorizontalDivider()
+    BaseHorizontalDivider()
 }
 
 @Preview(device = "id:small_phone", apiLevel = 35)

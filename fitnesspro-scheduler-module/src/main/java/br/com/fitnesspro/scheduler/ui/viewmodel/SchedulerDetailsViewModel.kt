@@ -2,14 +2,14 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.dateNow
+import br.com.core.utils.extensions.format
+import br.com.core.utils.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
-import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.dateNow
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.repository.SchedulerRepository
 import br.com.fitnesspro.scheduler.ui.navigation.SchedulerDetailsScreenArgs

@@ -1,10 +1,10 @@
 package br.com.fitnesspro.common.usecase.login
 
 import android.content.Context
+import br.com.core.android.utils.extensions.isNetworkAvailable
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
-import br.com.fitnesspro.core.extensions.isNetworkAvailable
 import br.com.fitnesspro.mappers.getTOPerson
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser

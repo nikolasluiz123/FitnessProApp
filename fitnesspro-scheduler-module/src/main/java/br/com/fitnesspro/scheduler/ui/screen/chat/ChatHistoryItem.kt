@@ -20,18 +20,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.dateNow
-import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.toLocalDate
-import br.com.fitnesspro.core.extensions.toLocalDateTime
+import br.com.android.firebase.toolkit.analytics.logListItemClick
+import br.com.android.ui.compose.components.divider.BaseHorizontalDivider
+import br.com.android.ui.compose.components.styles.LabelTextStyle
+import br.com.android.ui.compose.components.styles.ValueTextStyle
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.dateNow
+import br.com.core.utils.extensions.dateTimeNow
+import br.com.core.utils.extensions.format
+import br.com.core.utils.extensions.toLocalDate
+import br.com.core.utils.extensions.toLocalDateTime
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.LabelTextStyle
 import br.com.fitnesspro.core.theme.RED_500
-import br.com.fitnesspro.core.theme.ValueTextStyle
-import br.com.fitnesspro.firebase.api.analytics.logListItemClick
 import br.com.fitnesspro.firebase.api.firestore.documents.ChatDocument
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.navigation.ChatArgs
@@ -123,7 +123,7 @@ fun ChatHistoryItem(
             )
         }
 
-        FitnessProHorizontalDivider(
+        BaseHorizontalDivider(
             modifier = Modifier.constrainAs(dividerRef) {
                 val topConstraint = if (item.lastMessageDate != null) lastMessageDate.bottom else userNameRef.bottom
 

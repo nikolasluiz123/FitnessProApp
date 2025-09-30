@@ -5,7 +5,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
-import br.com.fitnesspro.common.workers.common.AbstractExportationWorker
+import br.com.fitnesspro.common.workers.common.exportation.AbstractFitnessProExportationAuthOneTimeWorker
 import br.com.fitnesspro.scheduler.injection.IScheduleWorkersEntryPoint
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -15,7 +15,7 @@ import dagger.hilt.android.EntryPointAccessors
 class SchedulerModuleExportationWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
-) : AbstractExportationWorker(context, workerParams) {
+) : AbstractFitnessProExportationAuthOneTimeWorker(context, workerParams) {
 
     private val scheduleEntryPoint = EntryPointAccessors.fromApplication(context, IScheduleWorkersEntryPoint::class.java)
 
@@ -28,6 +28,4 @@ class SchedulerModuleExportationWorker @AssistedInject constructor(
     override fun getOneTimeWorkRequestBuilder(): OneTimeWorkRequest.Builder {
         return OneTimeWorkRequestBuilder<SchedulerModuleExportationWorker>()
     }
-
-    override fun getWorkerDelay(): Long = DEFAULT_WORKER_DELAY
 }

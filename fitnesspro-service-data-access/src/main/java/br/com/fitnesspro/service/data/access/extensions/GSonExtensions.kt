@@ -1,11 +1,11 @@
 package br.com.fitnesspro.service.data.access.extensions
 
-import br.com.fitnesspro.core.adapters.InstantTypeAdapter
-import br.com.fitnesspro.core.adapters.LocalDateTimeTypeAdapter
-import br.com.fitnesspro.core.adapters.LocalDateTypeAdapter
-import br.com.fitnesspro.core.adapters.LocalTimeTypeAdapter
-import br.com.fitnesspro.core.adapters.OffsetDateTimeTypeAdapter
-import br.com.fitnesspro.core.adapters.ZoneOffsetTypeAdapter
+import br.com.core.utils.gson.adapters.InstantTypeAdapter
+import br.com.core.utils.gson.adapters.LocalDateTimeTypeAdapter
+import br.com.core.utils.gson.adapters.LocalDateTypeAdapter
+import br.com.core.utils.gson.adapters.LocalTimeTypeAdapter
+import br.com.core.utils.gson.adapters.OffsetDateTimeTypeAdapter
+import br.com.core.utils.gson.adapters.ZoneOffsetTypeAdapter
 import br.com.fitnesspro.service.data.access.adapters.GenericInterfaceAdapterFactory
 import br.com.fitnesspro.shared.communication.dtos.cache.CacheClearConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.cache.CacheDTO

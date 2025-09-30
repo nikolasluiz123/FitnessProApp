@@ -1,12 +1,12 @@
 package br.com.fitnesspro.common.ui.state
 
-import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
-import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
-import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
-import br.com.fitnesspro.core.state.ILoadingUIState
-import br.com.fitnesspro.core.state.ISuspendedLoadUIState
-import br.com.fitnesspro.core.state.IThrowableUIState
-import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.android.ui.compose.components.dialog.message.MessageDialogState
+import br.com.android.ui.compose.components.fields.dropdown.state.DropDownTextField
+import br.com.android.ui.compose.components.fields.text.dialog.paged.state.PagedDialogListTextField
+import br.com.android.ui.compose.components.fields.text.time.state.TimePickerTextField
+import br.com.android.ui.compose.components.states.ILoadingUIState
+import br.com.android.ui.compose.components.states.ISuspendedLoadUIState
+import br.com.android.ui.compose.components.states.IThrowableUIState
 import br.com.fitnesspro.to.TOPersonAcademyTime
 import br.com.fitnesspro.tuple.AcademyTuple
 import java.time.DayOfWeek

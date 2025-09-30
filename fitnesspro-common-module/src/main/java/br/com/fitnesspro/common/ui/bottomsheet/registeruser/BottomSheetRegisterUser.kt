@@ -3,12 +3,12 @@ package br.com.fitnesspro.common.ui.bottomsheet.registeruser
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import br.com.android.firebase.toolkit.analytics.logBottomSheetItemClick
+import br.com.android.ui.compose.components.bottomsheet.BottomSheet
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.enums.EnumBottomSheetsTestTags.BOTTOM_SHEET_REGISTER_USER
 import br.com.fitnesspro.common.ui.navigation.RegisterUserScreenArgs
-import br.com.fitnesspro.compose.components.bottomsheet.BottomSheet
 import br.com.fitnesspro.core.R.drawable
-import br.com.fitnesspro.firebase.api.analytics.logBottomSheetItemClick
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.analytics
 

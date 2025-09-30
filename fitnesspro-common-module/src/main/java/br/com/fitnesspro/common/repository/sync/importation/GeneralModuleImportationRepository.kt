@@ -1,16 +1,16 @@
 package br.com.fitnesspro.common.repository.sync.importation
 
 import android.content.Context
+import br.com.android.room.toolkit.dao.MaintenanceDAO
+import br.com.android.room.toolkit.model.interfaces.BaseModel
 import br.com.fitnesspro.common.injection.IGeneralModuleSyncRepositoryEntryPoint
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.ImportSegregationResult
-import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.mappers.getAcademy
 import br.com.fitnesspro.mappers.getPerson
 import br.com.fitnesspro.mappers.getPersonAcademyTime
 import br.com.fitnesspro.mappers.getSchedulerConfig
 import br.com.fitnesspro.mappers.getUser
-import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.Academy
 import br.com.fitnesspro.model.general.Person

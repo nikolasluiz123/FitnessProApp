@@ -1,8 +1,8 @@
 package br.com.fitnesspro.scheduler.ui.screen.scheduler
 
 import androidx.compose.ui.graphics.Color
-import br.com.fitnesspro.compose.components.fields.state.SwitchButtonField
-import br.com.fitnesspro.core.theme.LabelCalendarDayTextStyle
+import br.com.android.ui.compose.components.buttons.switchbutton.state.SwitchButtonField
+import br.com.android.ui.compose.components.styles.LabelCalendarDayTextStyle
 import br.com.fitnesspro.core.theme.RED_400
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.components.DayStyle

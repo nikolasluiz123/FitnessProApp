@@ -2,29 +2,28 @@ package br.com.fitnesspro.common.ui.viewmodel.base
 
 import androidx.core.text.isDigitsOnly
 import androidx.paging.PagingData
-import br.com.fitnesspro.compose.components.fields.menu.MenuItem
-import br.com.fitnesspro.compose.components.fields.menu.getLabelOrEmptyIfNullValue
-import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
-import br.com.fitnesspro.compose.components.fields.state.DialogListState
-import br.com.fitnesspro.compose.components.fields.state.DialogListTextField
-import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
-import br.com.fitnesspro.compose.components.fields.state.PagedDialogListState
-import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
-import br.com.fitnesspro.compose.components.fields.state.SwitchButtonField
-import br.com.fitnesspro.compose.components.fields.state.TabState
-import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.compose.components.fields.state.TimePickerTextField
-import br.com.fitnesspro.compose.components.filter.SimpleFilterState
-import br.com.fitnesspro.compose.components.gallery.video.state.VideoGalleryState
-import br.com.fitnesspro.compose.components.tabs.Tab
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_ONLY_NUMBERS
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.parseToLocalDate
-import br.com.fitnesspro.core.extensions.parseToLocalTime
-import br.com.fitnesspro.core.extensions.toDoubleValue
-import br.com.fitnesspro.core.menu.ITupleListItem
-import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.android.ui.compose.components.buttons.switchbutton.state.SwitchButtonField
+import br.com.android.ui.compose.components.dialog.list.DialogListState
+import br.com.android.ui.compose.components.dialog.list.paged.PagedDialogListState
+import br.com.android.ui.compose.components.dialog.message.MessageDialogState
+import br.com.android.ui.compose.components.fields.dropdown.MenuItem
+import br.com.android.ui.compose.components.fields.dropdown.getLabelOrEmptyIfNullValue
+import br.com.android.ui.compose.components.fields.dropdown.state.DropDownTextField
+import br.com.android.ui.compose.components.fields.text.date.state.DatePickerTextField
+import br.com.android.ui.compose.components.fields.text.dialog.paged.state.PagedDialogListTextField
+import br.com.android.ui.compose.components.fields.text.dialog.state.DialogListTextField
+import br.com.android.ui.compose.components.fields.text.state.TextField
+import br.com.android.ui.compose.components.fields.text.time.state.TimePickerTextField
+import br.com.android.ui.compose.components.simplefilter.SimpleFilterState
+import br.com.android.ui.compose.components.tabs.state.Tab
+import br.com.android.ui.compose.components.tabs.state.TabState
+import br.com.android.ui.compose.components.video.state.VideoGalleryState
+import br.com.core.android.utils.interfaces.ISimpleListItem
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
+import br.com.core.utils.extensions.parseDouble
+import br.com.core.utils.extensions.parseToLocalDate
+import br.com.core.utils.extensions.parseToLocalTime
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import java.time.LocalTime
@@ -83,7 +82,7 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
             getCurrentState = getCurrentState,
             canWrite = { it.isDigitsOnly() },
             updateState = { textField ->
-                onValueChange(textField, textField.value.toDoubleValue())
+                onValueChange(textField, textField.value.parseDouble())
             }
         )
     }
@@ -180,7 +179,7 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
         )
     }
 
-    protected fun <T: ITupleListItem> createPagedDialogListTextField(
+    protected fun <T: ISimpleListItem> createPagedDialogListTextField(
         getCurrentState: () -> PagedDialogListTextField<T>,
         updateState: (newState: PagedDialogListTextField<T>) -> Unit,
         dialogTitle: String,
@@ -214,7 +213,7 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
         )
     }
 
-    protected fun <T: ITupleListItem> createPagedDialogListState(
+    protected fun <T: ISimpleListItem> createPagedDialogListState(
         getCurrentState: () -> PagedDialogListState<T>,
         updateState: (newState: PagedDialogListState<T>) -> Unit,
         dialogTitle: String,
@@ -246,7 +245,7 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
         )
     }
 
-    protected fun <T: ITupleListItem> createDialogListTextField(
+    protected fun <T: ISimpleListItem> createDialogListTextField(
         getCurrentState: () -> DialogListTextField<T>,
         updateState: (newState: DialogListTextField<T>) -> Unit,
         dialogTitle: String,
@@ -278,7 +277,7 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
         )
     }
 
-    protected fun <T: ITupleListItem> createDialogListState(
+    protected fun <T: ISimpleListItem> createDialogListState(
         getCurrentState: () -> DialogListState<T>,
         updateState: (newState: DialogListState<T>) -> Unit,
         dialogTitle: String,
@@ -378,7 +377,7 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
                 val currentState = getCurrentState()
 
                 val newState = currentState.copy(
-                    value = newDate.format(DATE_ONLY_NUMBERS),
+                    value = newDate.format(EnumDateTimePatterns.DATE_ONLY_NUMBERS),
                     errorMessage = ""
                 )
 
@@ -398,7 +397,7 @@ abstract class FitnessProStatefulViewModel: FitnessProViewModel() {
                     )
 
                     updateState(newState)
-                    onDateChange(text.parseToLocalDate(DATE_ONLY_NUMBERS))
+                    onDateChange(text.parseToLocalDate(EnumDateTimePatterns.DATE_ONLY_NUMBERS))
                 }
             }
         )

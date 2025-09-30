@@ -1,19 +1,19 @@
 package br.com.fitnesspro.workout.usecase.reports
 
 import android.content.Context
+import br.com.android.pdf.generator.enums.EnumPageSize
+import br.com.android.pdf.generator.report.PDFReportGenerator
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.android.work.manager.toolkit.extensions.setRunExportWorker
+import br.com.android.work.manager.toolkit.extensions.setRunImportWorker
+import br.com.core.android.utils.media.FileUtils
+import br.com.core.utils.extensions.dateTimeNow
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.NAME
 import br.com.fitnesspro.core.extensions.dataStore
-import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.core.extensions.setRunExportWorker
-import br.com.fitnesspro.core.extensions.setRunImportWorker
-import br.com.fitnesspro.core.utils.FileUtils
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
 import br.com.fitnesspro.model.enums.EnumReportContext
-import br.com.fitnesspro.pdf.generator.enums.EnumPageSize
-import br.com.fitnesspro.pdf.generator.report.PDFReportGenerator
 import br.com.fitnesspro.to.TOReport
 import br.com.fitnesspro.to.TOWorkoutReport
 import br.com.fitnesspro.workout.reports.evolution.report.RegisterEvolutionWorkoutPDFReport

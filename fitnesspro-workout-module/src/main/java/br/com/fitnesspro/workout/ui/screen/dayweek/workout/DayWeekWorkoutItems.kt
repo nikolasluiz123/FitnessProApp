@@ -22,11 +22,11 @@ import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintLayoutBaseScope
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.compose.components.LabeledText
-import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
-import br.com.fitnesspro.core.extensions.toReadableDuration
+import br.com.android.ui.compose.components.divider.BaseHorizontalDivider
+import br.com.android.ui.compose.components.label.LabeledText
+import br.com.android.ui.compose.components.styles.LabelGroupTextStyle
+import br.com.core.android.utils.extensions.toReadableDuration
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.LabelGroupTextStyle
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
@@ -179,7 +179,7 @@ fun DayWeekWorkoutItem(
         }
 
         if (showDivider) {
-            FitnessProHorizontalDivider(
+            BaseHorizontalDivider(
                 modifier = Modifier.constrainAs(dividerRef) {
                     when {
                         isShowObservation(toExercise) -> {

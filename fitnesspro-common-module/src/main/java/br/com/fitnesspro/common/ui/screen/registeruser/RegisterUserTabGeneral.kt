@@ -18,6 +18,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import br.com.android.ui.compose.components.fields.dropdown.DefaultExposedDropdownMenu
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldPasswordValidation
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.date.DatePickerOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.transformations.PhoneVisualTransformation
+import br.com.android.ui.compose.components.keyboard.EmailKeyboardOptions
+import br.com.android.ui.compose.components.keyboard.LastPhoneKeyboardOptions
+import br.com.android.ui.compose.components.keyboard.PasswordKeyboardOptions
+import br.com.android.ui.compose.components.keyboard.PersonNameKeyboardOptions
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_BIRTH_DATE
@@ -27,16 +37,6 @@ import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScr
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_PHONE
 import br.com.fitnesspro.common.ui.screen.registeruser.enums.EnumRegisterUserScreenTestTags.REGISTER_USER_SCREEN_TAB_GENERAL_FIELD_USER_TYPE
 import br.com.fitnesspro.common.ui.state.RegisterUserUIState
-import br.com.fitnesspro.compose.components.fields.DatePickerOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
-import br.com.fitnesspro.compose.components.fields.transformation.PhoneVisualTransformation
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
-import br.com.fitnesspro.core.keyboard.LastPhoneKeyboardOptions
-import br.com.fitnesspro.core.keyboard.PasswordKeyboardOptions
-import br.com.fitnesspro.core.keyboard.PersonNameKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
 
 @Composable
@@ -45,7 +45,7 @@ fun RegisterUserTabGeneral(state: RegisterUserUIState, onDone: () -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(Modifier.fillMaxSize()) {
-        FitnessProLinearProgressIndicator(show = state.showLoading)
+        BaseLinearProgressIndicator(show = state.showLoading)
 
         ConstraintLayout(
             Modifier

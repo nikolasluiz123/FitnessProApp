@@ -8,7 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
-import br.com.fitnesspro.core.extensions.defaultGSon
+import br.com.core.utils.gson.extensions.defaultGSon
 import br.com.fitnesspro.scheduler.ui.screen.chat.ChatScreen
 import br.com.fitnesspro.scheduler.ui.viewmodel.ChatViewModel
 import com.google.gson.GsonBuilder

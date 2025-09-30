@@ -2,16 +2,16 @@ package br.com.fitnesspro.common.repository.sync.exportation.common
 
 import android.content.Context
 import android.util.Log
+import br.com.android.room.toolkit.dao.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.interfaces.file.FileModel
+import br.com.android.room.toolkit.model.interfaces.file.StorageModel
+import br.com.android.room.toolkit.model.interfaces.sync.IntegratedModel
+import br.com.android.work.manager.toolkit.workers.log.WorkerLogConstants
+import br.com.core.android.utils.media.FileUtils
+import br.com.core.utils.extensions.dateTimeNow
 import br.com.fitnesspro.common.repository.sync.common.AbstractSyncRepository
 import br.com.fitnesspro.core.exceptions.ServiceException
-import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.core.utils.FileUtils
-import br.com.fitnesspro.core.worker.LogConstants
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.model.base.FileModel
-import br.com.fitnesspro.model.base.IntegratedModel
-import br.com.fitnesspro.model.base.StorageModel
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
@@ -35,7 +35,7 @@ abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMainte
     }
 
     suspend fun export(serviceToken: String) {
-        Log.i(LogConstants.WORKER_EXPORT, "Exportando ${javaClass.simpleName}")
+        Log.i(WorkerLogConstants.WORKER_EXPORT, "Exportando ${javaClass.simpleName}")
 
         var response: StorageServiceResponse? = null
         var clientDateTimeStart: LocalDateTime? = null
@@ -52,7 +52,7 @@ abstract class AbstractStorageExportationRepository<MODEL, DAO: IntegratedMainte
                 }
 
                 if (models.isNotEmpty()) {
-                    Log.i(LogConstants.WORKER_EXPORT, "${models.size} arquivos")
+                    Log.i(WorkerLogConstants.WORKER_EXPORT, "${models.size} arquivos")
 
                     val paths: MutableList<String> = mutableListOf()
                     val modelIds: MutableList<String> = mutableListOf()

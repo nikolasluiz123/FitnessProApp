@@ -1,8 +1,8 @@
 package br.com.fitnesspro.workout.ui.state
 
-import br.com.fitnesspro.core.state.ISuspendedLoadUIState
-import br.com.fitnesspro.core.state.IThrowableUIState
-import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.android.ui.compose.components.dialog.message.MessageDialogState
+import br.com.android.ui.compose.components.states.ISuspendedLoadUIState
+import br.com.android.ui.compose.components.states.IThrowableUIState
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.decorator.WorkoutGroupDecorator
 
 

@@ -1,14 +1,14 @@
 package br.com.fitnesspro.scheduler.repository.sync.importation
 
 import android.content.Context
+import br.com.android.room.toolkit.dao.MaintenanceDAO
+import br.com.android.room.toolkit.model.interfaces.BaseModel
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.AbstractImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.common.ImportSegregationResult
-import br.com.fitnesspro.local.data.access.dao.common.MaintenanceDAO
 import br.com.fitnesspro.mappers.getReport
 import br.com.fitnesspro.mappers.getScheduler
 import br.com.fitnesspro.mappers.getSchedulerReport
-import br.com.fitnesspro.model.base.BaseModel
 import br.com.fitnesspro.model.enums.EnumSyncModule
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.model.general.report.SchedulerReport

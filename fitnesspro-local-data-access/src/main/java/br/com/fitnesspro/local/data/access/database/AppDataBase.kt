@@ -3,7 +3,7 @@ package br.com.fitnesspro.local.data.access.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import br.com.fitnesspro.local.data.access.converters.RoomTypeConverters
+import br.com.android.room.toolkit.converters.DefaultRoomTypeConverters
 import br.com.fitnesspro.local.data.access.dao.AcademyDAO
 import br.com.fitnesspro.local.data.access.dao.ApplicationDAO
 import br.com.fitnesspro.local.data.access.dao.DeviceDAO
@@ -91,7 +91,7 @@ import br.com.fitnesspro.model.workout.predefinition.WorkoutGroupPreDefinition
     ],
     exportSchema = true
 )
-@TypeConverters(RoomTypeConverters::class)
+@TypeConverters(DefaultRoomTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDAO(): UserDAO

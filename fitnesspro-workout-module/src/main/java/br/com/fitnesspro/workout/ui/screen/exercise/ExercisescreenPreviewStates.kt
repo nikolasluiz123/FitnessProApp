@@ -1,12 +1,12 @@
 package br.com.fitnesspro.workout.ui.screen.exercise
 
-import br.com.fitnesspro.compose.components.fields.state.DialogListTextField
-import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
-import br.com.fitnesspro.compose.components.fields.state.PagedDialogListTextField
-import br.com.fitnesspro.compose.components.fields.state.TabState
-import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.compose.components.gallery.video.components.videoGalleryCollapsedManyValuesState
-import br.com.fitnesspro.compose.components.tabs.Tab
+import br.com.android.ui.compose.components.fields.dropdown.state.DropDownTextField
+import br.com.android.ui.compose.components.fields.text.dialog.paged.state.PagedDialogListTextField
+import br.com.android.ui.compose.components.fields.text.dialog.state.DialogListTextField
+import br.com.android.ui.compose.components.fields.text.state.TextField
+import br.com.android.ui.compose.components.tabs.state.Tab
+import br.com.android.ui.compose.components.tabs.state.TabState
+import br.com.fitnesspro.compose.components.gallery.videoGalleryCollapsedManyValuesState
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.to.TOWorkoutGroup
 import br.com.fitnesspro.workout.ui.screen.exercise.enums.EnumTabsExerciseScreen

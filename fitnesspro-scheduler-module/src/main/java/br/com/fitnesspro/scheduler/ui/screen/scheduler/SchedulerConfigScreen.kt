@@ -30,13 +30,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
+import br.com.android.ui.compose.components.styles.SnackBarTextStyle
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.SnackBarTextStyle
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnSaveSchedulerConfigClick
@@ -79,7 +79,7 @@ fun SchedulerConfigScreen(
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = stringResource(R.string.scheduler_config_screen_title),
                 onBackClick = onNavigateBack
             )
@@ -124,7 +124,7 @@ fun SchedulerConfigScreen(
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues)
         ) {
-            FitnessProLinearProgressIndicator(show = state.showLoading)
+            BaseLinearProgressIndicator(show = state.showLoading)
 
             Box(
                 modifier = Modifier

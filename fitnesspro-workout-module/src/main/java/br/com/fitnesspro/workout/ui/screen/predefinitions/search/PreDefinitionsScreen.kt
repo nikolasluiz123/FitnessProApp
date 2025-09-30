@@ -18,12 +18,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import br.com.android.ui.compose.components.list.PagedLazyVerticalList
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
+import br.com.android.ui.compose.components.simplefilter.SimpleFilter
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.filter.SimpleFilter
-import br.com.fitnesspro.compose.components.list.PagedLazyVerticalList
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.navigation.PreDefinitionScreenArgs
 import br.com.fitnesspro.workout.ui.screen.predefinitions.maintenance.WorkoutGroupPreDefinitionGroupDialog
@@ -70,7 +70,7 @@ fun PreDefinitionsScreen(
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = stringResource(R.string.pre_definitions_screen_title),
                 onBackClick = onBackClick
             )
@@ -95,7 +95,7 @@ fun PreDefinitionsScreen(
                 }
             }
 
-            FitnessProLinearProgressIndicator(state.showLoading)
+            BaseLinearProgressIndicator(state.showLoading)
             FitnessProMessageDialog(state.messageDialogState)
 
             WorkoutGroupPreDefinitionGroupDialog(

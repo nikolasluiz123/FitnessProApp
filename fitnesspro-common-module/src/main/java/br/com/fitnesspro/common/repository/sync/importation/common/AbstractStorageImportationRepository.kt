@@ -1,13 +1,13 @@
 package br.com.fitnesspro.common.repository.sync.importation.common
 
 import android.util.Log
-import br.com.fitnesspro.core.worker.LogConstants
+import br.com.android.room.toolkit.dao.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.model.enums.EnumDownloadState
+import br.com.android.room.toolkit.model.interfaces.file.FileModel
+import br.com.android.room.toolkit.model.interfaces.file.StorageModel
+import br.com.android.room.toolkit.model.interfaces.sync.IntegratedModel
+import br.com.android.work.manager.toolkit.workers.log.WorkerLogConstants
 import br.com.fitnesspro.firebase.api.storage.StorageBucketService
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.model.base.FileModel
-import br.com.fitnesspro.model.base.IntegratedModel
-import br.com.fitnesspro.model.base.StorageModel
-import br.com.fitnesspro.model.enums.EnumDownloadState
 import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketNames
 import java.io.File
 
@@ -28,7 +28,7 @@ abstract class AbstractStorageImportationRepository<MODEL>(
     protected abstract fun getIntegratedMaintenanceDAO(): IntegratedMaintenanceDAO<MODEL>
 
     suspend fun import(): Boolean {
-        Log.i(LogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName}")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "Importando ${javaClass.simpleName}")
 
         val models = getModelsDownload(getPageSize())
         val hasData: Boolean = models.isNotEmpty()

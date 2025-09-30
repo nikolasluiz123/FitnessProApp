@@ -12,8 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
-import br.com.fitnesspro.core.extensions.verifyPermissionGranted
-import br.com.fitnesspro.core.utils.PermissionUtils.requestMultiplePermissionsLauncher
+import br.com.core.android.compose.utils.extensions.verifyPermissionGranted
+import br.com.core.android.compose.utils.permission.PermissionUtils.requestMultiplePermissionsLauncher
 
 @Composable
 fun RequestAllPermissions(context: Context) {

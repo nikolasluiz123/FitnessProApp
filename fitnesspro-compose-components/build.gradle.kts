@@ -50,6 +50,9 @@ dependencies {
     implementation(project(":fitnesspro-core"))
     implementation(project(":fitnesspro-firebase-api"))
 
+    implementation(libs.androidlibs.ui.compose.components)
+    implementation(libs.androidlibs.firebase.toolkit)
+
     implementation(libs.constraint.layout.compose)
 
     implementation(libs.hilt.navigation.compose)

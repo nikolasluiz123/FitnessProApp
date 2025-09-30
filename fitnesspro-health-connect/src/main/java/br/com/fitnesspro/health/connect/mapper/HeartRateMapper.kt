@@ -1,13 +1,13 @@
 package br.com.fitnesspro.health.connect.mapper
 
 import androidx.health.connect.client.records.HeartRateRecord
-import br.com.fitnesspro.health.connect.mapper.base.AbstractHealthDataAssociatingMapper
+import br.com.android.health.connect.toolkit.mapper.AbstractHealthDataAssociatingMapper
+import br.com.android.room.toolkit.model.health.interfaces.IHealthConnectMetadata
+import br.com.android.room.toolkit.model.health.interfaces.IHealthDataRangeEntity
 import br.com.fitnesspro.health.connect.mapper.result.HeartRateMapperResult
 import br.com.fitnesspro.health.connect.service.HeartRateService
-import br.com.fitnesspro.model.base.IHealthDataRangeEntity
 import br.com.fitnesspro.model.workout.health.HealthConnectHeartRate
 import br.com.fitnesspro.model.workout.health.HealthConnectHeartRateSamples
-import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
 
 /**
  * Mapper específico para converter dados de [HeartRateRecord] do Health Connect
@@ -26,7 +26,7 @@ import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
  */
 class HeartRateMapper(
     service: HeartRateService
-) : AbstractHealthDataAssociatingMapper<HeartRateMapperResult, HeartRateRecord, HeartRateService>(service) {
+) : AbstractFitnessProHealthDataAssociatingMapper<HeartRateMapperResult, HeartRateRecord, HeartRateService>(service) {
 
     /**
      * Mapeia um [HeartRateRecord] para [HealthConnectHeartRate] (sessão) e uma lista de
@@ -42,7 +42,7 @@ class HeartRateMapper(
      */
     override suspend fun <T : IHealthDataRangeEntity> continueMappingAndAssociate(
         record: HeartRateRecord,
-        metadata: HealthConnectMetadata,
+        metadata: IHealthConnectMetadata,
         associationEntities: List<T>
     ): HeartRateMapperResult? {
         val matching = findMatchingEntity(record.startTime, record.endTime, associationEntities)

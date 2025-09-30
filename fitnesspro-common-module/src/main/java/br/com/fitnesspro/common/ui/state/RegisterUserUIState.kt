@@ -1,15 +1,15 @@
 package br.com.fitnesspro.common.ui.state
 
+import br.com.android.ui.compose.components.dialog.message.MessageDialogState
+import br.com.android.ui.compose.components.fields.dropdown.state.DropDownTextField
+import br.com.android.ui.compose.components.fields.text.date.state.DatePickerTextField
+import br.com.android.ui.compose.components.fields.text.state.TextField
+import br.com.android.ui.compose.components.states.ILoadingUIState
+import br.com.android.ui.compose.components.states.ISuspendedLoadUIState
+import br.com.android.ui.compose.components.states.IThrowableUIState
+import br.com.android.ui.compose.components.tabs.state.TabState
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.EnumOptionsBottomSheetRegisterUser
 import br.com.fitnesspro.common.ui.screen.registeruser.decorator.AcademyGroupDecorator
-import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
-import br.com.fitnesspro.compose.components.fields.state.DropDownTextField
-import br.com.fitnesspro.compose.components.fields.state.TabState
-import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.core.state.ILoadingUIState
-import br.com.fitnesspro.core.state.ISuspendedLoadUIState
-import br.com.fitnesspro.core.state.IThrowableUIState
-import br.com.fitnesspro.core.state.MessageDialogState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.to.TOPerson
 import br.com.fitnesspro.to.TOUser

@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import br.com.fitnesspro.core.extensions.defaultGSon
+import br.com.core.utils.gson.extensions.defaultGSon
 import br.com.fitnesspro.workout.ui.screen.exercise.ExerciseScreen
 import br.com.fitnesspro.workout.ui.viewmodel.ExerciseViewModel
 import com.google.gson.GsonBuilder

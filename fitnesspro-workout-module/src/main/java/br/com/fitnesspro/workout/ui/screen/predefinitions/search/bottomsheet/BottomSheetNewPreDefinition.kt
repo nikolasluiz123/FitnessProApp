@@ -1,9 +1,9 @@
 package br.com.fitnesspro.workout.ui.screen.predefinitions.search.bottomsheet
 
 import androidx.compose.runtime.Composable
+import br.com.android.firebase.toolkit.analytics.logBottomSheetItemClick
+import br.com.android.ui.compose.components.bottomsheet.BottomSheet
 import br.com.fitnesspro.common.R
-import br.com.fitnesspro.compose.components.bottomsheet.BottomSheet
-import br.com.fitnesspro.firebase.api.analytics.logBottomSheetItemClick
 import br.com.fitnesspro.workout.ui.navigation.PreDefinitionScreenArgs
 import br.com.fitnesspro.workout.ui.screen.predefinitions.maintenance.callbacks.OnNavigateToPreDefinition
 import com.google.firebase.Firebase

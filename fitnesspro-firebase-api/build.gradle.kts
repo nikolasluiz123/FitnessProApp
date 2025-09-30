@@ -59,7 +59,10 @@ tasks.withType<KotlinJvmCompile>().configureEach {
 }
 
 dependencies {
+    implementation(project(":fitnesspro-core"))
     implementation(project(":fitnesspro-model"))
+
+    implementation(libs.androidlibs.firebase.toolkit)
 
     implementation(libs.google.gson)
 
@@ -76,7 +79,6 @@ dependencies {
     implementation(libs.firebase.storage)
 
     implementation(libs.hilt.android)
-    implementation(project(":fitnesspro-core"))
     ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.core.ktx)

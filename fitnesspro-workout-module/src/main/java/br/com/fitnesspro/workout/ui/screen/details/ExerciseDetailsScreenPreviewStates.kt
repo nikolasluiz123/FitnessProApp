@@ -1,7 +1,7 @@
 package br.com.fitnesspro.workout.ui.screen.details
 
-import br.com.fitnesspro.compose.components.fields.state.TabState
-import br.com.fitnesspro.compose.components.tabs.Tab
+import br.com.android.ui.compose.components.tabs.state.Tab
+import br.com.android.ui.compose.components.tabs.state.TabState
 import br.com.fitnesspro.tuple.ExerciseExecutionGroupedTuple
 import br.com.fitnesspro.workout.ui.screen.dayweek.workout.dayWeekItem3
 import br.com.fitnesspro.workout.ui.screen.details.enums.EnumTabsExerciseDetailsScreen

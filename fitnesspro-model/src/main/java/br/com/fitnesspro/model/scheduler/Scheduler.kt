@@ -3,10 +3,10 @@ package br.com.fitnesspro.model.scheduler
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.IntegratedModel
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.interfaces.sync.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumCompromiseType
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import java.time.OffsetDateTime
 import java.util.UUID
 

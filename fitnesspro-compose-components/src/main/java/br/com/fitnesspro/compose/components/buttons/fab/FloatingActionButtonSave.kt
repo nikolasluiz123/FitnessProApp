@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import br.com.android.ui.compose.components.buttons.fab.BaseFloatingActionButton
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.core.R.drawable
 import br.com.fitnesspro.core.theme.FitnessProTheme
@@ -27,7 +28,7 @@ fun FloatingActionButtonSave(
     containerColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
 ) {
-    FitnessProFloatingActionButton(
+    BaseFloatingActionButton(
         modifier = modifier,
         onClick = onClick,
         containerColor = containerColor

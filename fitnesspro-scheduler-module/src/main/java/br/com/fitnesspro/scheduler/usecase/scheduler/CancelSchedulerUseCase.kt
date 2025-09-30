@@ -1,9 +1,9 @@
 package br.com.fitnesspro.scheduler.usecase.scheduler
 
 import android.content.Context
+import br.com.android.ui.compose.components.fields.validation.ValidationError
+import br.com.core.utils.extensions.offsetDateTimeNow
 import br.com.fitnesspro.common.repository.PersonRepository
-import br.com.fitnesspro.core.extensions.offsetDateTimeNow
-import br.com.fitnesspro.core.validation.ValidationError
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CANCELLED
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation.COMPLETED
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation.CONFIRMED

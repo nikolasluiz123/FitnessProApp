@@ -27,13 +27,13 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.date.DatePickerOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.dialog.paged.PagedListDialogOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.loading.BaseCircularBlockUIProgressIndicator
+import br.com.android.ui.compose.components.styles.DialogTitleTextStyle
+import br.com.core.android.compose.utils.extensions.openPDFReader
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonClose
-import br.com.fitnesspro.compose.components.fields.DatePickerOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.loading.FitnessProCircularBlockUIProgressIndicator
-import br.com.fitnesspro.core.extensions.openPDFReader
-import br.com.fitnesspro.core.theme.DialogTitleTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.evolution.callbacks.OnGenerateWorkoutReportClick
@@ -64,7 +64,7 @@ fun NewRegisterEvolutionReportDialog(
                 ) {
                     val (headerRef, workoutRef, nameRef, dateStartRef, dateEndRef, buttonsContainerRef, loadingRef) = createRefs()
 
-                    FitnessProCircularBlockUIProgressIndicator(
+                    BaseCircularBlockUIProgressIndicator(
                         show = state.showLoading,
                         label = stringResource(R.string.new_register_evolution_report_dialog_loading_label),
                         modifier = Modifier.constrainAs(loadingRef) {

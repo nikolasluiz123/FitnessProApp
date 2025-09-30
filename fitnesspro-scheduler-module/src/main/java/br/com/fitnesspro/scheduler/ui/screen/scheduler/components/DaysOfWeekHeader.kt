@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import br.com.fitnesspro.core.extensions.getShortDisplayNameAllCaps
+import br.com.android.ui.compose.components.styles.LabelCalendarWeekTextStyle
+import br.com.core.utils.extensions.getShortDisplayNameAllCaps
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.LabelCalendarWeekTextStyle
 import java.time.DayOfWeek
 
 @Composable

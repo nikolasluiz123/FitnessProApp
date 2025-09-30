@@ -1,6 +1,6 @@
 package br.com.fitnesspro.to
 
-import br.com.fitnesspro.core.menu.ITupleListItem
+import br.com.core.android.utils.interfaces.ISimpleListItem
 import java.time.temporal.ChronoUnit
 
 data class TOExercisePreDefinition(
@@ -16,7 +16,7 @@ data class TOExercisePreDefinition(
     var workoutGroupPreDefinitionId: String? = null,
     var exerciseOrder: Int? = null,
     var active: Boolean = true
-): BaseTO, ITupleListItem {
+): BaseTO, ISimpleListItem {
     override fun getLabel(): String {
         return name ?: ""
     }

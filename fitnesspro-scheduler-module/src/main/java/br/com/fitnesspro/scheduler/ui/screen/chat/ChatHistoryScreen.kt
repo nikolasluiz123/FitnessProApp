@@ -15,14 +15,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.firebase.toolkit.analytics.logListItemClick
+import br.com.android.ui.compose.components.dialog.list.paged.BasePagedListDialog
+import br.com.android.ui.compose.components.list.LazyVerticalList
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonAdd
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.dialog.FitnessProPagedListDialog
-import br.com.fitnesspro.compose.components.list.LazyVerticalList
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
-import br.com.fitnesspro.firebase.api.analytics.logListItemClick
 import br.com.fitnesspro.model.enums.EnumUserType.NUTRITIONIST
 import br.com.fitnesspro.model.enums.EnumUserType.PERSONAL_TRAINER
 import br.com.fitnesspro.scheduler.R
@@ -63,7 +63,7 @@ fun ChatHistoryScreen(
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 onBackClick = onBackClick
             )
@@ -102,7 +102,7 @@ fun ChatHistoryScreen(
             FitnessProMessageDialog(state = state.messageDialogState)
 
             if (state.membersDialogState.show) {
-                FitnessProPagedListDialog(
+                BasePagedListDialog(
                     state = state.membersDialogState,
                     simpleFilterPlaceholderResId = R.string.chat_history_screen_placeholder_search_members,
                     emptyMessage = R.string.chat_history_screen_empty_message_members
@@ -118,7 +118,7 @@ fun ChatHistoryScreen(
             }
 
             if (state.professionalsDialogState.show) {
-                FitnessProPagedListDialog(
+                BasePagedListDialog(
                     state = state.professionalsDialogState,
                     simpleFilterPlaceholderResId = R.string.chat_history_screen_placeholder_search_professionals,
                     emptyMessage = R.string.chat_history_screen_empty_message_professionals

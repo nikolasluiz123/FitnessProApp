@@ -5,8 +5,8 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
-import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.dao.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.health.HealthConnectMetadata
 import java.util.StringJoiner
 
@@ -33,11 +33,8 @@ abstract class HealthConnectMetadataDAO : IntegratedMaintenanceDAO<HealthConnect
         val where = StringJoiner(QR_NL).apply {
             add(" where meta.transmission_state = '${EnumTransmissionState.PENDING.name}' ")
 
-            // Filtro complexo para garantir que estamos exportando apenas metadados
-            // que estão ligados a dados relevantes para a pessoa.
             add(" and ( ")
 
-            // 1. Ligado a Steps
             add("     exists ( ")
             add("         select 1 from health_connect_steps steps ")
             add("         inner join exercise_execution exec on steps.exercise_execution_id = exec.id ")
@@ -50,7 +47,6 @@ abstract class HealthConnectMetadataDAO : IntegratedMaintenanceDAO<HealthConnect
             params.add(personId)
             add("     ) ")
 
-            // 2. Ligado a Calories
             add("     or exists ( ")
             add("         select 1 from health_connect_calories_burned calories ")
             add("         inner join exercise_execution exec on calories.exercise_execution_id = exec.id ")
@@ -63,7 +59,6 @@ abstract class HealthConnectMetadataDAO : IntegratedMaintenanceDAO<HealthConnect
             params.add(personId)
             add("     ) ")
 
-            // 3. Ligado a Heart Rate
             add("     or exists ( ")
             add("         select 1 from health_connect_heart_rate hr ")
             add("         inner join exercise_execution exec on hr.exercise_execution_id = exec.id ")
@@ -76,7 +71,6 @@ abstract class HealthConnectMetadataDAO : IntegratedMaintenanceDAO<HealthConnect
             params.add(personId)
             add("     ) ")
             
-            // 4. Ligado a Sleep Session (que está associada a uma execução)
             add("     or exists ( ")
             add("         select 1 from health_connect_sleep_session sleep ")
             add("         where sleep.health_connect_metadata_id = meta.id ")

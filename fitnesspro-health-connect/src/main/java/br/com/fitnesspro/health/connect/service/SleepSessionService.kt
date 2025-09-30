@@ -2,7 +2,7 @@ package br.com.fitnesspro.health.connect.service
 
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.SleepSessionRecord
-import br.com.fitnesspro.health.connect.service.base.AbstractBaseHealthConnectService
+import br.com.android.health.connect.toolkit.service.AbstractBaseHealthConnectService
 
 /**
  * Serviço especializado para leitura de dados de [SleepSessionRecord] (Sessão de Sono)

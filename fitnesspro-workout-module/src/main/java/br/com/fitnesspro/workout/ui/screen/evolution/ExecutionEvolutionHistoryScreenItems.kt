@@ -13,11 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import br.com.fitnesspro.compose.components.LabeledText
-import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.theme.LabelGroupTextStyle
+import br.com.android.ui.compose.components.divider.BaseHorizontalDivider
+import br.com.android.ui.compose.components.label.LabeledText
+import br.com.android.ui.compose.components.styles.LabelGroupTextStyle
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
 import br.com.fitnesspro.tuple.ExecutionEvolutionHistoryGroupedTuple
 import br.com.fitnesspro.workout.R
 
@@ -65,6 +65,6 @@ private fun ExecutionEvolutionItem(tuple: ExecutionEvolutionHistoryGroupedTuple,
             value = tuple.exerciseName.orEmpty()
         )
 
-        FitnessProHorizontalDivider()
+        BaseHorizontalDivider()
     }
 }

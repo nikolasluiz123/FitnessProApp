@@ -1,6 +1,6 @@
 package br.com.fitnesspro.workout.usecase.exercise.enums
 
-import br.com.fitnesspro.core.enums.IEnumFieldValidation
+import br.com.android.ui.compose.components.fields.validation.interfaces.IEnumFieldValidation
 import br.com.fitnesspro.workout.R
 
 enum class EnumValidatedExerciseFields(override val labelResId: Int, override val maxLength: Int) : IEnumFieldValidation {

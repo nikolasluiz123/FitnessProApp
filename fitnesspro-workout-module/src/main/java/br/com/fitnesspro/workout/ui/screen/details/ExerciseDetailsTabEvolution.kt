@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.paging.compose.collectAsLazyPagingItems
-import br.com.fitnesspro.compose.components.list.PagedLazyVerticalList
+import br.com.android.ui.compose.components.list.PagedLazyVerticalList
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.navigation.RegisterEvolutionScreenArgs

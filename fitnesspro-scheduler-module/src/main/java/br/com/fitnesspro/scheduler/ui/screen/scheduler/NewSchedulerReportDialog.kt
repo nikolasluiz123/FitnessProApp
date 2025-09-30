@@ -28,12 +28,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.date.DatePickerOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.loading.BaseCircularBlockUIProgressIndicator
+import br.com.android.ui.compose.components.styles.DialogTitleTextStyle
+import br.com.core.android.compose.utils.extensions.openPDFReader
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonClose
-import br.com.fitnesspro.compose.components.fields.DatePickerOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.loading.FitnessProCircularBlockUIProgressIndicator
-import br.com.fitnesspro.core.extensions.openPDFReader
-import br.com.fitnesspro.core.theme.DialogTitleTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnGenerateSchedulerReportClick
@@ -63,7 +63,7 @@ fun NewSchedulerReportDialog(
                 ) {
                     val (headerRef, nameRef, dateStartRef, dateEndRef, buttonsContainerRef, loadingRef) = createRefs()
 
-                    FitnessProCircularBlockUIProgressIndicator(
+                    BaseCircularBlockUIProgressIndicator(
                         show = state.showLoading,
                         label = stringResource(R.string.new_scheduler_report_dialog_loading_label),
                         modifier = Modifier.constrainAs(loadingRef) {

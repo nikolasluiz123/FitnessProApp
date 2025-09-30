@@ -1,6 +1,6 @@
 package br.com.fitnesspro.mappers
 
-import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.health.HealthConnectCaloriesBurned
 import br.com.fitnesspro.model.workout.health.HealthConnectHeartRate
 import br.com.fitnesspro.model.workout.health.HealthConnectHeartRateSamples
@@ -27,7 +27,7 @@ import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.IHe
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.ISleepSessionExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.enums.health.EnumRecordingMethod
 import br.com.fitnesspro.shared.communication.enums.health.EnumSleepStage
-import br.com.fitnesspro.model.enums.health.EnumRecordingMethod as EnumRecordingMethodModel
+import br.com.android.room.toolkit.model.health.enums.EnumRecordingMethod as EnumRecordingMethodModel
 import br.com.fitnesspro.model.enums.health.EnumSleepStage as EnumSleepStageModel
 
 fun IHealthConnectMetadataDTO.getHealthConnectMetadata(): HealthConnectMetadata {

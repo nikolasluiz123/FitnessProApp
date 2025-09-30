@@ -2,14 +2,14 @@ package br.com.fitnesspro.usecase
 
 import android.content.Context
 import android.util.Log
+import br.com.android.work.manager.toolkit.extensions.setRunExportWorker
+import br.com.android.work.manager.toolkit.extensions.setRunImportWorker
+import br.com.android.work.manager.toolkit.workers.log.WorkerLogConstants
 import br.com.fitnesspro.common.repository.UserRepository
 import br.com.fitnesspro.common.repository.sync.importation.GeneralModuleImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.storage.ReportStorageImportationRepository
 import br.com.fitnesspro.common.repository.sync.importation.storage.VideoStorageImportationRepository
 import br.com.fitnesspro.core.extensions.dataStore
-import br.com.fitnesspro.core.extensions.setRunExportWorker
-import br.com.fitnesspro.core.extensions.setRunImportWorker
-import br.com.fitnesspro.core.worker.LogConstants
 import br.com.fitnesspro.scheduler.repository.sync.importation.SchedulerModuleImportationRepository
 import br.com.fitnesspro.workout.repository.sync.importation.WorkoutModuleImportationRepository
 
@@ -26,7 +26,7 @@ class FullManualImportationUseCase(
     suspend operator fun invoke() {
         try {
             Log.i(
-                LogConstants.WORKER_IMPORT,
+                WorkerLogConstants.WORKER_IMPORT,
                 "${"-".repeat(50)} Iniciando Importação Manual ${"-".repeat(50)}"
             )
             val serviceToken = userRepository.getValidToken()
@@ -41,7 +41,7 @@ class FullManualImportationUseCase(
             }
 
             Log.i(
-                LogConstants.WORKER_IMPORT,
+                WorkerLogConstants.WORKER_IMPORT,
                 "${"-".repeat(50)} Finalizando Importação Manual ${"-".repeat(50)}"
             )
         } finally {
@@ -50,64 +50,64 @@ class FullManualImportationUseCase(
     }
 
     private suspend fun importGeneralModule(serviceToken: String) {
-        Log.i(LogConstants.WORKER_IMPORT, "Iniciando Importação do Módulo Geral")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "Iniciando Importação do Módulo Geral")
 
         var executionsCount = 0
         var keepRunning: Boolean
 
         do {
-            Log.i(LogConstants.WORKER_IMPORT, "Execução ${executionsCount++}")
+            Log.i(WorkerLogConstants.WORKER_IMPORT, "Execução ${executionsCount++}")
             keepRunning = generalRepository.import(serviceToken)
         } while (keepRunning)
 
-        Log.i(LogConstants.WORKER_IMPORT, "Finalizando Importação do Módulo Geral")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "Finalizando Importação do Módulo Geral")
     }
 
     private suspend fun importSchedulerModule(serviceToken: String) {
-        Log.i(LogConstants.WORKER_IMPORT, "Iniciando Importação do Módulo Agendamento")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "Iniciando Importação do Módulo Agendamento")
 
         var executionsCount = 0
         var keepRunning: Boolean
 
         do {
-            Log.i(LogConstants.WORKER_IMPORT, "Execução ${executionsCount++}")
+            Log.i(WorkerLogConstants.WORKER_IMPORT, "Execução ${executionsCount++}")
             keepRunning = schedulerRepository.import(serviceToken)
         } while (keepRunning)
 
-        Log.i(LogConstants.WORKER_IMPORT, "Finalizando Importação do Módulo Agendamento")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "Finalizando Importação do Módulo Agendamento")
     }
 
     private suspend fun importWorkoutModule(serviceToken: String) {
-        Log.i(LogConstants.WORKER_IMPORT, "Iniciando Importação do Módulo Treino")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "Iniciando Importação do Módulo Treino")
 
         var executionsCount = 0
         var keepRunning: Boolean
 
         do {
-            Log.i(LogConstants.WORKER_IMPORT, "Execução ${executionsCount++}")
+            Log.i(WorkerLogConstants.WORKER_IMPORT, "Execução ${executionsCount++}")
             keepRunning = workoutRepository.import(serviceToken)
         } while (keepRunning)
 
-        Log.i(LogConstants.WORKER_IMPORT, "Finalizando Importação do Módulo Treino")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "Finalizando Importação do Módulo Treino")
     }
 
     private suspend fun importStorageFiles() {
-        Log.i(LogConstants.WORKER_IMPORT, "Iniciando Download da Storage")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "Iniciando Download da Storage")
 
         var executionsCount = 0
         var keepRunning: Boolean
 
         do {
-            Log.i(LogConstants.WORKER_IMPORT, "Execução ${executionsCount++} de Relatórios")
+            Log.i(WorkerLogConstants.WORKER_IMPORT, "Execução ${executionsCount++} de Relatórios")
             keepRunning = reportRepository.import()
         } while (keepRunning)
 
         do {
-            Log.i(LogConstants.WORKER_IMPORT, "Execução ${executionsCount++} de Vídeos")
+            Log.i(WorkerLogConstants.WORKER_IMPORT, "Execução ${executionsCount++} de Vídeos")
             keepRunning = videoRepository.import()
         } while (keepRunning)
 
-        Log.i(LogConstants.WORKER_IMPORT, "Finalizando Download da Storage")
+        Log.i(WorkerLogConstants.WORKER_IMPORT, "Finalizando Download da Storage")
     }
 
     private suspend fun blockWorkersRun() {

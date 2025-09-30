@@ -3,14 +3,14 @@ package br.com.fitnesspro.common.repository
 import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import br.com.android.firebase.toolkit.authentication.FirebaseDefaultAuthenticationService
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
 import br.com.fitnesspro.common.repository.common.FitnessProRepository
-import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.local.data.access.dao.PersonDAO
 import br.com.fitnesspro.local.data.access.dao.UserDAO
 import br.com.fitnesspro.mappers.getPerson
 import br.com.fitnesspro.mappers.getTOPerson
 import br.com.fitnesspro.mappers.getUser
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.enums.EnumUserType
 import br.com.fitnesspro.model.general.Person
 import br.com.fitnesspro.model.general.User

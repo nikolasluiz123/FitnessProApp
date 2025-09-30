@@ -15,15 +15,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.compose.components.LabeledText
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.PagedListDialogOutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.TimePickerOutlinedTextFieldValidation
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
-import br.com.fitnesspro.core.extensions.format
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.dialog.paged.PagedListDialogOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.fields.text.time.TimePickerOutlinedTextFieldValidation
+import br.com.android.ui.compose.components.label.LabeledText
+import br.com.core.utils.enums.EnumDateTimePatterns.DATE_TIME
+import br.com.core.utils.enums.EnumDateTimePatterns.TIME
+import br.com.core.utils.extensions.format
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.ui.screen.compromisse.enums.EnumCompromiseScreenTags.COMPROMISE_SCREEN_END_HOUR_FIELD
@@ -161,7 +161,7 @@ fun UniqueCompromiseSuggestionReadOnly(state: CompromiseUIState) {
                         horizontalChainWeight = 0.5f
                     },
                 label = stringResource(R.string.compromise_screen_label_cancel),
-                value = state.toScheduler.canceledDate?.format(EnumDateTimePatterns.DATE_TIME)!!
+                value = state.toScheduler.canceledDate?.format(DATE_TIME)!!
             )
         }
 

@@ -54,26 +54,26 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
-import br.com.fitnesspro.compose.components.buttons.fab.FitnessProFloatingActionButton
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.ui.compose.components.bottombar.BaseBottomAppBar
+import br.com.android.ui.compose.components.buttons.fab.BaseFloatingActionButton
+import br.com.android.ui.compose.components.fields.dropdown.DefaultExposedDropdownMenu
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
+import br.com.android.ui.compose.components.styles.SnackBarTextStyle
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
+import br.com.android.ui.compose.components.video.callbacks.OnVideoClick
+import br.com.core.android.compose.utils.extensions.launchVideosOnly
+import br.com.core.android.compose.utils.extensions.openCameraVideo
+import br.com.core.utils.extensions.formatSimpleTime
 import br.com.fitnesspro.compose.components.buttons.fab.FloatingActionButtonSave
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonCamera
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonGallery
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
-import br.com.fitnesspro.compose.components.gallery.video.callbacks.OnVideoClick
-import br.com.fitnesspro.compose.components.gallery.video.components.VideoGallery
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.extensions.formatSimpleTime
-import br.com.fitnesspro.core.extensions.launchVideosOnly
-import br.com.fitnesspro.core.extensions.openCameraVideo
+import br.com.fitnesspro.compose.components.gallery.FitnessProVideoGallery
 import br.com.fitnesspro.core.theme.ChronometerStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.SnackBarTextStyle
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.evolution.callbacks.OnInactivateExecutionClick
 import br.com.fitnesspro.workout.ui.screen.evolution.callbacks.OnSaveExerciseExecution
@@ -163,7 +163,7 @@ fun RegisterEvolutionScreen(
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
                 onBackClick = onBackClick
@@ -181,7 +181,7 @@ fun RegisterEvolutionScreen(
                     animationSpec = tween(durationMillis = 500)
                 ) + fadeOut()
             ) {
-                FitnessProBottomAppBar(
+                BaseBottomAppBar(
                     modifier = Modifier.imePadding(),
                     actions = {
                         IconButtonDelete(
@@ -203,7 +203,7 @@ fun RegisterEvolutionScreen(
                                 }
                             )
                         } else {
-                            FitnessProFloatingActionButton(
+                            BaseFloatingActionButton(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                                 onClick = { onStopChronometer() },
                                 content = {
@@ -247,7 +247,7 @@ fun RegisterEvolutionScreen(
                 .padding(it)
                 .consumeWindowInsets(it)
         ) {
-            FitnessProLinearProgressIndicator(show = state.showLoading)
+            BaseLinearProgressIndicator(show = state.showLoading)
             FitnessProMessageDialog(state.messageDialogState)
 
             ConstraintLayout(
@@ -379,7 +379,7 @@ fun RegisterEvolutionScreen(
                     clearOptionText = stringResource(R.string.exercise_screen_label_clear_unit)
                 )
 
-                VideoGallery(
+                FitnessProVideoGallery(
                     modifier = Modifier.constrainAs(videoGalleryRef) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)

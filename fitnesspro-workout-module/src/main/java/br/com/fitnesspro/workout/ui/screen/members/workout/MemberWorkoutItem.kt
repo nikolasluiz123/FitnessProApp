@@ -12,10 +12,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.compose.components.LabeledText
-import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
+import br.com.android.ui.compose.components.divider.BaseHorizontalDivider
+import br.com.android.ui.compose.components.label.LabeledText
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.workout.R
@@ -60,7 +60,7 @@ fun MemberWorkoutItem(toWorkout: TOWorkout, onItemClick: (TOWorkout) -> Unit = {
             textAlign = TextAlign.End
         )
 
-        FitnessProHorizontalDivider(
+        BaseHorizontalDivider(
             modifier = Modifier.constrainAs(lineRef) {
                 top.linkTo(nameRef.bottom, margin = 8.dp)
                 start.linkTo(parent.start)

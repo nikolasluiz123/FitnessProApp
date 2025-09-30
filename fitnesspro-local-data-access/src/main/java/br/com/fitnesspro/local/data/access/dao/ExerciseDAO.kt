@@ -5,11 +5,11 @@ import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_SQLITE
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.dao.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
-import br.com.fitnesspro.model.enums.EnumTransmissionState
 import br.com.fitnesspro.model.workout.Exercise
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.tuple.reports.evolution.ExerciseInfosTuple
@@ -140,12 +140,12 @@ abstract class ExerciseDAO: IntegratedMaintenanceDAO<Exercise>() {
 
                 filter.dateStart?.let {
                     add(" and date(ee.execution_start_time) >= ? ")
-                    params.add(it.format(DATE_SQLITE))
+                    params.add(it.format(EnumDateTimePatterns.DATE_SQLITE))
                 }
 
                 filter.dateEnd?.let {
                     add(" and date(ee.execution_end_time) <= ? ")
-                    params.add(it.format(DATE_SQLITE))
+                    params.add(it.format(EnumDateTimePatterns.DATE_SQLITE))
                 }
 
                 add("            ) ")

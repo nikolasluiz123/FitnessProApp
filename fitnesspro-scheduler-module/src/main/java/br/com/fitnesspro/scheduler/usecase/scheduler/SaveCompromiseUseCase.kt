@@ -1,9 +1,9 @@
 package br.com.fitnesspro.scheduler.usecase.scheduler
 
 import android.content.Context
-import br.com.fitnesspro.core.exceptions.NoLoggingException
-import br.com.fitnesspro.core.extensions.isNetworkAvailable
-import br.com.fitnesspro.core.validation.FieldValidationError
+import br.com.android.firebase.toolkit.crashlytics.exception.NoLoggingException
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.core.android.utils.extensions.isNetworkAvailable
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumValidatedCompromiseFields

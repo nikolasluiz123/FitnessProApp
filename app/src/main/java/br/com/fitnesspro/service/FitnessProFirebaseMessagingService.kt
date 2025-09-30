@@ -1,7 +1,7 @@
 package br.com.fitnesspro.service
 
 import android.annotation.SuppressLint
-import br.com.fitnesspro.core.extensions.defaultGSon
+import br.com.core.utils.gson.extensions.defaultGSon
 import br.com.fitnesspro.firebase.api.firestore.documents.MessageNotificationDocument
 import br.com.fitnesspro.injection.IMessagingServiceEntryPoint
 import br.com.fitnesspro.notification.GenericCommunicationNotification

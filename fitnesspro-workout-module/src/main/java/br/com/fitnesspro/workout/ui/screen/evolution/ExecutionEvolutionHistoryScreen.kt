@@ -19,15 +19,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import br.com.android.ui.compose.components.bottombar.BaseBottomAppBar
+import br.com.android.ui.compose.components.list.PagedLazyVerticalList
+import br.com.android.ui.compose.components.simplefilter.SimpleFilter
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.common.ui.navigation.GeneratedReportsScreenArgs
 import br.com.fitnesspro.common.ui.screen.report.callback.OnNavigateToReports
-import br.com.fitnesspro.compose.components.bottombar.FitnessProBottomAppBar
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonNewReport
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonViewReports
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.filter.SimpleFilter
-import br.com.fitnesspro.compose.components.list.PagedLazyVerticalList
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.workout.R
@@ -72,13 +72,13 @@ fun ExecutionEvolutionHistoryScreen(
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = stringResource(R.string.execution_evolution_history_screen_title),
                 onBackClick = onBackClick
             )
         },
         bottomBar = {
-            FitnessProBottomAppBar(
+            BaseBottomAppBar(
                 actions = {
                     IconButtonViewReports(
                         iconModifier = Modifier.size(32.dp),

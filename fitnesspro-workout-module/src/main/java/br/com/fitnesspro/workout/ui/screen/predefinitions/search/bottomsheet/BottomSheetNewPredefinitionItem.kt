@@ -1,6 +1,6 @@
 package br.com.fitnesspro.workout.ui.screen.predefinitions.search.bottomsheet
 
-import br.com.fitnesspro.compose.components.bottomsheet.interfaces.IBottomSheetItem
+import br.com.android.ui.compose.components.bottomsheet.interfaces.IBottomSheetItem
 
 class BottomSheetNewPredefinitionItem(
     override val option: EnumOptionsBottomSheetNewPredefinition,

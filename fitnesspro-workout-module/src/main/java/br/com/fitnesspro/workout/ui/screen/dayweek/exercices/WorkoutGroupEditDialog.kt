@@ -27,12 +27,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import br.com.android.ui.compose.components.fields.dropdown.DefaultExposedDropdownMenu
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.loading.BaseCircularBlockUIProgressIndicator
+import br.com.android.ui.compose.components.styles.DialogTitleTextStyle
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonClose
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.fields.menu.DefaultExposedDropdownMenu
-import br.com.fitnesspro.compose.components.loading.FitnessProCircularBlockUIProgressIndicator
-import br.com.fitnesspro.core.theme.DialogTitleTextStyle
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.callbacks.OnInactivateWorkoutGroupClick
@@ -71,7 +71,7 @@ fun WorkoutGroupEditDialog(
                 ) {
                     val (headerRef, nameRef, dayWeekRef, orderRef, buttonsContainerRef, loadingRef) = createRefs()
 
-                    FitnessProCircularBlockUIProgressIndicator(
+                    BaseCircularBlockUIProgressIndicator(
                         show = state.showLoading,
                         label = stringResource(R.string.workout_group_edit_dialog_loading_label),
                         modifier = Modifier.constrainAs(loadingRef) {

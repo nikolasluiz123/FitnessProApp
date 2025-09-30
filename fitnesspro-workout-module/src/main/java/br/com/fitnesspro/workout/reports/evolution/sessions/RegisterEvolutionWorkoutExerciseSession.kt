@@ -2,17 +2,17 @@ package br.com.fitnesspro.workout.reports.evolution.sessions
 
 import android.content.Context
 import android.text.TextPaint
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.formatToDecimal
-import br.com.fitnesspro.core.extensions.toReadableDuration
+import br.com.android.pdf.generator.components.IReportComponent
+import br.com.android.pdf.generator.components.layout.LayoutGridComponent
+import br.com.android.pdf.generator.components.table.TableComponent
+import br.com.android.pdf.generator.components.table.layout.ColumnLayout
+import br.com.android.pdf.generator.session.AbstractReportSession
+import br.com.android.pdf.generator.utils.Paints
+import br.com.core.android.utils.extensions.toReadableDuration
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
+import br.com.core.utils.extensions.formatToDecimal
 import br.com.fitnesspro.local.data.access.dao.filters.RegisterEvolutionWorkoutReportFilter
-import br.com.fitnesspro.pdf.generator.components.IReportComponent
-import br.com.fitnesspro.pdf.generator.components.layout.LayoutGridComponent
-import br.com.fitnesspro.pdf.generator.components.table.TableComponent
-import br.com.fitnesspro.pdf.generator.components.table.layout.ColumnLayout
-import br.com.fitnesspro.pdf.generator.session.AbstractReportSession
-import br.com.fitnesspro.pdf.generator.utils.Paints
 import br.com.fitnesspro.tuple.reports.evolution.ExecutionInfosTuple
 import br.com.fitnesspro.tuple.reports.evolution.ExerciseInfosTuple
 import br.com.fitnesspro.workout.R

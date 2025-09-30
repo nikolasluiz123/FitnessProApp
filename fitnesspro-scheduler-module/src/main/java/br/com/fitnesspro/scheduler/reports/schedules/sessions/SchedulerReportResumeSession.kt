@@ -1,9 +1,9 @@
 package br.com.fitnesspro.scheduler.reports.schedules.sessions
 
 import android.content.Context
+import br.com.android.pdf.generator.components.layout.LayoutGridComponent
+import br.com.android.pdf.generator.session.AbstractReportSession
 import br.com.fitnesspro.local.data.access.dao.filters.SchedulerReportFilter
-import br.com.fitnesspro.pdf.generator.components.layout.LayoutGridComponent
-import br.com.fitnesspro.pdf.generator.session.AbstractReportSession
 import br.com.fitnesspro.scheduler.R
 import br.com.fitnesspro.scheduler.reports.injection.ISchedulerReportsEntryPoint
 import br.com.fitnesspro.tuple.reports.schedulers.SchedulersResumeSessionReportTuple

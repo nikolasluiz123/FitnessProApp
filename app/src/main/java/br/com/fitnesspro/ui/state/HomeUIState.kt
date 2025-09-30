@@ -1,7 +1,7 @@
 package br.com.fitnesspro.ui.state
 
-import br.com.fitnesspro.core.state.ILoadingUIState
-import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.android.ui.compose.components.dialog.message.MessageDialogState
+import br.com.android.ui.compose.components.states.ILoadingUIState
 import br.com.fitnesspro.to.TOPerson
 
 data class HomeUIState(

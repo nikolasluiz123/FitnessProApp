@@ -18,11 +18,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.fitnesspro.compose.components.LabeledText
-import br.com.fitnesspro.compose.components.divider.FitnessProHorizontalDivider
-import br.com.fitnesspro.core.extensions.toReadableDuration
+import br.com.android.ui.compose.components.divider.BaseHorizontalDivider
+import br.com.android.ui.compose.components.label.LabeledText
+import br.com.android.ui.compose.components.styles.LabelGroupTextStyle
+import br.com.core.android.utils.extensions.toReadableDuration
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.LabelGroupTextStyle
 import br.com.fitnesspro.tuple.ExercisePredefinitionGroupedTuple
 import br.com.fitnesspro.workout.R
 
@@ -104,7 +104,7 @@ fun ExercisePreDefinitionItem(
             )
         }
 
-        FitnessProHorizontalDivider(
+        BaseHorizontalDivider(
             modifier = Modifier.constrainAs(dividerRef) {
                 when {
                     isShowDuration(predefinition) -> {

@@ -1,6 +1,6 @@
 package br.com.fitnesspro.to
 
-import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.core.utils.extensions.dateTimeNow
 import java.time.LocalDateTime
 import java.time.ZoneId
 

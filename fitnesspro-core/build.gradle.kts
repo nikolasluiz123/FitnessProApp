@@ -72,7 +72,5 @@ dependencies {
 
     implementation(libs.work.runtime)
 
-    implementation(libs.media3.transformer)
-    implementation(libs.media3.effect)
-    implementation(libs.media3.common)
+    implementation(libs.androidlibs.core.android.utils)
 }

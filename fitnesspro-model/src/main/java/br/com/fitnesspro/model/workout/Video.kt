@@ -3,11 +3,11 @@ package br.com.fitnesspro.model.workout
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.FileModel
-import br.com.fitnesspro.model.base.IntegratedModel
-import br.com.fitnesspro.model.base.StorageModel
-import br.com.fitnesspro.model.enums.EnumDownloadState
-import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.enums.EnumDownloadState
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.interfaces.file.FileModel
+import br.com.android.room.toolkit.model.interfaces.file.StorageModel
+import br.com.android.room.toolkit.model.interfaces.sync.IntegratedModel
 import java.time.LocalDateTime
 import java.util.UUID
 

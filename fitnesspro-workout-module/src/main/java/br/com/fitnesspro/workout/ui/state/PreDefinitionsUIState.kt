@@ -1,11 +1,11 @@
 package br.com.fitnesspro.workout.ui.state
 
 import androidx.paging.PagingData
-import br.com.fitnesspro.compose.components.filter.SimpleFilterState
-import br.com.fitnesspro.core.state.ILoadingUIState
-import br.com.fitnesspro.core.state.ISuspendedLoadUIState
-import br.com.fitnesspro.core.state.IThrowableUIState
-import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.android.ui.compose.components.dialog.message.MessageDialogState
+import br.com.android.ui.compose.components.simplefilter.SimpleFilterState
+import br.com.android.ui.compose.components.states.ILoadingUIState
+import br.com.android.ui.compose.components.states.ISuspendedLoadUIState
+import br.com.android.ui.compose.components.states.IThrowableUIState
 import br.com.fitnesspro.tuple.ExercisePredefinitionGroupedTuple
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow

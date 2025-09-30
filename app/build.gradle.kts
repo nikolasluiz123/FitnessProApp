@@ -39,7 +39,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = 1
-        versionName = "2.3.0"
+        versionName = "2.3.1-Extracao-Libs-SNAPSHOT"
 
         android.buildFeatures.buildConfig = true
         vectorDrawables {
@@ -103,6 +103,13 @@ dependencies {
     implementation(project(":fitnesspro-workout-module"))
     implementation(project(":fitnesspro-firebase-api"))
 
+    implementation(libs.androidlibs.work.manager.toolkit)
+    implementation(libs.androidlibs.core.utils)
+    implementation(libs.androidlibs.core.android.utils)
+    implementation(libs.androidlibs.room.toolkit)
+    implementation(libs.androidlibs.core.android.compose.utils)
+    implementation(libs.androidlibs.ui.compose.components)
+    implementation(libs.androidlibs.firebase.toolkit)
     implementation(libs.fitnesspro.shared.communication)
 
     implementation(libs.java.faker)
@@ -143,10 +150,6 @@ dependencies {
     implementation(libs.firebase.messaging)
 
     implementation(libs.work.runtime)
-
-    implementation(libs.media3.transformer)
-    implementation(libs.media3.effect)
-    implementation(libs.media3.common)
 
     debugImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.ui.tooling)

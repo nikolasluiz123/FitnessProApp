@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.BaseModel
+import br.com.android.room.toolkit.model.interfaces.BaseModel
 import br.com.fitnesspro.model.enums.EnumTokenType
 import java.time.LocalDateTime
 import java.util.UUID

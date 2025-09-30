@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="default_report_footer_page_number">Pág. %d</string>
-    <string name="default_report_footer_generated_date_time">Gerado em: %s</string>
-    <string name="report_file_not_found_message">Não foi possível encontrar o arquivo de relatório em seu dispositivo, por conta disso, não será possível excluí-lo. É possível que o arquivo ainda esteja sendo baixado, tente novamente mais tarde.</string>
-</resources>

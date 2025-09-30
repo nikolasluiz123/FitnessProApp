@@ -1,8 +1,8 @@
 package br.com.fitnesspro.scheduler.ui.state
 
-import br.com.fitnesspro.compose.components.fields.state.DatePickerTextField
-import br.com.fitnesspro.compose.components.fields.state.TextField
-import br.com.fitnesspro.core.state.ILoadingUIState
+import br.com.android.ui.compose.components.fields.text.date.state.DatePickerTextField
+import br.com.android.ui.compose.components.fields.text.state.TextField
+import br.com.android.ui.compose.components.states.ILoadingUIState
 import java.time.LocalDate
 
 data class NewSchedulerReportDialogUIState(

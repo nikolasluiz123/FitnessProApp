@@ -1,10 +1,9 @@
 package br.com.fitnesspro.mappers
 
-import br.com.fitnesspro.core.utils.FileUtils
-import br.com.fitnesspro.model.enums.EnumDownloadState
+import br.com.android.room.toolkit.model.enums.EnumDownloadState
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.core.android.utils.media.FileUtils
 import br.com.fitnesspro.model.enums.EnumReportContext
-import br.com.fitnesspro.model.enums.EnumTransmissionState.PENDING
-import br.com.fitnesspro.model.enums.EnumTransmissionState.TRANSMITTED
 import br.com.fitnesspro.model.general.report.Report
 import br.com.fitnesspro.model.general.report.SchedulerReport
 import br.com.fitnesspro.model.general.report.WorkoutReport
@@ -71,8 +70,8 @@ fun IReportDTO.getReport(): Report {
         date = date!!,
         kbSize = kbSize,
         active = active,
-        transmissionState = TRANSMITTED,
-        storageTransmissionState = if (storageTransmissionDate != null) TRANSMITTED else PENDING,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
+        storageTransmissionState = if (storageTransmissionDate != null) EnumTransmissionState.TRANSMITTED else EnumTransmissionState.PENDING,
         storageUrl = storageUrl,
         storageTransmissionDate = storageTransmissionDate,
         storageDownloadState = getReportDownloadState(filePath)
@@ -82,7 +81,7 @@ fun IReportDTO.getReport(): Report {
 fun ISchedulerReportDTO.getSchedulerReport(): SchedulerReport {
     return SchedulerReport(
         id = id!!,
-        transmissionState = TRANSMITTED,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
         personId = personId,
         reportId = reportId,
         context = getEnumReportContext(reportContext!!),
@@ -93,7 +92,7 @@ fun ISchedulerReportDTO.getSchedulerReport(): SchedulerReport {
 fun IWorkoutReportDTO.getWorkoutReport(): WorkoutReport {
     return WorkoutReport(
         id = id!!,
-        transmissionState = TRANSMITTED,
+        transmissionState = EnumTransmissionState.TRANSMITTED,
         workoutId = workoutId,
         personId = personId,
         reportId = reportId,

@@ -2,6 +2,9 @@ package br.com.fitnesspro.common.usecase.person
 
 import android.content.Context
 import androidx.core.util.PatternsCompat.EMAIL_ADDRESS
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.core.utils.extensions.dateNow
+import br.com.core.utils.security.IPasswordHasher
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.UserRepository
@@ -11,9 +14,6 @@ import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.NAME
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.PASSWORD
 import br.com.fitnesspro.common.usecase.person.EnumValidatedPersonFields.PHONE
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
-import br.com.fitnesspro.core.extensions.dateNow
-import br.com.fitnesspro.core.security.IPasswordHasher
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.to.TOPerson
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext

@@ -17,13 +17,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import br.com.android.ui.compose.components.styles.LabelTextStyle
+import br.com.android.ui.compose.components.styles.ValueTextStyle
+import br.com.core.android.utils.extensions.toReadableFileSize
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.extensions.format
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.toReadableFileSize
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.LabelTextStyle
-import br.com.fitnesspro.core.theme.ValueTextStyle
 import br.com.fitnesspro.to.TOReport
 
 @Composable

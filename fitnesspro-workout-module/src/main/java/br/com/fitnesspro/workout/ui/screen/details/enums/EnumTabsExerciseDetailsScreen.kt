@@ -1,6 +1,6 @@
 package br.com.fitnesspro.workout.ui.screen.details.enums
 
-import br.com.fitnesspro.compose.components.tabs.IEnumTab
+import br.com.android.ui.compose.components.tabs.state.interfaces.IEnumTab
 import br.com.fitnesspro.workout.R
 
 enum class EnumTabsExerciseDetailsScreen(

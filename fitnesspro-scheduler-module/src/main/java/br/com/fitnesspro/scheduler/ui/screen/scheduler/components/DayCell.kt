@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import br.com.fitnesspro.core.extensions.dateNow
+import br.com.core.utils.extensions.dateNow
 import br.com.fitnesspro.core.theme.FitnessProTheme
 import br.com.fitnesspro.scheduler.ui.navigation.SchedulerDetailsScreenArgs
 import br.com.fitnesspro.scheduler.ui.screen.scheduler.callback.OnDayClick

@@ -1,7 +1,6 @@
 package br.com.fitnesspro.firebase.api.injection
 
 import android.content.Context
-import br.com.fitnesspro.firebase.api.authentication.FirebaseDefaultAuthenticationService
 import br.com.fitnesspro.firebase.api.authentication.FirebaseGoogleAuthenticationService
 import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.firebase.api.firestore.service.FirestoreChatService
@@ -15,11 +14,6 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 class SingletonFirebaseModule {
-
-    @Provides
-    fun provideDefaultAuthenticationService(): FirebaseDefaultAuthenticationService {
-        return FirebaseDefaultAuthenticationService()
-    }
 
     @Provides
     fun provideGoogleAuthenticationService(

@@ -3,12 +3,12 @@ package br.com.fitnesspro.workout.ui.viewmodel
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.core.utils.extensions.fromJsonNavParamToArgs
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
-import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.tuple.WorkoutTuple
 import br.com.fitnesspro.workout.repository.ExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.WorkoutRepository

@@ -1,12 +1,12 @@
 package br.com.fitnesspro.scheduler.repository.sync.exportation
 
 import android.content.Context
+import br.com.android.room.toolkit.dao.IntegratedMaintenanceDAO
+import br.com.android.room.toolkit.model.interfaces.sync.IntegratedModel
 import br.com.fitnesspro.common.repository.sync.exportation.common.AbstractExportationRepository
-import br.com.fitnesspro.local.data.access.dao.common.IntegratedMaintenanceDAO
 import br.com.fitnesspro.mappers.getReportDTO
 import br.com.fitnesspro.mappers.getSchedulerDTO
 import br.com.fitnesspro.mappers.getSchedulerReportDTO
-import br.com.fitnesspro.model.base.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumReportContext
 import br.com.fitnesspro.model.enums.EnumUserType.NUTRITIONIST
 import br.com.fitnesspro.model.enums.EnumUserType.PERSONAL_TRAINER
@@ -19,6 +19,7 @@ import br.com.fitnesspro.scheduler.usecase.scheduler.enums.EnumSchedulerType.UNI
 import br.com.fitnesspro.shared.communication.dtos.sync.SchedulerModuleSyncDTO
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import dagger.hilt.android.EntryPointAccessors
+import kotlin.collections.map
 import kotlin.reflect.KClass
 
 class SchedulerModuleExportationRepository(context: Context): AbstractExportationRepository<SchedulerModuleSyncDTO>(context) {

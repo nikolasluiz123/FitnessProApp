@@ -3,8 +3,8 @@ package br.com.fitnesspro.model.nutrition.diet.predefinition
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.IntegratedModel
-import br.com.fitnesspro.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.enums.EnumTransmissionState
+import br.com.android.room.toolkit.model.interfaces.sync.IntegratedModel
 import br.com.fitnesspro.model.enums.EnumUnity
 import java.util.UUID
 

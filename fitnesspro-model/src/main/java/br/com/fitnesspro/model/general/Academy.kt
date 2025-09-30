@@ -2,7 +2,7 @@ package br.com.fitnesspro.model.general
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import br.com.fitnesspro.model.base.BaseModel
+import br.com.android.room.toolkit.model.interfaces.BaseModel
 import java.util.UUID
 
 @Entity(

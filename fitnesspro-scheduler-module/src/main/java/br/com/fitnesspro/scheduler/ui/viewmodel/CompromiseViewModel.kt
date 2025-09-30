@@ -3,20 +3,20 @@ package br.com.fitnesspro.scheduler.ui.viewmodel
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
+import br.com.android.ui.compose.components.dialog.message.showConfirmationDialog
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
+import br.com.android.ui.compose.components.fields.validation.FieldValidationError
+import br.com.android.ui.compose.components.fields.weekselector.DayWeeksSelectorField
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.enums.EnumDateTimePatterns.DATE
+import br.com.core.utils.enums.EnumDateTimePatterns.TIME
+import br.com.core.utils.extensions.dateNow
+import br.com.core.utils.extensions.format
+import br.com.core.utils.extensions.fromJsonNavParamToArgs
+import br.com.core.utils.extensions.getOffsetDateTime
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
-import br.com.fitnesspro.compose.components.fields.state.DayWeeksSelectorField
-import br.com.fitnesspro.core.callback.showConfirmationDialog
-import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME_ONLY_NUMBERS
-import br.com.fitnesspro.core.extensions.dateNow
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.fromJsonNavParamToArgs
-import br.com.fitnesspro.core.extensions.getOffsetDateTime
-import br.com.fitnesspro.core.validation.FieldValidationError
 import br.com.fitnesspro.firebase.api.firestore.repository.FirestoreChatRepository
 import br.com.fitnesspro.model.enums.EnumCompromiseType.FIRST
 import br.com.fitnesspro.model.enums.EnumCompromiseType.RECURRENT
@@ -313,10 +313,10 @@ class CompromiseViewModel @Inject constructor(
                     errorMessage = ""
                 ),
                 hourStart = _uiState.value.hourStart.copy(
-                    value = to.dateTimeStart!!.format(TIME_ONLY_NUMBERS)
+                    value = to.dateTimeStart!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
                 ),
                 hourEnd = _uiState.value.hourEnd.copy(
-                    value = to.dateTimeEnd!!.format(TIME_ONLY_NUMBERS)
+                    value = to.dateTimeEnd!!.format(EnumDateTimePatterns.TIME_ONLY_NUMBERS)
                 ),
                 observation = _uiState.value.observation.copy(
                     value = to.observation ?: ""

@@ -36,6 +36,17 @@ import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.SleepSessionRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.firebase.toolkit.analytics.logButtonClick
+import br.com.android.ui.compose.components.buttons.BaseButton
+import br.com.android.ui.compose.components.buttons.BaseOutlinedButton
+import br.com.android.ui.compose.components.dialog.message.showConfirmationDialog
+import br.com.android.ui.compose.components.dialog.message.showInformationDialog
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldPasswordValidation
+import br.com.android.ui.compose.components.fields.text.OutlinedTextFieldValidation
+import br.com.android.ui.compose.components.keyboard.EmailKeyboardOptions
+import br.com.android.ui.compose.components.keyboard.LastPasswordKeyboardOptions
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
 import br.com.fitnesspro.common.R
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.BottomSheetRegisterUser
 import br.com.fitnesspro.common.ui.bottomsheet.registeruser.OnNavigateToRegisterUser
@@ -50,20 +61,9 @@ import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_
 import br.com.fitnesspro.common.ui.screen.login.enums.EnumLoginScreenTags.LOGIN_SCREEN_REGISTER_BUTTON
 import br.com.fitnesspro.common.ui.state.LoginUIState
 import br.com.fitnesspro.common.ui.viewmodel.LoginViewModel
-import br.com.fitnesspro.compose.components.buttons.FitnessProButton
-import br.com.fitnesspro.compose.components.buttons.FitnessProOutlinedButton
-import br.com.fitnesspro.compose.components.buttons.RoundedGoogleButton
+import br.com.fitnesspro.compose.components.buttons.rounded.RoundedGoogleButton
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldPasswordValidation
-import br.com.fitnesspro.compose.components.fields.OutlinedTextFieldValidation
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.callback.showConfirmationDialog
-import br.com.fitnesspro.core.callback.showInformationDialog
-import br.com.fitnesspro.core.keyboard.EmailKeyboardOptions
-import br.com.fitnesspro.core.keyboard.LastPasswordKeyboardOptions
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.firebase.api.analytics.logButtonClick
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.analytics
 import kotlinx.coroutines.CoroutineScope
@@ -115,7 +115,7 @@ fun LoginScreen(
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = stringResource(R.string.login_screen_title),
                 showNavigationIcon = false,
             )
@@ -136,7 +136,7 @@ fun LoginScreen(
                         end.linkTo(parent.end)
                     }
             ) {
-                FitnessProLinearProgressIndicator(state.showLoading)
+                BaseLinearProgressIndicator(state.showLoading)
             }
 
             Column(
@@ -213,7 +213,7 @@ fun LoginScreen(
 
                     createHorizontalChain(registerButtonRef, loginButtonRef)
 
-                    FitnessProButton(
+                    BaseButton(
                         modifier = Modifier
                             .testTag(LOGIN_SCREEN_LOGIN_BUTTON.name)
                             .constrainAs(loginButtonRef) {
@@ -247,7 +247,7 @@ fun LoginScreen(
                         }
                     )
 
-                    FitnessProOutlinedButton(
+                    BaseOutlinedButton(
                         modifier = Modifier
                             .testTag(LOGIN_SCREEN_REGISTER_BUTTON.name)
                             .constrainAs(registerButtonRef) {

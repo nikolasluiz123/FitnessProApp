@@ -1,6 +1,6 @@
 package br.com.fitnesspro.to
 
-import br.com.fitnesspro.core.menu.ITupleListItem
+import br.com.core.android.utils.interfaces.ISimpleListItem
 import java.time.DayOfWeek
 
 data class TOWorkoutGroup(
@@ -10,7 +10,7 @@ data class TOWorkoutGroup(
     var dayWeek: DayOfWeek? = null,
     var order: Int? = null,
     var active: Boolean = true
-): BaseTO, ITupleListItem {
+): BaseTO, ISimpleListItem {
 
     override fun getLabel(): String = name ?: ""
 }

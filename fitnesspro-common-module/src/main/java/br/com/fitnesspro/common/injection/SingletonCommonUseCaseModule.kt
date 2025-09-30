@@ -1,6 +1,8 @@
 package br.com.fitnesspro.common.injection
 
 import android.content.Context
+import br.com.core.utils.security.DefaultPasswordHasher
+import br.com.core.utils.security.IPasswordHasher
 import br.com.fitnesspro.common.repository.AcademyRepository
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.repository.ReportRepository
@@ -12,8 +14,6 @@ import br.com.fitnesspro.common.usecase.person.SavePersonUseCase
 import br.com.fitnesspro.common.usecase.report.InactivateAllReportsUseCase
 import br.com.fitnesspro.common.usecase.report.InactivateReportUseCase
 import br.com.fitnesspro.common.usecase.scheduler.SaveSchedulerConfigUseCase
-import br.com.fitnesspro.core.security.DefaultPasswordHasher
-import br.com.fitnesspro.core.security.IPasswordHasher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

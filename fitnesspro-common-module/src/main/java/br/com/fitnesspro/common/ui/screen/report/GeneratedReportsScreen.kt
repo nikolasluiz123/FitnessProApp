@@ -28,6 +28,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.android.ui.compose.components.dialog.message.showErrorDialog
+import br.com.android.ui.compose.components.list.LazyVerticalList
+import br.com.android.ui.compose.components.loading.BaseLinearProgressIndicator
+import br.com.android.ui.compose.components.simplefilter.SimpleFilter
+import br.com.android.ui.compose.components.styles.SnackBarTextStyle
+import br.com.android.ui.compose.components.styles.ValueTextStyle
+import br.com.android.ui.compose.components.topbar.SimpleTopAppBar
+import br.com.core.android.compose.utils.extensions.openPDFReader
+import br.com.core.android.utils.media.FileUtils
 import br.com.fitnesspro.common.ui.screen.report.callback.OnInactivateAllReportsClick
 import br.com.fitnesspro.common.ui.screen.report.callback.OnInactivateReportClick
 import br.com.fitnesspro.common.ui.state.GeneratedReportsUIState
@@ -35,16 +44,7 @@ import br.com.fitnesspro.common.ui.viewmodel.GeneratedReportsViewModel
 import br.com.fitnesspro.compose.components.R
 import br.com.fitnesspro.compose.components.buttons.icons.IconButtonDelete
 import br.com.fitnesspro.compose.components.dialog.FitnessProMessageDialog
-import br.com.fitnesspro.compose.components.filter.SimpleFilter
-import br.com.fitnesspro.compose.components.list.LazyVerticalList
-import br.com.fitnesspro.compose.components.loading.FitnessProLinearProgressIndicator
-import br.com.fitnesspro.compose.components.topbar.SimpleFitnessProTopAppBar
-import br.com.fitnesspro.core.callback.showErrorDialog
-import br.com.fitnesspro.core.extensions.openPDFReader
 import br.com.fitnesspro.core.theme.FitnessProTheme
-import br.com.fitnesspro.core.theme.SnackBarTextStyle
-import br.com.fitnesspro.core.theme.ValueTextStyle
-import br.com.fitnesspro.core.utils.FileUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -79,7 +79,7 @@ fun GeneratedReportsScreen(
 
     Scaffold(
         topBar = {
-            SimpleFitnessProTopAppBar(
+            SimpleTopAppBar(
                 title = state.title,
                 subtitle = state.subtitle,
                 onBackClick = onNavigateBackClick,
@@ -140,7 +140,7 @@ fun GeneratedReportsScreen(
             }
 
             CustomHeader(state)
-            FitnessProLinearProgressIndicator(state.showLoading)
+            BaseLinearProgressIndicator(state.showLoading)
 
             ReportsList(
                 state = state,
@@ -198,10 +198,10 @@ private fun ReportsList(
             GeneratedReportItem(
                 toReport = toReport,
                 onItemClick = {
-                    if (FileUtils.verifyFileExists(it.filePath!!)) {
+                    if (FileUtils.getFileExists(it.filePath!!)) {
                         context.openPDFReader(it.filePath!!)
                     } else {
-                        state.messageDialogState.onShowDialog?.showErrorDialog(context.getString(br.com.fitnesspro.pdf.generator.R.string.report_file_not_found_message))
+                        state.messageDialogState.onShowDialog?.showErrorDialog(context.getString(br.com.android.pdf.generator.R.string.report_file_not_found_message))
                     }
                 },
                 onDeleteClick = {

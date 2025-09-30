@@ -1,10 +1,10 @@
 package br.com.fitnesspro.workout.ui.state
 
-import br.com.fitnesspro.compose.components.filter.SimpleFilterState
-import br.com.fitnesspro.core.state.ILoadingUIState
-import br.com.fitnesspro.core.state.ISuspendedLoadUIState
-import br.com.fitnesspro.core.state.IThrowableUIState
-import br.com.fitnesspro.core.state.MessageDialogState
+import br.com.android.ui.compose.components.dialog.message.MessageDialogState
+import br.com.android.ui.compose.components.simplefilter.SimpleFilterState
+import br.com.android.ui.compose.components.states.ILoadingUIState
+import br.com.android.ui.compose.components.states.ISuspendedLoadUIState
+import br.com.android.ui.compose.components.states.IThrowableUIState
 import br.com.fitnesspro.to.TOWorkout
 import br.com.fitnesspro.workout.ui.screen.dayweek.exercices.decorator.DayWeekExercicesGroupDecorator
 

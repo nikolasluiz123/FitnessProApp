@@ -1,15 +1,15 @@
 package br.com.fitnesspro.scheduler.reports.schedules.sessions
 
 import android.content.Context
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_TIME_SHORT
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
-import br.com.fitnesspro.core.extensions.format
+import br.com.android.pdf.generator.components.table.TableComponent
+import br.com.android.pdf.generator.components.table.layout.ColumnLayout
+import br.com.android.pdf.generator.session.AbstractReportSession
+import br.com.core.utils.enums.EnumDateTimePatterns
+import br.com.core.utils.enums.EnumDateTimePatterns.DATE
+import br.com.core.utils.enums.EnumDateTimePatterns.TIME
+import br.com.core.utils.extensions.format
 import br.com.fitnesspro.local.data.access.dao.filters.SchedulerReportFilter
 import br.com.fitnesspro.model.enums.EnumSchedulerSituation
-import br.com.fitnesspro.pdf.generator.components.table.layout.ColumnLayout
-import br.com.fitnesspro.pdf.generator.components.table.TableComponent
-import br.com.fitnesspro.pdf.generator.session.AbstractReportSession
 import br.com.fitnesspro.scheduler.reports.injection.ISchedulerReportsEntryPoint
 import br.com.fitnesspro.tuple.reports.schedulers.SchedulerReportTuple
 import dagger.hilt.android.EntryPointAccessors
@@ -62,12 +62,16 @@ class SchedulerReportCanceledSchedulesSession(context: Context) : AbstractReport
                     val timeStart = tuple.dateTimeStart.format(TIME, zoneId)
                     val timeEnd = tuple.dateTimeEnd.format(TIME, zoneId)
 
-                    val cancelledDateTime = tuple.canceledDate!!.format(DATE_TIME_SHORT, zoneId)
+                    val cancelledDateTime = tuple.canceledDate!!.format(EnumDateTimePatterns.DATE_TIME_SHORT, zoneId)
 
                     listOf(
                         tuple.personName,
                         date,
-                        context.getString(SchedulerRes.string.scheduler_report_label_period, timeStart, timeEnd),
+                        context.getString(
+                            SchedulerRes.string.scheduler_report_label_period,
+                            timeStart,
+                            timeEnd
+                        ),
                         tuple.compromiseType.getLabel(context)!!,
                         "${tuple.canceledPersonName} $cancelledDateTime"
                     )
