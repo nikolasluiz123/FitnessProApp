@@ -147,6 +147,8 @@ jobs:
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Download built APKs
         uses: actions/download-artifact@v4
@@ -156,6 +158,28 @@ jobs:
         run: |
           VERSION_NAME=$(grep "versionName" app/build.gradle.kts | head -n1 | sed -E 's/.*versionName\s*=\s*\"([^\"]+)\".*/\1/')
           echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Changelog Generator
+        run: npm install -g conventional-changelog-cli
+
+      - name: Generate Changelog
+        id: generate_changelog
+        run: |
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)
+          NEW_TAG=${{ steps.version.outputs.version_name }}
+          
+          echo "Gerando changelog de ${PREVIOUS_TAG} para ${NEW_TAG}"
+          
+          CHANGELOG_BODY=$(npx conventional-changelog-cli -p angular --from ${PREVIOUS_TAG} --to HEAD)
+          
+          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+          echo "${CHANGELOG_BODY}" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create tag from versionName
         run: |
@@ -170,7 +194,7 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.version_name }}
           name: ${{ steps.version.outputs.version_name }}
-          generate_release_notes: true
+          body: ${{ env.CHANGELOG }}
           files: |
             **/*.apk
         env:
