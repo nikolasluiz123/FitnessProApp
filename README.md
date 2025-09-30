@@ -22,6 +22,7 @@ Este projeto utiliza as seguintes bibliotecas e tecnologias modernas do ecossist
     - [Performance Monitoring](https://firebase.google.com/docs/perf-mon) (análise de desempenho)
     - [Cloud Messaging](https://firebase.google.com/docs/cloud-messaging) (notificações)
 - **[WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)** para sincronização periódica entre o dispositivo e o serviço REST
+- **[AndroidLibs](https://github.com/nikolasluiz123/AndroidLibs/blob/master/README.md)**: conjunto de bibliotecas modulares desenvolvidas para otimizar a criação de apps Android.
 
 ---
 
@@ -30,7 +31,7 @@ Este projeto utiliza as seguintes bibliotecas e tecnologias modernas do ecossist
 O aplicativo permite uso parcial offline, armazenando os dados localmente com o Room. A sincronização 
 com o servidor é feita em segundo plano utilizando o **WorkManager**, o que permite que os dados sejam
 enviados ou recebidos automaticamente, mesmo sem interação do usuário. O intervalo atual entre 
-sincronizações é de aproximadamente 30 segundos.
+sincronizações é de aproximadamente 3 minutos.
 
 A arquitetura implementada simula um ambiente de produção real, incluindo:
 
@@ -70,6 +71,7 @@ distintas para membros e profissionais.
 - **Sugestão de compromissos** por parte do Membro para os profissionais
 - **Agendamentos manuais** criados pelos profissionais para os membros
 - **Agendamento recorrente** (exclusivo para Instrutores), ideal para treinos repetitivos semanais
+- **Geração de relatórios offline**: exportação de agendamentos em PDF utilizando a biblioteca **android-pdf-generator**, baseada no `PdfDocument` do Android
 
 ### Notificações implementadas
 
@@ -80,6 +82,21 @@ distintas para membros e profissionais.
 > Agendamentos recorrentes também geram automaticamente registros de treino, que serão utilizados no módulo de Treinamento.
 
 - 🔗 [Fluxo de telas do módulo de agenda](https://www.figma.com/design/wLlNhCNKgwoVWFDG31QM5s/Fitness-Pro-Solutions?node-id=2024-17784&t=AydUOqR25ap3grE6-1)
+
+---
+
+## 🏋️ Módulo de Treinamento (Workout)
+
+Este módulo foi desenvolvido para gerenciar treinos, exercícios e o progresso dos alunos de forma eficiente e intuitiva.  
+Profissionais podem criar treinos personalizados, acompanhar execuções e evolução dos alunos, enquanto os membros têm acesso a registros e gráficos de desempenho.
+
+### Funcionalidades principais
+
+- **Gerenciamento de Treinos**: criação, edição, visualização e inativação de treinos
+- **Pré-definições de Exercícios**: cadastro de exercícios e grupos musculares reutilizáveis
+- **Execução e Registro**: registro detalhado de cada treino, incluindo vídeos de execução
+- **Acompanhamento da Evolução**: relatórios, histórico e gráficos de desempenho
+- **Integração com Health Connect**: coleta de passos, calorias, sono e frequência cardíaca
 
 ---
 
@@ -100,15 +117,14 @@ Toda a comunicação com o serviço REST (implementado por mim) é feita de form
 o **WorkManager**, o que permite:
 
 - Atualização dos dados sem depender de interação do usuário
-- Operações agendadas mesmo com o app fechado
+- Execução confiável em **primeiro plano** e por um curto período em segundo plano
 - Consumo eficiente de bateria
+
+> ⚠️ Observação: atualmente os **workers não continuam rodando por longos períodos em segundo plano ou com o app fechado**. Eles funcionam de forma estável apenas em **primeiro plano** ou por pouco tempo após o envio ao segundo plano.
 
 ---
 
 ## 🚀 Considerações Finais
 
 Este projeto continua em evolução e serve como laboratório para explorar boas práticas de 
-desenvolvimento Android moderno. Caso queira contribuir ou relatar problemas, sinta-se à 
-vontade para abrir uma *issue* ou um *pull request*.
-
----
+desenvolvimento Android moderno.
