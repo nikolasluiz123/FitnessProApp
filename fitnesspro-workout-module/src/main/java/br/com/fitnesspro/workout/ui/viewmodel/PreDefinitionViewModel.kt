@@ -81,12 +81,26 @@ class PreDefinitionViewModel @Inject constructor(
                 onDataListItemClick = { toGroup ->
                     _uiState.value = _uiState.value.copy(toWorkoutGroupPreDefinition = toGroup)
                 },
+                onChange = {
+                    _uiState.value = _uiState.value.copy(
+                        toWorkoutGroupPreDefinition = _uiState.value.toWorkoutGroupPreDefinition.copy(
+                            name = it
+                        )
+                    )
+                }
             ),
             exercise = createPagedDialogListTextField(
                 getCurrentState = { _uiState.value.exercise },
                 updateState = { _uiState.value = _uiState.value.copy(exercise = it) },
                 dialogTitle = context.getString(R.string.exercise_screen_exercise_dialog_list_title),
                 getDataListFlow = ::getListExercisePreDefinitions,
+                onChange = {
+                    _uiState.value = _uiState.value.copy(
+                        toExercisePredefinition = _uiState.value.toExercisePredefinition.copy(
+                            name = it,
+                        )
+                    )
+                },
                 onDataListItemClick = { item ->
                     _uiState.value = _uiState.value.copy(
                         toExercisePredefinition = _uiState.value.toExercisePredefinition.copy(
