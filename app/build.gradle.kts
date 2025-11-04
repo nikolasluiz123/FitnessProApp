@@ -39,7 +39,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = 1
-        versionName = "2.3.3"
+        versionName = "2.3.4"
 
         android.buildFeatures.buildConfig = true
         vectorDrawables {
