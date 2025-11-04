@@ -4,9 +4,7 @@ import android.content.Context
 import br.com.android.ui.compose.components.fields.validation.FieldValidationError
 import br.com.core.android.utils.media.FileUtils
 import br.com.core.android.utils.media.VideoUtils
-import br.com.core.utils.extensions.bestChronoUnit
 import br.com.core.utils.extensions.dateTimeNow
-import br.com.core.utils.extensions.millisTo
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.to.TOExercisePreDefinition
 import br.com.fitnesspro.to.TOVideo
@@ -149,11 +147,11 @@ class SaveExercisePreDefinitionUseCase(
             else -> null
         }
 
-        if (validationError == null &&
-            toExerciseExecution.rest != null &&
-            toExerciseExecution.rest?.bestChronoUnit() != toExerciseExecution.unitRest) {
+        if (validationError == null && toExerciseExecution.rest != null) {
+            val unit = toExerciseExecution.unitRest!!
+            val duration = unit.duration.multipliedBy(toExerciseExecution.rest!!)
 
-            toExerciseExecution.rest = toExerciseExecution.rest!!.millisTo(toExerciseExecution.unitRest!!)
+            toExerciseExecution.rest = duration.toMillis()
         }
 
         return validationError
@@ -173,11 +171,11 @@ class SaveExercisePreDefinitionUseCase(
             else -> null
         }
 
-        if (validationError == null &&
-            toExerciseExecution.duration != null &&
-            toExerciseExecution.duration?.bestChronoUnit() != toExerciseExecution.unitDuration) {
+        if (validationError == null && toExerciseExecution.duration != null) {
+            val unit = toExerciseExecution.unitDuration!!
+            val duration = unit.duration.multipliedBy(toExerciseExecution.duration!!)
 
-            toExerciseExecution.duration = toExerciseExecution.duration!!.millisTo(toExerciseExecution.unitDuration!!)
+            toExerciseExecution.duration = duration.toMillis()
         }
 
         return validationError

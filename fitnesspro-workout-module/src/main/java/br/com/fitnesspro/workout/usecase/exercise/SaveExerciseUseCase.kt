@@ -3,7 +3,6 @@ package br.com.fitnesspro.workout.usecase.exercise
 import android.content.Context
 import br.com.android.ui.compose.components.fields.validation.FieldValidationError
 import br.com.core.utils.extensions.bestChronoUnit
-import br.com.core.utils.extensions.millisTo
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.R
 import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
@@ -229,11 +228,11 @@ class SaveExerciseUseCase(
             else -> null
         }
 
-        if (validationError == null &&
-            toExercise.rest != null &&
-            toExercise.rest?.bestChronoUnit() != toExercise.unitRest) {
+        if (validationError == null && toExercise.rest != null) {
+            val unit = toExercise.unitRest!!
+            val duration = unit.duration.multipliedBy(toExercise.rest!!)
 
-            toExercise.rest = toExercise.rest!!.millisTo(toExercise.unitRest!!)
+            toExercise.rest = duration.toMillis()
         }
 
         return validationError
@@ -253,11 +252,11 @@ class SaveExerciseUseCase(
             else -> null
         }
 
-        if (validationError == null &&
-            toExercise.duration != null &&
-            toExercise.duration?.bestChronoUnit() != toExercise.unitDuration) {
+        if (validationError == null && toExercise.duration != null) {
+            val unit = toExercise.unitDuration!!
+            val duration = unit.duration.multipliedBy(toExercise.duration!!)
 
-            toExercise.duration = toExercise.duration!!.millisTo(toExercise.unitDuration!!)
+            toExercise.duration = duration.toMillis()
         }
 
         return validationError
