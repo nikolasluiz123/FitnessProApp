@@ -29,7 +29,7 @@ class WorkoutGroupRepository(
         lateinit var allExercises: List<TOExercise>
 
         withContext(IO) {
-            workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(workoutId).onEach {
+            workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(listOf(workoutId)).onEach {
                 it.name = it.name ?: context.getString(R.string.workout_group_default_name)
             }
 
@@ -67,7 +67,7 @@ class WorkoutGroupRepository(
         simpleFilter: String? = null
     ): List<TOWorkoutGroup> = withContext(IO) {
         workoutGroupDAO.getWorkoutGroupsFromWorkout(
-            workoutId = workoutId,
+            workoutIds = listOf(workoutId),
             dayOfWeek = dayOfWeek,
             workoutGroupId = workoutGroupId,
             simpleFilter = simpleFilter
@@ -110,12 +110,12 @@ class WorkoutGroupRepository(
         workoutGroupDAO.update(workoutGroup, true)
     }
 
-    suspend fun getListWorkoutGroupDecorator(workoutId: String, dayOfWeek: DayOfWeek): List<WorkoutGroupDecorator> {
+    suspend fun getListWorkoutGroupDecorator(workoutIds: List<String>, dayOfWeek: DayOfWeek): List<WorkoutGroupDecorator> {
         lateinit var workoutGroups: List<WorkoutGroup>
         lateinit var allExercises: List<TOExercise>
 
         withContext(IO) {
-            workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(workoutId, dayOfWeek).onEach {
+            workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(workoutIds, dayOfWeek).onEach {
                 it.name = it.name ?: context.getString(R.string.workout_group_default_name)
             }
 

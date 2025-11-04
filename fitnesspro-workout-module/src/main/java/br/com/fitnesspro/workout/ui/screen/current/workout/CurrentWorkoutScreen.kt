@@ -92,14 +92,12 @@ fun CurrentWorkoutScreen(
                 CurrentWorkoutItem(
                     decorator = listItem,
                     onItemClick = { clickedItem ->
-                        state.toWorkout?.id?.let { workoutId ->
-                            onNavigateToDayWeekWorkout?.onNavigate(
-                                args = DayWeekWorkoutScreenArgs(
-                                    workoutId = workoutId,
-                                    dayWeek = clickedItem.dayWeek
-                                )
+                        onNavigateToDayWeekWorkout?.onNavigate(
+                            args = DayWeekWorkoutScreenArgs(
+                                workoutIds = state.toWorkouts.map { it.id!! },
+                                dayWeek = clickedItem.dayWeek
                             )
-                        }
+                        )
                     }
                 )
             }

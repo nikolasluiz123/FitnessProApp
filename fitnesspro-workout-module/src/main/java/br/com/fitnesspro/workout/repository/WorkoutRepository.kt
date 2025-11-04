@@ -62,7 +62,7 @@ class WorkoutRepository(
     private suspend fun saveWorkoutGroupsInactivatedLocally(workoutId: String): List<String> {
         val ids = mutableListOf<String>()
 
-        val workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(workoutId).onEach {
+        val workoutGroups = workoutGroupDAO.getWorkoutGroupsFromWorkout(listOf(workoutId)).onEach {
             it.active = false
             ids.add(it.id)
         }
@@ -94,10 +94,10 @@ class WorkoutRepository(
         }
     }
 
-    suspend fun getCurrentMemberWorkout(): TOWorkout? = withContext(IO) {
+    suspend fun getCurrentMemberWorkout(): List<TOWorkout> = withContext(IO) {
         val authPersonId = personRepository.getAuthenticatedTOPerson()?.id!!
-        val workout = workoutDAO.getCurrentMemberWorkout(authPersonId)
-        getTOWorkoutFrom(workout)
+        val workouts = workoutDAO.getCurrentMemberWorkout(authPersonId)
+        workouts.mapNotNull { getTOWorkoutFrom(it) }
     }
 
     suspend fun findWorkoutByExerciseId(exerciseId: String): TOWorkout? {

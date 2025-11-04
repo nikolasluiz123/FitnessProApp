@@ -38,6 +38,6 @@ fun NavController.navigateToDayWeekWorkoutScreen(args: DayWeekWorkoutScreenArgs,
 }
 
 data class DayWeekWorkoutScreenArgs(
-    val workoutId: String,
+    val workoutIds: List<String>,
     val dayWeek: DayOfWeek,
 )

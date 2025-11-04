@@ -22,7 +22,7 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
     abstract suspend fun findById(workoutGroupId: String?): WorkoutGroup?
 
     suspend fun getWorkoutGroupsFromWorkout(
-        workoutId: String,
+        workoutIds: List<String>,
         dayOfWeek: DayOfWeek? = null,
         workoutGroupId: String? = null,
         simpleFilter: String? = null
@@ -38,10 +38,10 @@ abstract class WorkoutGroupDAO: IntegratedMaintenanceDAO<WorkoutGroup>() {
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where workout_group.workout_id = ? ")
-            add(" and workout_group.active = 1 ")
+            add(" where workout_group.workout_id in ")
+            concatElementsForIn(workoutIds, queryParams)
 
-            queryParams.add(workoutId)
+            add(" and workout_group.active = 1 ")
 
             workoutGroupId?.let {
                 add(" and workout_group.id = ? ")

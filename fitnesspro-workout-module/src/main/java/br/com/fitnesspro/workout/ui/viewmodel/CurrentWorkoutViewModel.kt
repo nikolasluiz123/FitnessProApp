@@ -51,11 +51,11 @@ class CurrentWorkoutViewModel @Inject constructor(
 
     fun loadWorkout() {
         launch {
-            val toWorkout = workoutRepository.getCurrentMemberWorkout()
+            val toWorkouts = workoutRepository.getCurrentMemberWorkout()
 
             _uiState.value = _uiState.value.copy(
-                toWorkout = toWorkout,
-                subtitle = getSubtitle(toWorkout),
+                toWorkouts = toWorkouts,
+                subtitle = getSubtitle(toWorkouts),
                 executeLoad = false
             )
         }
@@ -68,13 +68,16 @@ class CurrentWorkoutViewModel @Inject constructor(
         }
     }
 
-    private fun getSubtitle(toWorkout: TOWorkout?): String? {
-        if (toWorkout == null) {
+    private fun getSubtitle(toWorkouts: List<TOWorkout>): String? {
+        if (toWorkouts.isEmpty()) {
             return null
         }
 
-        val start = toWorkout.dateStart?.format(EnumDateTimePatterns.DATE)
-        val end = toWorkout.dateEnd?.format(EnumDateTimePatterns.DATE)
+        val dateStart = toWorkouts.minOf { it.dateStart!! }
+        val dateEnd = toWorkouts.maxOf { it.dateEnd!! }
+
+        val start = dateStart.format(EnumDateTimePatterns.DATE)
+        val end = dateEnd.format(EnumDateTimePatterns.DATE)
 
         return context.getString(R.string.current_workout_subtitle, start, end)
     }

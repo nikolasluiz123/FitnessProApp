@@ -174,10 +174,8 @@ abstract class WorkoutDAO: IntegratedMaintenanceDAO<Workout>() {
         where w.academy_member_person_id = :personId
         and w.date_end >= date('now')
         and w.active = 1
-        order by w.date_start desc
-        limit 1
     """)
-    abstract suspend fun getCurrentMemberWorkout(personId: String): Workout?
+    abstract suspend fun getCurrentMemberWorkout(personId: String): List<Workout>
 
     @RawQuery
     abstract suspend fun getResumeRegisterEvolutionWorkoutTuple(query: SupportSQLiteQuery): ResumeRegisterEvolutionWorkoutTuple

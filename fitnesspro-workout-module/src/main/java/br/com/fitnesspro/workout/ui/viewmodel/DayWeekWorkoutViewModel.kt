@@ -60,7 +60,7 @@ class DayWeekWorkoutViewModel @Inject constructor(
         launch {
             val args = jsonArgs?.fromJsonNavParamToArgs(DayWeekWorkoutScreenArgs::class.java)!!
             val groups = workoutGroupRepository.getListWorkoutGroupDecorator(
-                workoutId = args.workoutId,
+                workoutIds = args.workoutIds,
                 dayOfWeek = args.dayWeek
             )
 

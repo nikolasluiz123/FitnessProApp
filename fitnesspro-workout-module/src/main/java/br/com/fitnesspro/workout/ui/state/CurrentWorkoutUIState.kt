@@ -10,7 +10,7 @@ import br.com.fitnesspro.workout.ui.screen.current.workout.decorator.CurrentWork
 data class CurrentWorkoutUIState(
     val subtitle: String? = null,
     val items: List<CurrentWorkoutDecorator> = mutableListOf(),
-    val toWorkout: TOWorkout? = null,
+    val toWorkouts: List<TOWorkout> = emptyList(),
     override val messageDialogState: MessageDialogState = MessageDialogState(),
     override var executeLoad: Boolean = true
 ): IThrowableUIState, ISuspendedLoadUIState
