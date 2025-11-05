@@ -130,6 +130,7 @@ fun WorkoutGroupPreDefinitionGroupDialog(
                         modifier = Modifier.constrainAs(nameRef) {
                             top.linkTo(headerRef.bottom, margin = 8.dp)
                             start.linkTo(parent.start, margin = 16.dp)
+                            end.linkTo(parent.end, margin = 16.dp)
                             bottom.linkTo(buttonsContainerRef.top)
 
                             width = Dimension.fillToConstraints
