@@ -53,7 +53,6 @@ class SingletonWorkoutUseCaseModule {
         return SaveExerciseUseCase(
             context = context,
             workoutGroupRepository = workoutGroupRepository,
-            exercisePreDefinitionRepository = exercisePreDefinitionRepository,
             exerciseRepository = exerciseRepository
         )
     }

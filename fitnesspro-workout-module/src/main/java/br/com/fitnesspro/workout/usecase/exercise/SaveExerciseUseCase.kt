@@ -2,10 +2,8 @@ package br.com.fitnesspro.workout.usecase.exercise
 
 import android.content.Context
 import br.com.android.ui.compose.components.fields.validation.FieldValidationError
-import br.com.core.utils.extensions.bestChronoUnit
 import br.com.fitnesspro.to.TOExercise
 import br.com.fitnesspro.workout.R
-import br.com.fitnesspro.workout.repository.ExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.ExerciseRepository
 import br.com.fitnesspro.workout.repository.WorkoutGroupRepository
 import br.com.fitnesspro.workout.usecase.exercise.enums.EnumValidatedExerciseFields
@@ -20,7 +18,6 @@ import kotlinx.coroutines.withContext
 class SaveExerciseUseCase(
     private val context: Context,
     private val workoutGroupRepository: WorkoutGroupRepository,
-    private val exercisePreDefinitionRepository: ExercisePreDefinitionRepository,
     private val exerciseRepository: ExerciseRepository
 
 ) {
@@ -123,17 +120,13 @@ class SaveExerciseUseCase(
         }
     }
 
-    private suspend fun validateExercise(toExercise: TOExercise): List<FieldValidationError<EnumValidatedExerciseFields>> {
+    private fun validateExercise(toExercise: TOExercise): List<FieldValidationError<EnumValidatedExerciseFields>> {
         val validationResults = mutableListOf<FieldValidationError<EnumValidatedExerciseFields>>()
         validateExerciseName(toExercise)?.let(validationResults::add)
         validateExerciseOrder(toExercise)?.let(validationResults::add)
         validateExerciseRest(toExercise)?.let(validationResults::add)
         validateExerciseDuration(toExercise)?.let(validationResults::add)
         validateExerciseObservation(toExercise)?.let(validationResults::add)
-
-        if (validationResults.isEmpty()) {
-            validateExercisePreDefinition(toExercise)
-        }
 
         return validationResults
     }
@@ -166,21 +159,6 @@ class SaveExerciseUseCase(
             }
 
             else -> null
-        }
-    }
-
-    private suspend fun validateExercisePreDefinition(toExercise: TOExercise) {
-        val existentExercisePreDefinition = toExercise.name?.let {
-            exercisePreDefinitionRepository.findExercisePreDefinitionByName(it)
-        }
-
-        existentExercisePreDefinition?.let {
-            toExercise.sets = it.sets
-            toExercise.repetitions = it.repetitions
-            toExercise.rest = it.rest
-            toExercise.duration = it.duration
-            toExercise.unitDuration = it.duration?.bestChronoUnit()
-            toExercise.unitRest = it.rest?.bestChronoUnit()
         }
     }
 
