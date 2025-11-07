@@ -2,7 +2,6 @@ package br.com.fitnesspro.workout.ui.viewmodel
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
 import br.com.android.ui.compose.components.dialog.message.showConfirmationDialog
@@ -16,6 +15,7 @@ import br.com.core.android.utils.media.VideoUtils
 import br.com.core.utils.extensions.fromJsonNavParamToArgs
 import br.com.core.utils.extensions.getFirstPartFullDisplayName
 import br.com.core.utils.extensions.getStringFromConvertedChronoUnitValue
+import br.com.core.utils.extensions.millisTo
 import br.com.core.utils.extensions.toStringOrEmpty
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
@@ -46,7 +46,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.io.File
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
-import kotlin.collections.toMutableList
 
 @HiltViewModel
 class ExerciseViewModel @Inject constructor(
@@ -347,7 +346,6 @@ class ExerciseViewModel @Inject constructor(
     }
 
     private suspend fun loadExerciseInfoEdition(exerciseId: String?) {
-        Log.i("Teste", "loadExerciseInfoEdition: exerciseId = ${exerciseId}")
         exerciseId?.let { id ->
             val args = jsonArgs?.fromJsonNavParamToArgs(ExerciseScreenArgs::class.java)!!
             val toExercise = exerciseRepository.findById(id)
@@ -355,7 +353,10 @@ class ExerciseViewModel @Inject constructor(
             val convertedDuration = toExercise.unitDuration.getStringFromConvertedChronoUnitValue(toExercise.duration)
 
             _uiState.value = _uiState.value.copy(
-                toExercise = toExercise,
+                toExercise = toExercise.copy(
+                    rest = toExercise.unitRest?.let { toExercise.rest?.millisTo(it) },
+                    duration = toExercise.unitDuration?.let { toExercise.duration?.millisTo(it) }
+                ),
                 group = _uiState.value.group.copy(
                     value = toExercise.workoutGroupName!!
                 ),
