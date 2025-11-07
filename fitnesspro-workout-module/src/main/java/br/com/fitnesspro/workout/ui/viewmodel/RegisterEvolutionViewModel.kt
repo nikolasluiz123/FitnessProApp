@@ -16,6 +16,7 @@ import br.com.core.utils.extensions.format
 import br.com.core.utils.extensions.formatToDecimal
 import br.com.core.utils.extensions.fromJsonNavParamToArgs
 import br.com.core.utils.extensions.getStringFromConvertedChronoUnitValue
+import br.com.core.utils.extensions.millisTo
 import br.com.core.utils.extensions.toStringOrEmpty
 import br.com.fitnesspro.common.ui.event.GlobalEvents
 import br.com.fitnesspro.common.ui.viewmodel.base.FitnessProStatefulViewModel
@@ -207,8 +208,8 @@ class RegisterEvolutionViewModel @Inject constructor(
                 duration = _uiState.value.duration.copy(value = convertedDuration),
                 durationUnit = _uiState.value.durationUnit.copy(value = to.duration.getChronoUnitLabel(context)),
                 toExerciseExecution = to.copy(
-                    duration = convertedDuration.toLongOrNull(),
-                    rest = convertedRest.toLongOrNull()
+                    rest = to.restUnit?.let { to.rest?.millisTo(it) },
+                    duration = to.durationUnit?.let { to.duration?.millisTo(it) }
                 )
             )
         }
@@ -255,9 +256,9 @@ class RegisterEvolutionViewModel @Inject constructor(
                 ),
                 toExerciseExecution = _uiState.value.toExerciseExecution.copy(
                     repetitions = toExercise.repetitions,
-                    rest = toExercise.rest,
+                    rest = toExercise.unitRest?.let { toExercise.rest?.millisTo(it) },
                     restUnit = toExercise.unitRest,
-                    duration = toExercise.duration,
+                    duration = toExercise.unitDuration?.let { toExercise.duration?.millisTo(it) },
                     durationUnit = toExercise.unitDuration,
                     exerciseId = toExercise.id
                 )
@@ -373,6 +374,7 @@ class RegisterEvolutionViewModel @Inject constructor(
 
             if (validationResult.isEmpty()) {
                 onSuccess()
+                loadExecutionInfosEdition(_uiState.value.toExerciseExecution)
             } else {
                 _uiState.value.onToggleLoading()
                 showValidationMessages(validationResult)
