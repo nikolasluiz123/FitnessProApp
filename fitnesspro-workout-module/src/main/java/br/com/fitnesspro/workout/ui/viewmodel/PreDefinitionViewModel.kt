@@ -14,6 +14,7 @@ import br.com.core.android.utils.media.VideoUtils
 import br.com.core.utils.extensions.bestChronoUnit
 import br.com.core.utils.extensions.fromJsonNavParamToArgs
 import br.com.core.utils.extensions.getStringFromConvertedChronoUnitValue
+import br.com.core.utils.extensions.millisTo
 import br.com.core.utils.extensions.toStringOrEmpty
 import br.com.fitnesspro.common.repository.PersonRepository
 import br.com.fitnesspro.common.ui.event.GlobalEvents
@@ -326,7 +327,10 @@ class PreDefinitionViewModel @Inject constructor(
                 unitDuration = _uiState.value.unitDuration.copy(
                     value = toExercisePreDef.duration.getChronoUnitLabel(context)
                 ),
-                toExercisePredefinition = toExercisePreDef,
+                toExercisePredefinition = toExercisePreDef.copy(
+                    rest = toExercisePreDef.unitRest?.let { toExercisePreDef.rest?.millisTo(it) },
+                    duration = toExercisePreDef.unitDuration?.let { toExercisePreDef.duration?.millisTo(it) }
+                ),
                 inactivateEnabled = true,
             )
 
